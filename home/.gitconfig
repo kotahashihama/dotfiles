@@ -1,0 +1,20 @@
+[ghq]
+	root = ~/Documents/repositories
+[user]
+	name = Kota Hashihama
+	email = kotahashihama@gmail.com
+[push]
+	default = current
+[pull]
+	ff = only
+	rebase = false
+[init]
+	defaultBranch = main
+[core]
+	autocrlf = false
+	editor = vim
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
