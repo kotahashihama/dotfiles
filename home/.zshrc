@@ -112,6 +112,28 @@ function peco-git-branch() {
 zle -N peco-git-branch
 bindkey '^e' peco-git-branch
 
+function create-project() {
+  REPO_NAME=$1
+
+  gh repo create $REPO_NAME --private --confirm
+  ghq get git@github.com:kotahashihama/$REPO_NAME.git
+}
+
+function delete-project() {
+  REPO_NAME=$1
+
+  echo -n "本当にリポジトリを削除してよろしいですか？ (Y/n) "
+  read -r CONFIRM
+
+  if [ "$CONFIRM" = "Y" ] || [ "$CONFIRM" = "y" ] || [ "$CONFIRM" = "" ]; then
+    gh repo delete $REPO_NAME --yes
+    ghq list --full-path | grep $REPO_NAME | xargs rm -rf
+    echo "Repository deleted successfully"
+  else
+    echo "Deletion cancelled"
+  fi
+}
+
 #
 # asdf
 #
