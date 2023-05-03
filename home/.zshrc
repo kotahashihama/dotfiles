@@ -42,6 +42,9 @@ zstyle ':notify:*' error-sound "Glass"
 zstyle ':notify:*' success-sound "default"
 zstyle ':notify:*' command-complete-timeout 5
 
+# GitHub Copilot CLI
+eval "$(github-copilot-cli alias -- "$0")"
+
 #
 # Powerlevel10k
 #
