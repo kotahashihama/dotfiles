@@ -1,5 +1,6 @@
 # Fig pre block. Keep at the top of this file.
 [[ -f "$HOME/.fig/shell/zshrc.pre.zsh" ]] && builtin source "$HOME/.fig/shell/zshrc.pre.zsh"
+
 #
 # zplug
 #
@@ -141,6 +142,20 @@ function delete-project() {
 # asdf
 #
 . /opt/homebrew/opt/asdf/libexec/asdf.sh
+
+# NOTE: asdf と比較し、高速かつプロジェクトでシームレスにバージョンの追従ができ、バージョンを跨いだグローバルパッケージの管理が可能なため Volta を使っている
+#
+# Volta
+#
+export VOLTA_HOME="$HOME/.volta"
+export PATH="$VOLTA_HOME/bin:$PATH"
+
+# NOTE: asdf で入れた Go では Resource temporarily unavailable によくなるので goenv を使っている
+#
+# goenv
+#
+eval "$(goenv init -)"
+export PATH="$HOME/.goenv/bin:$PATH"
 
 #
 # pnpm
