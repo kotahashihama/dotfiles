@@ -163,6 +163,9 @@ export PATH="$HOME/.goenv/bin:$PATH"
 export PNPM_HOME="~/Library/pnpm"
 export PATH="$PNPM_HOME:$PATH"
 
+# Dart
+export PATH="$PATH":"$HOME/.pub-cache/bin"
+
 #
 # エイリアス
 #
