@@ -9,7 +9,7 @@ export ZPLUG_HOME=/opt/homebrew/opt/zplug
 
 # プラグイン
 zplug "sorin-ionescu/prezto"
-zplug "marzocchi/zsh-notify"
+# zplug "marzocchi/zsh-notify"
 
 # Prezto のプラグイン
 zplug "modules/environment", from:prezto
@@ -36,12 +36,12 @@ fi
 #
 # zsh-nofity
 #
-. /opt/homebrew/opt/zplug/repos/marzocchi/zsh-notify/notify.plugin.zsh
-zstyle ':notify:*' error-title "Command failed (in #{time_elapsed} seconds)"
-zstyle ':notify:*' success-title "Command finished (in #{time_elapsed} seconds)"
-zstyle ':notify:*' error-sound "Glass"
-zstyle ':notify:*' success-sound "default"
-zstyle ':notify:*' command-complete-timeout 5
+# . /opt/homebrew/opt/zplug/repos/marzocchi/zsh-notify/notify.plugin.zsh
+# zstyle ':notify:*' error-title "Command failed (in #{time_elapsed} seconds)"
+# zstyle ':notify:*' success-title "Command finished (in #{time_elapsed} seconds)"
+# zstyle ':notify:*' error-sound "Glass"
+# zstyle ':notify:*' success-sound "default"
+# zstyle ':notify:*' command-complete-timeout 5
 
 # GitHub Copilot CLI
 eval "$(github-copilot-cli alias -- "$0")"
@@ -139,29 +139,32 @@ function delete-project() {
 }
 
 #
-# asdf
+# mise
 #
-. /opt/homebrew/opt/asdf/libexec/asdf.sh
+eval "$(/opt/homebrew/bin/mise activate zsh)"
 
-# NOTE: asdf と比較し、高速かつプロジェクトでシームレスにバージョンの追従ができ、バージョンを跨いだグローバルパッケージの管理が可能なため Volta を使っている
-#
 # Volta
-#
 export VOLTA_HOME="$HOME/.volta"
 export PATH="$VOLTA_HOME/bin:$PATH"
+export VOLTA_FEATURE_PNPM=1
+unset _VOLTA_TOOL_RECURSION
 
 # NOTE: asdf で入れた Go では Resource temporarily unavailable によくなるので goenv を使っている
 #
 # goenv
 #
+export GOENV_ROOT=$HOME/.goenv
+export PATH=$GOENV_ROOT/bin:$PATH
 eval "$(goenv init -)"
-export PATH="$HOME/.goenv/bin:$PATH"
 
 #
 # pnpm
 #
 export PNPM_HOME="~/Library/pnpm"
 export PATH="$PNPM_HOME:$PATH"
+
+# bun completions
+[ -s "/Users/hashihama.kota/.bun/_bun" ] && source "/Users/hashihama.kota/.bun/_bun"
 
 # Dart
 export PATH="$PATH":"$HOME/.pub-cache/bin"
@@ -205,6 +208,7 @@ release-awssession-token() {
 
 # Terraform
 export GODEBUG=asyncpreemptoff=1
+
 
 # Fig post block. Keep at the bottom of this file.
 [[ -f "$HOME/.fig/shell/zshrc.post.zsh" ]] && builtin source "$HOME/.fig/shell/zshrc.post.zsh"
