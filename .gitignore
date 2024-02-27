@@ -1,9 +1,9 @@
 .DS_Store
 
+Brewfile.old
+
 home/.aws/
 home/.ssh/
 
 home/.zsh_aliases/
 home/.zsh_scripts/
-home/.zsh_sessions/
-home/.zsh_history

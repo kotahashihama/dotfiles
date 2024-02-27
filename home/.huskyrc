@@ -1,1 +1,1 @@
-export PATH=$PATH:~/.volta/bin
+export PATH=$PATH:~/.bun/bin
