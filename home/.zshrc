@@ -4,7 +4,7 @@
 #
 # zplug
 #
-export ZPLUG_HOME=/usr/local/opt/zplug
+export ZPLUG_HOME=/opt/homebrew/opt/zplug
 . $ZPLUG_HOME/init.zsh
 
 # プラグイン
@@ -36,7 +36,7 @@ fi
 #
 # zsh-nofity
 #
-. /usr/local/opt/zplug/repos/marzocchi/zsh-notify/notify.plugin.zsh
+. $ZPLUG_HOME/repos/marzocchi/zsh-notify/notify.plugin.zsh
 zstyle ':notify:*' error-title "Command failed (in #{time_elapsed} seconds)"
 zstyle ':notify:*' success-title "Command finished (in #{time_elapsed} seconds)"
 zstyle ':notify:*' error-sound "Glass"
@@ -141,7 +141,7 @@ function delete-project() {
 #
 # mise
 #
-eval "$(/usr/local/bin/mise activate zsh)"
+eval "$(/opt/homebrew/bin/mise activate zsh)"
 
 #
 # pnpm
@@ -195,7 +195,6 @@ release-awssession-token() {
 
 # Terraform
 export GODEBUG=asyncpreemptoff=1
-
 
 # Fig post block. Keep at the bottom of this file.
 [[ -f "$HOME/.fig/shell/zshrc.post.zsh" ]] && builtin source "$HOME/.fig/shell/zshrc.post.zsh"
