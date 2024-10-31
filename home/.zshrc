@@ -1,5 +1,8 @@
-# Fig pre block. Keep at the top of this file.
-[[ -f "$HOME/.fig/shell/zshrc.pre.zsh" ]] && builtin source "$HOME/.fig/shell/zshrc.pre.zsh"
+# Amazon Q pre block. Keep at the top of this file.
+[[ -f "${HOME}/Library/Application Support/amazon-q/shell/zshrc.pre.zsh" ]] && builtin source "${HOME}/Library/Application Support/amazon-q/shell/zshrc.pre.zsh"
+
+# Homebrew
+eval "$(/opt/homebrew/bin/brew shellenv)"
 
 #
 # zplug
@@ -33,9 +36,7 @@ if ! zplug check --verbose; then
   fi
 fi
 
-#
 # zsh-nofity
-#
 . $ZPLUG_HOME/repos/marzocchi/zsh-notify/notify.plugin.zsh
 zstyle ':notify:*' error-title "Command failed (in #{time_elapsed} seconds)"
 zstyle ':notify:*' success-title "Command finished (in #{time_elapsed} seconds)"
@@ -138,14 +139,10 @@ function delete-project() {
   fi
 }
 
-#
 # mise
-#
 eval "$(/opt/homebrew/bin/mise activate zsh)"
 
-#
 # pnpm
-#
 export PNPM_HOME="~/Library/pnpm"
 export PATH="$PNPM_HOME:$PATH"
 
@@ -156,14 +153,10 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 # Dart
 export PATH="$PATH":"$HOME/.pub-cache/bin"
 
-#
 # エイリアス
-#
 . ~/.zsh_aliases/main.zsh
 
-#
 # シェルオプション
-#
 setopt interactive_comments
 setopt correct
 unsetopt correct_all
@@ -175,7 +168,6 @@ setopt magic_equal_subst
 #
 # AWS
 #
-
 set-awssession-token() {
   profile_name=$1
   code=$2
@@ -196,5 +188,8 @@ release-awssession-token() {
 # Terraform
 export GODEBUG=asyncpreemptoff=1
 
-# Fig post block. Keep at the bottom of this file.
-[[ -f "$HOME/.fig/shell/zshrc.post.zsh" ]] && builtin source "$HOME/.fig/shell/zshrc.post.zsh"
+# Amazon Q
+[[ -f "$HOME/fig-export/dotfiles/dotfile.zsh" ]] && builtin source "$HOME/fig-export/dotfiles/dotfile.zsh"
+
+# Amazon Q post block. Keep at the bottom of this file.
+[[ -f "${HOME}/Library/Application Support/amazon-q/shell/zshrc.post.zsh" ]] && builtin source "${HOME}/Library/Application Support/amazon-q/shell/zshrc.post.zsh"

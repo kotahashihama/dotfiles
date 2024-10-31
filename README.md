@@ -13,7 +13,7 @@ brew bundle dump
 # 3. コミット＆push しておく
 
 # 4. バックアップスクリプトを実行
-./scripts/restore_dotfiles.sh
+./scripts/backup_dotfiles.sh
 
 # 5. private_dotfiles.zip をクラウドにアップロードする
 ```
