@@ -3,7 +3,10 @@
 Brewfile.old
 
 home/.aws/
+home/.gcp/
 home/.ssh/
+home/.config/
 
 home/.zsh_aliases/
 home/.zsh_scripts/
+.qodo

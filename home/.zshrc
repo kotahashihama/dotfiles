@@ -153,6 +153,10 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 # Dart
 export PATH="$PATH":"$HOME/.pub-cache/bin"
 
+# Windsurf
+export PATH="/Users/kotahashihama/.codeium/windsurf/bin:$PATH"
+
+
 # エイリアス
 . ~/.zsh_aliases/main.zsh
 
