@@ -156,6 +156,8 @@ export PATH="$PATH":"$HOME/.pub-cache/bin"
 # Windsurf
 export PATH="/Users/kotahashihama/.codeium/windsurf/bin:$PATH"
 
+# Kiro
+[[ "$TERM_PROGRAM" == "kiro" ]] && . "$(kiro --locate-shell-integration-path zsh)"
 
 # エイリアス
 . ~/.zsh_aliases/main.zsh
