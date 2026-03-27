@@ -14,5 +14,6 @@ cp -r ~/.zsh_scripts .zsh_scripts/
 
 cd ../
 zip -r private_dotfiles.zip private_dotfiles/
+rm -rf private_dotfiles/
 
 echo "👍 プライベート dotfiles のバックアップが完了しました"
