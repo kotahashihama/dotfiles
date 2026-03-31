@@ -1,5 +1,25 @@
 # Kiro CLI pre block. Keep at the top of this file.
 [[ -f "${HOME}/Library/Application Support/kiro-cli/shell/zshrc.pre.zsh" ]] && builtin source "${HOME}/Library/Application Support/kiro-cli/shell/zshrc.pre.zsh"
+
+#
+# Powerlevel10k
+#
+
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  . "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
+# Source Prezto.
+if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
+  . "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
+fi
+
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || . ~/.p10k.zsh
+
 # Homebrew
 eval "$(/opt/homebrew/bin/brew shellenv)"
 
@@ -42,28 +62,6 @@ zstyle ':notify:*' success-title "Command finished (in #{time_elapsed} seconds)"
 zstyle ':notify:*' error-sound "Glass"
 zstyle ':notify:*' success-sound "default"
 zstyle ':notify:*' command-complete-timeout 5
-
-# GitHub Copilot CLI
-eval "$(github-copilot-cli alias -- "$0")"
-
-#
-# Powerlevel10k
-#
-
-# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
-# Initialization code that may require console input (password prompts, [y/n]
-# confirmations, etc.) must go above this block; everything else may go below.
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  . "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
-
-# Source Prezto.
-if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
-  . "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
-fi
-
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || . ~/.p10k.zsh
 
 #
 # peco
@@ -200,5 +198,3 @@ export PATH="/Users/kotahashihama/.antigravity/antigravity/bin:$PATH"
 # Kiro CLI post block. Keep at the bottom of this file.
 [[ -f "${HOME}/Library/Application Support/kiro-cli/shell/zshrc.post.zsh" ]] && builtin source "${HOME}/Library/Application Support/kiro-cli/shell/zshrc.post.zsh"
 
-# OpenClaw Completion
-source "/Users/kotahashihama/.openclaw/completions/openclaw.zsh"
