@@ -8,6 +8,7 @@ cp -r ~/.aws .aws/
 cp -r ~/.gcp .gcp/
 cp -r ~/.ssh .ssh/
 cp -r ~/.config .config/
+cp -r ~/.cursor .cursor/
 
 cp -r ~/.zsh_aliases .zsh_aliases/
 cp -r ~/.zsh_scripts .zsh_scripts/
