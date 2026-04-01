@@ -4,6 +4,11 @@ brew bundle
 
 DOTFILES_DIR=~/Documents/repositories/github.com/kotahashihama/dotfiles
 
+# プライベート dotfiles を解凍して home/ に配置
+unzip -o ~/Desktop/private_dotfiles.zip -d ~/Desktop/
+cp -r ~/Desktop/private_dotfiles/ $DOTFILES_DIR/home/
+rm -rf ~/Desktop/private_dotfiles/ ~/Desktop/private_dotfiles.zip
+
 for dotfile in $(ls -A home); do
   ln -sf $DOTFILES_DIR/home/$dotfile ~
 done
