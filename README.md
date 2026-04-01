@@ -34,7 +34,10 @@ cd ~/Documents/repositories/github.com/kotahashihama/
 git clone git@github.com:kotahashihama/dotfiles.git
 cd dotfiles/
 
-# 4. リストアスクリプトを実行
+# 4. Prezto をインストール
+git clone --recursive https://github.com/sorin-ionescu/prezto.git "${ZDOTDIR:-$HOME}/.zprezto"
+
+# 5. リストアスクリプトを実行
 ./scripts/restore_osx.sh
 ./scripts/restore_dotfiles.sh
 ./scripts/restore_languages.sh
