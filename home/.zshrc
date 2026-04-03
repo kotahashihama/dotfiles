@@ -23,6 +23,12 @@ fi
 # Homebrew
 eval "$(/opt/homebrew/bin/brew shellenv)"
 
+# direnv
+eval "$(direnv hook zsh)"
+
+# Docker
+source <(docker completion zsh)
+
 #
 # zplug
 #
@@ -191,7 +197,7 @@ release-awssession-token() {
 # Terraform
 export GODEBUG=asyncpreemptoff=1
 
-# Amazon Q
+# Antigravity
 [[ -f "$HOME/fig-export/dotfiles/dotfile.zsh" ]] && builtin source "$HOME/fig-export/dotfiles/dotfile.zsh"# Added by Antigravity
 export PATH="/Users/kotahashihama/.antigravity/antigravity/bin:$PATH"
 

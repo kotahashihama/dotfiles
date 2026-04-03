@@ -15,6 +15,7 @@ brew "gettext"
 brew "cmake"
 brew "cppcheck"
 brew "dash-shell", link: false
+brew "direnv"
 brew "ethereum"
 brew "webp"
 brew "gd"
