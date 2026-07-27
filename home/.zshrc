@@ -204,3 +204,13 @@ export PATH="/Users/kotahashihama/.antigravity/antigravity/bin:$PATH"
 # Kiro CLI post block. Keep at the bottom of this file.
 [[ -f "${HOME}/Library/Application Support/kiro-cli/shell/zshrc.post.zsh" ]] && builtin source "${HOME}/Library/Application Support/kiro-cli/shell/zshrc.post.zsh"
 
+# Claude Code
+DISABLE_TELEMETRY=1
+
+# OpenClaw Completion
+source "/Users/kotahashihama/.openclaw/completions/openclaw.zsh"
+
+# Added by Antigravity
+export PATH="/Users/kotahashihama/.antigravity/antigravity/bin:$PATH"
+
+. "$HOME/.local/bin/env"
