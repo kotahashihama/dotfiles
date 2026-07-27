@@ -1,3 +1,43 @@
 {
-  "skipDangerousModePermissionPrompt": true
+  "cleanupPeriodDays": 365,
+  "env": {
+    "DISABLE_NON_ESSENTIAL_MODEL_CALLS": "1",
+    "EDITOR": "cursor --wait",
+    "VISUAL": "cursor --wait"
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "bash ~/.claude/statusline-command.sh"
+  },
+  "enabledPlugins": {
+    "figma@claude-plugins-official": true,
+    "slack@claude-plugins-official": true,
+    "codex@openai-codex": true,
+    "skill-creator@claude-plugins-official": true,
+    "agentkit-shopify@worldcoin-agentkit": true
+  },
+  "extraKnownMarketplaces": {
+    "openai-codex": {
+      "source": {
+        "source": "github",
+        "repo": "openai/codex-plugin-cc"
+      }
+    },
+    "worldcoin-agentkit": {
+      "source": {
+        "source": "github",
+        "repo": "worldcoin/agentkit-shopify-demo"
+      }
+    }
+  },
+  "outputStyle": "Explanatory",
+  "language": "Japanese",
+  "spinnerTipsEnabled": false,
+  "effortLevel": "high",
+  "autoUpdatesChannel": "latest",
+  "tui": "fullscreen",
+  "skipDangerousModePermissionPrompt": true,
+  "showTurnDuration": true,
+  "remoteControlAtStartup": true,
+  "agentPushNotifEnabled": true
 }
