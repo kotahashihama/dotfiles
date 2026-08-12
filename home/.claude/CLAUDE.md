@@ -20,6 +20,17 @@
 
 **常に効かせたいものは rules、呼ばれたときだけ効かせたいものは skills。** 書き方と整理の規約は `rules/rule_conventions.md` と `rules/align_skill_md_format.md`。
 
+### 公開層と非公開層
+
+これらの実体は dotfiles リポジトリにあり、**`home/` 層は GitHub 上で全世界から読める**。
+
+| 置く内容 | 層 |
+| --- | --- |
+| 汎用の規約・手順 | `home/`（公開） |
+| **社内の呼称・リポジトリ名・GitHub ID・プロダクトの状況** | **`private/`（非公開）** |
+
+**迷ったら `private/` に倒す。** 公開してしまうと取り消せない（履歴の書き換えが要る）。判断表は dotfiles の `docs/layers.md`、点検は同リポジトリの `/audit-secrets` スキル。
+
 `commands/*.md` は skills に統合済み。既存ファイルは動き続けるが、**新規はすべて skills に置く**。
 
 ## 迷ったとき

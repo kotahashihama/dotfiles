@@ -15,6 +15,8 @@ macOS の設定ファイル一式。`~` 側は実体を持たず、このリポ�
 
 秘匿値は `~/.secrets/env` に置き、設定ファイルには参照だけを残す。git にも zip にも入らない。
 
+公開層への混入は `scripts/git-hooks/pre-commit` が止める。新しい社内固有名は `private/.claude/deny-patterns.txt` へ足す。
+
 ## 作業の型
 
 | 場面 | 使うもの |
