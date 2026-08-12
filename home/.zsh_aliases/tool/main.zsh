@@ -1,9 +1,6 @@
 # ターミナル
 alias -g @tn='| terminal-notifier'
 
-# asdf
-alias goreshim='asdf reshim golang'
-
 # tmux
 alias t='tmux'
 alias tls='t ls'
