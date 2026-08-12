@@ -1,20 +1,22 @@
 #!/bin/sh
+set -e
 
-cd ~/Desktop/
-mkdir private_dotfiles/
-cd private_dotfiles/
+. "$(dirname "$0")/lib.sh"
 
-cp -r ~/.aws .aws/
-cp -r ~/.gcp .gcp/
-cp -r ~/.ssh .ssh/
-cp -r ~/.config .config/
-cp -r ~/.cursor .cursor/
+cd "$DOTFILES_DIR"
 
-cp -r ~/.zsh_aliases .zsh_aliases/
-cp -r ~/.zsh_scripts .zsh_scripts/
+if [ ! -d private ]; then
+  echo "private/ がありません" >&2
+  exit 1
+fi
 
-cd ../
-zip -r private_dotfiles.zip private_dotfiles/
-rm -rf private_dotfiles/
+# private/ が実体なので、~ から集め直す必要はない
+rm -f "$PRIVATE_ZIP"
+zip -rqy "$PRIVATE_ZIP" private \
+  -x '*.DS_Store' \
+  -x 'private/.ssh/agent/*' \
+  -x 'private/.config/iterm2/sockets/*' \
+  -x '*/cache/*' -x '*/Cache/*' -x '*/logs/*' -x '*.log'
 
-echo "👍 プライベート dotfiles のバックアップが完了しました"
+echo "👍 プライベート dotfiles のバックアップが完了しました: $PRIVATE_ZIP"
+echo "   秘匿値 (~/.secrets/env) は含まれません。パスワードマネージャ側で管理してください"

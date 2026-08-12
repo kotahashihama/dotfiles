@@ -1,20 +1,35 @@
 #!/bin/sh
+set -e
+
+. "$(dirname "$0")/lib.sh"
+
+SALVAGE_DIR=~/dotfiles-salvaged-$(date +%Y%m%d%H%M%S)
 
 brew bundle
 
-DOTFILES_DIR=~/Documents/repositories/github.com/kotahashihama/dotfiles
+# private_dotfiles.zip を展開して private/ 層に配置する
+if [ -f "$PRIVATE_ZIP" ]; then
+  unzip -oq "$PRIVATE_ZIP" -d ~/Desktop/
+  mkdir -p "$DOTFILES_DIR/private"
+  cp -R ~/Desktop/private/. "$DOTFILES_DIR/private/"
+  rm -rf ~/Desktop/private/ "$PRIVATE_ZIP"
+else
+  echo "⚠️  $PRIVATE_ZIP が見つかりません。public 層のみリンクします"
+fi
 
-# プライベート dotfiles を解凍して home/ に配置
-unzip -o ~/Desktop/private_dotfiles.zip -d ~/Desktop/
-cp -r ~/Desktop/private_dotfiles/ $DOTFILES_DIR/home/
-rm -rf ~/Desktop/private_dotfiles/ ~/Desktop/private_dotfiles.zip
+link_layer home
+link_layer private
 
-for dotfile in $(ls -A home); do
-  ln -sf $DOTFILES_DIR/home/$dotfile ~
-done
+# 秘匿値はどちらの層にも入らないため、雛形だけ用意する
+if [ ! -f ~/.secrets/env ]; then
+  mkdir -p ~/.secrets && chmod 700 ~/.secrets
+  cp "$DOTFILES_DIR/scripts/secrets.env.example" ~/.secrets/env
+  chmod 600 ~/.secrets/env
+  echo "⚠️  ~/.secrets/env は雛形です。パスワードマネージャから値を入れてください"
+fi
 
-# ディレクトリ内の個別ファイルをリンク
-mkdir -p ~/.claude
-ln -sf $DOTFILES_DIR/home/.claude/settings.json ~/.claude/settings.json
+if [ -d "$SALVAGE_DIR" ]; then
+  echo "⚠️  リンク先にあった実体を $SALVAGE_DIR へ退避しました"
+fi
 
 echo "👍 dotfiles のリストアが完了しました"
