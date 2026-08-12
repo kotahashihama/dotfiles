@@ -24,18 +24,19 @@ mv Brewfile Brewfile.old && brew bundle dump
 
 # 3. コミット & push
 
-# 4. private/ を暗号化アーカイブに固める（パスフレーズを聞かれる）
+# 4. private/ を暗号化アーカイブに固める（パスフレーズが表示される）
 ./scripts/backup_dotfiles.sh
 
 # 5. ~/Desktop/private_dotfiles.tar.gz.gpg をクラウドへアップロード
 ```
 
-**パスフレーズはパスワードマネージャへ保管する。** これを失うと復号できないため、アーカイブとは別の場所に置く。
+**パスフレーズはスクリプトが生成して 1 度だけ表示する。** パスワードマネージャへ保管し、**アーカイブとは別の場所**に置く（同じクラウドに置くと片方の漏洩で両方漏れる）。失うと復号できない。
 
 ## リストア手順
 
 ```sh
 # 1. クラウドからダウンロードした private_dotfiles.tar.gz.gpg をデスクトップに置く
+#    リストア中にパスフレーズを聞かれる
 
 # 2. Homebrew をインストール
 xcode-select --install
