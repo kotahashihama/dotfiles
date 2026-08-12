@@ -91,5 +91,6 @@
 ## 関連
 
 - `no_auto_reply_human_review_comments.md`（人間コメントへの自動返信禁止）と併用: 本ルールは "対応行動" 側、あちらは "返信行動" 側を規定
+- `decide_or_ask.md`（自分で決めるか尋ねるか）: 本ルールが扱う場面の**判断軸**を示す
 - `plain_language_explanation.md`（技術説明の噛み砕き）: 意図の咀嚼は平易な表現で
 - `summarize_after_each_task.md`（各作業後のサマリ）: 対応が終わった段階で改めてサマリ
