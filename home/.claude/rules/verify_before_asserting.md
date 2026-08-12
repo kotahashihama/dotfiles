@@ -48,5 +48,6 @@
 
 ## 関連
 
+- `keep_records_current.md`（変えたら説明も直す）: 本ルールは**書くとき**、あちらは**書いた後の鮮度**を扱う。裏を取って書いた内容も、対象が変われば古くなる
 - `plain_language_explanation.md`（噛み砕いた説明）: 平易にすることと、正確さを落とすことは別
 - `concise_first_then_detail.md`（簡潔に）: 出典を示すのは冗長ではない。1 行で足りる
