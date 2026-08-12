@@ -47,3 +47,4 @@
 
 - `concise_first_then_detail.md`（簡潔に）: バックグラウンドの結果報告も要点だけに絞る
 - `summarize_after_each_task.md`（各作業後のサマリ）: 回収した結果は作業サマリに含める
+- `verify_before_asserting.md`（断定の前に裏を取る）: **回収した結果が成立しているか**を扱う。空の出力や、`&&` の前段が黙って失敗した結果を根拠にしない
