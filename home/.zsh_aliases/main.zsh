@@ -42,11 +42,6 @@ alias rb='ruby'
 # Python
 alias py='python'
 
-# Laravel
-alias pa='php artisan'
-alias pam='pa migrate'
-alias pas='pa serve --host 0.0.0.0'
-
 # Nuxt.js
 alias nuxt='./node_modules/.bin/nuxt'
 

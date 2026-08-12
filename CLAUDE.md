@@ -24,6 +24,6 @@ macOS の設定ファイル一式。`~` 側は実体を持たず、このリポ�
 | `~` の設定を管理下へ入れる / 外す | `/adopt-dotfile`（手動起動のみ） |
 | コミット・push の前 | `/audit-secrets` |
 | `scripts/` や層構成を変えた後 | `/verify-restore` |
-| エイリアス・関数の死活を確認する | `/audit-aliases` |
+| 管理下の設定が壊れていないか見る | `/audit-dotfiles [種別]` |
 
 `scripts/` を変えたら**偽の HOME で実測してから確定する**。既存マシンでは壊れる経路を通らない（`.claude/rules/restore-verification.md`）。
