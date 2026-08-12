@@ -52,6 +52,7 @@ chore: 依存パッケージの更新
 - 既存コミットを Karma スタイルへ直す指示があれば、**ツリー（変更内容）は一切変えずメッセージだけ**書き換える。
 - `git rebase -i` が使えない環境では「ベースへ `reset --hard` → 各コミットを `cherry-pick` → 直後に `commit --amend` でメッセージ差し替え」で再構築し、`git diff <backup> HEAD` がゼロであることを確認する。
 - 共有ブランチの履歴書き換え後の push は `--force-with-lease` を使う。
+- **他の人のレビューが始まった PR では実行しない**（`no_rebase_under_human_review.md`）。メッセージだけの書き換えでもコミットの同一性は失われる。
 
 ## なぜ
 
