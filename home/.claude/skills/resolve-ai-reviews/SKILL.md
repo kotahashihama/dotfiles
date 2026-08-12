@@ -1,5 +1,5 @@
 ---
-argument-hint: [PR 番号 (省略時は現在のブランチから特定)]
+argument-hint: "[PR 番号 または URL] (省略時は現在のブランチから特定)"
 description: PR に付いた GitHub Actions (AI) のレビューコメントに対応する。まずセッション文脈 (これまでの user 指示・実装判断・PR body 明記事項) と照合し、文脈と抵触する指摘は独断で対応せず user に判断を尋ねる。文脈整合が取れた対応内容だけをコミット&プッシュし、各コメントにコミットハッシュ (または非対応理由) ＋末尾 Note アノテーションで返信したうえで、返信済みスレッドを Resolve conversation で解決済みにする。ユーザーが「AI レビューに対応して」「PR のレビューコメントを直して」「/resolve-ai-reviews」等を指示したときに使う。
 allowed-tools: Bash(gh api:*) Bash(gh pr view:*) Bash(gh pr edit:*) Bash(gh pr checks:*) Bash(git status:*) Bash(git diff:*) Bash(git log:*) Bash(git add:*) Bash(git commit:*) Bash(git push:*) Bash(git branch:*) Bash(git rev-parse:*) Bash(task:*) Bash(go:*) Read Edit Write MultiEdit AskUserQuestion
 ---

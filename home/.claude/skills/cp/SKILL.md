@@ -1,5 +1,6 @@
 ---
 description: 現在のステージ済み・未ステージの変更を Karma スタイルでコミットし、追跡先リモートへプッシュする。ユーザーが「こみっとぷっしゅ」「コミットプッシュ」「commit & push」等を指示したときに使う。
+argument-hint: "(引数なし。ステージ済み・未ステージの変更をコミットしてプッシュする)"
 allowed-tools: Bash(git status:*) Bash(git diff:*) Bash(git log:*) Bash(git add:*) Bash(git commit:*) Bash(git push:*) Bash(git branch:*)
 ---
 

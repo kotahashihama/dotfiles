@@ -1,6 +1,6 @@
 ---
 description: 自分が担当している open な PR を、FE / BE / インフラのリポジトリ横断で一覧に出す。各 PR が何を対応しているか・どの PR と紐づいているか・今レビューに出せるかを表にまとめ、マージ済みの PR を参照したまま古くなっている記述も洗い出す。ユーザーが「今出てる PR は？」「担当中の PR 教えて」「PR の状況を出して」等を指示したときに使う。
-argument-hint: [リポジトリ名 (省略時は横断)]
+argument-hint: "[リポジトリ名 (省略時は横断)]"
 allowed-tools: Bash(gh pr list:*) Bash(gh pr view:*) Bash(gh pr checks:*) Bash(gh run view:*) Bash(gh api:*) Bash(gh repo view:*) Bash(git branch:*) Bash(git status:*) Bash(git rev-list:*) Bash(git log:*)
 ---
 
