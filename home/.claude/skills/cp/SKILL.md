@@ -48,9 +48,14 @@ allowed-tools: Bash(git status:*) Bash(git diff:*) Bash(git log:*) Bash(git add:
    - 上流未設定なら `git push -u origin <branch>` で初回プッシュ
 
 7. **完了報告**:
-   - `<oldsha>..<newsha>` の範囲と、変更ファイル数 / 増減行数を 1〜2 行で報告
-   - **push したコミットを 1 行ずつ列挙**する: `git log --oneline <oldsha>..<newsha>` の出力をそのまま貼る形で `<短縮ハッシュ> <subject>` を全件並べる（push が複数コミットを含むときは全部）
+   - 変更ファイル数 / 増減行数を 1 行で報告
+   - **push したコミットを 1 行ずつ列挙**する: `<短縮ハッシュ> <subject>` を全件並べる（`git log --oneline <oldsha>..<newsha>` の出力をそのまま貼る形。**報告にレンジ表記は使わない** — `report_formatting.md`）
    - コミット後に変更が残っていない（`working tree clean`）ことを確認
+
+8. **PR の鮮度を確認**（PR がある場合のみ）:
+   - push で差分が動いたので、**本文と補足コメントが実態と食い違っていないか**を見る（`keep_records_current.md`）
+   - ズレていれば `/update-pr-description` を案内する。**このスキルでは直さない**
+   - **AI レビューを回すかはユーザーに尋ねる**。1 周ごとに課金されるので自動で回さない
 
 ## 出力の目安
 
