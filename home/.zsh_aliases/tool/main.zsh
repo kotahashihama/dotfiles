@@ -65,7 +65,7 @@ alias cld='claude'
 alias clda='claude --permission-mode auto'
 alias cldp='claude --dangerously-skip-permissions --dangerously-load-development-channels server:claude-peers'
 alias cldpr='cldp -r'
-
+alias cldrc='claude remote-control'
 
 # Anthropic Computer Use
 alias computeruse='echo "最後に表示される案内文がどうであれ、http://localhost:8050 でホストされることに注意してください。" \
