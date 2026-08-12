@@ -21,7 +21,7 @@ macOS の設定ファイル一式。`~` 側は実体を持たず、このリポ�
 
 | 場面 | 使うもの |
 | --- | --- |
-| `~` の設定を管理下へ入れる / 外す | `/adopt-dotfile` |
+| `~` の設定を管理下へ入れる / 外す | `/adopt-dotfile`（手動起動のみ） |
 | コミット・push の前 | `/audit-secrets` |
 | `scripts/` や層構成を変えた後 | `/verify-restore` |
 

@@ -1,6 +1,7 @@
 ---
 description: ~ 配下の設定ファイルを dotfiles の管理下へ取り込む、または管理から外す。層の判定・秘匿値の切り出し・リンクの張り替えまで行う。ユーザーが「これも管理対象にして」「バックアップに含めて」「管理から外して」「/adopt-dotfile」等を指示したときに使う。
 argument-hint: <~ からの相対パス> [public|private]
+disable-model-invocation: true
 allowed-tools: Bash(ls:*) Bash(find:*) Bash(du:*) Bash(readlink:*) Bash(grep:*) Bash(git check-ignore:*) Bash(git status:*) Bash(./scripts/adopt_dotfile.sh:*) Bash(mv:*) Bash(rm:*) Bash(ln:*)
 ---
 
