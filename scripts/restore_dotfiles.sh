@@ -20,6 +20,9 @@ fi
 link_layer home
 link_layer private
 
+# 公開層への混入を検査するフックを有効にする
+git -C "$DOTFILES_DIR" config core.hooksPath scripts/git-hooks
+
 # 秘匿値はどちらの層にも入らないため、雛形だけ用意する
 if [ ! -f ~/.secrets/env ]; then
   mkdir -p ~/.secrets && chmod 700 ~/.secrets

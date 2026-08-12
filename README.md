@@ -72,6 +72,7 @@ git clone --recursive https://github.com/sorin-ionescu/prezto.git "${ZDOTDIR:-$H
 | `restore_osx.sh` | macOS の各種設定を書き込む |
 | `restore_languages.sh` | mise で言語ランタイムを入れる |
 | `lib.sh` | 上記が共有する定義とヘルパー |
+| `git-hooks/pre-commit` | 公開層への認証情報・社内固有名の混入を止める |
 
 ## 手動で設定する必要があるもの
 
