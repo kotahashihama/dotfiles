@@ -107,4 +107,29 @@ killall Safari
 # リッチテキストから標準テキストに変更
 defaults write com.apple.TextEdit RichText -int 0
 
+#
+# 書き出した設定の取り込み
+#
+# 上の defaults write は「最低限こうしたい」を表す。旧マシンの書き出しが
+# あればそれで上書きし、GUI から変えた設定まで引き継ぐ。
+# 書き出しが無い場合（初回など）は上の既定値のまま進む。
+DEFAULTS_DIR="$(cd "$(dirname "$0")/.." && pwd)/private/.macos-defaults"
+
+if [ -d "$DEFAULTS_DIR" ]; then
+  imported=0
+  for f in "$DEFAULTS_DIR"/*.plist; do
+    [ -f "$f" ] || continue
+    domain=$(basename "$f" .plist)
+    defaults import "$domain" "$f" && imported=$((imported + 1))
+  done
+  echo "   書き出した設定を取り込みました: $imported ドメイン"
+
+  # 取り込んだ内容を反映させる。起動していないものは失敗して構わない
+  for app in Finder Dock SystemUIServer ControlCenter; do
+    killall "$app" 2>/dev/null || true
+  done
+else
+  echo "   書き出した設定がありません。上記の既定値のみ適用しました"
+fi
+
 echo "👍 OSX のリストアが完了しました"

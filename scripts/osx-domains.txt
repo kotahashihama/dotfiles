@@ -1,0 +1,31 @@
+# backup_osx.sh が書き出す defaults のドメイン。1 行 1 ドメイン。
+#
+# 手で書いた defaults write（restore_osx.sh）は「こうしたい」を表すが、
+# 実機はそれ以外にも GUI から変えた設定を持つ。ここに挙げたドメインは
+# 丸ごと書き出して、新マシンへ現状をそのまま持っていく。
+
+# 全体
+NSGlobalDomain
+
+# Finder / Dock / デスクトップ
+com.apple.finder
+com.apple.dock
+com.apple.desktopservices
+com.apple.spaces
+com.apple.WindowManager
+
+# メニューバー / コントロールセンター
+com.apple.menuextra.clock
+com.apple.menuextra.battery
+com.apple.controlcenter
+
+# 入力
+com.apple.AppleMultitouchTrackpad
+com.apple.driver.AppleBluetoothMultitouch.trackpad
+com.apple.symbolichotkeys
+com.apple.HIToolbox
+
+# アプリ
+com.apple.Safari
+com.apple.TextEdit
+com.apple.screencapture
