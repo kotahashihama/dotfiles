@@ -14,11 +14,11 @@ allowed-tools: Bash(mkdir:*) Bash(rm:*) Bash(cp:*) Bash(rsync:*) Bash(ls:*) Bash
 3. **backup を流す**: 環境変数で行き先を差し替える
 
    ```sh
-   PRIVATE_ZIP=$SIM/fakehome/Desktop/private_dotfiles.zip DOTFILES_DIR=$SIM/repo \
+   PRIVATE_ARCHIVE=$SIM/priv.tar.gz.gpg PRIVATE_PASSPHRASE=testpass DOTFILES_DIR=$SIM/repo \
      sh scripts/backup_dotfiles.sh
    ```
 
-   zip のトップレベルが `private` になっていることを確認する（restore 側の展開先と対になる）
+   アーカイブが GPG 形式で、展開後のトップレベルが `private` になっていることを確認する（`file -b` と `tar tzf`）
 
 4. **新規マシンを再現する**: 複製から `private/` を削除する。`git clone` 直後の状態になる
 
@@ -26,7 +26,7 @@ allowed-tools: Bash(mkdir:*) Bash(rm:*) Bash(cp:*) Bash(rsync:*) Bash(ls:*) Bash
 
    ```sh
    PATH=$SIM/bin:$PATH HOME=$SIM/fakehome DOTFILES_DIR=$SIM/repo \
-     PRIVATE_ZIP=$SIM/fakehome/Desktop/private_dotfiles.zip sh scripts/restore_dotfiles.sh
+     PRIVATE_ARCHIVE=$SIM/priv.tar.gz.gpg PRIVATE_PASSPHRASE=testpass sh scripts/restore_dotfiles.sh
    ```
 
 6. **4 点を確認する**
@@ -58,4 +58,6 @@ allowed-tools: Bash(mkdir:*) Bash(rm:*) Bash(cp:*) Bash(rsync:*) Bash(ls:*) Bash
 - 本物の `~` に対して restore を流すこと
 - 既存マシンで動いたことを根拠に「検証済み」と報告すること
 - `private/` を削除する手順を飛ばすこと。**既に private/ がある状態で流すと、壊れる経路を通らない**
+- `PRIVATE_PASSPHRASE` を手作業で使うこと。**検証専用**で、`ps` とシェル履歴に残る
+- `~/.gnupg` が偽 HOME に作られるのを異常として扱うこと。gpg が復号時に自分で作る
 - 検証で作った偽 HOME を消さずに残すこと
