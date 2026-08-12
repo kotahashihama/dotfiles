@@ -31,6 +31,21 @@ defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
 defaults write com.apple.desktopservices DSDontWriteUSBStores -bool true
 
 #
+# Energy Saver
+#
+
+# 電源接続中はスリープしない
+sudo pmset -c sleep 0
+
+# 電源接続中はディスプレイを消さない
+sudo pmset -c displaysleep 0
+
+# スクリーンセーバを開始しない。
+# ロックの契機は画面が消えることなので、AC 電源では発動しなくなる。
+# バッテリー時は displaysleep が効くため、そちらではロックが残る。
+defaults -currentHost write com.apple.screensaver idleTime -int 0
+
+#
 # Security
 #
 
