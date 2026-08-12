@@ -53,9 +53,11 @@ Claude がユーザーに代わって GitHub へ書き込むテキスト全般�
 - ユーザーが「Note は不要」と明示した場合
 - ユーザーが文面を指定して「これをそのまま投稿して」と指示した場合（ユーザーの言葉として投稿するため）
 - `git commit` のメッセージ・PR タイトル（こちらは `Co-Authored-By` トレーラーが役割を担う）
+- **コマンドコメント**（`/ai-review` 等、ワークフローが本文を検知するもの）。Note を足すと検知が壊れる（`github_command_comments.md`）
 
 ## 関連
 
+- `github_command_comments.md`（コマンドコメントの別扱い）: 本ルールの適用外を定める。宛先が人ではなく機械のコメントには Note を付けない
 - `no_auto_reply_human_review_comments.md`（人間コメントへの自動返信禁止）: そもそも投稿してよいかを規定。本ルールは**投稿すると決まった後の書式**を規定する
 - `/create-pr` / `/update-pr-description` / `/resolve-ai-reviews` の各スキルにも同じ規定がある。本ルールはスキル経由でない自然文依頼の経路を含めて横断的に適用する
 - `github_cross_repo_reference.md`（他リポジトリの PR / issue の書き方）: どちらも GitHub へ書く文章の書式を定める
