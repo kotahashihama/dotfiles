@@ -32,9 +32,11 @@ run: https://github.com/owner/repo/actions/runs/123 は success。   ← 「。�
 **全角・半角を問わず括弧は URL 文字として扱われうる**ので、半角に変えても解決しません。補足を**前に置く**か、**Markdown link** にするか、**表のセルに分ける**——URL は行末で終わらせるのが最も安全です。
 
 ```
-draft で作成: https://github.com/owner/repo/pull/392
-[#392](https://github.com/owner/repo/pull/392)（draft）
+PR を作成しました: https://github.com/owner/repo/pull/392
+[#392](https://github.com/owner/repo/pull/392) にレビューが 2 件付いています
 ```
+
+**そもそも自明なラベルを添えない。** `（draft）` `（open）` のような状態は、リンクを開けば分かります。判断に必要だとユーザーが示した場合を除き、書かないほうが URL も報告文も短くなります。
 
 **なぜ**: 報告に URL を書くのは「クリックして飛べるようにする」ためで、飛べない URL は貼っていないのと同じです。
 
