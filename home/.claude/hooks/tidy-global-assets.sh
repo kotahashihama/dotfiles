@@ -52,6 +52,17 @@ MSG
 整理が不要と判断した場合も、確認した旨を報告してください。
 MSG
     ;;
+  "$HOME"/.claude/projects/*/memory/*.md|*/.claude-memory/*/*.md)
+    cat <<'MSG'
+auto memory を書きました。rule_conventions.md の「auto memory との境界」に従い、置き場が正しいか確かめてください。
+
+- 重複: 同じことが rules/ に書かれていないか。書かれているなら**メモリ側を消す**（両方に残すと毎セッション 2 回ロードされる）
+- 昇格: どのリポジトリでも効く好みではないか。そうならルールへ引き上げてよいかユーザーに尋ね、移したらメモリからは消す
+- 索引: MEMORY.md の 1 行が実ファイルを指しているか。消したメモリへの [[リンク]] が残っていないか
+
+整理が不要と判断した場合も、確認した旨を報告してください。
+MSG
+    ;;
   "$HOME"/.claude/settings.json|*/dotfiles/home/.claude/settings.json)
     cat <<'MSG'
 グローバル settings.json を編集しました。この編集を契機に、設定とフックを見直してください。

@@ -17,8 +17,11 @@
 | `settings.json` の `hooks` | ツール実行に反応する自動処理 | 該当ツールの実行時 |
 | `agents/*.md` | 独自のサブエージェント定義 | 起動したときだけ |
 | `output-styles/*.md` | 応答の役割・トーン・形式 | セッション開始時 |
+| `projects/<project>/memory/` | **リポジトリ固有の事実**。自分が書く学習ノート | `MEMORY.md` の索引が毎セッション |
 
 **常に効かせたいものは rules、呼ばれたときだけ効かせたいものは skills。** 書き方と整理の規約は `rules/rule_conventions.md` と `rules/align_skill_md_format.md`。
+
+**汎用の規約は rules、そのリポジトリだけの事実は memory。** どちらも毎セッション読まれるので、同じことを書くと二重にロードされる（`rules/rule_conventions.md` の「auto memory との境界」）。
 
 ### 公開層と非公開層
 
