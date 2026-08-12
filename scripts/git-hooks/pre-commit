@@ -29,17 +29,20 @@ for f in $staged; do
 done
 
 # 2) 非公開にしたい固有名
+# ファイルごとに 1 行だけ報告する。パターンごとに報告すると、1 つの
+# ファイルが複数パターンに一致したとき同じファイルが何度も並ぶ。
 if [ -f "$PATTERNS" ]; then
-  while IFS= read -r pat; do
-    case "$pat" in ''|'#'*) continue ;; esac
+  joined=$(grep -vE '^[[:space:]]*(#|$)' "$PATTERNS" | paste -sd'|' -)
+  if [ -n "$joined" ]; then
     for f in $staged; do
       [ -f "$f" ] || continue
-      if git show ":$f" 2>/dev/null | grep -qaiE "$pat"; then
-        echo "✗ 非公開の固有名 ($pat): $f" >&2
+      hits=$(git show ":$f" 2>/dev/null | grep -oaiE "$joined" | sort -u | tr '\n' ' ')
+      if [ -n "$hits" ]; then
+        echo "✗ 非公開の固有名 ($hits): $f" >&2
         fail=1
       fi
     done
-  done < "$PATTERNS"
+  fi
 else
   echo "⚠️  $PATTERNS がありません。固有名の検査を飛ばします" >&2
 fi
