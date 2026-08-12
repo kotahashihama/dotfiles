@@ -18,6 +18,17 @@ is_partial() {
   return 1
 }
 
+# 層に置くが ~ へはリンクしないもの。このリポジトリの道具立てであって
+# 設定ファイルではないため、~ に置いても意味がない。
+NO_LINK='.claude/deny-patterns.txt'
+
+is_no_link() {
+  for d in $NO_LINK; do
+    [ "$1" = "$d" ] && return 0
+  done
+  return 1
+}
+
 # リンクを張る。既存の実体があれば消さずに退避する。
 link_into_home() {
   src=$1   # リポジトリ内の絶対パス
@@ -36,24 +47,29 @@ link_into_home() {
 }
 
 # 1 つの層 (home / private) を ~ へリンクする。
-# PARTIAL_DIRS に該当する間は掘り下げ、そうでない要素をリンクする。
-link_tree() {
+# PARTIAL_DIRS に該当する要素は掘り下げ、そうでない要素をリンクする。
+#
+# 再帰は使わない。POSIX sh に局所変数が無く、再帰呼び出しが親のループ変数を
+# 上書きするため、掘り下げた後の要素が誤った位置へリンクされる。
+link_layer() {
   layer=$1
-  rel=$2   # 層からの相対パス。トップレベルは空
+  layer_base="$DOTFILES_DIR/$layer"
+  [ -d "$layer_base" ] || return 0
 
-  base="$DOTFILES_DIR/$layer${rel:+/$rel}"
-  for child in $(ls -A "$base"); do
-    path=${rel:+$rel/}$child
-    if is_partial "$path"; then
-      mkdir -p ~/"$path"
-      link_tree "$layer" "$path"
+  queue=$(ls -A "$layer_base")
+  while [ -n "$queue" ]; do
+    rel=$(printf '%s\n' "$queue" | sed -n '1p')
+    queue=$(printf '%s\n' "$queue" | sed -n '2,$p')
+    [ -n "$rel" ] || continue
+
+    if is_no_link "$rel"; then
+      continue
+    elif is_partial "$rel"; then
+      mkdir -p ~/"$rel"
+      children=$(ls -A "$layer_base/$rel" | sed "s|^|$rel/|")
+      queue=$(printf '%s\n%s' "$children" "$queue" | sed '/^$/d')
     else
-      link_into_home "$base/$child" ~/"$path"
+      link_into_home "$layer_base/$rel" ~/"$rel"
     fi
   done
-}
-
-link_layer() {
-  [ -d "$DOTFILES_DIR/$1" ] || return 0
-  link_tree "$1" ''
 }
