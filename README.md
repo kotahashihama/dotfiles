@@ -2,7 +2,7 @@
 
 ## 構成
 
-ファイルは 3 つの層に分かれる。詳細は [`docs/layers.md`](docs/layers.md)。
+**旧マシンから新マシンへ何で運ぶか**で 2 つの層に分かれる。詳細は [`docs/layers.md`](docs/layers.md)。
 
 | 層 | 置き場 | 運び方 | 中身 |
 | --- | --- | --- | --- |
@@ -10,6 +10,20 @@
 | **private** | `private/` | **暗号化アーカイブ** | `.aws` `.ssh` `.config` `.secrets`、業務・自宅向けのエイリアス、Claude の学習メモリ |
 
 `~` 側は実体を持たず、両方の層へシンボリックリンクを張る。**編集はこのリポジトリの中で完結する。**
+
+## ⚠️ パスフレーズについて
+
+**`private/` は AES-256 で暗号化して運ぶ。パスフレーズが無いと新マシンで復元できない。**
+
+| いつ | 何が起きるか |
+| --- | --- |
+| **バックアップ時** | スクリプトが 32 文字を生成し、**1 度だけ画面に表示する** |
+| **リストア時** | `gpg` が対話でパスフレーズを求める |
+
+- **表示されたらすぐパスワードマネージャへ保管する。** ファイルには書き出されない
+- **アーカイブとは別の場所に保管する。** 同じクラウドへ置くと、片方が漏れた時点で両方漏れる
+- **失うと復号できない。** `.ssh` の秘密鍵・クラウドの資格情報・API キーがまとめて失われる
+- **バックアップはエージェント経由で走らせない。** 生成されたパスフレーズが会話ログに残る
 
 ## バックアップ手順
 
@@ -28,15 +42,14 @@ mv Brewfile Brewfile.old && brew bundle dump
 ./scripts/backup_dotfiles.sh
 
 # 5. ~/Desktop/private_dotfiles.tar.gz.gpg をクラウドへアップロード
+#    パスフレーズは別の場所へ
 ```
-
-**パスフレーズはスクリプトが生成して 1 度だけ表示する。** パスワードマネージャへ保管し、**アーカイブとは別の場所**に置く（同じクラウドに置くと片方の漏洩で両方漏れる）。失うと復号できない。
 
 ## リストア手順
 
 ```sh
-# 1. クラウドからダウンロードした private_dotfiles.tar.gz.gpg をデスクトップに置く
-#    リストア中にパスフレーズを聞かれる
+# 1. クラウドからダウンロードしたアーカイブをデスクトップに置く
+#    ~/Desktop/private_dotfiles.tar.gz.gpg
 
 # 2. Homebrew をインストール
 xcode-select --install
@@ -52,36 +65,65 @@ cd dotfiles/
 # 4. Prezto をインストール
 git clone --recursive https://github.com/sorin-ionescu/prezto.git "${ZDOTDIR:-$HOME}/.zprezto"
 
-# 5. リストアスクリプトを実行
+# 5. リストアスクリプトを実行（途中でパスフレーズを聞かれる）
 ./scripts/restore_osx.sh
 ./scripts/restore_dotfiles.sh
 ./scripts/restore_languages.sh
 
-# 6. 手動設定が要るアプリを入れる（下記）
+# 6. シェルを読み込み直す
+exec zsh
 ```
 
 リンク先に実体があった場合は削除せず `~/dotfiles-salvaged-<日時>/` へ退避する。**リストアが既存の設定を消すことはない。**
+
+アーカイブが手元に無い場合も public 層だけリンクして進む。`private/.secrets/env` には雛形が置かれるので、値はパスワードマネージャから入れる。
 
 ## スクリプト
 
 | スクリプト | 役割 |
 | --- | --- |
-| `backup_dotfiles.sh` | `private/` を AES-256 で暗号化したアーカイブに固める |
+| `backup_dotfiles.sh` | `private/` を AES-256 で暗号化したアーカイブに固め、パスフレーズを表示する |
 | `restore_dotfiles.sh` | アーカイブを復号し、`home/` と `private/` を `~` へリンクする |
 | `adopt_dotfile.sh` | `~` 配下のファイルを管理下へ移し、リンクを張り直す |
-| `restore_osx.sh` | macOS の各種設定を書き込む |
+| `restore_osx.sh` | macOS の各種設定を書き込む（Finder・Dock・省エネルギー等） |
 | `restore_languages.sh` | mise で言語ランタイムを入れる |
 | `lib.sh` | 上記が共有する定義とヘルパー |
-| `git-hooks/pre-commit` | 公開層への認証情報・社内固有名の混入を止める |
+| `git-hooks/pre-commit` | 公開層への認証情報・非公開の固有名の混入を止める |
+
+## Claude Code の資産
+
+`~/.claude` は管理対象と管理外（セッション・キャッシュ）が同居するため、**子要素を個別にリンクする**。
+
+| 資産 | 層 |
+| --- | --- |
+| `CLAUDE.md` `rules/` `hooks/` `settings.json` `statusline-command.sh` `agents/` `output-styles/` | `home/.claude/` |
+| `CLAUDE.private.md`、非公開の固有名を含むスキル | `private/.claude/` |
+| `skills/` | **1 本ずつ層が違う**。編集前に `readlink -f` で実体を確かめる |
+| 自動メモリ（`projects/<repo>/memory/`） | `private/.claude-memory/` |
+| `deny-patterns.txt`（`pre-commit` の検出パターン） | `private/.claude/`。パターン自体が固有名なので公開層に置けない |
+
+`commands/` は [skills に統合済み](https://code.claude.com/docs/en/skills)のため管理しない。
+
+## 点検と検証
+
+このリポジトリを触るときに使うスキル。
+
+| 場面 | スキル |
+| --- | --- |
+| `~` の設定を管理下へ入れる / 外す | `/adopt-dotfile` |
+| コミット・push の前 | `/audit-secrets` |
+| 管理下の設定が壊れていないか見る | `/audit-dotfiles [shell\|claude\|brew\|links\|secrets]` |
+| `scripts/` や層構成を変えた後 | `/verify-restore` |
 
 ## 手動で設定する必要があるもの
 
 - AltTab
 - Raycast
 - gh
+- `private/.secrets/env` の値（アーカイブが無い場合のみ）
 
 ## 留意事項
 
 - `brew` でインストールした実行ファイルのパスは Apple Silicon か否かで違う
-- 適宜 `zsh` でシェルをリフレッシュする
+- 適宜 `exec zsh` でシェルをリフレッシュする
 - **このリポジトリは public。`home/` に置いたものは全世界から読める**
