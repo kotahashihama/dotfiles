@@ -15,6 +15,15 @@ if ! command -v gpg >/dev/null 2>&1; then
   exit 1
 fi
 
+# パスフレーズはこちらで生成する。人が決めると弱くなり、二重入力も要る。
+# 検証用に PRIVATE_PASSPHRASE を渡した場合はそれを使う。
+GENERATED=0
+if [ -z "${PRIVATE_PASSPHRASE:-}" ]; then
+  PRIVATE_PASSPHRASE=$(openssl rand -base64 24 | tr -d '\n')
+  GENERATED=1
+fi
+export PRIVATE_PASSPHRASE
+
 # private/ が実体なので、~ から集め直す必要はない
 rm -f "$PRIVATE_ARCHIVE"
 tar czf - \
@@ -26,6 +35,23 @@ tar czf - \
 
 chmod 600 "$PRIVATE_ARCHIVE"
 
-echo "👍 プライベート dotfiles のバックアップが完了しました: $PRIVATE_ARCHIVE"
-echo "   $(du -h "$PRIVATE_ARCHIVE" | cut -f1) / AES-256 で暗号化済み"
-echo "   復号にはパスフレーズが必要です。パスワードマネージャへ保管してください"
+echo "👍 プライベート dotfiles のバックアップが完了しました"
+echo "   ${PRIVATE_ARCHIVE} / $(du -h "$PRIVATE_ARCHIVE" | cut -f1) / AES-256"
+
+if [ "$GENERATED" -eq 1 ]; then
+  # 復号に必要なので一度だけ見せる。アーカイブと同じ場所に置くと
+  # 両方まとめて漏れるため、ファイルには書き出さない。
+  cat <<MSG
+
+--- パスフレーズ（この 1 回だけ表示します）---
+
+    $PRIVATE_PASSPHRASE
+
+--------------------------------------------
+
+  1. パスワードマネージャへ保管する
+  2. アーカイブとは別の場所に保管する。同じクラウドへ置くと、
+     片方が漏れた時点で両方漏れる
+  3. 失うと復号できない。アーカイブは復元不能になる
+MSG
+fi
