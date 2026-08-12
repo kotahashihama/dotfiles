@@ -50,6 +50,7 @@ gh pr list --state merged --limit 20 --json headRefName -q '.[].headRefName'
 
 - `gh stack view` で現在の並びを確認できる
 - 下段の変更を上段へ伝播するときは `gh stack rebase`、リモートと揃えるときは `gh stack sync`
+  - **上段に他の人のレビューが付いていたら `gh stack rebase` を使わない**。上段の履歴まで書き換わる（`no_rebase_under_human_review.md`）。その PR だけ `git merge` で取り込む
 - PR 本文にも**どのブランチの上に積んでいるか**を 1 行書く。スタック表示に気づかないレビュアーがいる
 
 ## 禁止する挙動
@@ -74,3 +75,4 @@ gh pr list --state merged --limit 20 --json headRefName -q '.[].headRefName'
 ## 関連
 
 - `report_formatting.md`（報告に貼る識別子の書式）: スタックを報告するときも PR 番号を直接列挙する
+- `no_rebase_under_human_review.md`（レビュー中は履歴を書き換えない）: スタックの取り込み方を、上段のレビュー状況で切り替える
