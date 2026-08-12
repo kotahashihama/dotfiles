@@ -53,12 +53,11 @@ zplug "modules/syntax-highlighting", from:prezto
 zplug "modules/autosuggestions", from:prezto
 zplug "modules/prompt", from:prezto
 
-# プラグインがなければインストール
-if ! zplug check --verbose; then
-  printf 'Install? [y/N]: '
-  if read -q; then
-    echo; zplug install
-  fi
+# プラグインがなければ知らせる。
+# ここで入力を求めると Powerlevel10k の instant prompt と競合するため、
+# 案内だけ出して zplug install は手で叩く。
+if ! zplug check; then
+  print -P '%F{yellow}zplug: 未インストールのプラグインがあります。`zplug install` を実行してください%f'
 fi
 
 # zsh-nofity
@@ -146,7 +145,8 @@ function delete-project() {
 eval "$(/opt/homebrew/bin/mise activate zsh)"
 
 # pnpm
-export PNPM_HOME="~/Library/pnpm"
+# クォート内の ~ は展開されないため $HOME を使う
+export PNPM_HOME="$HOME/Library/pnpm"
 export PATH="$PNPM_HOME:$PATH"
 
 # bun
@@ -201,13 +201,14 @@ export GODEBUG=asyncpreemptoff=1
 [[ -f "$HOME/fig-export/dotfiles/dotfile.zsh" ]] && builtin source "$HOME/fig-export/dotfiles/dotfile.zsh"
 export PATH="$HOME/.antigravity/antigravity/bin:$PATH"
 
-# Kiro CLI post block. Keep at the bottom of this file.
-[[ -f "${HOME}/Library/Application Support/kiro-cli/shell/zshrc.post.zsh" ]] && builtin source "${HOME}/Library/Application Support/kiro-cli/shell/zshrc.post.zsh"
-
 # Claude Code
 export DISABLE_TELEMETRY=1
 
-# OpenClaw Completion
+# OpenClaw
 [[ -f "$HOME/.openclaw/completions/openclaw.zsh" ]] && source "$HOME/.openclaw/completions/openclaw.zsh"
 
-. "$HOME/.local/bin/env"
+# uv / rye
+[[ -f "$HOME/.local/bin/env" ]] && . "$HOME/.local/bin/env"
+
+# Kiro CLI post block. Keep at the bottom of this file.
+[[ -f "${HOME}/Library/Application Support/kiro-cli/shell/zshrc.post.zsh" ]] && builtin source "${HOME}/Library/Application Support/kiro-cli/shell/zshrc.post.zsh"
