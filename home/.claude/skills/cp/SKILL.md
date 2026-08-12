@@ -1,0 +1,70 @@
+---
+description: 現在のステージ済み・未ステージの変更を Karma スタイルでコミットし、追跡先リモートへプッシュする。ユーザーが「こみっとぷっしゅ」「コミットプッシュ」「commit & push」等を指示したときに使う。
+allowed-tools: Bash(git status:*) Bash(git diff:*) Bash(git log:*) Bash(git add:*) Bash(git commit:*) Bash(git push:*) Bash(git branch:*)
+---
+
+このスキルが起動した時点で、ユーザーが「コミットとプッシュをしてよい」と明示的に承認した状態とみなす（`/cp` を打つ行為自体が `~/.claude/rules/no_auto_commit.md` の言う「明示的な指示」に該当する）。確認質問は挟まず、即実行する。
+
+## 進め方
+
+1. **状態把握 (並列実行)**:
+   - `git status` で未追跡 / 変更ファイルの一覧
+   - `git diff` と `git diff --staged` で差分内容
+   - `git log --oneline -5` で直近のコミットメッセージスタイル参照
+
+2. **早期離脱判定**:
+   - 変更が無ければ「変更なし」とだけ報告して終了。空コミットは作らない
+   - `.env` / credentials / 秘密鍵らしきファイルが含まれていたら警告して停止し、ユーザー判断を仰ぐ
+
+3. **コミットメッセージのドラフト** (`~/.claude/rules/karma_commit_style.md` に従う):
+   - 1 行目は `<type>(<scope>): <subject>` の形。`type(scope):` は英小文字、subject は **日本語の体言止め**（「〜の追加」「〜の修正」「〜の分離」など）
+   - subject 末尾にピリオド・句点なし。50 文字目安
+   - 本文が必要なら 1 行空けて「なぜ・何を」を書く。コミットに至った経緯ではなく **差分の意図** を書く
+   - 末尾に `Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>` トレーラーを置く
+
+4. **ステージング & コミット**:
+   - 既にステージ済みのものがあればそれを尊重しつつ、未ステージの変更は **対象ファイルを名指しで** `git add <path>...` する（`git add -A` / `git add .` は使わない）
+   - コミットメッセージは HEREDOC で渡す:
+     ```
+     git commit -m "$(cat <<'EOF'
+     <type>(<scope>): <subject>
+
+     <body if any>
+
+     Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
+     EOF
+     )"
+     ```
+   - `--no-verify` / `--no-gpg-sign` などのフック回避フラグは使わない
+   - `--amend` は使わない（必ず新規コミット）
+
+5. **pre-commit hook 失敗時の挙動**:
+   - フックで止まった = コミットは作成されていない。原因を読み取り、修正し、再ステージし、**新規コミット**を作る（amend しない）
+   - 再試行しても解消しないなら、エラー内容を要約してユーザーに報告し停止
+
+6. **プッシュ**:
+   - 現在のブランチを追跡先リモートへ `git push` する
+   - `--force` / `--force-with-lease` は使わない。push が拒否されたら、原因（リモート先行など）を報告してユーザー判断を仰ぐ
+   - 上流未設定なら `git push -u origin <branch>` で初回プッシュ
+
+7. **完了報告**:
+   - `<oldsha>..<newsha>` の範囲と、変更ファイル数 / 増減行数を 1〜2 行で報告
+   - **push したコミットを 1 行ずつ列挙**する: `git log --oneline <oldsha>..<newsha>` の出力をそのまま貼る形で `<短縮ハッシュ> <subject>` を全件並べる（push が複数コミットを含むときは全部）
+   - コミット後に変更が残っていない（`working tree clean`）ことを確認
+
+## 出力の目安
+
+- 通常時: 変更ファイル数と増減行数を 1 行 + **push したコミットを 1 行ずつ列挙**（レンジ表記は使わない）
+- 変更なし: 「変更なし」の 1 行で終わる
+- フックで止まった / push が拒否された: 原因と、ユーザーに求める判断を簡潔に
+
+## やってはいけないこと
+
+- 確認質問を挟むこと（このスキルが呼ばれた時点で承認済み）
+- `git add -A` / `git add .` での一括ステージ
+- `git commit --amend` での既存コミット書き換え
+- `--no-verify` 等でのフック回避
+- `git push --force` / `--force-with-lease`
+- 主ブランチ (`main` / `master`) への直接 push
+- メッセージを動詞終止形（「〜した」「〜する」）や命令形にすること（体言止めで統一）
+- subject に「PR レビュー対応」「指摘修正」のような meta 情報を入れること（差分の意図そのものを書く）

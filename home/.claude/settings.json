@@ -39,5 +39,18 @@
   "skipDangerousModePermissionPrompt": true,
   "showTurnDuration": true,
   "remoteControlAtStartup": true,
-  "agentPushNotifEnabled": true
+  "agentPushNotifEnabled": true,
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/tidy-global-assets.sh"
+          }
+        ]
+      }
+    ]
+  }
 }

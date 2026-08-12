@@ -198,19 +198,16 @@ release-awssession-token() {
 export GODEBUG=asyncpreemptoff=1
 
 # Antigravity
-[[ -f "$HOME/fig-export/dotfiles/dotfile.zsh" ]] && builtin source "$HOME/fig-export/dotfiles/dotfile.zsh"# Added by Antigravity
-export PATH="/Users/kotahashihama/.antigravity/antigravity/bin:$PATH"
+[[ -f "$HOME/fig-export/dotfiles/dotfile.zsh" ]] && builtin source "$HOME/fig-export/dotfiles/dotfile.zsh"
+export PATH="$HOME/.antigravity/antigravity/bin:$PATH"
 
 # Kiro CLI post block. Keep at the bottom of this file.
 [[ -f "${HOME}/Library/Application Support/kiro-cli/shell/zshrc.post.zsh" ]] && builtin source "${HOME}/Library/Application Support/kiro-cli/shell/zshrc.post.zsh"
 
 # Claude Code
-DISABLE_TELEMETRY=1
+export DISABLE_TELEMETRY=1
 
 # OpenClaw Completion
-source "/Users/kotahashihama/.openclaw/completions/openclaw.zsh"
-
-# Added by Antigravity
-export PATH="/Users/kotahashihama/.antigravity/antigravity/bin:$PATH"
+[[ -f "$HOME/.openclaw/completions/openclaw.zsh" ]] && source "$HOME/.openclaw/completions/openclaw.zsh"
 
 . "$HOME/.local/bin/env"
