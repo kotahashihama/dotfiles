@@ -1,6 +1,6 @@
 ---
 description: 実装の変更にテスト (と FE なら Story) が追随しているかを点検する。追加した実装にテストがあるか、削除した実装でテストを減らしすぎていないかの両方を見る。コミット・PR 作成前のセルフチェックや、「テスト足りてる？」「Story は過不足ない？」と確認したいときに使う。
-argument-hint: <対象 (省略時はワーキングツリー差分)>
+argument-hint: "[対象 (省略時はワーキングツリー差分)]"
 allowed-tools: Bash(git diff:*) Bash(git show:*) Bash(git status:*) Bash(git log:*) Bash(grep:*) Bash(sed:*) Bash(find:*) Bash(gh repo view:*) Bash(gh pr checks:*) Read
 ---
 

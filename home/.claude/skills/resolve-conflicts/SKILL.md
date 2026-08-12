@@ -1,6 +1,6 @@
 ---
 description: 指定したブランチ (省略時は main) を現在のブランチに merge し、発生したコンフリクトを内容を理解した上で解消する。merge コミットを作るところまでが範囲。ユーザーが「main を取り込んで」「コンフリクト解消して」「<branch> を merge して」と指示したときに使う。
-argument-hint: [取り込むブランチ名]
+argument-hint: "[取り込むブランチ名]"
 allowed-tools: Bash(git status:*) Bash(git fetch:*) Bash(git merge:*) Bash(git diff:*) Bash(git log:*) Bash(git add:*) Bash(git commit:*) Bash(git checkout:*) Read Edit
 ---
 

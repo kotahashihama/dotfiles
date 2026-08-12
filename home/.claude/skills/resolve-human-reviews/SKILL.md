@@ -1,6 +1,6 @@
 ---
 description: PR に付いた人間のレビューコメントに対応する。コードの修正だけを行い、GitHub 上での返信・Resolve conversation はしない。対応したコメントとコミットハッシュの対応表、非対応にしたコメントとその理由を会話で報告する。ユーザーが「人間レビューに対応して」「もらったコメントを直して」「/resolve-human-reviews」等を指示したときに使う。
-argument-hint: [PR 番号 (省略時は現在のブランチから特定)]
+argument-hint: "[PR 番号 または URL] (省略時は現在のブランチから特定)"
 allowed-tools: Bash(gh api:*) Bash(gh pr view:*) Bash(gh pr checks:*) Bash(gh repo view:*) Bash(git status:*) Bash(git diff:*) Bash(git log:*) Bash(git add:*) Bash(git commit:*) Bash(git push:*) Bash(git branch:*) Bash(git checkout:*) Bash(git rev-parse:*) Bash(npx:*) Bash(task:*) Read Edit Write AskUserQuestion Skill
 ---
 

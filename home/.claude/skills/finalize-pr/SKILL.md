@@ -1,5 +1,6 @@
 ---
 description: PR を最終化する。ベースとの統合を確かめ、点検 (/review-comments + /review-conventions + /review-tests) を走らせ、必要なら修正して /cp し、必要なら /update-pr-description まで一括で行う。まとまった変更が一段落してレビューを迎える手前で使う。ユーザーが「/finalize-pr」「PR を仕上げて」「PR 出す直前の点検を」等を指示したときに使う。
+argument-hint: "[PR 番号 または URL] (省略時は現在のブランチから特定)"
 allowed-tools: Skill, Bash(git status:*) Bash(git branch:*) Bash(git diff:*) Bash(gh pr view:*) Bash(gh repo view:*) Bash(git rev-parse:*) Bash(git rev-list:*) Bash(git fetch:*) Bash(git worktree:*) Bash(git merge:*) Bash(go build:*) Bash(go test:*) Bash(task:*), Read
 ---
 
