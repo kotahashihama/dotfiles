@@ -9,3 +9,6 @@
 if [[ ( "$SHLVL" -eq 1 && ! -o LOGIN ) && -s "${ZDOTDIR:-$HOME}/.zprofile" ]]; then
   source "${ZDOTDIR:-$HOME}/.zprofile"
 fi
+
+# API キー等の秘匿値
+[[ -f ~/.secrets/env ]] && source ~/.secrets/env
