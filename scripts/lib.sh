@@ -18,9 +18,10 @@ is_partial() {
   return 1
 }
 
-# 層に置くが ~ へはリンクしないもの。このリポジトリの道具立てであって
-# 設定ファイルではないため、~ に置いても意味がない。
-NO_LINK='.claude/deny-patterns.txt'
+# 層に置くが、~ 直下へはリンクしないもの。
+# deny-patterns.txt はこのリポジトリの道具立てで、~ に置いても意味がない。
+# .claude-memory は ~ 直下ではなく ~/.claude/projects/<key>/memory へ張る。
+NO_LINK='.claude/deny-patterns.txt .claude-memory'
 
 is_no_link() {
   for d in $NO_LINK; do

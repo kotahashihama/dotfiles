@@ -20,6 +20,17 @@ fi
 link_layer home
 link_layer private
 
+# Claude Code の自動メモリを ~/.claude/projects/<key>/memory へ戻す。
+# 保存先はプロジェクトのパスから導かれるため、ディレクトリ名がそのまま鍵になる。
+if [ -d "$DOTFILES_DIR/private/.claude-memory" ]; then
+  for mem in "$DOTFILES_DIR"/private/.claude-memory/*; do
+    [ -d "$mem" ] || continue
+    key=$(basename "$mem")
+    mkdir -p ~/.claude/projects/"$key"
+    link_into_home "$mem" ~/.claude/projects/"$key"/memory
+  done
+fi
+
 # 公開層への混入を検査するフックを有効にする
 if git -C "$DOTFILES_DIR" rev-parse --git-dir >/dev/null 2>&1; then
   git -C "$DOTFILES_DIR" config core.hooksPath scripts/git-hooks
