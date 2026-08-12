@@ -30,6 +30,21 @@
       }
     }
   },
+  "permissions": {
+    "allow": [
+      "mcp__backlog__get_*",
+      "mcp__backlog__count_issues",
+      "mcp__plugin_figma_figma__get_*",
+      "mcp__plugin_figma_figma__list_*",
+      "mcp__plugin_figma_figma__search_design_system",
+      "mcp__plugin_figma_figma__whoami"
+    ],
+    "deny": [
+      "mcp__backlog__add_project",
+      "mcp__backlog__update_project",
+      "mcp__backlog__delete_project"
+    ]
+  },
   "outputStyle": "Explanatory",
   "language": "Japanese",
   "spinnerTipsEnabled": false,
