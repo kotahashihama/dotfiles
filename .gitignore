@@ -1,12 +1,14 @@
 .DS_Store
-
 Brewfile.old
-
-home/.aws/
-home/.gcp/
-home/.ssh/
-home/.config/
-
-home/.zsh_aliases/
-home/.zsh_scripts/
 .qodo
+
+# 非公開層。private_dotfiles.zip で持ち回す
+/private/
+
+# 秘匿値の実体（雛形の scripts/secrets.env.example のみ追跡する）
+secrets.env
+*.env
+!scripts/secrets.env.example
+
+# リストア時の退避先
+/dotfiles-salvaged-*
