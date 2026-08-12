@@ -4,7 +4,29 @@
 #
 
 DOTFILES_DIR=${DOTFILES_DIR:-~/Documents/repositories/github.com/kotahashihama/dotfiles}
-PRIVATE_ZIP=${PRIVATE_ZIP:-~/Desktop/private_dotfiles.zip}
+PRIVATE_ARCHIVE=${PRIVATE_ARCHIVE:-~/Desktop/private_dotfiles.tar.gz.gpg}
+
+# 非公開層は SSH 秘密鍵・クラウドの資格情報・API キーを含むため暗号化して運ぶ。
+# zip の --encrypt は ZipCrypto で既知の攻撃があるので使わない。
+#
+# PRIVATE_PASSPHRASE を渡すと非対話で動く。検証やスクリプト用で、
+# 手作業では渡さない（ps とシェル履歴に残る）。
+gpg_encrypt() {
+  if [ -n "${PRIVATE_PASSPHRASE:-}" ]; then
+    gpg --batch --yes --quiet --symmetric --cipher-algo AES256 \
+        --passphrase "$PRIVATE_PASSPHRASE"
+  else
+    gpg --symmetric --cipher-algo AES256
+  fi
+}
+
+gpg_decrypt() {
+  if [ -n "${PRIVATE_PASSPHRASE:-}" ]; then
+    gpg --batch --yes --quiet --decrypt --passphrase "$PRIVATE_PASSPHRASE" "$1"
+  else
+    gpg --quiet --decrypt "$1"
+  fi
+}
 
 # 実体が別の物と同居するため、ディレクトリごとではなく子要素を個別にリンクする対象。
 # 例: ~/.claude にはセッションやキャッシュも入るので、丸ごとリンクすると巻き込む。
