@@ -34,6 +34,10 @@
 
 **迷ったら `private/` に倒す。** 公開してしまうと取り消せない（履歴の書き換えが要る）。判断表は dotfiles の `docs/layers.md`、点検は同リポジトリの `/audit-secrets` スキル。
 
+**auto memory も dotfiles 管理下**（`private/.claude-memory/<project>/` の実体へシンボリックリンク）。リポジトリ固有の事情を書く場所なので、公開層には置かない。スキルは**1 本ずつ層が違う**ので、編集前にリンク先を確かめる。
+
+**編集した時点で dotfiles の作業ツリーが汚れる。** コミットは dotfiles 側の担当セッションへ依頼する（`rules/notify_related_repo_sessions.md`）。
+
 `commands/*.md` は skills に統合済み。既存ファイルは動き続けるが、**新規はすべて skills に置く**。
 
 ## 迷ったとき
