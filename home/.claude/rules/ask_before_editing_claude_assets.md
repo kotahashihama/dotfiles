@@ -94,7 +94,9 @@
 | 実体の置き場 | git | 編集後 |
 | --- | --- | --- |
 | `home/.claude/`（rules / skills / hooks / agents / settings.json / CLAUDE.md） | **管理下** | **コミットが要る** |
-| `private/.claude/` と `private/.claude-memory/`（メモリ・個人用スキル） | `.gitignore` 対象 | 不要 |
+| `private/.claude/` と `private/.claude-memory/`（メモリ・社内固有名を含むスキル） | `.gitignore` 対象 | 不要 |
+
+**スキルは両方の層にあります。** `~/.claude/skills/` からはスキル単位でリンクされていて見分けが付かないので、**編集したファイルの実体を `readlink -f` で確かめる**。`private/` 側なら連絡は要りません。
 
 **`home/` 側を編集したら、dotfiles のセッションが起動していないか `ListAgents` で確認する。**
 
