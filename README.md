@@ -4,11 +4,10 @@
 
 ファイルは 3 つの層に分かれる。詳細は [`docs/layers.md`](docs/layers.md)。
 
-| 層 | 置き場 | git | zip | 中身 |
-| --- | --- | --- | --- | --- |
-| **public** | `home/` | 追跡する | 含めない | シェル・エディタ・Claude Code の設定 |
-| **private** | `private/` | 追跡しない | 含める | `.aws` `.ssh` `.config`、業務・自宅向けのエイリアス |
-| **secret** | `~/.secrets/env` | 追跡しない | **含めない** | API キー・トークンの値 |
+| 層 | 置き場 | 運び方 | 中身 |
+| --- | --- | --- | --- |
+| **public** | `home/` | **git リポジトリ** | シェル・エディタ・Claude Code の設定 |
+| **private** | `private/` | **暗号化アーカイブ** | `.aws` `.ssh` `.config` `.secrets`、業務・自宅向けのエイリアス、Claude の学習メモリ |
 
 `~` 側は実体を持たず、両方の層へシンボリックリンクを張る。**編集はこのリポジトリの中で完結する。**
 
@@ -25,18 +24,18 @@ mv Brewfile Brewfile.old && brew bundle dump
 
 # 3. コミット & push
 
-# 4. private/ を zip に固める
+# 4. private/ を暗号化アーカイブに固める（パスフレーズを聞かれる）
 ./scripts/backup_dotfiles.sh
 
-# 5. ~/Desktop/private_dotfiles.zip をクラウドへアップロード
+# 5. ~/Desktop/private_dotfiles.tar.gz.gpg をクラウドへアップロード
 ```
 
-秘匿値 (`~/.secrets/env`) は zip に含まれない。**パスワードマネージャ側で管理する。**
+**パスフレーズはパスワードマネージャへ保管する。** これを失うと復号できないため、アーカイブとは別の場所に置く。
 
 ## リストア手順
 
 ```sh
-# 1. クラウドからダウンロードした private_dotfiles.zip をデスクトップに置く
+# 1. クラウドからダウンロードした private_dotfiles.tar.gz.gpg をデスクトップに置く
 
 # 2. Homebrew をインストール
 xcode-select --install
@@ -57,7 +56,7 @@ git clone --recursive https://github.com/sorin-ionescu/prezto.git "${ZDOTDIR:-$H
 ./scripts/restore_dotfiles.sh
 ./scripts/restore_languages.sh
 
-# 6. ~/.secrets/env に値を入れる（雛形が置かれている）
+# 6. 手動設定が要るアプリを入れる（下記）
 ```
 
 リンク先に実体があった場合は削除せず `~/dotfiles-salvaged-<日時>/` へ退避する。**リストアが既存の設定を消すことはない。**
@@ -66,8 +65,8 @@ git clone --recursive https://github.com/sorin-ionescu/prezto.git "${ZDOTDIR:-$H
 
 | スクリプト | 役割 |
 | --- | --- |
-| `backup_dotfiles.sh` | `private/` を zip に固める |
-| `restore_dotfiles.sh` | zip を展開し、`home/` と `private/` を `~` へリンクする |
+| `backup_dotfiles.sh` | `private/` を AES-256 で暗号化したアーカイブに固める |
+| `restore_dotfiles.sh` | アーカイブを復号し、`home/` と `private/` を `~` へリンクする |
 | `adopt_dotfile.sh` | `~` 配下のファイルを管理下へ移し、リンクを張り直す |
 | `restore_osx.sh` | macOS の各種設定を書き込む |
 | `restore_languages.sh` | mise で言語ランタイムを入れる |
@@ -79,7 +78,6 @@ git clone --recursive https://github.com/sorin-ionescu/prezto.git "${ZDOTDIR:-$H
 - AltTab
 - Raycast
 - gh
-- `~/.secrets/env` の値（パスワードマネージャから）
 
 ## 留意事項
 

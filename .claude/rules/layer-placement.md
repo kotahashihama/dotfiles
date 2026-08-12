@@ -6,9 +6,9 @@ paths:
   - "scripts/**"
 ---
 
-# ファイルは public / private / secret のどれかに置く
+# ファイルは public と private のどちらかに置く
 
-置き場ごとに公開範囲と復元方法が決まる。**このリポジトリは GitHub 上で public** なので、`home/` に置いたものは全世界から読める。
+**旧マシンから新マシンへ何で運ぶか**で 2 つに分かれる（git リポジトリ / 暗号化アーカイブ）。**このリポジトリは GitHub 上で public** なので、`home/` に置いたものは全世界から読める。
 
 層の定義・選び方・秘匿値の切り出し方は [`docs/layers.md`](../../docs/layers.md) を読むこと。
 
@@ -16,7 +16,7 @@ paths:
 
 - ファイルを追加・移動する前に、`docs/layers.md` の判断表でどの層かを決める
 - 迷ったら **private に倒す**。後から public へ上げるのは容易、逆は取り返しがつかない
-- 秘匿値は設定ファイルへ直書きせず `~/.secrets/env` へ置き、参照だけを残す
+- 秘匿値は設定ファイルへ直書きせず `~/.secrets/env`（実体は `private/.secrets/env`）へ置き、参照だけを残す
 - 秘匿値の変数を増やしたら `scripts/secrets.env.example` にも名前を足す
 - `~` へ取り込むときは `./scripts/adopt_dotfile.sh {public|private} <path>` を使う。手で `mv` + `ln` しない
 

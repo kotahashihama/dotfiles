@@ -13,7 +13,7 @@ macOS の設定ファイル一式。`~` 側は実体を持たず、このリポ�
 
 `home/` と `scripts/` に置いたものは全世界から読める。**追加・移動の前に層を決める**（`.claude/rules/layer-placement.md`）。
 
-秘匿値は `~/.secrets/env` に置き、設定ファイルには参照だけを残す。git にも zip にも入らない。
+秘匿値は `~/.secrets/env`（実体は `private/.secrets/env`）に置き、設定ファイルには参照だけを残す。**暗号化アーカイブで運ぶので手作業の復元は要らない。**
 
 公開層への混入は `scripts/git-hooks/pre-commit` が止める。新しい社内固有名は `private/.claude/deny-patterns.txt` へ足す。
 
