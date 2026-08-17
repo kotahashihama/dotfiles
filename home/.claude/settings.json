@@ -5,6 +5,34 @@
     "EDITOR": "cursor --wait",
     "VISUAL": "cursor --wait"
   },
+  "permissions": {
+    "allow": [
+      "mcp__backlog__get_*",
+      "mcp__backlog__count_issues",
+      "mcp__plugin_figma_figma__get_*",
+      "mcp__plugin_figma_figma__list_*",
+      "mcp__plugin_figma_figma__search_design_system",
+      "mcp__plugin_figma_figma__whoami"
+    ],
+    "deny": [
+      "mcp__backlog__add_project",
+      "mcp__backlog__update_project",
+      "mcp__backlog__delete_project"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/tidy-global-assets.sh"
+          }
+        ]
+      }
+    ]
+  },
   "statusLine": {
     "type": "command",
     "command": "bash ~/.claude/statusline-command.sh"
@@ -30,21 +58,6 @@
       }
     }
   },
-  "permissions": {
-    "allow": [
-      "mcp__backlog__get_*",
-      "mcp__backlog__count_issues",
-      "mcp__plugin_figma_figma__get_*",
-      "mcp__plugin_figma_figma__list_*",
-      "mcp__plugin_figma_figma__search_design_system",
-      "mcp__plugin_figma_figma__whoami"
-    ],
-    "deny": [
-      "mcp__backlog__add_project",
-      "mcp__backlog__update_project",
-      "mcp__backlog__delete_project"
-    ]
-  },
   "outputStyle": "Explanatory",
   "language": "Japanese",
   "spinnerTipsEnabled": false,
@@ -55,17 +68,9 @@
   "showTurnDuration": true,
   "remoteControlAtStartup": true,
   "agentPushNotifEnabled": true,
-  "hooks": {
-    "PostToolUse": [
-      {
-        "matcher": "Write|Edit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash ~/.claude/hooks/tidy-global-assets.sh"
-          }
-        ]
-      }
-    ]
+  "voiceEnabled": true,
+  "voice": {
+    "enabled": true,
+    "mode": "hold"
   }
 }
