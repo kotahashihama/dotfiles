@@ -1,15 +1,15 @@
 ---
-description: 公開区分 (home/ と scripts/) とコミット履歴に秘匿値が混ざっていないかを走査する。コミット・push の前や、管理対象を増やした直後に使う。ユーザーが「秘匿値をチェックして」「公開して大丈夫か見て」「/audit-secrets」等を指示したときに使う。
+description: 公開側 (home/ と scripts/) とコミット履歴に秘匿値が混ざっていないかを走査する。コミット・push の前や、管理対象を増やした直後に使う。ユーザーが「秘匿値をチェックして」「公開して大丈夫か見て」「/audit-secrets」等を指示したときに使う。
 allowed-tools: Bash(git status:*) Bash(git diff:*) Bash(git log:*) Bash(git grep:*) Bash(git ls-files:*) Bash(git cat-file:*) Bash(git rev-list:*) Bash(git check-ignore:*) Bash(grep:*) Bash(python3:*)
 ---
 
-このリポジトリは GitHub 上で public。**`home/` と `scripts/` に置いたものは全世界から読める。** 区分の定義は `docs/placement.md`。
+このリポジトリは GitHub 上で public。**`home/` と `scripts/` に置いたものは全世界から読める。** 置き場の定義は `docs/placement.md`。
 
 ## 進め方
 
 1. **除外が効いているか**: `git check-ignore -v private/.aws/credentials private/.ssh` で `/private/` が効いていることを確認する。`git status --porcelain` に `private/` が現れたら**そこで止める**
 
-2. **公開区分の走査**: 追跡ファイルと未追跡ファイルの両方を見る
+2. **公開側の走査**: 追跡ファイルと未追跡ファイルの両方を見る
 
    ```sh
    git status --porcelain --untracked-files=all | awk '{print $2}' | \
@@ -41,7 +41,7 @@ allowed-tools: Bash(git status:*) Bash(git diff:*) Bash(git log:*) Bash(git grep
 | 走査 | 範囲 | 結果 |
 | --- | --- | --- |
 | 除外の確認 | private/ 配下 4 パス | 全て ignore 済み |
-| 公開区分 | 追跡 56 + 未追跡 8 ファイル | 検出ゼロ |
+| 公開側 | 追跡 56 + 未追跡 8 ファイル | 検出ゼロ |
 | 履歴 | 全ブランチ 115 blob | 検出ゼロ |
 ```
 

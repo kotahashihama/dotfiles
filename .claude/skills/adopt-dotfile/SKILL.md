@@ -1,11 +1,11 @@
 ---
-description: ~ 配下の設定ファイルを dotfiles の管理下へ取り込む、または管理から外す。区分の判定・秘匿値の切り出し・リンクの張り替えまで行う。ユーザーが「これも管理対象にして」「バックアップに含めて」「管理から外して」「/adopt-dotfile」等を指示したときに使う。
+description: ~ 配下の設定ファイルを dotfiles の管理下へ取り込む、または管理から外す。置き場の判定・秘匿値の切り出し・リンクの張り替えまで行う。ユーザーが「これも管理対象にして」「バックアップに含めて」「管理から外して」「/adopt-dotfile」等を指示したときに使う。
 argument-hint: <~ からの相対パス> [public|private]
 disable-model-invocation: true
 allowed-tools: Bash(ls:*) Bash(find:*) Bash(du:*) Bash(readlink:*) Bash(grep:*) Bash(git check-ignore:*) Bash(git status:*) Bash(./scripts/adopt_dotfile.sh:*) Bash(mv:*) Bash(rm:*) Bash(ln:*)
 ---
 
-区分の定義と判断表は `docs/placement.md`。取り込みの実体は `scripts/adopt_dotfile.sh` が持つので、**手で `mv` + `ln` しない**。
+置き場の定義と判断表は `docs/placement.md`。取り込みの実体は `scripts/adopt_dotfile.sh` が持つので、**手で `mv` + `ln` しない**。
 
 ## 進め方
 
@@ -20,7 +20,7 @@ allowed-tools: Bash(ls:*) Bash(find:*) Bash(du:*) Bash(readlink:*) Bash(grep:*) 
 
    サイズも見る。数百 MB のディレクトリは、中の設定ファイルだけを個別に取り込む
 
-3. **区分を決める**: `docs/placement.md` の判断表に従う。**迷ったら private に倒す**
+3. **置き場を決める**: `docs/placement.md` の判断表に従う。**迷ったら private に倒す**
 
 4. **秘匿値を切り出す**: 取り込む前に中身を走査し、実値があれば `~/.secrets/env` へ移して参照に置き換える。`scripts/secrets.env.example` にも名前を足す。手順は `/audit-secrets`
 
@@ -34,7 +34,7 @@ allowed-tools: Bash(ls:*) Bash(find:*) Bash(du:*) Bash(readlink:*) Bash(grep:*) 
 
 7. **名前の衝突を確認する**: `home/` と `private/` に同名の要素があると、private が public を上書きする。`ls -A home private` で見る
 
-8. **検証する**: `scripts/lib.sh` を変更したなら `/verify-restore`、公開区分へ入れたなら `/audit-secrets` を走らせる
+8. **検証する**: `scripts/lib.sh` を変更したなら `/verify-restore`、公開側へ入れたなら `/audit-secrets` を走らせる
 
 ### 管理から外すとき
 
@@ -42,11 +42,11 @@ allowed-tools: Bash(ls:*) Bash(find:*) Bash(du:*) Bash(readlink:*) Bash(grep:*) 
 
 ## 出力の目安
 
-判定の根拠（管理する理由・区分を選んだ理由）を 1 行ずつ添え、取り込み後のリンクを**リンク元 → リンク先**で示す。秘匿値を切り出した場合は変数名だけを挙げる（値は出さない）。
+判定の根拠（管理する理由・置き場を選んだ理由）を 1 行ずつ添え、取り込み後のリンクを**リンク元 → リンク先**で示す。秘匿値を切り出した場合は変数名だけを挙げる（値は出さない）。
 
 ## やってはいけないこと
 
-- 中身を走査せずに公開区分へ取り込むこと
+- 中身を走査せずに公開側へ取り込むこと
 - 巨大ディレクトリを丸ごと取り込むこと。zip が膨らみ、バックアップとリストアの所要時間に直結する
 - `PARTIAL_DIRS` の確認を飛ばして混在型ディレクトリを丸ごとリンクすること
-- 取り込んだ設定ファイルに「これは private です」等の**区分の説明を書き足す**こと（`managed-file-purity.md`）
+- 取り込んだ設定ファイルに「これは private です」等の**置き場の説明を書き足す**こと（`managed-file-purity.md`）

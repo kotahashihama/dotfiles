@@ -32,18 +32,18 @@
 
 **汎用の規約は rules、そのリポジトリだけの事実は memory。** どちらも毎セッション読まれるので、同じことを書くと二重にロードされる（`rules/rule_conventions.md` の「auto memory との境界」）。
 
-### 公開区分と非公開区分
+### 公開側と非公開側
 
-これらの実体は dotfiles リポジトリにあり、**`home/` 区分は GitHub 上で全世界から読める**。
+これらの実体は dotfiles リポジトリにあり、**`home/` は GitHub 上で全世界から読める**。
 
-| 置く内容 | 層 |
+| 置く内容 | 置き場 |
 | --- | --- |
 | 汎用の規約・手順 | `home/`（公開） |
 | **社内の呼称・リポジトリ名・GitHub ID・プロダクトの状況** | **`private/`（非公開）** |
 
 **迷ったら `private/` に倒す。** 公開してしまうと取り消せない（履歴の書き換えが要る）。判断表は dotfiles の `docs/placement.md`、点検は同リポジトリの `/audit-secrets` スキル。
 
-**auto memory も dotfiles 管理下**（`private/.claude-memory/<project>/` の実体へシンボリックリンク）。リポジトリ固有の事情を書く場所なので、公開区分には置かない。スキルは**1 本ずつ区分が違う**ので、編集前にリンク先を確かめる。
+**auto memory も dotfiles 管理下**（`private/.claude-memory/<project>/` の実体へシンボリックリンク）。リポジトリ固有の事情を書く場所なので、公開側には置かない。スキルは**1 本ずつ置き場が違う**ので、編集前にリンク先を確かめる。
 
 **編集した時点で dotfiles の作業ツリーが汚れる。** コミットは dotfiles 側の担当セッションへ依頼する（`rules/notify_related_repo_sessions.md`）。
 

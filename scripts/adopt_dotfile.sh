@@ -30,7 +30,7 @@ mkdir -p "$(dirname "$DEST")"
 mv ~/"$TARGET" "$DEST"
 link_into_home "$DEST" ~/"$TARGET"
 
-echo "👍 $TARGET を $DEST_LAYER 区分へ移しました"
+echo "👍 $TARGET を $DEST_LAYER へ移しました"
 
 case "$DEST_LAYER" in
   home)
