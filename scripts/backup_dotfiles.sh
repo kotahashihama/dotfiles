@@ -18,6 +18,8 @@ fi
 # macOS の設定を書き出してからアーカイブに含める。別途叩く形にすると
 # 書き出しが古いまま固められる。
 sh "$(dirname "$0")/backup_osx.sh"
+sh "$(dirname "$0")/backup_associations.sh"
+sh "$(dirname "$0")/backup_keyboard.sh"
 
 # パスフレーズはこちらで生成する。人が決めると弱くなり、二重入力も要る。
 # 検証用に PRIVATE_PASSPHRASE を渡した場合はそれを使う。

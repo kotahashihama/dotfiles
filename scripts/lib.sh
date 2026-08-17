@@ -39,7 +39,8 @@ PARTIAL_DIRS='.claude
 Library
 Library/Application Support
 Library/Application Support/Cursor
-Library/Application Support/Cursor/User'
+Library/Application Support/Cursor/User
+Library/LaunchAgents'
 
 # 空白を含むパス（Library/Application Support）があるため、行単位で完全一致を見る。
 # for d in $PARTIAL_DIRS だと単語分割で壊れる。

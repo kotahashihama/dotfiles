@@ -132,4 +132,27 @@ else
   echo "   書き出した設定がありません。上記の既定値のみ適用しました"
 fi
 
+#
+# 拡張子とアプリの関連付け
+#
+ASSOC="$(cd "$(dirname "$0")/.." && pwd)/private/.associations/duti.txt"
+
+if [ -f "$ASSOC" ] && command -v duti >/dev/null 2>&1; then
+  # アプリが未導入だと失敗する。入れ直した後に流し直せば揃う
+  applied=0
+  while read -r bundle ext role; do
+    [ -n "$bundle" ] || continue
+    duti -s "$bundle" "$ext" "$role" 2>/dev/null && applied=$((applied + 1))
+  done < "$ASSOC"
+  echo "   関連付けを適用しました: $applied / $(wc -l < "$ASSOC" | tr -d ' ') 件"
+elif [ -f "$ASSOC" ]; then
+  echo "   duti が無いため関連付けを飛ばしました。brew install duti の後に流し直してください"
+fi
+
+KEYBOARD="$(cd "$(dirname "$0")/.." && pwd)/private/.keyboard/text-replacements.tsv"
+if [ -f "$KEYBOARD" ]; then
+  echo "   テキスト置換 $(wc -l < "$KEYBOARD" | tr -d ' ') 件は自動で戻りません。"
+  echo "   iCloud 同期が有効なら自動、そうでなければ $KEYBOARD を見て手で入れてください"
+fi
+
 echo "👍 OSX のリストアが完了しました"

@@ -82,10 +82,13 @@ exec zsh
 
 | スクリプト | 役割 |
 | --- | --- |
-| `backup_dotfiles.sh` | `private/` を AES-256 で暗号化したアーカイブに固め、パスフレーズを表示する |
+| `backup_dotfiles.sh` | 下記の書き出しを走らせ、`private/` を AES-256 で暗号化したアーカイブに固める |
+| `backup_osx.sh` | macOS の `defaults` 16 ドメインと、インストール済みアプリの一覧を書き出す |
+| `backup_associations.sh` | 拡張子とアプリの関連付けを書き出す（`duti`） |
+| `backup_keyboard.sh` | キーボードのテキスト置換を書き出す |
 | `restore_dotfiles.sh` | アーカイブを復号し、`home/` と `private/` を `~` へリンクする |
 | `adopt_dotfile.sh` | `~` 配下のファイルを管理下へ移し、リンクを張り直す |
-| `restore_osx.sh` | macOS の各種設定を書き込む（Finder・Dock・省エネルギー等） |
+| `restore_osx.sh` | macOS の設定を適用し、書き出した `defaults` と関連付けを取り込む |
 | `restore_languages.sh` | mise で言語ランタイムを入れる |
 | `lib.sh` | 上記が共有する定義とヘルパー |
 | `git-hooks/pre-commit` | 公開層への認証情報・非公開の固有名の混入を止める |
@@ -114,6 +117,25 @@ exec zsh
 | コミット・push の前 | `/audit-secrets` |
 | 管理下の設定が壊れていないか見る | `/audit-dotfiles [shell\|claude\|brew\|links\|secrets]` |
 | `scripts/` や層構成を変えた後 | `/verify-restore` |
+
+## 引き継げるもの / 引き継げないもの
+
+**引き継げる**（アーカイブに入る）。
+
+| 種類 | 中身 |
+| --- | --- |
+| システム設定 | Finder・Dock・Spaces・トラックパッド・キーボードショートカット・メニューバー等 16 ドメイン |
+| 関連付け | 拡張子ごとの既定アプリ 38 件 |
+| 一覧 | App Store・VS Code / Cursor の拡張・グローバル npm・mise |
+| 自動起動 | 自分で入れた LaunchAgents |
+
+**引き継げない**（SIP 保護下や iCloud 側にあり、`defaults` から触れない）。
+
+| 種類 | どうするか |
+| --- | --- |
+| Keychain・Wi-Fi パスワード | 新マシンで入れ直す。または移行アシスタント |
+| アクセシビリティ・フルディスクアクセスの許可 | アプリ起動時に都度許可する |
+| テキスト置換 | iCloud 同期が有効なら自動。無効なら `private/.keyboard/text-replacements.tsv` を見て手で入れる |
 
 ## 手動で設定する必要があるもの
 
