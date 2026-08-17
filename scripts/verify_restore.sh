@@ -94,6 +94,10 @@ check "トップレベルは private"   "$(inarc | cut -d/ -f1 | sort -u | tr '\
 check "ソケットが除外される"     "$(inarc | grep -c 'ssh/agent/')" "0"
 check "秘匿値が含まれる"         "$(inarc | grep -c 'private/.secrets/env')" "1"
 check "macOS 設定が含まれる"     "$(inarc | grep -c 'macos-defaults/.*plist' | awk '{print ($1>0)?"あり":"なし"}')" "あり"
+check "関連付けが含まれる"       "$(inarc | grep -c 'associations/duti.txt')" "1"
+check "テキスト置換が含まれる"   "$(inarc | grep -c 'keyboard/text-replacements.tsv')" "1"
+check "インストール一覧が含まれる" "$(inarc | grep -c 'inventory/.*txt' | awk '{print ($1>0)?"あり":"なし"}')" "あり"
+check "LaunchAgents が含まれる"  "$(inarc | grep -c 'LaunchAgents/.*plist' | awk '{print ($1>0)?"あり":"なし"}')" "あり"
 
 echo "── 8. pre-commit フック ──"
 cd "$D"
