@@ -186,9 +186,6 @@ export GODEBUG=asyncpreemptoff=1
 [[ -f "$HOME/fig-export/dotfiles/dotfile.zsh" ]] && builtin source "$HOME/fig-export/dotfiles/dotfile.zsh"
 export PATH="$HOME/.antigravity/antigravity/bin:$PATH"
 
-# Claude Code
-export DISABLE_TELEMETRY=1
-
 # OpenClaw
 [[ -f "$HOME/.openclaw/completions/openclaw.zsh" ]] && source "$HOME/.openclaw/completions/openclaw.zsh"
 
