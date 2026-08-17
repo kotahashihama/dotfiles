@@ -4,7 +4,7 @@
 
 **旧マシンから新マシンへ何で運ぶか**で 2 つの置き場に分かれる。詳細は [`docs/placement.md`](docs/placement.md)。
 
-| 置き場 | 置き場 | 運び方 | 中身 |
+| 呼び方 | ディレクトリ | 運び方 | 中身 |
 | --- | --- | --- | --- |
 | **public** | `home/` | **git リポジトリ** | シェル・エディタ・Claude Code の設定 |
 | **private** | `private/` | **暗号化アーカイブ** | `.aws` `.ssh` `.config` `.secrets`、業務・自宅向けのエイリアス、Claude の学習メモリ |
