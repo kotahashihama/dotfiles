@@ -2,14 +2,14 @@
 
 ## 構成
 
-**旧マシンから新マシンへ何で運ぶか**で 2 つの層に分かれる。詳細は [`docs/layers.md`](docs/layers.md)。
+**旧マシンから新マシンへ何で運ぶか**で 2 つの区分に分かれる。詳細は [`docs/placement.md`](docs/placement.md)。
 
-| 層 | 置き場 | 運び方 | 中身 |
+| 区分 | 置き場 | 運び方 | 中身 |
 | --- | --- | --- | --- |
 | **public** | `home/` | **git リポジトリ** | シェル・エディタ・Claude Code の設定 |
 | **private** | `private/` | **暗号化アーカイブ** | `.aws` `.ssh` `.config` `.secrets`、業務・自宅向けのエイリアス、Claude の学習メモリ |
 
-`~` 側は実体を持たず、両方の層へシンボリックリンクを張る。**編集はこのリポジトリの中で完結する。**
+`~` 側は実体を持たず、両方の区分へシンボリックリンクを張る。**編集はこのリポジトリの中で完結する。**
 
 ## ⚠️ パスフレーズについて
 
@@ -88,7 +88,7 @@ dotfiles では運ばない。**新マシンで消えるので、移行前に確
 
 リンク先に実体があった場合は削除せず `~/dotfiles-salvaged-<日時>/` へ退避する。**リストアが既存の設定を消すことはない。**
 
-アーカイブが手元に無い場合も public 層だけリンクして進む。`private/.secrets/env` には雛形が置かれるので、値はパスワードマネージャから入れる。
+アーカイブが手元に無い場合も public 区分だけリンクして進む。`private/.secrets/env` には雛形が置かれるので、値はパスワードマネージャから入れる。
 
 ## スクリプト
 
@@ -104,19 +104,19 @@ dotfiles では運ばない。**新マシンで消えるので、移行前に確
 | `restore_languages.sh` | mise で言語ランタイムを入れる |
 | `lib.sh` | 上記が共有する定義とヘルパー |
 | `verify_restore.sh` | バックアップ → リストアを偽の HOME で通しで流す（79 項目） |
-| `git-hooks/pre-commit` | 公開層への認証情報・非公開の固有名の混入を止める |
+| `git-hooks/pre-commit` | 公開区分への認証情報・非公開の固有名の混入を止める |
 
 ## Claude Code の資産
 
 `~/.claude` は管理対象と管理外（セッション・キャッシュ）が同居するため、**子要素を個別にリンクする**。
 
-| 資産 | 層 |
+| 資産 | 区分 |
 | --- | --- |
 | `CLAUDE.md` `rules/` `hooks/` `settings.json` `statusline-command.sh` `agents/` `output-styles/` | `home/.claude/` |
 | `CLAUDE.private.md`、非公開の固有名を含むスキル | `private/.claude/` |
-| `skills/` | **1 本ずつ層が違う**。編集前に `readlink -f` で実体を確かめる |
+| `skills/` | **1 本ずつ区分が違う**。編集前に `readlink -f` で実体を確かめる |
 | 自動メモリ（`projects/<repo>/memory/`） | `private/.claude-memory/` |
-| `deny-patterns.txt`（`pre-commit` の検出パターン） | `private/.claude/`。パターン自体が固有名なので公開層に置けない |
+| `deny-patterns.txt`（`pre-commit` の検出パターン） | `private/.claude/`。パターン自体が固有名なので公開区分に置けない |
 
 `commands/` は [skills に統合済み](https://code.claude.com/docs/en/skills)のため管理しない。
 
@@ -129,7 +129,7 @@ dotfiles では運ばない。**新マシンで消えるので、移行前に確
 | `~` の設定を管理下へ入れる / 外す | `/adopt-dotfile` |
 | コミット・push の前 | `/audit-secrets` |
 | 管理下の設定が壊れていないか見る | `/audit-dotfiles [shell\|claude\|brew\|links\|secrets]` |
-| `scripts/` や層構成を変えた後 | `/verify-restore` |
+| `scripts/` や区分構成を変えた後 | `/verify-restore` |
 
 ## 引き継げるもの / 引き継げないもの
 

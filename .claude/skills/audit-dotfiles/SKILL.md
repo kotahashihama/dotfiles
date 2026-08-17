@@ -40,7 +40,7 @@ allowed-tools: Bash(zsh:*) Bash(grep:*) Bash(sed:*) Bash(awk:*) Bash(sort:*) Bas
 
 - **相互参照の切れ**: `## 関連` や本文が指すルール・スキルが実在するか
 - **フックの参照先**: `settings.json` の `hooks` が指すスクリプトが存在し実行可能か
-- **層の重複**: `home/.claude/skills/` と `private/.claude/skills/` に同名が無いか
+- **区分の重複**: `home/.claude/skills/` と `private/.claude/skills/` に同名が無いか
 - **孤立**: どこからも参照されず、説明とも合わなくなった資産
 
 ### brew — Brewfile と実体
@@ -102,4 +102,4 @@ allowed-tools: Bash(zsh:*) Bash(grep:*) Bash(sed:*) Bash(awk:*) Bash(sort:*) Bas
 - Prezto 等が定義したものを混ぜること。**ユーザーが管理していないものを消す提案をしない**
 - 判定不可を「欠落」に混ぜること。相対パスや変数展開は、その場では動く
 - 確認なしに**定義を消す / ツールを入れる**こと（`decide_or_ask.md`）
-- 非公開層の定義を公開層のファイルへ移すこと（`.claude/rules/layer-placement.md`）
+- 非公開区分の定義を公開区分のファイルへ移すこと（`.claude/rules/file-placement.md`）

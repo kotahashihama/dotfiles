@@ -85,7 +85,7 @@ echo "── 6. アーカイブが無い場合（public のみ） ──"
 setup; rm -rf "$W/repo/private" "$W/priv.tar.gz.gpg"
 check "終了コード"              "$(restore)" "0"
 check "警告が出る"              "$(grep -c '見つかりません' "$W/out.log")" "1"
-check "public 層はリンクされる" "$(lnk .zshrc)" "home/.zshrc"
+check "public 区分はリンクされる" "$(lnk .zshrc)" "home/.zshrc"
 check "private 由来は張られない" "$([ -e "$W/fakehome/.aws" ] && echo あり || echo なし)" "なし"
 check "秘匿値の雛形が置かれる"  "$([ -f "$W/fakehome/.secrets/env" ] && echo あり || echo なし)" "あり"
 

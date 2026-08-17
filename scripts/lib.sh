@@ -6,7 +6,7 @@
 DOTFILES_DIR=${DOTFILES_DIR:-~/Documents/repositories/github.com/kotahashihama/dotfiles}
 PRIVATE_ARCHIVE=${PRIVATE_ARCHIVE:-~/Desktop/private_dotfiles.tar.gz.gpg}
 
-# 非公開層は SSH 秘密鍵・クラウドの資格情報・API キーを含むため暗号化して運ぶ。
+# 非公開区分は SSH 秘密鍵・クラウドの資格情報・API キーを含むため暗号化して運ぶ。
 # zip の --encrypt は ZipCrypto で既知の攻撃があるので使わない。
 #
 # PRIVATE_PASSPHRASE を渡すと非対話で動く。検証やスクリプト用で、
@@ -30,7 +30,7 @@ gpg_decrypt() {
 
 # 実体が別の物と同居するため、ディレクトリごとではなく子要素を個別にリンクする対象。
 # 例: ~/.claude にはセッションやキャッシュも入るので、丸ごとリンクすると巻き込む。
-# 両方の層が同じディレクトリへ要素を持ち寄る場合も、ここへ入れて衝突を避ける。
+# 両方の区分が同じディレクトリへ要素を持ち寄る場合も、ここへ入れて衝突を避ける。
 PARTIAL_DIRS='.claude
 .claude/skills
 .codex
@@ -48,7 +48,7 @@ is_partial() {
   printf '%s\n' "$PARTIAL_DIRS" | grep -Fxq -- "$1"
 }
 
-# 層に置くが、~ 直下へはリンクしないもの。
+# 区分に置くが、~ 直下へはリンクしないもの。
 # deny-patterns.txt はこのリポジトリの道具立てで、~ に置いても意味がない。
 # .claude-memory は ~ 直下ではなく ~/.claude/projects/<key>/memory へ張る。
 NO_LINK='.claude/deny-patterns.txt
@@ -75,7 +75,7 @@ link_into_home() {
   ln -sfn "$src" "$dst"
 }
 
-# 1 つの層 (home / private) を ~ へリンクする。
+# 1 つの区分 (home / private) を ~ へリンクする。
 # PARTIAL_DIRS に該当する要素は掘り下げ、そうでない要素をリンクする。
 #
 # 再帰は使わない。POSIX sh に局所変数が無く、再帰呼び出しが親のループ変数を
