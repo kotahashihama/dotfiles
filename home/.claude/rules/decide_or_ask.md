@@ -70,4 +70,4 @@
 - `no_auto_commit.md` / `no_auto_ready_pr.md`: 取り消せない操作の代表例
 - `no_auto_reply_human_review_comments.md`: 「聞かずに待つ」側の代表例
 - `explain_review_comment_first.md`: 尋ねるときの形を、レビュー対応の文脈で具体化したもの
-- `ask_before_editing_claude_assets.md`: ユーザーの領分（コンテキストの予算配分）にあたる例
+- `ask_before_editing_claude_assets.md`（設定は尋ねてから）: ユーザーの領分にあたる例。**必ず `AskUserQuestion` で出す**という強い形を定める

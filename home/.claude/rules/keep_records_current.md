@@ -54,6 +54,6 @@ PR に push したなら、本文と差分の食い違いを確認し、ズレ�
 ## 関連
 
 - `verify_before_asserting.md`（断定の前に裏を取る）: あちらは**書くとき**、本ルールは**書いた後の鮮度**を扱う
-- `ask_before_editing_claude_assets.md`（資産は尋ねてから）: 設定ファイルを触ったときの具体化
+- `ask_before_editing_claude_assets.md`（設定は尋ねてから）: 触る**前**に尋ねる側。本ルールは触った**後**の鮮度
 - `/update-pr-description`（PR 本文と補足コメントの更新）: PR 側の実行手段
 - `/list-prs`（PR 一覧）: 腐った参照をまとめて検出できる
