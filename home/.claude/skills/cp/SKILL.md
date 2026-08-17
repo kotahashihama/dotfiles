@@ -21,7 +21,7 @@ allowed-tools: Bash(git status:*) Bash(git diff:*) Bash(git log:*) Bash(git add:
    - 1 行目は `<type>(<scope>): <subject>` の形。`type(scope):` は英小文字、subject は **日本語の体言止め**（「〜の追加」「〜の修正」「〜の分離」など）
    - subject 末尾にピリオド・句点なし。50 文字目安
    - 本文が必要なら 1 行空けて「なぜ・何を」を書く。コミットに至った経緯ではなく **差分の意図** を書く
-   - 末尾に `Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>` トレーラーを置く
+   - 末尾に生成者のトレーラーを置く。**文言はルール側が持つ**（`karma_commit_style.md` の「生成者のトレーラー」）
 
 4. **ステージング & コミット**:
    - 既にステージ済みのものがあればそれを尊重しつつ、未ステージの変更は **対象ファイルを名指しで** `git add <path>...` する（`git add -A` / `git add .` は使わない）
@@ -32,7 +32,7 @@ allowed-tools: Bash(git status:*) Bash(git diff:*) Bash(git log:*) Bash(git add:
 
      <body if any>
 
-     Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
+     Co-Authored-By: Claude Code <noreply@anthropic.com>
      EOF
      )"
      ```
