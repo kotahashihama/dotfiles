@@ -31,25 +31,30 @@ gpg_decrypt() {
 # 実体が別の物と同居するため、ディレクトリごとではなく子要素を個別にリンクする対象。
 # 例: ~/.claude にはセッションやキャッシュも入るので、丸ごとリンクすると巻き込む。
 # 両方の層が同じディレクトリへ要素を持ち寄る場合も、ここへ入れて衝突を避ける。
-PARTIAL_DIRS='.claude .claude/skills .codex .cursor'
+PARTIAL_DIRS='.claude
+.claude/skills
+.codex
+.cursor
+.openclaw
+Library
+Library/Application Support
+Library/Application Support/Cursor
+Library/Application Support/Cursor/User'
 
+# 空白を含むパス（Library/Application Support）があるため、行単位で完全一致を見る。
+# for d in $PARTIAL_DIRS だと単語分割で壊れる。
 is_partial() {
-  for d in $PARTIAL_DIRS; do
-    [ "$1" = "$d" ] && return 0
-  done
-  return 1
+  printf '%s\n' "$PARTIAL_DIRS" | grep -Fxq -- "$1"
 }
 
 # 層に置くが、~ 直下へはリンクしないもの。
 # deny-patterns.txt はこのリポジトリの道具立てで、~ に置いても意味がない。
 # .claude-memory は ~ 直下ではなく ~/.claude/projects/<key>/memory へ張る。
-NO_LINK='.claude/deny-patterns.txt .claude-memory'
+NO_LINK='.claude/deny-patterns.txt
+.claude-memory'
 
 is_no_link() {
-  for d in $NO_LINK; do
-    [ "$1" = "$d" ] && return 0
-  done
-  return 1
+  printf '%s\n' "$NO_LINK" | grep -Fxq -- "$1"
 }
 
 # リンクを張る。既存の実体があれば消さずに退避する。

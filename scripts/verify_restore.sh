@@ -53,7 +53,11 @@ check "リポジトリ実体 (home)"           "$(cat "$W/repo/home/.zshrc" >/de
 check "リポジトリ実体 (private)"        "$(cat "$W/repo/private/.zsh_aliases_private/project.zsh" >/dev/null 2>&1 && echo 無傷 || echo 破損)" "無傷"
 check "メモリが projects 配下へ復元"    "$(ls -A "$W/fakehome/.claude/projects" 2>/dev/null | wc -l | tr -d ' ' | awk '{print ($1>0)?"あり":"なし"}')" "あり"
 check "メモリが ~ 直下に張られない"     "$([ -e "$W/fakehome/.claude-memory" ] && echo あり || echo なし)" "なし"
-check "~ 直下に想定外の実体が無い"      "$(find "$W/fakehome" -maxdepth 1 -type d ! -name "$(basename "$W/fakehome")" ! -name Desktop ! -name .claude ! -name .codex ! -name .cursor ! -name .secrets ! -name .gnupg | wc -l | tr -d ' ')" "0"
+# 実体で残ってよいのは PARTIAL_DIRS のトップレベル（子を個別にリンクするため）と、
+# Desktop・gpg が作る .gnupg だけ。固定リストにすると PARTIAL_DIRS を増やすたびに偽の失敗が出る。
+expected_real=$( { . "$D/scripts/lib.sh"; printf '%s\n' "$PARTIAL_DIRS"; } | cut -d/ -f1 | sort -u; printf 'Desktop\n.gnupg\n.secrets\n' )
+unexpected=$(find "$W/fakehome" -maxdepth 1 -type d ! -path "$W/fakehome" -exec basename {} \; | sort | comm -23 - <(printf '%s\n' "$expected_real" | sort -u))
+check "~ 直下に想定外の実体が無い"      "$(printf '%s' "$unexpected" | grep -c . | tr -d ' ')" "0"
 
 echo "── 3. シェルの起動 ──"
 check "エイリアスが引ける" "$(HOME="$W/fakehome" zsh -ic 'source ~/.zsh_aliases/main.zsh; for a in cldpr cldar ssml gst dcu; do alias $a >/dev/null 2>&1 || echo NG; done' 2>/dev/null | grep -c NG)" "0"

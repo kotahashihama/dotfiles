@@ -34,4 +34,15 @@ done
 
 echo "👍 macOS の設定を書き出しました: $exported ドメイン / $(du -sh "$DEST" | cut -f1)"
 [ -n "$skipped" ] && echo "   未設定のため飛ばした:$skipped"
+
+# 入れ直せば済むものは一覧だけ持っていく。実体を運ぶより軽く、腐らない。
+INV="$DOTFILES_DIR/private/.inventory"
+mkdir -p "$INV"
+command -v mas    >/dev/null 2>&1 && mas list                      > "$INV/mas.txt"           2>/dev/null
+command -v code   >/dev/null 2>&1 && code --list-extensions        > "$INV/vscode.txt"        2>/dev/null
+command -v cursor >/dev/null 2>&1 && cursor --list-extensions      > "$INV/cursor.txt"        2>/dev/null
+command -v npm    >/dev/null 2>&1 && npm ls -g --depth=0 --parseable 2>/dev/null | tail -n +2 | sed 's|.*/||' > "$INV/npm-global.txt"
+command -v mise   >/dev/null 2>&1 && mise ls --current             > "$INV/mise.txt"          2>/dev/null
+
+echo "   インストール済みの一覧を書き出しました: $(ls -A "$INV" | tr '\n' ' ')"
 exit 0
