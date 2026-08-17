@@ -19,6 +19,18 @@
 - 本文が必要なら 1 行空けて `body` に「なぜ・何を」を書く。
 - `Co-Authored-By` や `BREAKING CHANGE:` 等のトレーラーは `footer` に置く。
 
+## 生成者のトレーラー
+
+Claude が作ったコミットには、`footer` に次の 1 行を置く。
+
+```
+Co-Authored-By: Claude Code <noreply@anthropic.com>
+```
+
+**モデル名は書かない。** `Claude Opus 5` のように書くと、リリースのたびに古くなる。書き手はいずれも Claude Code なので、クライアント名に統一する（`github_note_generated_by_claude.md` が GitHub 上の文章に対して定めているのと同じ理由）。
+
+**これはコミットを作るすべての経路に適用する。** `/cp` だけでなく、レビュー対応やコンフリクト解消の途中で作るコミットも対象。
+
 ## type 一覧
 
 - `feat`: 新機能・スキーマ追加など機能面の追加
