@@ -123,6 +123,66 @@ check "秘匿値の雛形が実体と一致" "$(diff <(grep -oE '^export [A-Z_]+
 check "public/private で名前衝突なし" "$(comm -12 <(ls -A "$D/home" | sort) <(ls -A "$D/private" | sort) | grep -v '^.claude$' | wc -l | tr -d ' ')" "0"
 check "追跡ファイルに private なし" "$(git -C "$D" ls-files | grep -c '^private/')" "0"
 
+echo "── 10. lib.sh の関数 ──"
+( . "$D/scripts/lib.sh" >/dev/null 2>&1
+  is_partial ".claude"                       && echo P1
+  is_partial "Library/Application Support"   && echo P2
+  is_partial ".zshrc"                        || echo P3
+  is_no_link ".claude-memory"                && echo N1
+  is_no_link ".zshrc"                        || echo N2
+) > "$W/fn.txt" 2>/dev/null
+check "is_partial が一致を拾う"       "$(grep -c P1 "$W/fn.txt")" "1"
+check "is_partial が空白入りを拾う"   "$(grep -c P2 "$W/fn.txt")" "1"
+check "is_partial が無関係を弾く"     "$(grep -c P3 "$W/fn.txt")" "1"
+check "is_no_link が一致を拾う"       "$(grep -c N1 "$W/fn.txt")" "1"
+check "is_no_link が無関係を弾く"     "$(grep -c N2 "$W/fn.txt")" "1"
+
+# link_into_home の 3 分岐
+LW="$W/lih"; rm -rf "$LW"; mkdir -p "$LW/src" "$LW/home"
+echo src > "$LW/src/f"
+( . "$D/scripts/lib.sh" >/dev/null 2>&1
+  SALVAGE_DIR="$LW/salvage"
+  link_into_home "$LW/src/f" "$LW/home/a"                       # 新規
+  ln -sfn /nonexistent "$LW/home/b"; link_into_home "$LW/src/f" "$LW/home/b"  # 既存リンク
+  echo real > "$LW/home/c";          link_into_home "$LW/src/f" "$LW/home/c"  # 既存の実体
+) >/dev/null 2>&1
+check "新規にリンクを張る"       "$(readlink "$LW/home/a" | sed "s|.*/||")" "f"
+check "既存リンクを張り替える"   "$(readlink "$LW/home/b" | sed "s|.*/||")" "f"
+check "既存の実体を退避する"     "$(cat "$LW/salvage/c" 2>/dev/null)" "real"
+check "退避後にリンクを張る"     "$(readlink "$LW/home/c" | sed "s|.*/||")" "f"
+
+echo "── 11. 書き出しスクリプト ──"
+OW="$W/out"; rm -rf "$OW"; mkdir -p "$OW"
+( cd "$D" && DOTFILES_DIR="$OW" sh scripts/backup_osx.sh ) >"$W/osx.log" 2>&1
+check "backup_osx が plist を出す"     "$(ls -A "$OW/private/.macos-defaults" 2>/dev/null | grep -c plist | awk '{print ($1>0)?"あり":"なし"}')" "あり"
+check "backup_osx が一覧を出す"        "$(ls -A "$OW/private/.inventory" 2>/dev/null | wc -l | tr -d ' ' | awk '{print ($1>0)?"あり":"なし"}')" "あり"
+( cd "$D" && DOTFILES_DIR="$OW" sh scripts/backup_associations.sh ) >/dev/null 2>&1
+check "backup_associations の出力形式" "$(awk 'NF!=3{bad=1} END{print (bad)?"不正":"3 列"}' "$OW/private/.associations/duti.txt" 2>/dev/null)" "3 列"
+( cd "$D" && DOTFILES_DIR="$OW" sh scripts/backup_keyboard.sh ) >/dev/null 2>&1
+check "backup_keyboard が出力する"     "$([ -f "$OW/private/.keyboard/text-replacements.tsv" ] && echo あり || echo なし)" "あり"
+
+echo "── 12. 取り込みの関数 ──"
+IW="$W/imp"; rm -rf "$IW"; mkdir -p "$IW/defaults"
+defaults export com.apple.TextEdit "$IW/defaults/com.apple.TextEdit.plist" 2>/dev/null
+check "defaults を取り込む"       "$( ( . "$D/scripts/lib.sh"; import_macos_defaults "$IW/defaults" ) 2>/dev/null | grep -oE '[0-9]+ ドメイン')" "1 ドメイン"
+check "書き出しが無ければ飛ばす"  "$( ( . "$D/scripts/lib.sh"; import_macos_defaults "$IW/nothere" ) 2>/dev/null | grep -c 'ありません')" "1"
+check "関連付けの入力が無ければ何もしない" "$( ( . "$D/scripts/lib.sh"; apply_associations "$IW/nothere.txt" ) 2>/dev/null | wc -l | tr -d ' ')" "0"
+
+echo "── 13. 異常系 ──"
+setup; backup
+check "誤ったパスフレーズで復号できない" "$(PRIVATE_PASSPHRASE=wrong sh -c ". $D/scripts/lib.sh; gpg_decrypt $W/priv.tar.gz.gpg" >/dev/null 2>&1 && echo できた || echo できない)" "できない"
+printf 'broken' > "$W/broken.gpg"
+check "壊れたアーカイブで復号できない" "$(PRIVATE_PASSPHRASE=$PP sh -c ". $D/scripts/lib.sh; gpg_decrypt $W/broken.gpg" >/dev/null 2>&1 && echo できた || echo できない)" "できない"
+check "gpg が無ければバックアップが止まる" "$( ( cd "$W/repo" && PATH=/usr/bin:/bin PRIVATE_ARCHIVE=$W/x.gpg DOTFILES_DIR=$W/repo sh scripts/backup_dotfiles.sh ) >/dev/null 2>&1 && echo 続行 || echo 停止)" "停止"
+
+echo "── 14. adopt_dotfile ──"
+AW="$W/adopt"; rm -rf "$AW"; mkdir -p "$AW/repo/home" "$AW/repo/private" "$AW/fakehome"
+echo hello > "$AW/fakehome/.testrc"
+( cd "$AW/repo" && HOME="$AW/fakehome" DOTFILES_DIR="$AW/repo" sh "$D/scripts/adopt_dotfile.sh" private .testrc ) >/dev/null 2>&1
+check "private へ移す"       "$(cat "$AW/repo/private/.testrc" 2>/dev/null)" "hello"
+check "元の位置がリンクになる" "$([ -L "$AW/fakehome/.testrc" ] && echo リンク || echo 実体)" "リンク"
+check "リンク経由で読める"     "$(cat "$AW/fakehome/.testrc" 2>/dev/null)" "hello"
+
 rm -rf "$W"
 echo
 echo "══ 合計: 成功 $PASS / 失敗 $FAIL ══"

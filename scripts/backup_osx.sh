@@ -6,7 +6,9 @@ set -e
 
 . "$(dirname "$0")/lib.sh"
 
-DOMAINS_FILE="$DOTFILES_DIR/scripts/osx-domains.txt"
+# ドメイン一覧はこのスクリプトと同じ場所に置く。DOTFILES_DIR は書き出し先の
+# 指定なので、そちらを基準にすると検証で差し替えたときに見つからなくなる。
+DOMAINS_FILE="$(cd "$(dirname "$0")" && pwd)/osx-domains.txt"
 DEST="$DOTFILES_DIR/private/.macos-defaults"
 
 [ -f "$DOMAINS_FILE" ] || { echo "$DOMAINS_FILE がありません" >&2; exit 1; }
