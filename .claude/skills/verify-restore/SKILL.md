@@ -1,5 +1,5 @@
 ---
-description: バックアップ → リストアを偽の HOME で通しで流し、新規マシンでリストアが成立するかを実測する。scripts/ や層構成を変更した直後に使う。ユーザーが「リストアを検証して」「新規マシンで動くか確かめて」「/verify-restore」等を指示したときに使う。
+description: バックアップ → リストアを偽の HOME で通しで流し、新規マシンでリストアが成立するかを実測する。scripts/ や区分構成を変更した直後に使う。ユーザーが「リストアを検証して」「新規マシンで動くか確かめて」「/verify-restore」等を指示したときに使う。
 argument-hint: "(引数なし。scripts/verify_restore.sh を流して結果を読む)"
 allowed-tools: Bash(./scripts/verify_restore.sh:*) Bash(bash scripts/verify_restore.sh:*) Bash(sh scripts/verify_restore.sh:*) Bash(git status:*) Bash(git diff:*) Bash(readlink:*) Bash(ls:*) Bash(find:*) Bash(zsh:*)
 ---
@@ -31,10 +31,10 @@ allowed-tools: Bash(./scripts/verify_restore.sh:*) Bash(bash scripts/verify_rest
 | 3 | 偽 HOME でシェルが起動し、エイリアスが引けるか |
 | 4 | **冪等性**。2 回流しても退避が起きず結果が同じか |
 | 5 | 既存の実体がある `~` への上書き。**消さずに退避するか** |
-| 6 | アーカイブが無い場合。public 層だけで進み、秘匿値の雛形が置かれるか |
+| 6 | アーカイブが無い場合。public 区分だけで進み、秘匿値の雛形が置かれるか |
 | 7 | アーカイブの中身。AES-256・トップレベル・ソケット除外・秘匿値と macOS 設定の同梱 |
 | 8 | `pre-commit` が資格情報を止め、正常なものを通すか |
-| 9 | 雛形と実体の一致、層をまたぐ名前衝突、`private/` の非追跡 |
+| 9 | 雛形と実体の一致、区分をまたぐ名前衝突、`private/` の非追跡 |
 
 ## 検査を足すとき
 

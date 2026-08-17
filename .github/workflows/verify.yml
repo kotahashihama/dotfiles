@@ -70,11 +70,11 @@ jobs:
           else
             echo "  ✓ 雛形は変数名のみ"
           fi
-          # 公開層に資格情報が無いこと
+          # 公開区分に資格情報が無いこと
           if git ls-files | xargs grep -lE 'sk-ant-api[0-9]{2}-[A-Za-z0-9_-]{30}|AKIA[0-9A-Z]{16}|ghp_[A-Za-z0-9]{36}' 2>/dev/null | grep -v 'verify_restore.sh\|git-hooks/pre-commit'; then
-            echo "✗ 公開層に資格情報らしき文字列がある"
+            echo "✗ 公開区分に資格情報らしき文字列がある"
             fail=1
           else
-            echo "  ✓ 公開層に資格情報なし"
+            echo "  ✓ 公開区分に資格情報なし"
           fi
           exit $fail
