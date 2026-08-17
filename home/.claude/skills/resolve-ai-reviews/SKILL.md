@@ -179,7 +179,7 @@ user 判断が確定するまで、 該当コメントには何もしない (修
 
 #### 対応したコメントへリアクションを付ける
 
-**コードで応えたコメントに `+1`（👍）を付ける**（`react_to_addressed_reviews.md`）。返信とは別に、一覧で対応済みが分かる状態にする。
+**ハッシュを返信したコメントに `+1`（👍）を付ける**（`react_to_addressed_reviews.md`）。**返信とセット**で、一覧から対応済みが分かる状態にする。返信を投稿していないコメントには付けない。
 
 ```bash
 gh api -X POST repos/OWNER/REPO/pulls/comments/<comment_id>/reactions -f content='+1'
