@@ -93,6 +93,11 @@ check "macOS 設定が含まれる"     "$(inarc | grep -c 'macos-defaults/.*pli
 
 echo "── 8. pre-commit フック ──"
 cd "$D"
+# フックはステージ済みの全ファイルを見る。実行前から何かがステージされていると
+# その内容で判定が変わり、この節の結果が信用できなくなる。
+if [ -n "$(git diff --cached --name-only)" ]; then
+  ng "ステージが空であること" "先にステージ済みのファイルがある。git reset してから再実行する"
+fi
 hook() {
   git add "$1" 2>/dev/null
   sh scripts/git-hooks/pre-commit >"$W/hooklog" 2>&1; rc=$?
