@@ -1,63 +1,66 @@
 ---
-description: 偽の HOME を作って backup → restore を通しで流し、新規マシンでリストアが成立するかを実測する。scripts/ や層構成を変更した直後に使う。ユーザーが「リストアを検証して」「新規マシンで動くか確かめて」「/verify-restore」等を指示したときに使う。
-allowed-tools: Bash(mkdir:*) Bash(rm:*) Bash(cp:*) Bash(rsync:*) Bash(ls:*) Bash(readlink:*) Bash(find:*) Bash(unzip:*) Bash(zsh:*) Bash(sh:*) Bash(printf:*) Bash(chmod:*)
+description: バックアップ → リストアを偽の HOME で通しで流し、新規マシンでリストアが成立するかを実測する。scripts/ や層構成を変更した直後に使う。ユーザーが「リストアを検証して」「新規マシンで動くか確かめて」「/verify-restore」等を指示したときに使う。
+argument-hint: "(引数なし。scripts/verify_restore.sh を流して結果を読む)"
+allowed-tools: Bash(./scripts/verify_restore.sh:*) Bash(bash scripts/verify_restore.sh:*) Bash(sh scripts/verify_restore.sh:*) Bash(git status:*) Bash(git diff:*) Bash(readlink:*) Bash(ls:*) Bash(find:*) Bash(zsh:*)
 ---
 
 `scripts/restore_dotfiles.sh` は**何も無いマシンで走る**のが本番。既存マシンでは `ln` が File exists で黙って失敗して素通りするため、壊れる経路を通らない。詳細は `.claude/rules/restore-verification.md`。
 
 ## 進め方
 
-1. **作業場所を用意する**: スクラッチパッド配下に `fakehome` と `bin` を作る。`~` は絶対に触らない
+1. **ステージを空にする**: `git diff --cached --name-only` が空であること。フックの検査はステージ済みの全ファイルを見るため、残っていると結果が変わる
 
-2. **リポジトリを複製する**: `rsync -a --exclude '.git' --exclude '*.sock' --exclude 'agent/' --exclude 'sockets/'` で本物をコピーする。ソケットは複製できずエラーになる
-
-3. **backup を流す**: 環境変数で行き先を差し替える
+2. **流す**
 
    ```sh
-   PRIVATE_ARCHIVE=$SIM/priv.tar.gz.gpg PRIVATE_PASSPHRASE=testpass DOTFILES_DIR=$SIM/repo \
-     sh scripts/backup_dotfiles.sh
+   ./scripts/verify_restore.sh
    ```
 
-   アーカイブが GPG 形式で、展開後のトップレベルが `private` になっていることを確認する（`file -b` と `tar tzf`）
+   偽の HOME を `mktemp -d` に作り、終わったら消す。**実機の `~` には触らない。** 実リポジトリに対しては読み取りとステージ操作しか行わない
 
-4. **新規マシンを再現する**: 複製から `private/` を削除する。`git clone` 直後の状態になる
+3. **失敗した項目を読む**: `期待 [...] 実際 [...]` の形で出る。**空の結果を「該当なし」と読まない**（`verify_before_asserting.md`）
 
-5. **`brew` を stub して restore を流す**: `printf '#!/bin/sh\necho "[stub] brew $*"\n'` で置き、`PATH` の先頭に足す
+4. **直したら再実行する**。全項目が通るまで繰り返す
 
-   ```sh
-   PATH=$SIM/bin:$PATH HOME=$SIM/fakehome DOTFILES_DIR=$SIM/repo \
-     PRIVATE_ARCHIVE=$SIM/priv.tar.gz.gpg PRIVATE_PASSPHRASE=testpass sh scripts/restore_dotfiles.sh
-   ```
+## 何を見ているか
 
-6. **4 点を確認する**
+| 節 | 観点 |
+| --- | --- |
+| 1 | スクリプトの構文 |
+| 2 | 新規マシンへのリストア。リンク先・部分リンク・秘匿値・**リポジトリ本体が無傷か** |
+| 3 | 偽 HOME でシェルが起動し、エイリアスが引けるか |
+| 4 | **冪等性**。2 回流しても退避が起きず結果が同じか |
+| 5 | 既存の実体がある `~` への上書き。**消さずに退避するか** |
+| 6 | アーカイブが無い場合。public 層だけで進み、秘匿値の雛形が置かれるか |
+| 7 | アーカイブの中身。AES-256・トップレベル・ソケット除外・秘匿値と macOS 設定の同梱 |
+| 8 | `pre-commit` が資格情報を止め、正常なものを通すか |
+| 9 | 雛形と実体の一致、層をまたぐ名前衝突、`private/` の非追跡 |
 
-   | 観点 | 確認方法 |
-   | --- | --- |
-   | リポジトリが無傷か | `$SIM/repo/home` と `private` の実体が読めるか。`Too many levels of symbolic links` が出ないか |
-   | リンク先が正しいか | `readlink` で `~/.zsh_aliases` が public、`~/.zsh_aliases_private` が private を指すか |
-   | 部分リンクが効いているか | `~/.claude` `~/.codex` `~/.cursor` が実体ディレクトリで、子要素がリンクか |
-   | 秘匿値なしで起動するか | `HOME=$SIM/fakehome zsh -ic` でシェルが立ち上がり、主要エイリアスが引けるか |
+## 検査を足すとき
 
-7. **後片付け**: 偽 HOME を削除する
+**スクリプトに `check` を 1 行足す。** 手順書だけを直しても実行されない。
+
+```sh
+check "説明" "$(実際の値を出すコマンド)" "期待値"
+```
+
+**固定値をハードコードしない。** スキル数のように増減するものは、リポジトリから数えて期待値にする（`$SKILLS`）。固定すると、増えるたびに偽の失敗が出る。
 
 ## 出力の目安
 
-観点ごとに合否を示し、リンクは**リンク元 → リンク先**の形で並べる。失敗したら、どの手順のどの行が原因かまで書く。
+**失敗が無ければ合計行だけでよい。** 全項目を貼ると、何が問題なのか埋もれる。
 
 ```markdown
-| 観点 | 結果 |
-| --- | --- |
-| リポジトリの実体 | 無傷 |
-| リンク先 | .zsh_aliases -> home/, .zsh_aliases_private -> private/ |
-| 部分リンク | .claude 配下 5 件すべて子要素リンク |
-| 秘匿値なしの起動 | 起動 OK、cldpr / ssml / gst すべて定義済み |
+51 項目すべて通過（`./scripts/verify_restore.sh`）
 ```
+
+失敗したときは、**その項目の期待値と実際の値、原因、直し方**を出す。
 
 ## やってはいけないこと
 
 - 本物の `~` に対して restore を流すこと
 - 既存マシンで動いたことを根拠に「検証済み」と報告すること
-- `private/` を削除する手順を飛ばすこと。**既に private/ がある状態で流すと、壊れる経路を通らない**
+- **ステージにファイルが残ったまま流すこと**。8 節の結果が信用できなくなる
 - `PRIVATE_PASSPHRASE` を手作業で使うこと。**検証専用**で、`ps` とシェル履歴に残る
 - `~/.gnupg` が偽 HOME に作られるのを異常として扱うこと。gpg が復号時に自分で作る
-- 検証で作った偽 HOME を消さずに残すこと
+- **ダミーの資格情報をリテラルで書くこと**。スクリプト自身が `pre-commit` に引っかかる。組み立てる形にする
