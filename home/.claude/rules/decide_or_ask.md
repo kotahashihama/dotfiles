@@ -66,6 +66,7 @@
 
 本ルールは判断軸を示す。**個別の場面はそれぞれのルールが規定する。**
 
+- `no_unnecessary_pausing.md`（確認が要らないなら止まらない）: 本ルールが**尋ねるべき場面**を定め、あちらが**尋ねるべきでない場面**を定める。表裏で 1 組
 - `no_auto_commit.md` / `no_auto_ready_pr.md`: 取り消せない操作の代表例
 - `no_auto_reply_human_review_comments.md`: 「聞かずに待つ」側の代表例
 - `explain_review_comment_first.md`: 尋ねるときの形を、レビュー対応の文脈で具体化したもの
