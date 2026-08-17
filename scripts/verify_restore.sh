@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # バックアップ → リストアを偽の HOME で通しで流し、新規マシンで成立するかを実測する。
 #
@@ -7,6 +7,7 @@
 # 実リポジトリに対しては読み取りとステージ操作しか行わない。
 # コミット・reset --hard は使わない（未コミットの作業を壊すため）。
 #
+# プロセス置換を使うため bash で書く。sh では動かない。
 set -u
 
 D=$(cd "$(dirname "$0")/.." && pwd)
@@ -19,7 +20,7 @@ ng()   { FAIL=$((FAIL+1)); printf '  ✗ %s — %s\n' "$1" "$2"; }
 check(){ if [ "$2" = "$3" ]; then ok "$1"; else ng "$1" "期待 [$3] 実際 [$2]"; fi; }
 
 setup() {
-  rm -rf "$W/repo" "$W/fakehome" "$W/bin"
+  rm -rf "${W:?}/repo" "${W:?}/fakehome" "${W:?}/bin"
   mkdir -p "$W/fakehome/Desktop" "$W/bin"
   rsync -a --exclude '.git' --exclude '*.sock' --exclude 'agent/' --exclude 'sockets/' "$D/" "$W/repo/" 2>/dev/null
   printf '#!/bin/sh\necho "[stub] brew $*" >/dev/null\n' > "$W/bin/brew"; chmod +x "$W/bin/brew"
@@ -44,7 +45,9 @@ check ".zsh_aliases のリンク先"         "$(lnk .zsh_aliases)"         "home
 check ".zsh_aliases_private のリンク先" "$(lnk .zsh_aliases_private)" "private/.zsh_aliases_private"
 check ".aws のリンク先"                 "$(lnk .aws)"                 "private/.aws"
 check ".secrets のリンク先"             "$(lnk .secrets)"             "private/.secrets"
+# shellcheck disable=SC2088  # 表示用の文字列。実パスは別途展開している
 check "~/.claude/skills 件数"           "$(ls -A "$W/fakehome/.claude/skills" 2>/dev/null | wc -l | tr -d ' ')" "$SKILLS"
+# shellcheck disable=SC2088  # 表示用の文字列。実パスは別途展開している
 check "~/.codex 子要素リンク"           "$(lnk .codex/config.toml)"   "private/.codex/config.toml"
 check "deny-patterns は非リンク"        "$([ -e "$W/fakehome/.claude/deny-patterns.txt" ] && echo あり || echo なし)" "なし"
 check "秘匿値がアーカイブから復元"      "$([ -f "$W/fakehome/.secrets/env" ] && echo あり || echo なし)" "あり"
@@ -100,7 +103,7 @@ check "インストール一覧が含まれる" "$(inarc | grep -c 'inventory/.*
 check "LaunchAgents が含まれる"  "$(inarc | grep -c 'LaunchAgents/.*plist' | awk '{print ($1>0)?"あり":"なし"}')" "あり"
 
 echo "── 8. pre-commit フック ──"
-cd "$D"
+cd "$D" || exit 1
 # フックはステージ済みの全ファイルを見る。実行前から何かがステージされていると
 # その内容で判定が変わり、この節の結果が信用できなくなる。
 if [ -n "$(git diff --cached --name-only)" ]; then
@@ -183,7 +186,7 @@ check "private へ移す"       "$(cat "$AW/repo/private/.testrc" 2>/dev/null)" 
 check "元の位置がリンクになる" "$([ -L "$AW/fakehome/.testrc" ] && echo リンク || echo 実体)" "リンク"
 check "リンク経由で読める"     "$(cat "$AW/fakehome/.testrc" 2>/dev/null)" "hello"
 
-rm -rf "$W"
+rm -rf "${W:?}"
 echo
 echo "══ 合計: 成功 $PASS / 失敗 $FAIL ══"
 [ "$FAIL" -eq 0 ]

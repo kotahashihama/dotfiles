@@ -1,0 +1,80 @@
+name: verify
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# macOS 固有の検査（defaults / duti / Launch Services）は Linux では走らない。
+# ここで見るのは構文と、環境に依存しないロジックだけ。
+# 通しの検証は手元で ./scripts/verify_restore.sh を流す。
+jobs:
+  shell:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 構文チェック
+        run: |
+          fail=0
+          for f in scripts/*.sh scripts/git-hooks/pre-commit; do
+            # verify_restore.sh はプロセス置換を使うため bash で書かれている
+            case "$f" in
+              */verify_restore.sh) bash -n "$f" || { echo "✗ $f"; fail=1; } ;;
+              *)                   sh   -n "$f" || { echo "✗ $f"; fail=1; } ;;
+            esac
+          done
+          exit $fail
+
+      - name: shellcheck
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq shellcheck
+          # SC1090/SC1091: 動的な source は追えない
+          # SC2012/SC2010/SC2126: ls の使い方。扱うのは自分で決めた名前だけなので許容する
+          # SC2034/SC2030/SC2031: source した先で使う変数を未使用と誤判定する
+          EXCLUDE=SC1090,SC1091,SC2012,SC2010,SC2126,SC2034,SC2030,SC2031
+          # verify_restore.sh だけ bash。sh で見ると bash 固有の記法が誤検出になる。
+          # 1 ファイルずつ渡す。変数へ溜めて展開する形はシェルによって単語分割の
+          # 有無が違い、全部が 1 つのファイル名として渡る事故が起きる。
+          fail=0
+          for f in scripts/*.sh scripts/git-hooks/pre-commit; do
+            case "$f" in
+              */verify_restore.sh) shellcheck -s bash -e "$EXCLUDE" "$f" || fail=1 ;;
+              *)                   shellcheck -s sh   -e "$EXCLUDE" "$f" || fail=1 ;;
+            esac
+          done
+          exit $fail
+
+      - name: パス判定のロジック
+        run: |
+          . ./scripts/lib.sh
+          fail=0
+          assert() { # 説明 実際 期待
+            if [ "$2" = "$3" ]; then echo "  ✓ $1"; else echo "  ✗ $1（期待 $3 / 実際 $2）"; fail=1; fi
+          }
+          assert "is_partial が一致を拾う"       "$(is_partial '.claude' && echo y || echo n)" "y"
+          assert "is_partial が空白入りを拾う"   "$(is_partial 'Library/Application Support' && echo y || echo n)" "y"
+          assert "is_partial が無関係を弾く"     "$(is_partial '.zshrc' && echo y || echo n)" "n"
+          assert "is_partial が部分一致を弾く"   "$(is_partial '.claude/skills/foo' && echo y || echo n)" "n"
+          assert "is_no_link が一致を拾う"       "$(is_no_link '.claude-memory' && echo y || echo n)" "y"
+          assert "is_no_link が無関係を弾く"     "$(is_no_link '.zshrc' && echo y || echo n)" "n"
+          exit $fail
+
+      - name: 秘匿値の雛形と検出パターンの整合
+        run: |
+          fail=0
+          # 雛形は変数名だけで、値が入っていてはいけない
+          if grep -vE "^export [A-Z_]+=''$" scripts/secrets.env.example | grep -q .; then
+            echo "✗ scripts/secrets.env.example に値が入っている"
+            fail=1
+          else
+            echo "  ✓ 雛形は変数名のみ"
+          fi
+          # 公開層に資格情報が無いこと
+          if git ls-files | xargs grep -lE 'sk-ant-api[0-9]{2}-[A-Za-z0-9_-]{30}|AKIA[0-9A-Z]{16}|ghp_[A-Za-z0-9]{36}' 2>/dev/null | grep -v 'verify_restore.sh\|git-hooks/pre-commit'; then
+            echo "✗ 公開層に資格情報らしき文字列がある"
+            fail=1
+          else
+            echo "  ✓ 公開層に資格情報なし"
+          fi
+          exit $fail

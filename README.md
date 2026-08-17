@@ -74,6 +74,18 @@ git clone --recursive https://github.com/sorin-ionescu/prezto.git "${ZDOTDIR:-$H
 exec zsh
 ```
 
+### 手で移すもの
+
+dotfiles では運ばない。**新マシンで消えるので、移行前に確認する。**
+
+- [ ] `~/Documents` の作業ファイル（リポジトリは `git clone` で戻る）
+- [ ] `~/Desktop` `~/Downloads` に置いたままのもの
+- [ ] Keychain（パスワード・証明書）
+- [ ] Wi-Fi のパスワード
+- [ ] アクセシビリティ / フルディスクアクセスの許可（アプリ起動時に都度）
+- [ ] ブラウザのプロファイル（アカウント同期があれば自動）
+- [ ] `private/.inventory/` を見て、拡張とアプリを入れ直す
+
 リンク先に実体があった場合は削除せず `~/dotfiles-salvaged-<日時>/` へ退避する。**リストアが既存の設定を消すことはない。**
 
 アーカイブが手元に無い場合も public 層だけリンクして進む。`private/.secrets/env` には雛形が置かれるので、値はパスワードマネージャから入れる。
@@ -91,6 +103,7 @@ exec zsh
 | `restore_osx.sh` | macOS の設定を適用し、書き出した `defaults` と関連付けを取り込む |
 | `restore_languages.sh` | mise で言語ランタイムを入れる |
 | `lib.sh` | 上記が共有する定義とヘルパー |
+| `verify_restore.sh` | バックアップ → リストアを偽の HOME で通しで流す（79 項目） |
 | `git-hooks/pre-commit` | 公開層への認証情報・非公開の固有名の混入を止める |
 
 ## Claude Code の資産
