@@ -6,7 +6,7 @@ macOS の設定ファイル一式。`~` 側は実体を持たず、このリポ�
 
 | 知りたいこと | 場所 |
 | --- | --- |
-| 置き場の定義・置き場の選び方・秘匿値の切り出し方 | [`docs/placement.md`](docs/placement.md) |
+| 置き場の定義・選び方・秘匿値の切り出し方 | [`docs/placement.md`](docs/placement.md) |
 | バックアップ / リストアの手順 | [`README.md`](README.md) |
 
 ## このリポジトリは GitHub 上で public
