@@ -177,6 +177,16 @@ user 判断が確定するまで、 該当コメントには何もしない (修
 
 他リポジトリの PR / issue に触れるときは **`owner/repo#123`** (同一リポジトリなら `#123`)。 owner を省略すると同一リポジトリの番号として解釈され、 リンクが別物を指すか機能しなくなる。 同じ返信の 2 回目以降も省略しない (`github_cross_repo_reference.md`)。
 
+#### 対応したコメントへリアクションを付ける
+
+**コードで応えたコメントに `+1`（👍）を付ける**（`react_to_addressed_reviews.md`）。返信とは別に、一覧で対応済みが分かる状態にする。
+
+```bash
+gh api -X POST repos/OWNER/REPO/pulls/comments/<comment_id>/reactions -f content='+1'
+```
+
+非対応と判断したコメント（誤検知・見送り）には付けない。理由返信だけを残す。
+
 #### Resolve conversation
 
 - **返信を投稿したスレッドは、 そのつど Resolve conversation で解決済みにする**。 返信のみだと未解決のまま残り、 レビュアーの再点検負荷が増える。
