@@ -35,6 +35,10 @@ tar czf - \
   --exclude 'private/.ssh/agent' \
   --exclude 'private/.config/iterm2/sockets' \
   --exclude '*/cache/*' --exclude '*/Cache/*' --exclude '*/logs/*' --exclude '*.log' \
+  `# ツールが再取得できる実体。設定ではないので運ばない` \
+  --exclude 'private/.config/tfenv/versions' \
+  --exclude 'private/.config/raycast/extensions' \
+  --exclude 'private/.config/gcloud/virtenv' \
   private | gpg_encrypt > "$PRIVATE_ARCHIVE"
 
 chmod 600 "$PRIVATE_ARCHIVE"
