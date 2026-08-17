@@ -75,4 +75,4 @@ allowed-tools: Skill, Bash(gh pr list:*) Bash(gh pr view:*) Bash(gh pr checks:*)
 
 - `list-prs`（一覧を出す）: **状態を見せる**のがあちら、**直す**のがこちら。判定の観点も違う
 - `finalize-pr`（1 本を仕上げる）: 実際の仕上げはすべて委譲する
-- `no_auto_ready_pr.md`（ready 化は明示指示のみ）: 仕上げても ready にはしない
+- `no_auto_ready_pr.md`（レビュー依頼は明示指示のみ）: 仕上げても ready 化・再依頼はしない
