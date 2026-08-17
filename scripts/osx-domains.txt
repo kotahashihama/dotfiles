@@ -29,3 +29,11 @@ com.apple.HIToolbox
 com.apple.Safari
 com.apple.TextEdit
 com.apple.screencapture
+
+# アプリ（~/Library/Preferences/*.plist に入る。手で設定し直すと時間がかかるもの）
+com.googlecode.iterm2
+com.raycast.macos
+com.lwouis.alt-tab-macos
+dev.warp.Warp-Stable
+company.thebrowser.Browser
+com.apple.Terminal
