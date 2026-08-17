@@ -137,7 +137,8 @@ dotfiles では運ばない。**新マシンで消えるので、移行前に確
 
 | 種類 | 中身 |
 | --- | --- |
-| システム設定 | Finder・Dock・Spaces・トラックパッド・キーボードショートカット・メニューバー等 16 ドメイン |
+| システム設定 | Finder・Dock・Spaces・トラックパッド・キーボードショートカット・メニューバー等 |
+| **アプリ設定** | iTerm2・Raycast・AltTab・Warp・Arc・Terminal（合わせて 22 ドメイン） |
 | 関連付け | 拡張子ごとの既定アプリ 38 件 |
 | 一覧 | App Store・VS Code / Cursor の拡張・グローバル npm・mise |
 | 自動起動 | 自分で入れた LaunchAgents |
@@ -152,10 +153,10 @@ dotfiles では運ばない。**新マシンで消えるので、移行前に確
 
 ## 手動で設定する必要があるもの
 
-- AltTab
-- Raycast
-- gh
+- gh の認証（`gh auth login`）
 - `private/.secrets/env` の値（アーカイブが無い場合のみ）
+
+AltTab と Raycast の設定は `defaults` で運ぶので、手で入れ直す必要はない（アプリ本体は `Brewfile` から入る）。
 
 ## 留意事項
 
