@@ -113,43 +113,19 @@ defaults write com.apple.TextEdit RichText -int 0
 # 上の defaults write は「最低限こうしたい」を表す。旧マシンの書き出しが
 # あればそれで上書きし、GUI から変えた設定まで引き継ぐ。
 # 書き出しが無い場合（初回など）は上の既定値のまま進む。
-DEFAULTS_DIR="$(cd "$(dirname "$0")/.." && pwd)/private/.macos-defaults"
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+. "$ROOT/scripts/lib.sh"
 
-if [ -d "$DEFAULTS_DIR" ]; then
-  imported=0
-  for f in "$DEFAULTS_DIR"/*.plist; do
-    [ -f "$f" ] || continue
-    domain=$(basename "$f" .plist)
-    defaults import "$domain" "$f" && imported=$((imported + 1))
-  done
-  echo "   書き出した設定を取り込みました: $imported ドメイン"
+import_macos_defaults "$ROOT/private/.macos-defaults"
 
-  # 取り込んだ内容を反映させる。起動していないものは失敗して構わない
-  for app in Finder Dock SystemUIServer ControlCenter; do
-    killall "$app" 2>/dev/null || true
-  done
-else
-  echo "   書き出した設定がありません。上記の既定値のみ適用しました"
-fi
+# 取り込んだ内容を反映させる。起動していないものは失敗して構わない
+for app in Finder Dock SystemUIServer ControlCenter; do
+  killall "$app" 2>/dev/null || true
+done
 
-#
-# 拡張子とアプリの関連付け
-#
-ASSOC="$(cd "$(dirname "$0")/.." && pwd)/private/.associations/duti.txt"
+apply_associations "$ROOT/private/.associations/duti.txt"
 
-if [ -f "$ASSOC" ] && command -v duti >/dev/null 2>&1; then
-  # アプリが未導入だと失敗する。入れ直した後に流し直せば揃う
-  applied=0
-  while read -r bundle ext role; do
-    [ -n "$bundle" ] || continue
-    duti -s "$bundle" "$ext" "$role" 2>/dev/null && applied=$((applied + 1))
-  done < "$ASSOC"
-  echo "   関連付けを適用しました: $applied / $(wc -l < "$ASSOC" | tr -d ' ') 件"
-elif [ -f "$ASSOC" ]; then
-  echo "   duti が無いため関連付けを飛ばしました。brew install duti の後に流し直してください"
-fi
-
-KEYBOARD="$(cd "$(dirname "$0")/.." && pwd)/private/.keyboard/text-replacements.tsv"
+KEYBOARD="$ROOT/private/.keyboard/text-replacements.tsv"
 if [ -f "$KEYBOARD" ]; then
   echo "   テキスト置換 $(wc -l < "$KEYBOARD" | tr -d ' ') 件は自動で戻りません。"
   echo "   iCloud 同期が有効なら自動、そうでなければ $KEYBOARD を見て手で入れてください"

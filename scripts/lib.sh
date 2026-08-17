@@ -102,3 +102,33 @@ link_layer() {
     fi
   done
 }
+
+# 書き出した defaults を取り込む。restore_osx.sh から呼ぶが、
+# 単体で検証できるようここに置く。
+import_macos_defaults() {
+  dir=$1
+  [ -d "$dir" ] || { echo "   書き出した設定がありません"; return 0; }
+  n=0
+  for f in "$dir"/*.plist; do
+    [ -f "$f" ] || continue
+    defaults import "$(basename "$f" .plist)" "$f" && n=$((n + 1))
+  done
+  echo "   書き出した設定を取り込みました: $n ドメイン"
+}
+
+# 拡張子とアプリの関連付けを適用する。アプリが未導入なら失敗するが、
+# 入れ直せば揃うので中断しない。
+apply_associations() {
+  file=$1
+  [ -f "$file" ] || return 0
+  if ! command -v duti >/dev/null 2>&1; then
+    echo "   duti が無いため関連付けを飛ばしました。brew install duti の後に流し直してください"
+    return 0
+  fi
+  n=0
+  while read -r bundle ext role; do
+    [ -n "$bundle" ] || continue
+    duti -s "$bundle" "$ext" "$role" 2>/dev/null && n=$((n + 1))
+  done < "$file"
+  echo "   関連付けを適用しました: $n / $(wc -l < "$file" | tr -d ' ') 件"
+}
