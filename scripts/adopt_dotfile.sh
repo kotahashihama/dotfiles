@@ -20,7 +20,9 @@ case "$LAYER" in
 esac
 
 [ -n "$TARGET" ] || { echo "対象パスを指定してください" >&2; exit 1; }
+# shellcheck disable=SC2088  # 表示用の文字列。実パスは別途展開している
 [ -e ~/"$TARGET" ] || { echo "~/$TARGET がありません" >&2; exit 1; }
+# shellcheck disable=SC2088  # 表示用の文字列。実パスは別途展開している
 [ -L ~/"$TARGET" ] && { echo "~/$TARGET は既にリンクです" >&2; exit 1; }
 
 DEST="$DOTFILES_DIR/$DEST_LAYER/$TARGET"
