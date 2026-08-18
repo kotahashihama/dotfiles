@@ -31,7 +31,7 @@ allowed-tools: Bash(gh pr list:*) Bash(gh pr view:*) Bash(gh pr checks:*) Bash(g
 | --- | --- |
 | CI | `gh pr checks <PR>` |
 | マージ可否 | `gh pr view <PR> --json mergeStateStatus` |
-| **approve の有無** | **`latestReviews` を GraphQL で引く**（下記。`reviewDecision` は使わない） |
+| **approve の有無** | **`latestOpinionatedReviews` を GraphQL で引く**（下記。`reviewDecision` と `latestReviews` は使わない） |
 | 自分のコメント | `gh api repos/OWNER/REPO/issues/<PR>/comments` から保留メモ等を拾う |
 
 **CI が fail のときは原因まで見る。** `approval required`（レビュー承認待ち）のようにコードと無関係な失敗があり、これを「壊れている」と報告すると誤解を招く。`gh run view <id> --log-failed` で末尾を確認する。
@@ -44,7 +44,7 @@ allowed-tools: Bash(gh pr list:*) Bash(gh pr view:*) Bash(gh pr checks:*) Bash(g
 
 ### 4. 紐づきを洗い出す
 
-**横断で見る一番の目的がここ。** 各 PR の**本文と自分のコメント**から PR 参照を抽出し（`owner/repo#123` / 同一リポジトリの `#123` / コメントへのアンカー付き URL）、参照先の状態を引く（`gh pr view <ref> --json state,mergedAt,isDraft`（approve が要るなら `latestReviews` を併せて引く））。**リポジトリをまたぐ参照も対象**。
+**横断で見る一番の目的がここ。** 各 PR の**本文と自分のコメント**から PR 参照を抽出し（`owner/repo#123` / 同一リポジトリの `#123` / コメントへのアンカー付き URL）、参照先の状態を引く（`gh pr view <ref> --json state,mergedAt,isDraft`（approve が要るなら `latestOpinionatedReviews` を併せて引く））。**リポジトリをまたぐ参照も対象**。
 
 紐づきが分かったら、**どちらが待たせている側か**まで判定する。
 
@@ -230,12 +230,22 @@ CI の修正
 - **ready かつ approve 未取得のものだけ並べる。** draft は依頼できず、**approve 済みは依頼する相手がいない**
 - 該当が無い優先度はブロックごと省く
 
-**approve の判定に `reviewDecision` を使わない。** ruleset の `required_approving_review_count` が 0 だと、**approve が付いていても `null` を返します**。`latestReviews` を引き、`state == "APPROVED"` が 1 件でもあるかで判定する。
+**approve の判定は `latestOpinionatedReviews` で行う。** `state == "APPROVED"` が 1 件でもあるかで判定する。**COMMENTED を除いて、レビュアーごとの最新の賛否だけ**を返すフィールド。
 
-**`null` を「未取得」と読まない。** 実測では 40 PR のうち 9 件が、`null` なのに approve 済みでした。リポジトリの ruleset 次第なので、**値ではなく `latestReviews` を見る**。
+**`reviewDecision` と `latestReviews` はどちらも取りこぼす。** 実測 41 PR での正答は次のとおり。
+
+| フィールド | 正答 | 外す条件 |
+| --- | --- | --- |
+| `reviewDecision` | 32 / 41 | ruleset の `required_approving_review_count` が 0 のリポジトリでは、**approve 済みでも `null`** |
+| `latestReviews` | 40 / 41 | **approve が入らない PR がある**（機構は未特定。approve 後の追加レビューでは説明できなかった） |
+| **`latestOpinionatedReviews`** | **41 / 41** | 未観測 |
+
+**`null` を「未取得」と読まない。** `reviewDecision` が `null` でも approve 済みのことがあり、リポジトリの ruleset 次第です。**値ではなくレビュー一覧を見る。**
+
+疑わしいときは `reviews(first:100)` を全件引き、レビュアーごとに `submittedAt` が最新の賛否を自分で数える。これが最終的な裏取りの手段。
 
 ```bash
-gh api graphql -f query='query{repository(owner:"OWNER",name:"REPO"){pullRequest(number:NNN){latestReviews(first:20){nodes{state author{login}}}}}}'
+gh api graphql -f query='query{repository(owner:"OWNER",name:"REPO"){pullRequest(number:NNN){latestOpinionatedReviews(first:20){nodes{state author{login}}}}}}'
 ```
 
 ## 出力の目安
