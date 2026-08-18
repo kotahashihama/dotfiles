@@ -63,8 +63,6 @@ alias tfa='tf apply'
 # Claude Code
 alias cld='claude'
 alias cldr='cld -r'
-alias cldp='claude --dangerously-skip-permissions --dangerously-load-development-channels server:claude-peers'
-alias cldpr='cldp -r'
 alias cldrc='claude remote-control'
 
 # Anthropic Computer Use
