@@ -91,6 +91,7 @@
 
 ## 関連
 
+- `focus_insights_on_judgment.md`（洞察は判断材料に絞る）: 本ルールが禁じる「装飾のための Insight」の**線引き**をあちらが定める
 - `plain_language_explanation.md` (平易に噛み砕く) と両立させる: **短く、かつ平易に**
 - `explain_review_comment_first.md` (レビュー対応の粒度) の要求は本ルールより優先
 - `summarize_after_each_task.md` (各作業後のサマリ) も本ルールに従って短く
