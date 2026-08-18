@@ -30,7 +30,8 @@ allowed-tools: Bash(gh pr list:*) Bash(gh pr view:*) Bash(gh pr checks:*) Bash(g
 | 取るもの | コマンド |
 | --- | --- |
 | CI | `gh pr checks <PR>` |
-| マージ可否 | `gh pr view <PR> --json mergeStateStatus,reviewDecision` |
+| マージ可否 | `gh pr view <PR> --json mergeStateStatus` |
+| **approve の有無** | **`latestReviews` を GraphQL で引く**（下記。`reviewDecision` は使わない） |
 | 自分のコメント | `gh api repos/OWNER/REPO/issues/<PR>/comments` から保留メモ等を拾う |
 
 **CI が fail のときは原因まで見る。** `approval required`（レビュー承認待ち）のようにコードと無関係な失敗があり、これを「壊れている」と報告すると誤解を招く。`gh run view <id> --log-failed` で末尾を確認する。
@@ -43,7 +44,7 @@ allowed-tools: Bash(gh pr list:*) Bash(gh pr view:*) Bash(gh pr checks:*) Bash(g
 
 ### 4. 紐づきを洗い出す
 
-**横断で見る一番の目的がここ。** 各 PR の**本文と自分のコメント**から PR 参照を抽出し（`owner/repo#123` / 同一リポジトリの `#123` / コメントへのアンカー付き URL）、参照先の状態を引く（`gh pr view <ref> --json state,mergedAt,isDraft,reviewDecision`）。**リポジトリをまたぐ参照も対象**。
+**横断で見る一番の目的がここ。** 各 PR の**本文と自分のコメント**から PR 参照を抽出し（`owner/repo#123` / 同一リポジトリの `#123` / コメントへのアンカー付き URL）、参照先の状態を引く（`gh pr view <ref> --json state,mergedAt,isDraft`（approve が要るなら `latestReviews` を併せて引く））。**リポジトリをまたぐ参照も対象**。
 
 紐づきが分かったら、**どちらが待たせている側か**まで判定する。
 
@@ -229,7 +230,14 @@ CI の修正
 - **ready かつ approve 未取得のものだけ並べる。** draft は依頼できず、**approve 済みは依頼する相手がいない**
 - 該当が無い優先度はブロックごと省く
 
-**approve の判定に `reviewDecision` を使わない。** ruleset の `required_approving_review_count` が 0 だと**常に `null` を返します**。`latestReviews` を引いて `APPROVED` があるかで判定する。
+**approve の判定に `reviewDecision` を使わない。** ruleset の `required_approving_review_count` が 0 だと**実際の approve と食い違います**。`latestReviews` を引き、`state == "APPROVED"` が 1 件でもあるかで判定する。
+
+**食い違いは両方向に起きる。** 「`null` なら未取得」とも読めないので、値を見て判断しない。
+
+| `reviewDecision` | 実際の approve |
+| --- | --- |
+| `APPROVED` | **0 件のことがある**（偽陽性） |
+| `null` / 空 | **付いていることがある**（偽陰性） |
 
 ```bash
 gh api graphql -f query='query{repository(owner:"OWNER",name:"REPO"){pullRequest(number:NNN){latestReviews(first:20){nodes{state author{login}}}}}}'
