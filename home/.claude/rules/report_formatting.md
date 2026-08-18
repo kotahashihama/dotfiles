@@ -10,8 +10,8 @@
 ```markdown
 ## Push 完了
 
-- `314c13312 refactor(owned_job): BulkUpdate エラーラップの規約準拠化`
-- `9388e541c refactor(owned_job): bulkUpdateOwnedJobsRow doc の内部実装詳細除去`
+- `314c13312 refactor(order): BulkUpdate エラーラップの規約準拠化`
+- `9388e541c refactor(order): bulkUpdateOrderRow doc の内部実装詳細除去`
 ```
 
 単発なら `Push しました: 461dbb81d` の 1 行でよく、subject の併記があるとより親切です。

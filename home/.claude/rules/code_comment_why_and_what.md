@@ -15,11 +15,11 @@
 
 ```ts
 /**
- * 求人の公開状態を判定する。下書きと掲載終了は非公開として扱う。   ← WHAT: 1〜2 行
+ * 記事の公開状態を判定する。下書きと掲載終了は非公開として扱う。   ← WHAT: 1〜2 行
  */
-export function isPublished(job: Job): boolean {
+export function isPublished(post: Post): boolean {
   // 掲載期限は締め日の 23:59 まで有効。日付比較だと当日が落ちる。   ← WHY: 熱量はこちら
-  return job.status === 'published' && job.expiresAt > now()
+  return post.status === 'published' && post.expiresAt > now()
 }
 ```
 

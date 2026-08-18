@@ -53,7 +53,7 @@ Co-Authored-By: Claude Code <noreply@anthropic.com>
 体言止め（名詞止め）で統一する。
 
 ```
-feat(csv_import): 実行者・エラー列の追加と自社求人オプションの分離
+feat(csv_import): 実行者・エラー列の追加と取込オプションの分離
 fix(auth): トークン期限切れ時に 401 を返す修正
 refactor(csv_import): 未リリースのためデータ移行処理を削除
 chore: 依存パッケージの更新
