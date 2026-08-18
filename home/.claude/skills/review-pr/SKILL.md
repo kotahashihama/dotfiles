@@ -49,7 +49,7 @@ allowed-tools: Bash(gh api:*) Bash(gh pr view:*) Bash(gh pr diff:*) Bash(gh pr l
 
 ### 3. レビューの実施
 
-**そのリポジトリのレビュースキルがあれば必ず委譲する**（`/review-code`、`/review-code-deeply` 等）。規約の在り処とレイヤー構成を知っているのはそちらなので、ここで自前の観点を組み直さない。
+**そのリポジトリのレビュースキルがあれば必ず委譲する**（`/review-code`、`/review-code-deeply` 等。**`.claude/skills/` と `.claude/commands/` の両方を見る**）。規約の在り処とレイヤー構成を知っているのはそちらなので、ここで自前の観点を組み直さない。
 
 無い場合は、リポジトリの規約ドキュメント（`.claude/rules/`、`docs/` 配下）を読んでから差分を見る。
 
