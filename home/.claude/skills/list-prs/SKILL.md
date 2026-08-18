@@ -230,14 +230,9 @@ CI の修正
 - **ready かつ approve 未取得のものだけ並べる。** draft は依頼できず、**approve 済みは依頼する相手がいない**
 - 該当が無い優先度はブロックごと省く
 
-**approve の判定に `reviewDecision` を使わない。** ruleset の `required_approving_review_count` が 0 だと**実際の approve と食い違います**。`latestReviews` を引き、`state == "APPROVED"` が 1 件でもあるかで判定する。
+**approve の判定に `reviewDecision` を使わない。** ruleset の `required_approving_review_count` が 0 だと、**approve が付いていても `null` を返します**。`latestReviews` を引き、`state == "APPROVED"` が 1 件でもあるかで判定する。
 
-**食い違いは両方向に起きる。** 「`null` なら未取得」とも読めないので、値を見て判断しない。
-
-| `reviewDecision` | 実際の approve |
-| --- | --- |
-| `APPROVED` | **0 件のことがある**（偽陽性） |
-| `null` / 空 | **付いていることがある**（偽陰性） |
+**`null` を「未取得」と読まない。** 実測では 40 PR のうち 9 件が、`null` なのに approve 済みでした。リポジトリの ruleset 次第なので、**値ではなく `latestReviews` を見る**。
 
 ```bash
 gh api graphql -f query='query{repository(owner:"OWNER",name:"REPO"){pullRequest(number:NNN){latestReviews(first:20){nodes{state author{login}}}}}}'
