@@ -91,7 +91,7 @@ allowed-tools: Bash(gh pr view:*) Bash(gh pr edit:*) Bash(gh pr comment:*) Bash(
    - **本文の末尾に GitHub Note アノテーションで生成者表示を添える**（人間のレビュアーが AI 生成と判別できるため）。空行を 1 行挟んで置く。モデル名ではなくクライアント名 `Claude Code` を使い、**必ず末尾**に配置する
      ```
      > [!NOTE]
-     > この PR 説明は Claude Code で作成されています。
+     > この PR 説明は Claude Code を使って作成されています。
      ```
 4. **タイトルの妥当性チェック**:
    - 現在の PR タイトルがベースブランチに対する差分の意図を正確に表現しているかを判断
