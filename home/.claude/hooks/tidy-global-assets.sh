@@ -1,80 +1,68 @@
 #!/bin/bash
-# グローバルルール / グローバルスキルを編集したときに、整理を促す。
-# PostToolUse (Write|Edit) から呼ばれ、stdin に tool_input を含む JSON を受け取る。
+#
+# グローバル資産を編集したときに、整理を促す PostToolUse フック。
+#
+# **編集の仕方では判定しない。** かつて matcher を `Write|Edit` にしていたが、
+# auto mode はファイル変更も Bash で行うよう指示するため実質発火しなかった
+# （12 時間で 25 ファイル編集して 0 回）。作業ツリーの状態で見れば経路に依存しない。
+#
+# 同じファイルで何度も鳴らさない。セッション単位で、促したパスを控える。
+#
 set -u
 
 payload=$(cat)
-path=$(printf '%s' "$payload" | python3 -c '
-import json,sys
-try:
-    d = json.load(sys.stdin)
-except Exception:
-    print(""); raise SystemExit
-print(d.get("tool_input", {}).get("file_path", "") or "")
-' 2>/dev/null)
+sid=$(printf '%s' "$payload" | python3 -c 'import sys,json;print(json.load(sys.stdin).get("session_id",""))' 2>/dev/null) || exit 0
+[ -n "$sid" ] || exit 0
 
-[ -z "$path" ] && exit 0
+link=$(readlink "$HOME/.claude/settings.json" 2>/dev/null) || exit 0
+[ -n "$link" ] || exit 0
+repo=$(git -C "$(dirname "$link")" rev-parse --show-toplevel 2>/dev/null) || exit 0
 
-case "$path" in
-  "$HOME"/.claude/rules/*.md)
-    cat <<'MSG'
-グローバルルールを編集しました。rule_conventions.md の「整理の契機」に従い、この編集を契機に棚卸しまで済ませてください。
+changed=$(git -C "$repo" status --porcelain --untracked-files=all -- \
+  home/.claude/rules home/.claude/skills home/.claude/hooks home/.claude/CLAUDE.md home/.claude/settings.json \
+  2>/dev/null | awk '{print $NF}')
+[ -n "$changed" ] || exit 0
 
-- 分割: 1 ファイルに主題が 2 つ以上ないか
-- マージ: 同じ主題が複数ファイルに散っていないか
-- 削除: 無くても挙動が変わらないルール、既定の挙動に取り込まれたルールが無いか
-- 横断: skills/ や CLAUDE.md に、ルールへ引き上げるべき汎用の規定が埋もれていないか
+state="${TMPDIR:-/tmp}/claude-tidy-${sid}.seen"
+touch "$state"
 
-整理が不要と判断した場合も、確認した旨を報告してください。
-MSG
-    ;;
-  "$HOME"/.claude/skills/*/SKILL.md)
-    cat <<'MSG'
-グローバルスキルを編集しました。この編集を契機に、スキル全体の棚卸しまで済ませてください。
+fresh=""
+while IFS= read -r f; do
+  [ -n "$f" ] || continue
+  grep -qxF "$f" "$state" 2>/dev/null && continue
+  printf '%s\n' "$f" >> "$state"
+  fresh="${fresh}${f}|"
+done <<< "$changed"
+[ -n "$fresh" ] || exit 0
 
-- 分割: 1 スキルが複数の責務を抱えていないか
-- マージ: 同じ手順が複数スキルに重複していないか（委譲で解けないか）
-- 削除: 他スキルで代替でき呼ばれなくなったものが無いか（既定に取り込まれた例は稀。あれば消す）
-- 整合: 委譲先スキルの手順を自前で再定義していないか、相互参照が実態と合っているか
-- 横断: そのスキルに固有でない規定が混ざっていないか（あれば rules/ へ引き上げる）
+python3 - "$fresh" <<'PY'
+import json, sys
 
-整理が不要と判断した場合も、確認した旨を報告してください。
-MSG
-    ;;
-  "$HOME"/.claude/CLAUDE.md)
-    cat <<'MSG'
-グローバルの CLAUDE.md を編集しました。この編集を契機に、グローバル資産の置き分けを見直してください。
+files = [f for f in sys.argv[1].split("|") if f]
 
-- 重複: rules/ に同じことが書かれていないか（CLAUDE.md は前提、rules は規約）
-- 移動: 常に効かせたい規約なら rules/ へ、手順なら skills/ へ
-- 参照: 本文が指すルール・スキルが実在するか
+CHECKS = [
+    ("/rules/", "**ルール**: 分割（1 ファイル 2 主題）/ マージ（同じ主題が散っている）/ 削除（無くても挙動が変わらない・既定に入った・**自分が実行できない**）/ 横断（skills や CLAUDE.md にルールへ引き上げるべき規定が無いか）"),
+    ("/skills/", "**スキル**: 分割（1 スキルが複数の責務）/ マージ（同じ手順が重複、委譲で解けないか）/ 整合（委譲先の手順を自前で再定義していないか、相互参照が実態と合うか）/ 横断（固有でない規定が混ざっていないか）"),
+    ("/hooks/", "**フック**: 実物の入力で 1 回通したか（自分で組み立てた入力だけでは形の食い違いに気づけない）/ 誤検知の範囲は狭いか / 出力は additionalContext か（systemMessage は Claude に届かない）"),
+    ("CLAUDE.md", "**CLAUDE.md**: rules と重複していないか（CLAUDE.md は前提、rules は規約）/ 指す先が実在するか"),
+    ("settings.json", "**settings.json**: フックの参照先が実在し実行可能か / 発火条件が広すぎないか / 「毎回やる」と書いてある処理をフックへ寄せられないか"),
+]
 
-整理が不要と判断した場合も、確認した旨を報告してください。
-MSG
-    ;;
-  "$HOME"/.claude/projects/*/memory/*.md|*/.claude-memory/*/*.md)
-    cat <<'MSG'
-auto memory を書きました。rule_conventions.md の「auto memory との境界」に従い、置き場が正しいか確かめてください。
+hit = [c for key, c in CHECKS if any(key in f for f in files)]
+if not hit:
+    raise SystemExit
 
-- 重複: 同じことが rules/ に書かれていないか。書かれているなら**メモリ側を消す**（両方に残すと毎セッション 2 回ロードされる）
-- 昇格: どのリポジトリでも効く好みではないか。そうならルールへ引き上げてよいかユーザーに尋ね、移したらメモリからは消す
-- 索引: MEMORY.md の 1 行が実ファイルを指しているか。消したメモリへの [[リンク]] が残っていないか
+shown = ", ".join(files[:5]) + (f" ほか {len(files) - 5} 件" if len(files) > 5 else "")
+msg = (
+    f"グローバル資産を編集しました（{shown}）。"
+    "**この編集を契機に棚卸しまで済ませてください**"
+    "（rule_conventions.md / align_skill_md_format.md の「整理の契機」）。\n"
+    + "\n".join("- " + c for c in hit)
+    + "\n整理が不要と判断した場合も、確認した旨を報告してください。"
+)
 
-整理が不要と判断した場合も、確認した旨を報告してください。
-MSG
-    ;;
-  "$HOME"/.claude/settings.json|*/dotfiles/home/.claude/settings.json)
-    cat <<'MSG'
-グローバル settings.json を編集しました。この編集を契機に、設定とフックを見直してください。
-
-- hooks: 参照先スクリプトが実在し実行可能か。発火条件が広すぎないか
-- 重複: rules/ に「毎回やる」と書いてある処理を、hooks へ寄せられないか
-- 不要: 既定の挙動に取り込まれた設定・使われていないフックが無いか
-
-整理が不要と判断した場合も、確認した旨を報告してください。
-MSG
-    ;;
-  *)
-    exit 0
-    ;;
-esac
+print(json.dumps({
+    "hookSpecificOutput": {"hookEventName": "PostToolUse", "additionalContext": msg},
+}, ensure_ascii=False))
+PY
+exit 0
