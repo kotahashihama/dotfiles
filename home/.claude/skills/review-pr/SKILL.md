@@ -226,10 +226,12 @@ gh api repos/OWNER/REPO/pulls/<PR>/reviews -X POST --input payload.json \
 
 ```bash
 gh api "repos/OWNER/REPO/pulls/<PR>/comments?per_page=100" \
-  --jq '.[] | select(.pull_request_review_id==<review_id>) | "\(.path):\(.line)\t\(.body | split("\n")[0][0:50])"'
+  --jq '.[] | select(.pull_request_review_id==<review_id>) | "\(.path):\(.line)\t\(.html_url)"'
 ```
 
-**意図した行に付いたかを 1 件ずつ見る。** 行がズレていても API はエラーを返さず、無関係なコードに指摘が付いた状態になる。
+**意図した行に付いたかを 1 件ずつ見る。** 行がズレていても API はエラーを返さず、無関係なコードに指摘が付いた状態になる。**`diff_hunk` の末尾行を見れば、どのコードに付いたかまで確かめられる**。
+
+**`html_url` はここで拾って報告へ回す**（`report_formatting.md`）。確認と報告で 2 回叩かない。
 
 ## 再レビュー
 
@@ -442,7 +444,8 @@ gh api graphql -f query='mutation { minimizeComment(input: {subjectId: "<node_id
 
 - 報告は重要度順。ブロッカーの有無を先頭 1 行で断定する
 - **`must` が無いなら、同じ 1 行で approve の見立てを言い切る**（上記「ユーザーへ伝える見立て」）
-- 投稿後は、件数の内訳と PR の URL を出す。指摘本文を会話へ再掲しない（GitHub 側にある）
+- 投稿後は件数の内訳を出す。指摘本文を会話へ再掲しない（GitHub 側にある）
+- **URL は PR とインライン 1 件ずつを添える**（`report_formatting.md`）。Step 9 の確認で `html_url` も一緒に拾う
 - **良かった点は書かない**（上記「レビューは直す候補だけを出す」）
 
 ## やってはいけないこと
@@ -488,3 +491,4 @@ gh api graphql -f query='mutation { minimizeComment(input: {subjectId: "<node_id
 - `github_one_sentence_per_line.md`: GitHub へ書く日本語は 1 文ごとに改行し、行末の句点を落とす。総括・インラインの両方が対象
 - `focus_insights_on_judgment.md`（代行するほど、渡す責任が増える）: Step 7「報告に入れるもの」の土台。**ユーザー自身がレビューできる状態を保つ**ことを定める
 - `verify_before_asserting.md`: Step 5〜6 の土台。**ユーザーの発言も裏取りの対象**という点は、PR 本文の主張にもそのまま当てはまる
+- `report_formatting.md`（報告に貼る識別子の書式）: 投稿後の報告に添える URL の土台。**PR とインライン 1 件ずつ**を出すことを定める
