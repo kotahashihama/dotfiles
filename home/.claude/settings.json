@@ -61,7 +61,7 @@
   "outputStyle": "Explanatory",
   "language": "Japanese",
   "spinnerTipsEnabled": false,
-  "effortLevel": "high",
+  "effortLevel": "auto",
   "autoUpdatesChannel": "latest",
   "tui": "fullscreen",
   "voice": {
