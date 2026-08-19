@@ -89,4 +89,11 @@ if printf '%s' "$sq" | grep -qE '(^|[[:space:]|;&(])(cat|bat|less|more|head|tail
   deny '秘匿値が並んでいる置き場を読もうとしています。ここから列を抜いて会話へ出した実例があります。存在確認なら `ls` / `test -f` で足ります。中身の加工がどうしても要るなら、パスを直接書かないスクリプトへ切り出し、**値を出力しない形**で行ってください（no_secret_values_in_output.md）'
 fi
 
+# 5) 是非の表明を GitHub へ書く — 承認するのはユーザー本人で、こちらは
+#    判断材料と見立てを渡すところまで（review-pr スキル）。条件が無いので
+#    形で弾ける（「明示指示があったか」のような会話の状態は見られない）。
+if printf '%s' "$sq" | grep -qE 'gh[[:space:]]+pr[[:space:]]+review[^|;&]*(--approve|--request-changes|[[:space:]]-a([[:space:]]|$))'; then
+  deny 'PR の承認 / 変更要求はユーザー本人が行います。レビューを投稿するなら `--comment`（API なら `"event":"COMMENT"`）で、是非の表明は会話でユーザーへ渡してください（review-pr スキル「承認は GitHub に書かず、見立てはユーザーへ渡す」）'
+fi
+
 exit 0
