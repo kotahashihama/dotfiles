@@ -95,4 +95,5 @@
 - `plain_language_explanation.md` (平易に噛み砕く) と両立させる: **短く、かつ平易に**
 - `explain_review_comment_first.md` (レビュー対応の粒度) の要求は本ルールより優先
 - `summarize_after_each_task.md` (各作業後のサマリ) も本ルールに従って短く
+- `github_rich_formatting.md`（GitHub の表現手段）: **表と Mermaid の使い分けは本ルールが持つ**。あちらは GitHub でしか使えない手段（Alert / `<details>` / 脚注）を足す
 - `create-pr` / `update-pr-description` スキル: 本ルールを土台に、**PR 固有の事情**（GitHub のレンダリング挙動、テンプレの節構成、補足コメントへの切り出し）を上乗せする

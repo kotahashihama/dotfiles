@@ -67,5 +67,6 @@ grep -nE '。\s*$' <本文ファイル> | grep -v '^\s*[0-9]*:>'
 - `github_note_generated_by_claude.md`（生成者表示）: **その定型文だけは本ルールの対象外**。文言をあちらが固定している
 - `karma_commit_style.md`（コミットメッセージ）: 句点を落とす点は同じだが、**あちらは commit subject の 1 行だけ**。本ルールは GitHub 上の文章全体
 - `github_cross_repo_reference.md` / `github_command_comments.md`: どちらも GitHub へ書く文章の書式を定める
+- `github_rich_formatting.md`（GitHub の表現手段）: あちらは**構造の選び方**、本ルールは**文の表記**
 - `concise_first_then_detail.md`（簡潔に）: あちらは**量**を扱う。本ルールは**改行と表記**
 - `/review-pr` / `/create-pr` / `/update-pr-description` / `/resolve-ai-reviews`: 本ルールが土台で、各スキルは投稿先固有の事情を上乗せする
