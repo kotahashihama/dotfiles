@@ -63,6 +63,7 @@ alias tfa='tf apply'
 # Claude Code
 alias cld='claude'
 alias cldr='cld -r'
+alias cldw='cld --worktree'
 alias cldrc='claude remote-control'
 
 # Anthropic Computer Use
