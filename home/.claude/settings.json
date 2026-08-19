@@ -120,5 +120,8 @@
   },
   "crossSessionInbound": "accept",
   "awaySummaryEnabled": true,
-  "askUserQuestionTimeout": "never"
+  "askUserQuestionTimeout": "never",
+  "fallbackModel": [
+    "sonnet"
+  ]
 }
