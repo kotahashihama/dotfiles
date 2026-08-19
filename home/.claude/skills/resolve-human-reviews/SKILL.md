@@ -133,6 +133,10 @@ gh api graphql -f query='mutation($id: ID!) { addReaction(input: {subjectId: $id
 
 **コードブロックに入れて 1 件ずつ出す。** コメント ID を見出しに置き、対応表の行と突き合わせられるようにする。**投稿はしない。**
 
+**理由の案と回答の案では、GitHub の表現手段を使ってよい**（手段の選び方は `github_rich_formatting.md`）。散文で書くと長くなるものを表や `<details>` へ畳む。ただし**末尾の生成者表示 Note が Alert の枠を 1 つ使っている**ので、`IMPORTANT` / `WARNING` を足せるのは 1 つまで。
+
+**ハッシュ返信は対象外。** 1 行目にハッシュ、末尾に Note という形が決まっており、畳むほどの中身が無い。
+
 ## ユーザーから返信を指示された場合
 
 **既定は「返信しない」で、ユーザーが明示指示したときだけ代行する**（`no_auto_reply_human_review_comments.md`）。指示が出たら次の書式で返す。
