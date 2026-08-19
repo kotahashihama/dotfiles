@@ -83,5 +83,12 @@
   "showTurnDuration": true,
   "remoteControlAtStartup": true,
   "agentPushNotifEnabled": true,
-  "voiceEnabled": true
+  "voiceEnabled": true,
+  "attribution": {
+    "commit": "Co-Authored-By: Claude Code <noreply@anthropic.com>",
+    "pr": "> [!NOTE]\n> この PR 説明は Claude Code を使って作成されています。"
+  },
+  "crossSessionInbound": "accept",
+  "awaySummaryEnabled": true,
+  "askUserQuestionTimeout": "never"
 }
