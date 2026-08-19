@@ -469,6 +469,6 @@ gh api graphql -f query='mutation { minimizeComment(input: {subjectId: "<node_id
 - `no_auto_reply_human_review_comments.md`: 人間のコメントへ勝手に返信しないことを定める。**本スキルが扱うのは新規レビューの投稿**であり、既存コメントへの返信ではない
 - `concise_first_then_detail.md`（簡潔に、表と Mermaid で畳む）: 「コメント本文の書き方」の土台。`/create-pr`・`/update-pr-description` も同じ土台に乗る
 - `github_note_generated_by_claude.md`: 生成者表示の書式
-- `github_one_sentence_per_line.md`: GitHub へ書く日本語は 1 文ごとに改行する。総括・インラインの両方が対象
+- `github_one_sentence_per_line.md`: GitHub へ書く日本語は 1 文ごとに改行し、行末の句点を落とす。総括・インラインの両方が対象
 - `focus_insights_on_judgment.md`（代行するほど、渡す責任が増える）: Step 7「報告に入れるもの」の土台。**ユーザー自身がレビューできる状態を保つ**ことを定める
 - `verify_before_asserting.md`: Step 5〜6 の土台。**ユーザーの発言も裏取りの対象**という点は、PR 本文の主張にもそのまま当てはまる
