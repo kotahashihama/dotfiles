@@ -81,4 +81,12 @@ if printf '%s' "$sq" | grep -qE '(^|[[:space:]|;&(])(echo|printf|print)[[:space:
   deny '秘匿値らしい変数を出力しています。存在確認に値は要りません——`[ -n "$VAR" ] && echo set || echo unset` で足ります。`${VAR:-未設定}` も設定済みなら実値が出ます（no_secret_values_in_output.md）'
 fi
 
+# 4c) 秘匿値が並んでいる置き場を読む。実際に漏れたのはここからで、
+#     `.env` ではなくシェル履歴の列を抜いた経路だった。
+#     存在確認は `ls` / `test` で足りるので、読む側だけを止める。
+STORES='(\.zsh_history|\.bash_history|\.zhistory|/\.secrets/|/\.aws/credentials|/\.ssh/id_|\.netrc|\.pem)'
+if printf '%s' "$sq" | grep -qE '(^|[[:space:]|;&(])(cat|bat|less|more|head|tail|awk|sed|cut|grep|rg|sort|uniq|tr|open|strings)[^|;&]*'"$STORES"; then
+  deny '秘匿値が並んでいる置き場を読もうとしています。ここから列を抜いて会話へ出した実例があります。存在確認なら `ls` / `test -f` で足ります。中身の加工がどうしても要るなら、パスを直接書かないスクリプトへ切り出し、**値を出力しない形**で行ってください（no_secret_values_in_output.md）'
+fi
+
 exit 0

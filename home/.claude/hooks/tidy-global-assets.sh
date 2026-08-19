@@ -6,13 +6,26 @@
 # auto mode はファイル変更も Bash で行うよう指示するため実質発火しなかった
 # （12 時間で 25 ファイル編集して 0 回）。作業ツリーの状態で見れば経路に依存しない。
 #
+# ただし作業ツリーは複数セッションで共有されるので、状態だけで見ると
+# **他セッションの編集まで拾う**（実際に別リポジトリのセッションで鳴った）。
+# Write / Edit なら対象パスが入力に入っているのでそれを使い、Bash では
+# 「直前に書かれたか」を mtime で絞る。
+#
 # 同じファイルで何度も鳴らさない。セッション単位で、促したパスを控える。
 #
 set -u
 
+MTIME_WINDOW=20   # 秒。これより古い変更は他セッターの仕業とみなす
+
 payload=$(cat)
-sid=$(printf '%s' "$payload" | python3 -c 'import sys,json;print(json.load(sys.stdin).get("session_id",""))' 2>/dev/null) || exit 0
-[ -n "$sid" ] || exit 0
+read -r sid edited <<EOF
+$(printf '%s' "$payload" | python3 -c '
+import sys, json
+d = json.load(sys.stdin)
+print(d.get("session_id", "-"), d.get("tool_input", {}).get("file_path", "-"))
+' 2>/dev/null)
+EOF
+[ -n "${sid:-}" ] && [ "$sid" != "-" ] || exit 0
 
 link=$(readlink "$HOME/.claude/settings.json" 2>/dev/null) || exit 0
 [ -n "$link" ] || exit 0
@@ -26,10 +39,20 @@ changed=$(git -C "$repo" status --porcelain --untracked-files=all -- \
 state="${TMPDIR:-/tmp}/claude-tidy-${sid}.seen"
 touch "$state"
 
+now=$(date +%s)
 fresh=""
 while IFS= read -r f; do
   [ -n "$f" ] || continue
   grep -qxF "$f" "$state" 2>/dev/null && continue
+
+  # Write / Edit はパスが分かる。Bash は mtime で「直前に書かれたか」を見る
+  if [ "$edited" != "-" ]; then
+    case "$edited" in *"${f##*/}") : ;; *) continue ;; esac
+  else
+    m=$(stat -f %m "$repo/$f" 2>/dev/null || stat -c %Y "$repo/$f" 2>/dev/null) || continue
+    [ $((now - m)) -le "$MTIME_WINDOW" ] || continue
+  fi
+
   printf '%s\n' "$f" >> "$state"
   fresh="${fresh}${f}|"
 done <<< "$changed"
