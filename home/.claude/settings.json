@@ -30,6 +30,15 @@
             "command": "bash ~/.claude/hooks/tidy-global-assets.sh"
           }
         ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/surface-swallowed-failures.sh"
+          }
+        ]
       }
     ],
     "PreToolUse": [
