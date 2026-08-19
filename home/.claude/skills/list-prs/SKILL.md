@@ -192,26 +192,35 @@ gh pr view <PR> --json files -q '[.files[].path]'
 ---
 
 [優先度: 中]
-変更履歴の基盤とアーカイブ状態
-- https://github.com/OWNER/BE_REPO/pull/2949
-- https://github.com/OWNER/FE_REPO/pull/395
+変更履歴の記録経路
+1. https://github.com/OWNER/BE_REPO/pull/2954
+2. https://github.com/OWNER/BE_REPO/pull/3002
+3. https://github.com/OWNER/BE_REPO/pull/3068
 
-CSV エクスポートの担当者列
-- https://github.com/OWNER/BE_REPO/pull/3008
+一括版メソッドの命名統一
+- https://github.com/OWNER/BE_REPO/pull/3065
+
+変更履歴フィクスチャの整合
+- https://github.com/OWNER/FE_REPO/pull/424
 
 [優先度: 低]
-CI の修正
-- https://github.com/OWNER/FE_REPO/pull/399
-
 エージェント運用の設定
-- https://github.com/OWNER/FE_REPO/pull/400
+- https://github.com/OWNER/FE_REPO/pull/425
 
 ---
 ```
 
 - **優先度は `[優先度: 中]` の形**。そのまま依頼文の一部になる
 - **空行を入れるのはグループの間だけ。** `[優先度: 中]` の直後も、見出しと URL の間も詰める。**空行が多いと 1 かたまりに見えない**
-- **URL は箇条書き（`- `）で 1 行 1 本、行末で終わらせる**。番号やタイトルを後ろに付けるとリンクが壊れる（`report_formatting.md`）
+- **URL は 1 行 1 本、行末で終わらせる**。タイトルや状態を後ろに付けるとリンクが壊れる（`report_formatting.md`）
+- **順序に意味があるかで記号を変える。** スタックは `1. 2. 3.`、独立した PR は `- `
+
+  | 形 | 記号 | 理由 |
+  | --- | --- | --- |
+  | **スタック**（下段から読む必要がある） | **番号付き** | 順序そのものが情報。下段が通らないと上段は動かない |
+  | 独立した PR | 箇条書き | 番号を振ると、**無い制約があるように見える** |
+
+- **枝分かれは別グループにする。** スタックの本線と、途中から生えた枝を同じ番号列に混ぜると**一本道に見える**。枝は見出しを分けて箇条書きで置く
 - **グループに 1 行の見出しを付ける**。何の対応かが分かると、レビュアーが読む順を決められる
 - **読んでほしい順に上から並べる。** 優先度の中でも順序を付ける
 
