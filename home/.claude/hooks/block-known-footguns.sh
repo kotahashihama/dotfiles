@@ -29,13 +29,18 @@ print(json.dumps({"hookSpecificOutput": {
 #    前の周回の内容が残ったまま後続が走る（verify_before_asserting.md）
 #    `>|` `>>` `2>` `&>` `>(` は対象外。
 # 引用符の中身を落としてから見る（`grep -c ">"` を誤検知しないため）
-stripped=$(printf '%s' "$cmd" | python3 -c '
+nohd=$(printf '%s' "$cmd" | python3 -c '
+import sys, re
+s = sys.stdin.read()
+s = re.sub(r"<<-?[\x27\"]?([A-Za-z_][A-Za-z0-9_]*)[\x27\"]?\n.*?\n\1\n", "\n", s, flags=re.S)
+s = re.sub(r"<<-?[\x27\"]?([A-Za-z_][A-Za-z0-9_]*)[\x27\"]?\n.*\Z", "\n", s, flags=re.S)
+print(s)')
+
+stripped=$(printf '%s' "$nohd" | python3 -c '
 import sys, re
 s = sys.stdin.read()
 # ヒアドキュメントの中身はシェルではない。別言語の比較演算子
 # (len(x) > 5 など) をリダイレクトと読まないよう、先に丸ごと落とす
-s = re.sub(r"<<-?[\x27\"]?([A-Za-z_][A-Za-z0-9_]*)[\x27\"]?\n.*?\n\1\n", "\n", s, flags=re.S)
-s = re.sub(r"<<-?[\x27\"]?([A-Za-z_][A-Za-z0-9_]*)[\x27\"]?\n.*\Z", "\n", s, flags=re.S)
 s = re.sub(r"\x27[^\x27]*\x27", "", s)   # シングルクォート
 s = re.sub(r"\"[^\"]*\"", "", s)          # ダブルクォート
 print(s)')
@@ -73,7 +78,7 @@ fi
 #     二重引用符は展開されるので、ここでは単引用符の中だけを落として見る
 #     （`stripped` を使うと `echo "$API_KEY"` が素通りする）。
 #     存在確認の `[ -n "$VAR" ]` は値を出さないので、echo / printf に限る。
-sq=$(printf '%s' "$cmd" | python3 -c '
+sq=$(printf '%s' "$nohd" | python3 -c '
 import sys, re
 print(re.sub(r"\x27[^\x27]*\x27", "", sys.stdin.read()))')
 
