@@ -63,7 +63,7 @@ allowed-tools: Bash(gh api:*) Bash(gh pr view:*) Bash(gh pr diff:*) Bash(gh pr l
 **リポジトリのテンプレートに無い語彙なので、総括で 1 度だけ開く。** インラインには付けない。
 
 ```markdown
-iaio が 1 件です（iaio = in AI opinion）。
+iaio が 1 件です（iaio = in AI opinion）
 ```
 
 テンプレートへ足すかは**リポジトリの合意事項**なので、こちらからは動かさない。
@@ -198,11 +198,11 @@ gh api repos/OWNER/REPO/pulls/<PR>/reviews -X POST --input payload.json \
   `[iaio]`
 
   <!-- ❌ NG: prefix が本文に埋もれる -->
-  [iaio] フリガナの検証は shared の値オブジェクトへ切り出す余地がありそうです。
+  [iaio] フリガナの検証は shared の値オブジェクトへ切り出す余地がありそうです
 
   <!-- ✅ OK: 裸の prefix だけの行にして、本文は次の行から -->
   [iaio]
-  フリガナの検証は shared の値オブジェクトへ切り出す余地がありそうです。
+  フリガナの検証は shared の値オブジェクトへ切り出す余地がありそうです
   ```
 
   **prefix を立てるのは、その本文が指摘そのもののときだけ。** 件数を述べる文は指摘ではないので、**prefix を立てず地の文で書く**。
@@ -210,10 +210,10 @@ gh api repos/OWNER/REPO/pulls/<PR>/reviews -X POST --input payload.json \
   ```markdown
   <!-- ❌ NG: 総括そのものが iaio の指摘に見える -->
   [iaio]
-  1 件です。
+  1 件です
 
   <!-- ✅ OK: 括弧を外して地の文にする。総括はこの 1 行で足りる -->
-  iaio が 1 件です。
+  iaio が 1 件です
   ```
 
   **総括に prefix が立ってよいのは、そこに本文を持つ指摘を置くときだけ**（差分外の行や PR 本文への指摘）。件数の行と混在してよい。
@@ -310,11 +310,11 @@ gh api -X POST "repos/OWNER/REPO/pulls/comments/<comment_id>/reactions" -f conte
 
 ```markdown
 <!-- ❌ NG: インラインと同じ内容を総括にも書いている -->
-must が 2 件です。
-トランザクション契約とテスト構造の規約違反で、いずれもインラインに置いています。
+must が 2 件です
+トランザクション契約とテスト構造の規約違反で、いずれもインラインに置いています
 
 <!-- ✅ OK -->
-must が 2 件です。
+must が 2 件です
 ```
 
 **「インラインに置いています」も書かない。** Files changed タブを開けば見えるので、相手に情報が増えない。
