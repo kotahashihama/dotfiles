@@ -32,7 +32,7 @@ allowed-tools: Bash(gh pr list:*) Bash(gh pr view:*) Bash(gh pr checks:*) Bash(g
 | CI | `gh pr checks <PR>` |
 | マージ可否 | `gh pr view <PR> --json mergeStateStatus` |
 | **approve の有無** | **`latestOpinionatedReviews` を GraphQL で引く**（下記。`reviewDecision` と `latestReviews` は使わない） |
-| 自分のコメント | `gh api repos/OWNER/REPO/issues/<PR>/comments` から保留メモ等を拾う |
+| コメント欄 | `gh api repos/OWNER/REPO/issues/<PR>/comments` を**投稿者を問わず**読む。自分の保留メモと、**レビュアーの申し送り**の両方が要る |
 
 **CI が fail のときは原因まで見る。** `approval required`（レビュー承認待ち）のようにコードと無関係な失敗があり、これを「壊れている」と報告すると誤解を招く。`gh run view <id> --log-failed` で末尾を確認する。
 
@@ -236,7 +236,8 @@ gh pr view <PR> --json files -q '[.files[].path]'
   **条件が並んだら BE を先に。** 契約を出す側なので、**BE が固まらないと FE が動けない**ことが多い。ものによるが既定はこの順。
 - ペアなら **BE → FE の順**に並べる。契約を出す側から読むほうが理解が早い
 - **見出しは何の対応かだけを書く。** draft の相方・マージ済みの依存先・スタックの段数といった内部事情は入れない。**そのまま依頼文に貼るので、レビュアーが読む必要のない情報はノイズ**（状態は表を見れば分かる）
-- **ready かつ approve 未取得のものだけ並べる。** draft は依頼できず、**approve 済みは依頼する相手がいない**
+- **ready かつ approve 未取得のものだけ並べる。** draft は依頼できず、approve 済みは原則として依頼する相手がいない
+  - **例外: レビュアー自身が再依頼を求めている場合は並べる。** 判定はコメント欄で行う（下記）
 - 該当が無い優先度はブロックごと省く
 
 **approve の判定は `latestOpinionatedReviews` で行う。** `state == "APPROVED"` が 1 件でもあるかで判定する。**COMMENTED を除いて、レビュアーごとの最新の賛否だけ**を返すフィールド。
@@ -252,6 +253,20 @@ gh pr view <PR> --json files -q '[.files[].path]'
 **`null` を「未取得」と読まない。** `reviewDecision` が `null` でも approve 済みのことがあり、リポジトリの ruleset 次第です。**値ではなくレビュー一覧を見る。**
 
 疑わしいときは `reviews(first:100)` を全件引き、レビュアーごとに `submittedAt` が最新の賛否を自分で数える。これが最終的な裏取りの手段。
+
+#### approve が付いていても、レビューが終わったとは限らない
+
+**フィールドは「何が起きたか」しか持たず、「相手がどうしたいか」は会話にしかありません。** レビュアーが依頼前に先んじて見たときも approve は付きますが、**本人は正式な依頼を待っている**ことがあります。
+
+そのため **approve 済みの PR ほどコメント欄を読む**。次のような申し送りが残っていたら、依頼リストへ並べる側です。
+
+| コメントの型 | 意味 |
+| --- | --- |
+| 「まだ依頼が来ていなかった」「re review を押して」 | **依頼し直してほしい**。approve は先行して見た結果 |
+| 「一旦 approve するが〇〇だけ直して」 | 条件付き。直した後に再依頼が要る |
+| 「次の PR と合わせて見たい」 | 単独では動かせない |
+
+**approve の有無だけで「依頼する相手がいない」と決めない。** 状態を見て意図を決めつけると、レビュアーが待ち続けます。
 
 ```bash
 gh api graphql -f query='query{repository(owner:"OWNER",name:"REPO"){pullRequest(number:NNN){latestOpinionatedReviews(first:20){nodes{state author{login}}}}}}'
