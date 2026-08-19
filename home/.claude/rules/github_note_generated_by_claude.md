@@ -75,3 +75,4 @@ Claude がユーザーに代わって GitHub へ書き込むテキスト全般�
 - `no_auto_reply_human_review_comments.md`（人間コメントへの自動返信禁止）: そもそも投稿してよいかを規定。本ルールは**投稿すると決まった後の書式**を規定する
 - `/create-pr` / `/update-pr-description` / `/resolve-ai-reviews` の各スキルにも同じ規定がある。本ルールはスキル経由でない自然文依頼の経路を含めて横断的に適用する
 - `github_cross_repo_reference.md`（他リポジトリの PR / issue の書き方）: どちらも GitHub へ書く文章の書式を定める
+- `github_one_sentence_per_line.md`（1 文ごとに改行）: 同上。あちらは本文の改行、本ルールは末尾に置く Note を定める
