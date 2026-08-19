@@ -74,5 +74,6 @@ Claude がユーザーに代わって GitHub へ書き込むテキスト全般�
 - `github_command_comments.md`（コマンドコメントの別扱い）: 本ルールの適用外を定める。宛先が人ではなく機械のコメントには Note を付けない
 - `no_auto_reply_human_review_comments.md`（人間コメントへの自動返信禁止）: そもそも投稿してよいかを規定。本ルールは**投稿すると決まった後の書式**を規定する
 - `/create-pr` / `/update-pr-description` / `/resolve-ai-reviews` の各スキルにも同じ規定がある。本ルールはスキル経由でない自然文依頼の経路を含めて横断的に適用する
+- `github_rich_formatting.md`（GitHub の表現手段）: **本ルールが `NOTE` を占有している**。他の Alert と混ざらないよう、あちらが用途を分ける
 - `github_cross_repo_reference.md`（他リポジトリの PR / issue の書き方）: どちらも GitHub へ書く文章の書式を定める
 - `github_one_sentence_per_line.md`（1 文ごとに改行し行末の句点を落とす）: あちらは本文の書き方、本ルールは末尾に置く Note を定める。**Note の定型文はあちらの対象外**
