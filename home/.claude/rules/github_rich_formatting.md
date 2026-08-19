@@ -70,4 +70,4 @@ GitHub には 5 種ありますが、**使うのは 3 種**に絞ります。選
 - `concise_first_then_detail.md`（簡潔に）: **表と Mermaid の使い分けはあちら**。本ルールは GitHub でしか使えない手段を足す
 - `github_note_generated_by_claude.md`（生成者表示）: **`NOTE` を占有している**。他の Alert と混ざらないよう、用途を分ける
 - `github_one_sentence_per_line.md`（1 文ごとに改行）: あちらは**文の表記**、本ルールは**構造の選び方**
-- `/create-pr` / `/update-pr-description`: 本ルールが土台で、スキルは PR 固有の事情（テンプレの節構成、別コメントへの切り出し）を上乗せする
+- `/create-pr` / `/update-pr-description` / `/review-pr` / `/resolve-ai-reviews` / `/resolve-human-reviews`: 本ルールが土台で、各スキルは投稿先固有の事情を上乗せする
