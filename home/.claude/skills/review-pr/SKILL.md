@@ -161,6 +161,8 @@ iaio が 1 件です（iaio = in AI opinion）。
 
 **2 が成長の材料になる。** 「規約ドキュメントを 6 本読んだ」「既存 101 本を数えた」「CI の失敗が承認待ちか実害かを見た」は、**指摘がゼロでも次に効く**。逆に「見なかった領域」も書く——読み切れなかった箇所があるなら、そこは保証していないと分かる形にする。
 
+土台は `focus_insights_on_judgment.md`「代行するほど、渡す責任が増える」。本節はそれをレビューの報告に具体化したもの。
+
 **観点は水増ししない。** 実際に見たものだけを書く。見ていない観点を並べると、**裏取りの範囲を過大に伝える**ことになり、指摘そのものより害が大きい。
 
 ### 8. 総括コメント + インラインコメントを 1 レビューで投稿
@@ -468,4 +470,5 @@ gh api graphql -f query='mutation { minimizeComment(input: {subjectId: "<node_id
 - `concise_first_then_detail.md`（簡潔に、表と Mermaid で畳む）: 「コメント本文の書き方」の土台。`/create-pr`・`/update-pr-description` も同じ土台に乗る
 - `github_note_generated_by_claude.md`: 生成者表示の書式
 - `github_one_sentence_per_line.md`: GitHub へ書く日本語は 1 文ごとに改行する。総括・インラインの両方が対象
+- `focus_insights_on_judgment.md`（代行するほど、渡す責任が増える）: Step 7「報告に入れるもの」の土台。**ユーザー自身がレビューできる状態を保つ**ことを定める
 - `verify_before_asserting.md`: Step 5〜6 の土台。**ユーザーの発言も裏取りの対象**という点は、PR 本文の主張にもそのまま当てはまる
