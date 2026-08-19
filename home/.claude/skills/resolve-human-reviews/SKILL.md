@@ -140,6 +140,9 @@ gh api graphql -f query='mutation($id: ID!) { addReaction(input: {subjectId: $id
 ```
 @<レビュアーの GitHub ID>
 <ハッシュ1> <ハッシュ2> で<動詞>ました🙇🏽‍♂️
+
+> [!NOTE]
+> このコメントは Claude Code を使って作成されています。
 ```
 
 | 決めごと | 内容 |
@@ -148,7 +151,7 @@ gh api graphql -f query='mutation($id: ID!) { addReaction(input: {subjectId: $id
 | ハッシュ | **空白区切りで列挙**。レンジにしない（`report_formatting.md`） |
 | 動詞 | **差分の性質に当てる**（下記） |
 | **🙇🏽‍♂️** | **ハッシュ返信の行末に、空白を空けずに付ける**（下記） |
-| 生成者表示の Note | **付けない**。ユーザーの言葉として投稿するため（`github_note_generated_by_claude.md` の例外） |
+| 生成者表示の Note | **付ける**。末尾に空行を挟んでブロックを置く（`github_note_generated_by_claude.md`） |
 
 **🙇🏽‍♂️ が付くのはハッシュ返信だけ。** 見てもらったうえに直させたことへの気持ちで、**相手が人間だから要る**もの。bot への返信（`/resolve-ai-reviews`）には付けない。
 
@@ -208,7 +211,7 @@ gh api graphql -f query='mutation($id: ID!) { addReaction(input: {subjectId: $id
 
 ## 例外
 
-- ユーザーが「このコメントには〇〇と返信して」と明示指示した場合は、そのコメントに限り返信を代行してよい。**生成者表示の Note は付けない**——宛先が個人で、ユーザーの言葉として出るため (`github_note_generated_by_claude.md`)
+- ユーザーが「このコメントには〇〇と返信して」と明示指示した場合は、そのコメントに限り返信を代行してよい。**文面まで指定された場合だけ生成者表示の Note を外す**——Claude が組み立てていないので、表示が事実に合わない (`github_note_generated_by_claude.md`)
 - **Resolve は、Resolve すること自体を明示されたときだけ**行う。返信の許可では代替されない
 - ユーザーが特定のコメントについて「対応しないで」と指示した場合は、トリアージせずその指示に従う
 - 点検まで通したいときは、続けて `/finalize-pr` を呼んでよい。ユーザーが不要と指示した場合はスキップする
