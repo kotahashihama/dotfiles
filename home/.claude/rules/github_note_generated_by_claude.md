@@ -70,7 +70,7 @@ Claude がユーザーに代わって GitHub へ書き込むテキスト全般�
 
 ## 関連
 
-- `react_to_addressed_reviews.md`（対応した指摘へ 👍）: 返信を伴わない場面でも対応済みを伝える手段。本ルールは**書く文章の書式**、あちらは**リアクション**
+- `react_to_addressed_reviews.md`（返信した指摘とレビュー提出へ 👍）: 本ルールは**書く文章の書式**、あちらは**リアクション**。どちらも返信を投稿した後の話
 - `github_command_comments.md`（コマンドコメントの別扱い）: 本ルールの適用外を定める。宛先が人ではなく機械のコメントには Note を付けない
 - `no_auto_reply_human_review_comments.md`（人間コメントへの自動返信禁止）: そもそも投稿してよいかを規定。本ルールは**投稿すると決まった後の書式**を規定する
 - `/create-pr` / `/update-pr-description` / `/resolve-ai-reviews` の各スキルにも同じ規定がある。本ルールはスキル経由でない自然文依頼の経路を含めて横断的に適用する

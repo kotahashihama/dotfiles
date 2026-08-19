@@ -86,14 +86,27 @@ bot コメントを扱う `/resolve-ai-reviews` と対になりますが、**Git
 
 **`/update-pr-description` を呼ぶ。** 本文が既に実態と合っているなら呼ばない。
 
-### 7. リアクションは付けない
+### 7. リアクションは、返信を代行したときだけ付ける
 
-**このスキルの中では 👍 を付けません**（`react_to_addressed_reviews.md`）。リアクションもレビュアーへ向けた発信なので、**返信と同じ許可が要る**。人間レビューでは返信が明示指示制なので、指示が出るまではどちらも行わない。
+**返信していない段階では 👍 を付けません**（`react_to_addressed_reviews.md`）。リアクションもレビュアーへ向けた発信なので、**返信と同じ許可が要る**。人間レビューでは返信が明示指示制なので、指示が出るまではどちらも行わない。
 
 ユーザーが返信を代行するよう指示した場合は、**その返信を投稿したコメントにだけ**付ける。
 
 ```bash
 gh api -X POST repos/OWNER/REPO/pulls/comments/<comment_id>/reactions -f content='+1'
+```
+
+**あわせて、本文のあるレビュー提出にも 👍 を付ける。** インラインの 1 件ずつは「その指摘に応えた」の印だが、レビュー提出は**見てもらったこと自体への謝意**にあたる。指摘の可否とは別なので、非対応の指摘しか無かった回でも付ける。
+
+**本文が空のレビュー提出には付けない。** インラインコメントを束ねるだけの入れ物で、読む文章が無い。
+
+**REST に該当のエンドポイントが無い**ので GraphQL を使う（`/reactions` は issue コメントとインラインコメントにしかない）。
+
+```bash
+gh api graphql -f query='query{repository(owner:"OWNER",name:"REPO"){pullRequest(number:NNN){reviews(first:50){nodes{id state author{login} body}}}}}' \
+  -q '.data.repository.pullRequest.reviews.nodes[] | select(.author.login=="LOGIN") | select(.body != "") | .id'
+
+gh api graphql -f query='mutation($id: ID!) { addReaction(input: {subjectId: $id, content: THUMBS_UP}) { reaction { content } } }' -F id="<review node id>"
 ```
 
 ### 8. 対応表の報告
