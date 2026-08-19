@@ -56,4 +56,25 @@ if printf '%s' "$stripped" | grep -qE 'git[[:space:]]+push[^|;&]*(--force|--forc
   deny 'force push は履歴を書き換えます。人間のレビューが付いた PR では特に避けてください（no_rebase_under_human_review.md）。必要なら理由と対象を確認してから手で実行してください'
 fi
 
+# 4) 秘匿値そのものを出力する形 — 存在確認に値は要らない
+#    （no_secret_values_in_output.md）。実際にトークンを会話へ出した経路。
+SECRET='(KEY|TOKEN|SECRET|PASSWORD|PASSWD|CREDENTIAL|AUTH|SEED|PRIVATE)'
+
+# 4a) `.env` を丸ごと読む。`.env.example` / `.env.sample` は雛形なので除く
+if printf '%s' "$stripped" | grep -qE '(^|[[:space:]|])(cat|bat|less|more|head|tail|open)[[:space:]]+[^|;&]*\.env([[:space:]]|$)'; then
+  deny '`.env` を丸ごと読むと秘匿値が会話へ残ります。キー名だけなら `grep -o "^[A-Z_]*=" .env` で足ります（no_secret_values_in_output.md）'
+fi
+
+# 4b) 秘匿値らしい変数を echo / printf する。
+#     二重引用符は展開されるので、ここでは単引用符の中だけを落として見る
+#     （`stripped` を使うと `echo "$API_KEY"` が素通りする）。
+#     存在確認の `[ -n "$VAR" ]` は値を出さないので、echo / printf に限る。
+sq=$(printf '%s' "$cmd" | python3 -c '
+import sys, re
+print(re.sub(r"\x27[^\x27]*\x27", "", sys.stdin.read()))')
+
+if printf '%s' "$sq" | grep -qE '(^|[[:space:]|;&(])(echo|printf|print)[[:space:]][^|;&]*\$\{?[A-Za-z_]*'"$SECRET"; then
+  deny '秘匿値らしい変数を出力しています。存在確認に値は要りません——`[ -n "$VAR" ] && echo set || echo unset` で足ります。`${VAR:-未設定}` も設定済みなら実値が出ます（no_secret_values_in_output.md）'
+fi
+
 exit 0
