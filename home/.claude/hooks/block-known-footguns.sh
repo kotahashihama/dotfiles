@@ -40,7 +40,7 @@ print(s)')
 stripped=$(printf '%s' "$stripped" | sed 's|>[[:space:]]*/dev/null||g')
 
 # `>>` は追記なので対象外。`2>` `&>` `>|` `>(` も除く
-if printf '%s' "$stripped" | grep -qE '(^|[^0-9&>|-])>[^>|(][[:space:]]*[^|(&[:space:]]|(^|[^0-9&>|-])>[[:space:]]+[^|(&[:space:]]'; then
+if printf '%s' "$stripped" | grep -qE '(^|[^0-9&>|=-])>[^>|(=][[:space:]]*[^|(&[:space:]]|(^|[^0-9&>|=-])>[[:space:]]+[^|(&[:space:]]'; then
   deny 'リダイレクトは `>` ではなく `>|` を使ってください。noclobber が有効だと `>` は黙って失敗し、ループ内では前の周回の内容が残ったまま後続が走ります（verify_before_asserting.md）'
 fi
 
