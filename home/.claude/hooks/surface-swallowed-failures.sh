@@ -20,13 +20,16 @@ try:
 except Exception:
     sys.exit(0)
 
-r = d.get("tool_result", "")
-if isinstance(r, dict):
-    r = " ".join(str(v) for v in r.values())
-elif isinstance(r, list):
-    r = " ".join(map(str, r))
-r = str(r)
-if not r:
+# 実測した形は `tool_response` で、`stdout` / `stderr` を持つ。
+# ドキュメントは `tool_result` と書いているが、その名では常に空になる。
+res = d.get("tool_response", d.get("tool_result", ""))
+if isinstance(res, dict):
+    r = "\n".join(str(res.get(k, "")) for k in ("stdout", "stderr"))
+elif isinstance(res, list):
+    r = "\n".join(map(str, res))
+else:
+    r = str(res)
+if not r.strip():
     sys.exit(0)
 
 # 誤検知しにくいものだけ。「error」のような一般語は入れない
@@ -56,6 +59,14 @@ msg = (
       "失敗も残りません。**この結果を根拠に次へ進む前に、意図した処理が実際に走ったかを"
       "確かめてください**（verify_before_asserting.md）"
 )
-print(json.dumps({"systemMessage": msg}, ensure_ascii=False))
+# additionalContext は Claude へ、systemMessage はユーザーの表示へ届く。
+# 確かめ直すのは Claude なので、両方に出す。
+print(json.dumps({
+    "hookSpecificOutput": {
+        "hookEventName": "PostToolUse",
+        "additionalContext": msg,
+    },
+    "systemMessage": msg,
+}, ensure_ascii=False))
 PY
 exit 0
