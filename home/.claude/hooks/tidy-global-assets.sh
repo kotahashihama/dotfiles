@@ -7,25 +7,27 @@
 # （12 時間で 25 ファイル編集して 0 回）。作業ツリーの状態で見れば経路に依存しない。
 #
 # ただし作業ツリーは複数セッションで共有されるので、状態だけで見ると
-# **他セッションの編集まで拾う**（実際に別リポジトリのセッションで鳴った）。
-# Write / Edit なら対象パスが入力に入っているのでそれを使い、Bash では
-# 「直前に書かれたか」を mtime で絞る。
+# **他セッションの編集まで拾う**（別リポジトリのセッションで 4 回連続で鳴った）。
+# mtime で絞っても足りない——編集が続いている間は窓に入り続ける。
+#
+# **この呼び出しの入力がそのファイルを名指ししているか**で判定する。編集する
+# コマンドは必ずパスを含み、無関係なコマンド（`gh pr view` 等）は含まない。
 #
 # 同じファイルで何度も鳴らさない。セッション単位で、促したパスを控える。
 #
 set -u
 
-MTIME_WINDOW=20   # 秒。これより古い変更は他セッターの仕業とみなす
-
 payload=$(cat)
-read -r sid edited <<EOF
-$(printf '%s' "$payload" | python3 -c '
+sid=$(printf '%s' "$payload" | python3 -c 'import sys,json;print(json.load(sys.stdin).get("session_id",""))' 2>/dev/null) || exit 0
+[ -n "$sid" ] || exit 0
+
+# 入力に現れた文字列すべて（Bash の command、Write/Edit の file_path と中身）
+inputs=$(printf '%s' "$payload" | python3 -c '
 import sys, json
-d = json.load(sys.stdin)
-print(d.get("session_id", "-"), d.get("tool_input", {}).get("file_path", "-"))
-' 2>/dev/null)
-EOF
-[ -n "${sid:-}" ] && [ "$sid" != "-" ] || exit 0
+d = json.load(sys.stdin).get("tool_input", {})
+print(" ".join(str(v) for v in d.values()))
+' 2>/dev/null) || exit 0
+[ -n "$inputs" ] || exit 0
 
 link=$(readlink "$HOME/.claude/settings.json" 2>/dev/null) || exit 0
 [ -n "$link" ] || exit 0
@@ -39,19 +41,13 @@ changed=$(git -C "$repo" status --porcelain --untracked-files=all -- \
 state="${TMPDIR:-/tmp}/claude-tidy-${sid}.seen"
 touch "$state"
 
-now=$(date +%s)
 fresh=""
 while IFS= read -r f; do
   [ -n "$f" ] || continue
   grep -qxF "$f" "$state" 2>/dev/null && continue
 
-  # Write / Edit はパスが分かる。Bash は mtime で「直前に書かれたか」を見る
-  if [ "$edited" != "-" ]; then
-    case "$edited" in *"${f##*/}") : ;; *) continue ;; esac
-  else
-    m=$(stat -f %m "$repo/$f" 2>/dev/null || stat -c %Y "$repo/$f" 2>/dev/null) || continue
-    [ $((now - m)) -le "$MTIME_WINDOW" ] || continue
-  fi
+  # この呼び出しがそのファイルを名指ししていなければ、他セッションの編集
+  case "$inputs" in *"${f##*/}"*) : ;; *) continue ;; esac
 
   printf '%s\n' "$f" >> "$state"
   fresh="${fresh}${f}|"
