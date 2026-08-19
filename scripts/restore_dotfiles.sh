@@ -31,6 +31,15 @@ if [ -d "$DOTFILES_DIR/private/.claude-memory" ]; then
   done
 fi
 
+# Claude Code の managed settings（auto mode の環境情報）を戻す。
+# 置き場がシステム領域なので sudo が要る。自動では実行せず、要るときだけ案内する。
+MANAGED_SRC="$DOTFILES_DIR/private/.claude/managed-settings.json"
+MANAGED_DST="/Library/Application Support/ClaudeCode/managed-settings.json"
+if [ -f "$MANAGED_SRC" ] && [ ! -e "$MANAGED_DST" ]; then
+  echo "ℹ️  auto mode の環境情報が未配置です。次を実行してください:"
+  echo "    sudo mkdir -p \"$(dirname "$MANAGED_DST")\" && sudo ln -sfn \"$MANAGED_SRC\" \"$MANAGED_DST\""
+fi
+
 # 公開側への混入を検査するフックを有効にする
 if git -C "$DOTFILES_DIR" rev-parse --git-dir >/dev/null 2>&1; then
   git -C "$DOTFILES_DIR" config core.hooksPath scripts/git-hooks
