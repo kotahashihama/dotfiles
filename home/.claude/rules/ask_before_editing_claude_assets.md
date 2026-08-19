@@ -139,7 +139,7 @@
 | `home/.claude/`（rules / skills / hooks / agents / settings.json / CLAUDE.md） | **管理下** | **コミットが要る** |
 | `private/.claude/` と `private/.claude-memory/`（メモリ・社内固有名を含むスキル） | `.gitignore` 対象 | 不要 |
 
-**スキルは public と private の両方にあります。** `~/.claude/skills/` からはスキル単位でリンクされていて見分けが付かないので、**編集したファイルの実体を `readlink -f` で確かめる**。`private/` 側なら連絡は要りません。
+**どちら側かの見分け方は `no_internal_names_in_public_assets.md` が持ちます**（スキルは両側にあり、リンク越しでは判別できない）。**`private/` 側なら連絡は要りません。**
 
 **`home/` 配下は公開リポジトリなので、社内固有名を書けません。** 何を書いてよいかは `no_internal_names_in_public_assets.md` が規定します。
 
