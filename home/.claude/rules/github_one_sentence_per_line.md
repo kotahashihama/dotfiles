@@ -69,4 +69,4 @@ grep -nE '。\s*$' <本文ファイル> | grep -v '^\s*[0-9]*:>'
 - `github_cross_repo_reference.md` / `github_command_comments.md`: どちらも GitHub へ書く文章の書式を定める
 - `github_rich_formatting.md`（GitHub の表現手段）: あちらは**構造の選び方**、本ルールは**文の表記**
 - `concise_first_then_detail.md`（簡潔に）: あちらは**量**を扱う。本ルールは**改行と表記**
-- `/review-pr` / `/create-pr` / `/update-pr-description` / `/resolve-ai-reviews`: 本ルールが土台で、各スキルは投稿先固有の事情を上乗せする
+- `/review-pr` / `/create-pr` / `/update-pr-description` / `/resolve-ai-reviews` / `/resolve-human-reviews`: 本ルールが土台で、各スキルは投稿先固有の事情を上乗せする
