@@ -32,6 +32,10 @@ print(json.dumps({"hookSpecificOutput": {
 stripped=$(printf '%s' "$cmd" | python3 -c '
 import sys, re
 s = sys.stdin.read()
+# ヒアドキュメントの中身はシェルではない。別言語の比較演算子
+# (len(x) > 5 など) をリダイレクトと読まないよう、先に丸ごと落とす
+s = re.sub(r"<<-?[\x27\"]?([A-Za-z_][A-Za-z0-9_]*)[\x27\"]?\n.*?\n\1\n", "\n", s, flags=re.S)
+s = re.sub(r"<<-?[\x27\"]?([A-Za-z_][A-Za-z0-9_]*)[\x27\"]?\n.*\Z", "\n", s, flags=re.S)
 s = re.sub(r"\x27[^\x27]*\x27", "", s)   # シングルクォート
 s = re.sub(r"\"[^\"]*\"", "", s)          # ダブルクォート
 print(s)')
