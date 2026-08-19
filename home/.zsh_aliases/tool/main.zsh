@@ -61,7 +61,16 @@ alias tfa='tf apply'
 . ~/.zsh_aliases/tool/git.zsh
 
 # Claude Code
-alias cld='claude'
+# 追加設定は関数で渡す。エイリアスにフラグを直接書くと、ファイルが無い環境で
+# 起動そのものが失敗する。
+cld() {
+  local extra=~/.claude/settings.private.json
+  if [ -f "$extra" ]; then
+    claude --settings "$extra" "$@"
+  else
+    claude "$@"
+  fi
+}
 alias cldr='cld -r'
 alias cldw='cld --worktree'
 alias cldrc='claude remote-control'
