@@ -108,5 +108,5 @@ PR のレビューコメントへの対応を報告するときは、**GitHub �
 - `summarize_after_each_task.md`（各作業後にサマリを添える）と併用: サマリ内で識別子を示す場合も本ルールに従う
 - `github_cross_repo_reference.md`（GitHub 上で他リポジトリの PR / issue を参照する書式）: あちらは GitHub へ書く文章、本ルールはユーザーへの報告が対象
 - `github_rich_formatting.md`（GitHub の表現手段）: **`path:line` の扱いが逆になる**。会話ではクリックできるので使い、GitHub では差分が動くので使わない
-- `/break-down`（実装を噛み砕いて説明する）: 本ルールが土台で、あちらは**読む順の案内**を上乗せする
+- `/explain-code`（実装を噛み砕いて説明する）: 本ルールが土台で、あちらは**読む順の案内**を上乗せする
 - `/resolve-ai-reviews` / `/resolve-human-reviews`（レビュー対応スキル）: 対応表の並び順と列構成は本ルールに従う
