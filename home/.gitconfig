@@ -19,6 +19,13 @@
 [delta]
 	navigate = true
 	line-numbers = true
+[difftool "difftastic"]
+	cmd = difft "$LOCAL" "$REMOTE"
+[difftool]
+	prompt = false
+[alias]
+	dt = difftool --tool difftastic
+	dtl = -c diff.external=difft log --ext-diff -p
 [merge]
 	conflictstyle = zdiff3
 [filter "lfs"]
