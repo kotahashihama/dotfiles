@@ -20,7 +20,7 @@ allowed-tools: Bash(zsh:*) Bash(grep:*) Bash(sed:*) Bash(awk:*) Bash(sort:*) Bas
    zsh -ic 'print -l ${(k)builtins} ${(k)commands}'
    ```
 
-2. **自分で定義したものだけに絞る**。`home/.zsh_aliases/` `private/.zsh_aliases_private/` `home/.zshrc` に書かれている名前と突き合わせる。**Prezto が定義したエイリアスが 5 割を占める**ので、絞らないとノイズだらけになる
+2. **自分で定義したものだけに絞る**。`home/.zsh_aliases/` `private/.zsh_aliases_private/` `home/.zshrc` `home/.config/zsh/` に書かれている名前と突き合わせる。**プラグインが定義するものは対象外**
 
 3. **参照先を辿る**。本体の先頭語を取り、それがエイリアスならさらに辿る。`sudo` `command` `noglob` `nocorrect` `env` は**前置修飾子**なので読み飛ばす（`nocorrect` を参照先と誤認しやすい）
 
@@ -99,7 +99,7 @@ allowed-tools: Bash(zsh:*) Bash(grep:*) Bash(sed:*) Bash(awk:*) Bash(sort:*) Bas
 ## やってはいけないこと
 
 - ファイルを `grep` しただけで判定すること。**入れ子のエイリアスと関数を取りこぼす**
-- Prezto 等が定義したものを混ぜること。**ユーザーが管理していないものを消す提案をしない**
+- sheldon のプラグインが定義したものを混ぜること。**ユーザーが管理していないものを消す提案をしない**
 - 判定不可を「欠落」に混ぜること。相対パスや変数展開は、その場では動く
 - 確認なしに**定義を消す / ツールを入れる**こと（`decide_or_ask.md`）
 - 非公開側の定義を公開側のファイルへ移すこと（`.claude/rules/file-placement.md`）

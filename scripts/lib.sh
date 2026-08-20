@@ -3,7 +3,15 @@
 # backup / restore が共有する定義とヘルパー。
 #
 
-DOTFILES_DIR=${DOTFILES_DIR:-~/Documents/repositories/github.com/kotahashihama/dotfiles}
+# リポジトリの位置。クローン先を選ばないよう、既定は git に訊く。
+# lib.sh は必ず `.` で読まれるので $0 は呼び出し元を指す。そこを起点にする。
+# DOTFILES_DIR を渡せば上書きできる（検証で偽の場所を指すときに使う）。
+if [ -z "${DOTFILES_DIR:-}" ]; then
+  _libdir=$(CDPATH= cd -- "$(dirname -- "$0")" 2>/dev/null && pwd -P)
+  DOTFILES_DIR=$(git -C "${_libdir:-.}" rev-parse --show-toplevel 2>/dev/null) \
+    || DOTFILES_DIR=~/Documents/repositories/github.com/kotahashihama/dotfiles
+  unset _libdir
+fi
 PRIVATE_ARCHIVE=${PRIVATE_ARCHIVE:-~/Desktop/private_dotfiles.tar.gz.gpg}
 
 # 非公開側は SSH 秘密鍵・クラウドの資格情報・API キーを含むため暗号化して運ぶ。
@@ -33,6 +41,7 @@ gpg_decrypt() {
 # 両方が同じディレクトリへ要素を持ち寄る場合も、ここへ入れて衝突を避ける。
 PARTIAL_DIRS='.claude
 .claude/skills
+.config
 .codex
 .cursor
 .openclaw
