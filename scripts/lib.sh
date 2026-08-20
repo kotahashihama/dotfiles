@@ -7,7 +7,8 @@
 # lib.sh は必ず `.` で読まれるので $0 は呼び出し元を指す。そこを起点にする。
 # DOTFILES_DIR を渡せば上書きできる（検証で偽の場所を指すときに使う）。
 if [ -z "${DOTFILES_DIR:-}" ]; then
-  _libdir=$(CDPATH= cd -- "$(dirname -- "$0")" 2>/dev/null && pwd -P)
+  # CDPATH が設定されていると cd が別の場所へ飛ぶ。サブシェル内で空にする
+  _libdir=$(unset CDPATH; cd -- "$(dirname -- "$0")" 2>/dev/null && pwd -P)
   DOTFILES_DIR=$(git -C "${_libdir:-.}" rev-parse --show-toplevel 2>/dev/null) \
     || DOTFILES_DIR=~/Documents/repositories/github.com/kotahashihama/dotfiles
   unset _libdir
