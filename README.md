@@ -6,6 +6,19 @@ macOS 用の個人設定。**そのまま使わないでください。**
 **中身を読まずに適用すると既存の設定が置き換わります**。参考にするなら、`home/` の個別ファイルか
 `scripts/` の仕組みを読んで、必要な部分だけ取ってください。
 
+## 考え方
+
+**運び方で置き場を決める。** 何が秘密かではなく、git で運べるか暗号化アーカイブが要るかで
+`home/` と `private/` に分かれる。判断が「表を見る」に変わり、追加のたびに迷わない。
+
+**壊れる経路は既存マシンでは通らない。** リストアが走るのは何も無いマシンなので、手元で動いた
+ことは検証にならない。偽の HOME を作って通しで流す（`verify_restore.sh`）。
+
+**強制は機械に、判断は人に。** 秘匿値の混入は `pre-commit` が止める。何をコミットするか、
+いつ push するかは自分で決める。
+
+**古いものは捨てる。** 後継が定着したら移り、旧側は設定・`Brewfile`・実体の 3 つから消す。
+
 ## 構成
 
 **旧マシンから新マシンへ何で運ぶか**で 2 つの置き場に分かれる。詳細は [`docs/placement.md`](docs/placement.md)。
@@ -36,13 +49,13 @@ macOS 用の個人設定。**そのまま使わないでください。**
 ```sh
 cd ~/Documents/repositories/github.com/kotahashihama/dotfiles/
 
-# 1. Brewfile を更新
-mv Brewfile Brewfile.old && brew bundle dump
+# 1. 環境の変化を取り込み、状態を点検する
+./scripts/sync_dotfiles.sh
 
 # 2. 管理対象に加えたいものがあれば取り込む
 ./scripts/adopt_dotfile.sh private .codex/config.toml
 
-# 3. コミット & push
+# 3. 差分を確認してコミット & push
 
 # 4. private/ を暗号化アーカイブに固める（パスフレーズが表示される）
 ./scripts/backup_dotfiles.sh
@@ -105,6 +118,7 @@ dotfiles では運ばない。**新マシンで消えるので、移行前に確
 
 | スクリプト | 役割 |
 | --- | --- |
+| `sync_dotfiles.sh` | Brewfile と mise の一覧を実態へ更新し、宣言とリンクの整合を点検する。**日常的に走らせるのはこれ** |
 | `backup_dotfiles.sh` | 下記の書き出しを走らせ、`private/` を AES-256 で暗号化したアーカイブに固める |
 | `backup_osx.sh` | macOS の `defaults` 16 ドメインと、インストール済みアプリの一覧を書き出す |
 | `backup_associations.sh` | 拡張子とアプリの関連付けを書き出す（`duti`） |
@@ -188,6 +202,17 @@ zsh の設定は `home/.config/zsh/` に 3 分割してある（`options` / `uti
 - `private/.secrets/env` の値（アーカイブが無い場合のみ）
 
 AltTab と Raycast の設定は `defaults` で運ぶので、手で入れ直す必要はない（アプリ本体は `Brewfile` から入る）。
+
+## 困ったとき
+
+| 症状 | 原因 |
+| --- | --- |
+| `zsh -i -c` で `gitstatus failed to initialize` が出る | **非対話シェル特有**。実端末では出ない。Powerlevel10k の内部で、設定の問題ではない |
+| `> file` が「cannot overwrite」で失敗する | `unsetopt CLOBBER` が効いている（`home/.config/zsh/options.zsh`）。上書きは `>|` |
+| `cp` / `mv` / `rm` が確認を求める | `-i` を付けている。確認なしなら `command cp` か `cpf` / `mvf` / `rmf` |
+| `brew bundle` が cask で止まる | 手動で入れたアプリが brew 管理外。`brew install --cask --adopt <name>` で取り込む |
+| リストア後にリンクが片側しか無い | 両側に持つディレクトリを `PARTIAL_DIRS` へ登録していない（`scripts/lib.sh`） |
+| `sheldon: プラグインが未取得です` と出る | `sheldon lock` を実行する |
 
 ## 留意事項
 
