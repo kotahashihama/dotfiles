@@ -107,16 +107,26 @@ bindkey '^g' fzf-src
 
 # gwq worktree (Ctrl + T)
 function fzf-worktree() {
-  local json=$(gwq list --global --json 2>/dev/null)
-  # worktree が 1 つも無いと JSON ではなくメッセージが返る
+  # リポジトリ内にいればそこの worktree を、外なら gwq が管理する分を出す。
+  # --global は basedir しか見ないので、git 側で作った worktree が漏れる
+  local json=$(gwq list --json 2>/dev/null)
+  case "$json" in
+    \[*) ;;
+    *) json=$(gwq list --global --json 2>/dev/null) ;;
+  esac
+  # どちらでも取れなければ JSON ではなくメッセージが返っている
   case "$json" in
     \[*) ;;
     *) zle -M "worktree がありません（gwq add -b <branch> で作る）"; return ;;
   esac
 
-  # 表示は owner/repo と branch、cd には末尾のフルパスを使う
+  # 表示はブランチと ~ 短縮したパス。置き場の形が gwq と git で違うため、
+  # パスの一部を切り出す形だと意味を成さない
+  local gitroot=$(git rev-parse --show-toplevel 2>/dev/null)
   local selected=$(printf '%s' "$json" \
-    | jq -r '.[] | "\(.path | split("/") | .[-3:-1] | join("/"))\t\(.branch)\t\(.path)"' \
+    | jq -r --arg h "$HOME" --arg r "${gitroot:-/dev/null}" '
+        .[] | select(.is_main | not)
+        | "\(.branch)\t\(.path | sub("^" + $r + "/"; "") | sub("^" + $h; "~"))\t\(.path)"' \
     | fzf --prompt "❯ " --query "$LBUFFER" \
       --delimiter '\t' --with-nth 1,2 \
       --preview 'git -C {3} log --oneline --decorate -15 --color=always' \
