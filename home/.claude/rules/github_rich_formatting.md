@@ -129,4 +129,5 @@ https://github.com/OWNER/REPO/blob/<commit>/path/to/file.go#L42-L48
 - `github_note_generated_by_claude.md`（生成者表示）: **`NOTE` を占有している**。他の Alert と混ざらないよう、用途を分ける
 - `github_cross_repo_reference.md`（他リポジトリの参照）: **`#123` は参照するだけで閉じない**。閉じるキーワードを避ける根拠はあちらと対で読む
 - `github_one_sentence_per_line.md`（1 文ごとに改行）: あちらは**文の表記**、本ルールは**構造の選び方**
+- `report_formatting.md`（報告に貼る識別子の書式）: **`path:line` の扱いが逆になる**。会話ではクリックできるので使い、GitHub では差分が動くので使わない
 - `/create-pr` / `/update-pr-description` / `/review-pr` / `/resolve-ai-reviews` / `/resolve-human-reviews`: 本ルールが土台で、各スキルは投稿先固有の事情を上乗せする
