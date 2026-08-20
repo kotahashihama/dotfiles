@@ -14,6 +14,7 @@
 | `PostToolUse` | `Bash` | **警告する**。成功として返ったが出力に失敗の兆候がある |
 | `PostToolUse` | `Bash` `Write` `Edit` | **促す**。グローバル資産を編集したら棚卸しへ |
 | `SessionStart` | 起動・再開 | **伝える**。dotfiles に未コミットの資産がある（dotfiles 自身のセッションでは黙る） |
+| **`UserPromptSubmit`** | 全部 | **促す**。訂正・好み・恒久化の要求を検知して、資産化の検討へ（`/learn-rules`） |
 | `Stop` | 全部 | **止めさせない**。「よければ着手します」で終えようとしたとき |
 
 ## 弾かれるもの
@@ -50,6 +51,7 @@
 テストは緑のまま一度も効いていなかった。
 
 - `PostToolUse` の入力フィールド名は、公式ドキュメントの記載と実物が違う。**実物を控えて確かめる**
+- `UserPromptSubmit` のプロンプト格納キーも明記が無い。**実物では `prompt`**（`session_id` / `cwd` / `prompt_id` / `permission_mode` / `hook_event_name` / `session_title` と並ぶ）
 - Claude に届けるなら `hookSpecificOutput.additionalContext`。ユーザー向けの表示欄とは別
 - 作業ツリーは**全セッションで共有**される。状態だけで判定すると他セッションの編集を拾う
 - **除去処理は検査ごとに違う。** 片方にだけ掛けると、もう片方が素通りする（実際に踏んだ）

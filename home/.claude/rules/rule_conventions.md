@@ -180,3 +180,4 @@ auto memory（`~/.claude/projects/<project>/memory/`）は**自分が書く学�
 - `concise_first_then_detail.md`（簡潔に書く）: ルール本文にも同じ基準を適用する
 - `verify_before_asserting.md`（断定の前に裏を取る）: 「既定に入った」も裏取りの対象
 - `ask_before_editing_claude_assets.md`（尋ねてから手を入れる）: **手を入れてよいかの判断**を規定する。本ルールは手を入れると決まった後の書き方と整理
+- `/learn-rules`（会話で受けたものを資産へ還元する）: **本ルールを手順として実行する側。** 書き方と整理の中身は本ルールが持つ
