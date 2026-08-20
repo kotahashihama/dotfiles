@@ -101,10 +101,30 @@ dotfiles では運ばない。**新マシンで消えるので、移行前に確
 | `restore_dotfiles.sh` | アーカイブを復号し、`home/` と `private/` を `~` へリンクする |
 | `adopt_dotfile.sh` | `~` 配下のファイルを管理下へ移し、リンクを張り直す |
 | `restore_osx.sh` | macOS の設定を適用し、書き出した `defaults` と関連付けを取り込む |
-| `restore_languages.sh` | mise で言語ランタイムを入れる |
+| `restore_languages.sh` | mise の宣言をすべて入れる（言語ランタイムと、gopls / golangci-lint 等の Go ツール） |
 | `lib.sh` | 上記が共有する定義とヘルパー |
 | `verify_restore.sh` | バックアップ → リストアを偽の HOME で通しで流す（79 項目） |
 | `git-hooks/pre-commit` | 公開側への認証情報・非公開の固有名の混入を止める |
+
+## シェルのキー操作
+
+導入しているツールは `Brewfile` と `private/.config/mise/config.toml` が持つ。ここに書くのは
+**設定を読まないと分からないもの**だけ。
+
+| キー | 何が起きるか |
+| --- | --- |
+| `^r` | 履歴を検索する（atuin）。ディレクトリ・終了コード・日時で絞れる |
+| `^X^R` | 履歴を検索する（fzf）。atuin へ `^r` を譲ったので退避 |
+| `^q` | 最近のディレクトリへ移動する（cdr） |
+| `^g` | ghq が管理するリポジトリへ移動する |
+| `^t` | gwq が管理する worktree へ移動する |
+| `^e` | git のブランチを切り替える |
+
+`^q` `^g` `^t` `^e` は右側にプレビューが出る。`cd` は zoxide が置き換えており、**よく行く場所は
+部分名で飛べる**。明示的なパス指定は従来どおり。
+
+zsh の設定は `home/.config/zsh/` に 3 分割してある（`options` / `utility` / `keybindings`）。
+プラグインは `home/.config/sheldon/plugins.toml`。
 
 ## Claude Code の資産
 
