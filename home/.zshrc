@@ -94,7 +94,7 @@ function fzf-src() {
   # 候補は ghq list（github.com/owner/repo）で出す。-p はどれも同じ接頭辞が
   # 付くぶん幅を食い、絞り込みのノイズにもなる
   local selected=$(ghq list | fzf --prompt "❯ " --query "$LBUFFER" \
-    --preview 'git -C "$(ghq root)/{}" log --oneline --decorate -15 --color=always' \
+    --preview 'cd "$(ghq root)" && git -C {} log --oneline --decorate -15 --color=always' \
     --preview-window 'right,60%')
   if [ -n "$selected" ]; then
     BUFFER="cd $(ghq root)/${selected}"
