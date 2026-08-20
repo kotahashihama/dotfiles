@@ -1,0 +1,22 @@
+# 編集環境が複数ある（Cursor / VSCode / vim）ため、字下げと改行を揃える
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 2
+
+# タブが構文上の意味を持つ
+[{Makefile,*.mk}]
+indent_style = tab
+
+# git の設定ファイルはタブ字下げが慣習
+[.gitconfig]
+indent_style = tab
+
+# Markdown は行末 2 空白が改行を意味するので削らない
+[*.md]
+trim_trailing_whitespace = false
