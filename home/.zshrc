@@ -12,13 +12,33 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   . "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-# Source Prezto.
-if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
-  . "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
-fi
+# テーマ本体。Prezto の prompt モジュール経由をやめ、brew の実体を直接読む
+. "$(brew --prefix powerlevel10k)/share/powerlevel10k/powerlevel10k.zsh-theme"
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || . ~/.p10k.zsh
+
+#
+# zsh の設定
+#
+# Prezto を外したので、効いていたオプション・エイリアス・キーバインドを明示的に持つ
+for f in options utility; do
+  [[ -r ~/.config/zsh/$f.zsh ]] && . ~/.config/zsh/$f.zsh
+done
+
+# プラグイン。宣言は ~/.config/sheldon/plugins.toml
+# 未取得だと source が空になるので、その場合だけ案内を出す。
+# ここで入力を求めると Powerlevel10k の instant prompt と競合する
+if ! eval "$(sheldon source 2>/dev/null)"; then
+  print -P '%F{yellow}sheldon: プラグインが未取得です。`sheldon lock` を実行してください%f'
+fi
+
+# 補完系。プラグインが fpath へ入った後で compinit を走らせる必要がある
+autoload -Uz compinit
+compinit -C
+
+# キーバインドはプラグインの後。ウィジェットが定義されてからでないと結び付かない
+[[ -r ~/.config/zsh/keybindings.zsh ]] && . ~/.config/zsh/keybindings.zsh
 
 # Homebrew
 eval "$(/opt/homebrew/bin/brew shellenv)"
@@ -28,16 +48,6 @@ eval "$(direnv hook zsh)"
 
 # Docker
 source <(docker completion zsh)
-
-#
-# sheldon
-#
-# プラグインの宣言は ~/.config/sheldon/plugins.toml。
-# 未取得のものがあると source が失敗するので、その場合だけ案内を出す。
-# ここで入力を求めると Powerlevel10k の instant prompt と競合する。
-if ! eval "$(sheldon source 2>/dev/null)"; then
-  print -P '%F{yellow}sheldon: プラグインが未取得です。`sheldon lock` を実行してください%f'
-fi
 
 #
 # fzf
