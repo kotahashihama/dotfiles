@@ -59,10 +59,57 @@ if printf '%s' "$stripped" | grep -qE 'git[[:space:]]+add[[:space:]]+(-A|--all|\
   deny 'git add は対象ファイルを名指ししてください。-A / . は設定系ファイルを意識せず巻き込みます（ask_before_editing_claude_assets.md）'
 fi
 
-# 3) push の force 系 — 履歴を書き換える。指示があるときだけ手で打つ
+# 3) 保護ブランチへの force push — 共有している履歴を壊す
 #    （no_auto_commit.md / no_rebase_under_human_review.md）
+#
+#    作業ブランチへの force は止めない。スタックの下段が squash でマージ
+#    されると上段の差分が壊れ、rebase --onto での復旧に force が要る。
+#    ここを塞ぐと、正規の復旧手段が使えなくなる。
+#
+#    宛先は refspec から読む。書かれていなければ現在のブランチが宛先になる
+#    ので、payload の cwd で引く。
 if printf '%s' "$stripped" | grep -qE 'git[[:space:]]+push[^|;&]*(--force|--force-with-lease|[[:space:]]-f([[:space:]]|$))'; then
-  deny 'force push は履歴を書き換えます。人間のレビューが付いた PR では特に避けてください（no_rebase_under_human_review.md）。必要なら理由と対象を確認してから手で実行してください'
+  cwd=$(printf '%s' "$payload" | python3 -c 'import sys,json;print(json.load(sys.stdin).get("cwd",""))' 2>/dev/null)
+
+  target=$(CMD="$stripped" CWD="$cwd" python3 -c '
+import os, re, subprocess
+
+cmd = os.environ["CMD"]
+# 最後の `git push` 以降を見る（&& で繋がれていても宛先はそこにある）
+m = None
+for m in re.finditer(r"git\s+push\b", cmd):
+    pass
+rest = cmd[m.end():] if m else ""
+# `;` `&&` `|` より前で切る
+rest = re.split(r"[;&|]", rest)[0]
+
+args = [a for a in rest.split() if not a.startswith("-")]
+refspecs = args[1:]          # args[0] は remote
+
+dests = []
+for r in refspecs:
+    r = r.lstrip("+")
+    dests.append(r.rsplit(":", 1)[-1] if ":" in r else r)
+
+if not dests:
+    try:
+        b = subprocess.run(["git", "-C", os.environ["CWD"], "symbolic-ref", "--short", "HEAD"],
+                           capture_output=True, text=True, timeout=2).stdout.strip()
+        if b:
+            dests = [b]
+    except Exception:
+        pass
+
+# refs/heads/main のような書き方も畳む
+print(" ".join(d.rsplit("/", 1)[-1] for d in dests))' 2>/dev/null)
+
+  for t in $target; do
+    case "$t" in
+      main|master)
+        deny "保護ブランチ（${t}）への force push は、共有している履歴を壊します。作業ブランチへの force は止めていないので、宛先を確かめてください。main を巻き戻す必要が本当にあるなら、理由を添えてユーザーへ確認してください（no_rebase_under_human_review.md）"
+        ;;
+    esac
+  done
 fi
 
 # 4) 秘匿値そのものを出力する形 — 存在確認に値は要らない
