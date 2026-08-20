@@ -39,13 +39,6 @@ if ! eval "$(sheldon source 2>/dev/null)"; then
   print -P '%F{yellow}sheldon: プラグインが未取得です。`sheldon lock` を実行してください%f'
 fi
 
-# zsh-notify
-zstyle ':notify:*' error-title "Command failed (in #{time_elapsed} seconds)"
-zstyle ':notify:*' success-title "Command finished (in #{time_elapsed} seconds)"
-zstyle ':notify:*' error-sound "Glass"
-zstyle ':notify:*' success-sound "default"
-zstyle ':notify:*' command-complete-timeout 5
-
 #
 # fzf
 #
