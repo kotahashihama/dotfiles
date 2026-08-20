@@ -19,12 +19,13 @@ paths:
 - 秘匿値は設定ファイルへ直書きせず `~/.secrets/env`（実体は `private/.secrets/env`）へ置き、参照だけを残す
 - 秘匿値の変数を増やしたら `scripts/secrets.env.example` にも名前を足す
 - `~` へ取り込むときは `./scripts/adopt_dotfile.sh {public|private} <path>` を使う。手で `mv` + `ln` しない
+- **両側に同名のディレクトリを持つなら `scripts/lib.sh` の `PARTIAL_DIRS` へ登録する**。登録しないと、リストア時に片側が丸ごとリンクされ、**もう片側が消える**
 
 ## 禁止する挙動
 
 - **`private/` を追跡対象にすること**。`.gitignore` の `/private/` を消す・例外を足すのは、内容を 1 件ずつ確認したうえでの意図的な公開に限る
 - 秘匿値を含むファイルを `home/` へ置くこと
-- `home/` と `private/` で **同じ名前を使うこと**。private 側が public を上書きし、公開設定が読めなくなる
+- `home/` と `private/` で **同じ名前を使うこと**。private 側が public を上書きし、公開設定が読めなくなる。**両側に持つ必要があるなら `PARTIAL_DIRS` へ登録してから**
 - コミット前に公開側の差分を確認せずに済ませること
 
 ## 検査は 2 段構え
