@@ -1,3 +1,9 @@
+# ファイル一覧・閲覧
+# 素の ls / cat は残す。壊れたときに切り分けられなくなる
+alias ll='eza -lah --git --icons --group-directories-first'
+alias lt='eza --tree --level=2 --icons --git-ignore'
+alias b='bat'
+
 # ターミナル
 alias -g @tn='| terminal-notifier'
 
