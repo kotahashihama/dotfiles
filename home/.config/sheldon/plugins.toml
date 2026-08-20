@@ -1,0 +1,7 @@
+shell = "zsh"
+
+[plugins]
+
+# コマンド完了を macOS の通知センターへ出す
+[plugins.zsh-notify]
+github = "marzocchi/zsh-notify"

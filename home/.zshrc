@@ -30,23 +30,16 @@ eval "$(direnv hook zsh)"
 source <(docker completion zsh)
 
 #
-# zplug
+# sheldon
 #
-export ZPLUG_HOME=/opt/homebrew/opt/zplug
-. $ZPLUG_HOME/init.zsh
-
-# プラグイン
-zplug "marzocchi/zsh-notify"
-
-# プラグインがなければ知らせる。
-# ここで入力を求めると Powerlevel10k の instant prompt と競合するため、
-# 案内だけ出して zplug install は手で叩く。
-if ! zplug check; then
-  print -P '%F{yellow}zplug: 未インストールのプラグインがあります。`zplug install` を実行してください%f'
+# プラグインの宣言は ~/.config/sheldon/plugins.toml。
+# 未取得のものがあると source が失敗するので、その場合だけ案内を出す。
+# ここで入力を求めると Powerlevel10k の instant prompt と競合する。
+if ! eval "$(sheldon source 2>/dev/null)"; then
+  print -P '%F{yellow}sheldon: プラグインが未取得です。`sheldon lock` を実行してください%f'
 fi
 
-# zsh-nofity
-. $ZPLUG_HOME/repos/marzocchi/zsh-notify/notify.plugin.zsh
+# zsh-notify
 zstyle ':notify:*' error-title "Command failed (in #{time_elapsed} seconds)"
 zstyle ':notify:*' success-title "Command finished (in #{time_elapsed} seconds)"
 zstyle ':notify:*' error-sound "Glass"
