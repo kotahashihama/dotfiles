@@ -54,19 +54,19 @@ zstyle ':notify:*' success-sound "default"
 zstyle ':notify:*' command-complete-timeout 5
 
 #
-# peco
+# fzf
 #
 
 # history (Ctrl + R)
-function peco-history-selection() {
-  BUFFER=`history -n 1 | tail -r | awk '!a[$0]++' | peco --prompt "❯"`
+function fzf-history-selection() {
+  BUFFER=$(history -n 1 | tail -r | awk '!a[$0]++' | fzf --prompt "❯ ")
   CURSOR=$#BUFFER
   zle reset-prompt
 }
-zle -N peco-history-selection
-bindkey '^r' peco-history-selection
+zle -N fzf-history-selection
+bindkey '^r' fzf-history-selection
 
-# cdr (Ctrl + E)
+# cdr (Ctrl + Q)
 if [[ -n $(echo ${^fpath}/chpwd_recent_dirs(N)) && -n $(echo ${^fpath}/cdr(N)) ]]; then
   autoload -Uz chpwd_recent_dirs cdr add-zsh-hook
   add-zsh-hook chpwd chpwd_recent_dirs
@@ -76,33 +76,36 @@ if [[ -n $(echo ${^fpath}/chpwd_recent_dirs(N)) && -n $(echo ${^fpath}/cdr(N)) ]
   zstyle ':chpwd:*' recent-dirs-file "$HOME/.cache/chpwd-recent-dirs"
 fi
 
-function peco-cdr() {
-  local selected_dir="$(cdr -l | sed 's/^[0-9]* *//' | peco --prompt "❯" --query "$LBUFFER")"
+function fzf-cdr() {
+  local selected_dir="$(cdr -l | sed 's/^[0-9]* *//' | fzf --prompt "❯ " --query "$LBUFFER")"
   if [ -n "$selected_dir" ]; then
     BUFFER="cd ${selected_dir}"
     zle accept-line
   fi
 }
-zle -N peco-cdr
-bindkey '^q' peco-cdr
+zle -N fzf-cdr
+bindkey '^q' fzf-cdr
 
 # ghq (Ctrl + G)
-function peco-src() {
-  local selected_dir=$(ghq list -p | peco --prompt "❯" --query "$LBUFFER")
+function fzf-src() {
+  local selected_dir=$(ghq list -p | fzf --prompt "❯ " --query "$LBUFFER")
   if [ -n "$selected_dir" ]; then
     BUFFER="cd ${selected_dir}"
     zle accept-line
   fi
 }
-zle -N peco-src
-bindkey '^g' peco-src
+zle -N fzf-src
+bindkey '^g' fzf-src
 
 # git branch (Ctrl + E)
-function peco-git-branch() {
-  git checkout $(git branch | sed "s/*//g" | sed "s/ //g" | peco)
+function fzf-git-branch() {
+  local selected_branch=$(git branch | sed "s/*//g" | sed "s/ //g" | fzf --prompt "❯ ")
+  if [ -n "$selected_branch" ]; then
+    git checkout "$selected_branch"
+  fi
 }
-zle -N peco-git-branch
-bindkey '^e' peco-git-branch
+zle -N fzf-git-branch
+bindkey '^e' fzf-git-branch
 
 function create-project() {
   REPO_NAME=$1
