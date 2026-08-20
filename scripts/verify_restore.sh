@@ -63,7 +63,7 @@ unexpected=$(find "$W/fakehome" -maxdepth 1 -type d ! -path "$W/fakehome" -exec 
 check "~ 直下に想定外の実体が無い"      "$(printf '%s' "$unexpected" | grep -c . | tr -d ' ')" "0"
 
 echo "── 3. シェルの起動 ──"
-check "エイリアスが引ける" "$(HOME="$W/fakehome" zsh -ic 'source ~/.zsh_aliases/main.zsh; for a in cldpr cldar ssml gst dcu; do alias $a >/dev/null 2>&1 || echo NG; done' 2>/dev/null | grep -c NG)" "0"
+check "エイリアスが引ける" "$(HOME="$W/fakehome" zsh -ic 'source ~/.zsh_aliases/main.zsh; for a in cldw ssml gst dcu; do alias $a >/dev/null 2>&1 || echo NG; done; (( $+functions[cld] )) || echo NG' 2>/dev/null | grep -c NG)" "0"
 check "秘匿値が空でも起動" "$(HOME="$W/fakehome" zsh -ic 'echo OK' 2>/dev/null | grep -c OK)" "1"
 
 echo "── 4. 冪等性（2 回目のリストア） ──"
@@ -123,7 +123,8 @@ check "正常なものは通す"   "$(hook home/.claude/rules/__v3.md)" "0"
 
 echo "── 9. 整合性 ──"
 check "秘匿値の雛形が実体と一致" "$(diff <(grep -oE '^export [A-Z_]+' "$D/private/.secrets/env" | sort) <(grep -oE '^export [A-Z_]+' "$D/scripts/secrets.env.example" | sort) >/dev/null && echo 一致 || echo 不一致)" "一致"
-check "public/private で名前衝突なし" "$(comm -12 <(ls -A "$D/home" | sort) <(ls -A "$D/private" | sort) | grep -v '^.claude$' | wc -l | tr -d ' ')" "0"
+# 分割対象（PARTIAL_DIRS）は両側に同名で存在してよい。中の別々のものを持つため
+check "public/private で名前衝突なし" "$(comm -12 <(ls -A "$D/home" | sort) <(ls -A "$D/private" | sort) | grep -vxF "$( . "$D/scripts/lib.sh" >/dev/null 2>&1; printf '%s\n' "$PARTIAL_DIRS" | cut -d/ -f1 | sort -u )" | wc -l | tr -d ' ')" "0"
 check "追跡ファイルに private なし" "$(git -C "$D" ls-files | grep -c '^private/')" "0"
 
 echo "── 10. lib.sh の関数 ──"

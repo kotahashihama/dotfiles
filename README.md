@@ -62,13 +62,13 @@ cd ~/Documents/repositories/github.com/kotahashihama/
 git clone git@github.com:kotahashihama/dotfiles.git
 cd dotfiles/
 
-# 4. Prezto をインストール
-git clone --recursive https://github.com/sorin-ionescu/prezto.git "${ZDOTDIR:-$HOME}/.zprezto"
-
-# 5. リストアスクリプトを実行（途中でパスフレーズを聞かれる）
+# 4. リストアスクリプトを実行（途中でパスフレーズを聞かれる）
 ./scripts/restore_osx.sh
 ./scripts/restore_dotfiles.sh
 ./scripts/restore_languages.sh
+
+# 5. zsh プラグインを取得
+sheldon lock
 
 # 6. シェルを読み込み直す
 exec zsh
