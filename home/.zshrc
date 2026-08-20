@@ -77,7 +77,9 @@ if [[ -n $(echo ${^fpath}/chpwd_recent_dirs(N)) && -n $(echo ${^fpath}/cdr(N)) ]
 fi
 
 function fzf-cdr() {
-  local selected_dir="$(cdr -l | sed 's/^[0-9]* *//' | fzf --prompt "❯ " --query "$LBUFFER")"
+  local selected_dir="$(cdr -l | sed 's/^[0-9]* *//' | fzf --prompt "❯ " --query "$LBUFFER" \
+    --preview 'ls -lAh --color=always ${(e)~1} 2>/dev/null || ls -lAh ${1/#\~/$HOME}' \
+    --preview-window 'right,50%')"
   if [ -n "$selected_dir" ]; then
     BUFFER="cd ${selected_dir}"
     zle accept-line
@@ -88,18 +90,48 @@ bindkey '^q' fzf-cdr
 
 # ghq (Ctrl + G)
 function fzf-src() {
-  local selected_dir=$(ghq list -p | fzf --prompt "❯ " --query "$LBUFFER")
-  if [ -n "$selected_dir" ]; then
-    BUFFER="cd ${selected_dir}"
+  # 候補は ghq list（github.com/owner/repo）で出す。-p はどれも同じ接頭辞が
+  # 付くぶん幅を食い、絞り込みのノイズにもなる
+  local selected=$(ghq list | fzf --prompt "❯ " --query "$LBUFFER" \
+    --preview 'git -C "$(ghq root)/{}" log --oneline --decorate -15 --color=always' \
+    --preview-window 'right,60%')
+  if [ -n "$selected" ]; then
+    BUFFER="cd $(ghq root)/${selected}"
     zle accept-line
   fi
 }
 zle -N fzf-src
 bindkey '^g' fzf-src
 
+# gwq worktree (Ctrl + T)
+function fzf-worktree() {
+  local json=$(gwq list --global --json 2>/dev/null)
+  # worktree が 1 つも無いと JSON ではなくメッセージが返る
+  case "$json" in
+    \[*) ;;
+    *) zle -M "worktree がありません（gwq add -b <branch> で作る）"; return ;;
+  esac
+
+  # 表示は owner/repo と branch、cd には末尾のフルパスを使う
+  local selected=$(printf '%s' "$json" \
+    | jq -r '.[] | "\(.path | split("/") | .[-3:-1] | join("/"))\t\(.branch)\t\(.path)"' \
+    | fzf --prompt "❯ " --query "$LBUFFER" \
+      --delimiter '\t' --with-nth 1,2 \
+      --preview 'git -C {3} log --oneline --decorate -15 --color=always' \
+      --preview-window 'right,60%')
+  if [ -n "$selected" ]; then
+    BUFFER="cd $(printf '%s' "$selected" | cut -f3)"
+    zle accept-line
+  fi
+}
+zle -N fzf-worktree
+bindkey '^t' fzf-worktree
+
 # git branch (Ctrl + E)
 function fzf-git-branch() {
-  local selected_branch=$(git branch | sed "s/*//g" | sed "s/ //g" | fzf --prompt "❯ ")
+  local selected_branch=$(git branch | sed "s/*//g" | sed "s/ //g" | fzf --prompt "❯ " \
+    --preview 'git log --oneline --decorate -15 --color=always {}' \
+    --preview-window 'right,60%')
   if [ -n "$selected_branch" ]; then
     git checkout "$selected_branch"
   fi
