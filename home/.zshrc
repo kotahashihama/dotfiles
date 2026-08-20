@@ -162,6 +162,11 @@ function delete-project() {
 # mise
 eval "$(/opt/homebrew/bin/mise activate zsh)"
 
+# zoxide
+# cd を置き換える。よく行く場所は部分一致で飛べるようになり、
+# 明示的なパス指定は今までどおり動く。^q の cdr は履歴順なので役割が違う
+eval "$(zoxide init zsh --cmd cd)"
+
 # pnpm
 # クォート内の ~ は展開されないため $HOME を使う
 export PNPM_HOME="$HOME/Library/pnpm"
