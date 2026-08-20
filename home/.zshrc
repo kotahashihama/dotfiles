@@ -53,14 +53,15 @@ source <(docker completion zsh)
 # fzf
 #
 
-# history (Ctrl + R)
+# history (Ctrl + X Ctrl + R)
+# ^r は atuin が使う。fzf 版は補助として残す
 function fzf-history-selection() {
   BUFFER=$(history -n 1 | tail -r | awk '!a[$0]++' | fzf --prompt "❯ ")
   CURSOR=$#BUFFER
   zle reset-prompt
 }
 zle -N fzf-history-selection
-bindkey '^r' fzf-history-selection
+bindkey '^X^R' fzf-history-selection
 
 # cdr (Ctrl + Q)
 if [[ -n $(echo ${^fpath}/chpwd_recent_dirs(N)) && -n $(echo ${^fpath}/cdr(N)) ]]; then
@@ -169,6 +170,16 @@ eval "$(/opt/homebrew/bin/mise activate zsh)"
 # cd を置き換える。よく行く場所は部分一致で飛べるようになり、
 # 明示的なパス指定は今までどおり動く。^q の cdr は履歴順なので役割が違う
 eval "$(zoxide init zsh --cmd cd)"
+
+# atuin
+# 履歴を SQLite で持ち、ディレクトリ・終了コード・日時で絞り込める。^r を置き換える。
+# 上矢印は今までどおり部分一致検索に使いたいので atuin へは渡さない
+eval "$(atuin init zsh --disable-up-arrow)"
+
+# carapace
+# 多くの CLI の補完をまとめて供給する。zsh-completions と併存できる
+export CARAPACE_BRIDGES='zsh,fish,bash'
+source <(carapace _carapace zsh)
 
 # pnpm
 # クォート内の ~ は展開されないため $HOME を使う
