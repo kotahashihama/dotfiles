@@ -136,11 +136,6 @@ brew "zoxide"
 brew "zsh"
 # Git Worktree Manager for efficient worktree operations
 brew "d-kuro/tap/gwq", trusted: true
-brew "kotahashihama/tap/pceamless"
-brew "sqldef/sqldef/mysqldef"
-brew "supabase/tap/supabase"
-brew "bufbuild/buf/buf"
-brew "heroku/brew/heroku"
 # Password manager that keeps all passwords secure behind one password
 cask "1password"
 # Command-line interface for 1Password
@@ -443,3 +438,9 @@ go "github.com/kyoh86/richgo"
 go "github.com/swaggo/swag/cmd/swag"
 go "github.com/mikefarah/yq/v4"
 npm "corepack"
+brew "bufbuild/buf/buf"
+brew "heroku/brew/heroku"
+brew "kotahashihama/tap/pceamless"
+brew "nissy/mg/mg"
+brew "sqldef/sqldef/mysqldef"
+brew "supabase/tap/supabase"
