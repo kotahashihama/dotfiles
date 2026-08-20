@@ -438,9 +438,9 @@ go "github.com/kyoh86/richgo"
 go "github.com/swaggo/swag/cmd/swag"
 go "github.com/mikefarah/yq/v4"
 npm "corepack"
-brew "bufbuild/buf/buf"
-brew "heroku/brew/heroku"
-brew "kotahashihama/tap/pceamless"
-brew "nissy/mg/mg"
-brew "sqldef/sqldef/mysqldef"
-brew "supabase/tap/supabase"
+brew "bufbuild/buf/buf", trusted: true
+brew "heroku/brew/heroku", trusted: true
+brew "kotahashihama/tap/pceamless", trusted: true
+brew "nissy/mg/mg", trusted: true
+brew "sqldef/sqldef/mysqldef", trusted: true
+brew "supabase/tap/supabase", trusted: true

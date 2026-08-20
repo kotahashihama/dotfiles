@@ -49,4 +49,10 @@ if [ -d "$SALVAGE_DIR" ]; then
   echo "⚠️  リンク先にあった実体を $SALVAGE_DIR へ退避しました"
 fi
 
-echo "👍 dotfiles のリストアが完了しました"
+report_links
+
+if [ -n "$DRY_RUN" ]; then
+  echo "🔎 DRY_RUN のため何も変更していません。実行するなら DRY_RUN を外してください"
+else
+  echo "👍 dotfiles のリストアが完了しました"
+fi

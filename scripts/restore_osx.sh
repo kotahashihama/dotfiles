@@ -34,6 +34,11 @@ defaults write com.apple.desktopservices DSDontWriteUSBStores -bool true
 # Energy Saver
 #
 
+## sudo を最初にここで通し、以降は聞かれないようにする。
+# defaults の適用は数分かかることがあり、途中で再入力を求められると止まる
+sudo -v
+while true; do sudo -n true; sleep 60; kill -0 "$$" 2>/dev/null || exit; done 2>/dev/null &
+
 # 電源接続中はスリープしない
 sudo pmset -c sleep 0
 

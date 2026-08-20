@@ -68,10 +68,38 @@ is_no_link() {
   printf '%s\n' "$NO_LINK" | grep -Fxq -- "$1"
 }
 
+# 何本張ったかを数える。何も報告せずに終わると、効いたのか分からない。
+LINKED=0
+UNCHANGED=0
+SALVAGED=0
+
+# DRY_RUN=1 を渡すと、何が起きるかだけ出して変更しない。
+# 37 本のリンクを張るので、初回は先に見えたほうがよい。
+DRY_RUN=${DRY_RUN:-}
+
 # リンクを張る。既存の実体があれば消さずに退避する。
 link_into_home() {
   src=$1   # リポジトリ内の絶対パス
   dst=$2   # ~ 配下の絶対パス
+
+  # 既に同じ先を指していれば触らない。数えるためだけに分岐する
+  if [ -L "$dst" ] && [ "$(readlink "$dst")" = "$src" ]; then
+    UNCHANGED=$((UNCHANGED + 1))
+    [ -n "$DRY_RUN" ] && echo "  そのまま: $dst"
+    return 0
+  fi
+
+  if [ -n "$DRY_RUN" ]; then
+    if [ -L "$dst" ]; then
+      echo "  張り替え: $dst -> $src"
+    elif [ -e "$dst" ]; then
+      echo "  退避してから張る: $dst"
+    else
+      echo "  新規: $dst -> $src"
+    fi
+    LINKED=$((LINKED + 1))
+    return 0
+  fi
 
   if [ -L "$dst" ]; then
     rm -f "$dst"
@@ -79,10 +107,17 @@ link_into_home() {
     mkdir -p "$SALVAGE_DIR"
     mv "$dst" "$SALVAGE_DIR/"
     echo "  退避: $dst -> $SALVAGE_DIR/"
+    SALVAGED=$((SALVAGED + 1))
   fi
 
   mkdir -p "$(dirname "$dst")"
   ln -sfn "$src" "$dst"
+  LINKED=$((LINKED + 1))
+}
+
+# 集計を 1 行で出す。
+report_links() {
+  printf '   リンク %s 本 / そのまま %s 本 / 退避 %s 件\n' "$LINKED" "$UNCHANGED" "$SALVAGED"
 }
 
 # 1 つの置き場 (home / private) を ~ へリンクする。
