@@ -1,26 +1,11 @@
 #
-# Executes commands at login post-zshrc.
-#
-# Authors:
-#   Sorin Ionescu <sorin.ionescu@gmail.com>
+# ログイン時の後処理
 #
 
-# Execute code that does not affect the current session in the background.
+# 補完キャッシュを裏でコンパイルしておく。次回の起動が速くなる
 {
-  # Compile the completion dump to increase startup speed.
-  zcompdump="${XDG_CACHE_HOME:-$HOME/.cache}/prezto/zcompdump"
+  zcompdump="${ZDOTDIR:-$HOME}/.zcompdump"
   if [[ -s "$zcompdump" && (! -s "${zcompdump}.zwc" || "$zcompdump" -nt "${zcompdump}.zwc") ]]; then
     zcompile "$zcompdump"
   fi
 } &!
-
-# Execute code only if STDERR is bound to a TTY.
-if [[ -o INTERACTIVE && -t 2 ]]; then
-
-  # Print a random, hopefully interesting, adage.
-  if (( $+commands[fortune] )); then
-    fortune -s
-    print
-  fi
-
-fi >&2
