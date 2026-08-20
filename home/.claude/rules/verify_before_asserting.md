@@ -131,3 +131,4 @@
 - `plain_language_explanation.md`（噛み砕いた説明）: 平易にすることと、正確さを落とすことは別
 - `concise_first_then_detail.md`（簡潔に）: 出典を示すのは冗長ではない。1 行で足りる
 - `background_heavy_work.md`（重い作業の流し方）: 「結果は必ず回収する」を定める。**回収した結果が成立しているか**は本ルールが扱う
+- `write_for_installed_versions.md`（入っているバージョンで書く）: 本ルールは**書く文章**の裏取り、あちらは**書くコード**が前提とするバージョンの裏取り
