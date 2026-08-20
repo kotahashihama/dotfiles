@@ -77,9 +77,14 @@ if [[ -n $(echo ${^fpath}/chpwd_recent_dirs(N)) && -n $(echo ${^fpath}/cdr(N)) ]
 fi
 
 function fzf-cdr() {
-  local selected_dir="$(cdr -l | sed 's/^[0-9]* *//' | fzf --prompt "❯ " --query "$LBUFFER" \
-    --preview 'ls -lAh --color=always ${(e)~1} 2>/dev/null || ls -lAh ${1/#\~/$HOME}' \
-    --preview-window 'right,50%')"
+  # cdr -l は ~/... 形式で返す。表示はそのまま、プレビューには展開後を渡す
+  local selected=$(cdr -l | sed 's/^[0-9]* *//' \
+    | awk -v h="$HOME" '{ p = $0; sub(/^~/, h, p); print $0 "\t" p }' \
+    | fzf --prompt "❯ " --query "$LBUFFER" \
+      --delimiter '\t' --with-nth 1 \
+      --preview 'ls -lAh -- {2}' \
+      --preview-window 'right,50%')
+  local selected_dir=$(printf '%s' "$selected" | cut -f1)
   if [ -n "$selected_dir" ]; then
     BUFFER="cd ${selected_dir}"
     zle accept-line
