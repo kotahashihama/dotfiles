@@ -200,7 +200,7 @@ gh api graphql -f query='mutation($id: ID!) { addReaction(input: {subjectId: $id
 
 - **GitHub 上でレビューコメントに返信すること**。`gh api .../replies`、`gh pr comment`、`gh pr review` のいずれも使わない（ユーザーの明示指示がある場合は上記の書式に従う）
 - **返信していないコメントへ 👍 を付けること**。リアクションも発信なので、返信の許可が要る（`react_to_addressed_reviews.md`）
-- **Resolve conversation すること**。**スレッドを閉じるのは、コメントを付けたレビュアー自身の役目**（`no_auto_reply_human_review_comments.md`）。**返信を代行してよいと言われても Resolve は含まれない**（`no_auto_reply_human_review_comments.md`）
+- **Resolve conversation すること**。**スレッドを閉じるのは、コメントを付けたレビュアー自身の役目**（`no_auto_reply_human_review_comments.md`）。**返信を代行してよいと言われても含まれない**
 - **返信の要否をユーザーに尋ねること**。尋ねること自体が判断領域への侵入になる。必要ならユーザーが明示指示を出す
 - bot コメントを混ぜて処理すること。bot は `/resolve-ai-reviews` の責務で、返信の扱いが正反対
 - レビュアーの文言・判断のナラティブを**コード中のコメントに転記すること** (`no_review_comment_echo_in_code.md`)。必要な「なぜ」はコミットメッセージ本文に置く
@@ -216,6 +216,5 @@ gh api graphql -f query='mutation($id: ID!) { addReaction(input: {subjectId: $id
 ## 例外
 
 - ユーザーが「このコメントには〇〇と返信して」と明示指示した場合は、そのコメントに限り返信を代行してよい。**文面まで指定された場合だけ生成者表示の Note を外す**——Claude が組み立てていないので、表示が事実に合わない (`github_note_generated_by_claude.md`)
-- **Resolve は、Resolve すること自体を明示されたときだけ**行う。返信の許可では代替されない
 - ユーザーが特定のコメントについて「対応しないで」と指示した場合は、トリアージせずその指示に従う
 - 点検まで通したいときは、続けて `/finalize-pr` を呼んでよい。ユーザーが不要と指示した場合はスキップする
