@@ -200,7 +200,7 @@ gh api graphql -f query='mutation($id: ID!) { addReaction(input: {subjectId: $id
 
 - **GitHub 上でレビューコメントに返信すること**。`gh api .../replies`、`gh pr comment`、`gh pr review` のいずれも使わない（ユーザーの明示指示がある場合は上記の書式に従う）
 - **返信していないコメントへ 👍 を付けること**。リアクションも発信なので、返信の許可が要る（`react_to_addressed_reviews.md`）
-- **Resolve conversation すること**。解決したかの判断はレビュアーとユーザーの領分。**返信を代行してよいと言われても Resolve は含まれない**（`no_auto_reply_human_review_comments.md`）
+- **Resolve conversation すること**。**スレッドを閉じるのは、コメントを付けたレビュアー自身の役目**（`no_auto_reply_human_review_comments.md`）。**返信を代行してよいと言われても Resolve は含まれない**（`no_auto_reply_human_review_comments.md`）
 - **返信の要否をユーザーに尋ねること**。尋ねること自体が判断領域への侵入になる。必要ならユーザーが明示指示を出す
 - bot コメントを混ぜて処理すること。bot は `/resolve-ai-reviews` の責務で、返信の扱いが正反対
 - レビュアーの文言・判断のナラティブを**コード中のコメントに転記すること** (`no_review_comment_echo_in_code.md`)。必要な「なぜ」はコミットメッセージ本文に置く
