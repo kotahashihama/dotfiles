@@ -10,8 +10,11 @@ allowed-tools: Bash(git status:*) Bash(git branch:*) Bash(git log:*) Bash(git re
 
 ### 1. スタックの並びを確定する
 
-- 引数に並びがあればそれを使う（下段 → 上段の順）
+- 引数に並びがあればそれを使う（下段 → 上段の順）。**渡された段の作成者を 1 つずつ確かめる**
+  （`gh pr view <PR> --json author -q '.author.login'`）。ユーザー本人でない段があれば、**その段から上は処理せず報告する**
+  （`no_operating_on_others_prs.md`）。各段は `git push --force-with-lease` で履歴を書き換えるため、他人の段が混ざると取り返しがつかない
 - 無ければ `gh pr list --author "@me" --state open --json number,headRefName,baseRefName` で **base の連鎖**から組み立てる
+  （`--author "@me"` が入っているので、この経路では他人の PR は拾わない）
 - **作業前に `git status` がクリーンであることを確認する。** 未コミット変更があれば止めてユーザーに見せる（stash で移送する羽目になる）
 - 確定した並びを**先に提示してから**着手する。段数と順序を取り違えたまま進むのがいちばん高くつく
 
