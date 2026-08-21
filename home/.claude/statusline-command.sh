@@ -1,7 +1,7 @@
 #!/bin/sh
 # Claude Code statusLine command — 4-line layout
 #
-# Line 1: 🐙 repo[/subpath] │ 🌿 branch [+N ~M]   (🐙 → 🌳 inside a worktree)
+# Line 1: 🐙 repo[/subpath] │ 🌿 branch [+N ~M] [│ 🌳 worktree]
 #         (📂 full path instead, when outside a git repo)
 # Line 2: 🧠 progress bar used% │ 🤖 model · effort · output style
 # Line 3: 💰 5h X% (🔄 Xam) │ 7d X% (🔄 M/DD Xam)  (omitted when absent)
@@ -84,19 +84,17 @@ if [ -n "$toplevel" ]; then
     branch_color="${GREEN}"
   fi
 
-  # worktree の中は本体とパスが似ている。別ツリーを編集する事故を防ぐため、
-  # アイコン自体で示す。名前はブランチから読み取れないときだけ添える
-  icon="🐙"
+  # worktree の中は本体とパスが似ている。別ツリーを編集する事故を防ぐため
+  # 末尾に 🌳 を出す。名前はブランチから読み取れるなら省く（同じ語が 2 度並ぶ）
   wt_part=""
   if [ -n "$wt_name" ]; then
-    icon="🌳"
     case "$branch" in
-      *"$wt_name"*) ;;
+      *"$wt_name"*) wt_part=" │ 🌳" ;;
       *) wt_part=" │ 🌳 ${CYAN}${wt_name}${RESET}" ;;
     esac
   fi
 
-  printf "%s\n" "${icon} ${WHITE}${repo_name}${RESET} │ 🌿 ${branch_color}${branch}${RESET}${diff_part}${wt_part}"
+  printf "%s\n" "🐙 ${WHITE}${repo_name}${RESET} │ 🌿 ${branch_color}${branch}${RESET}${diff_part}${wt_part}"
 else
   display_path=$(printf '%s' "$cwd" | sed "s|^${HOME}|~|")
   printf "%s\n" "📂 ${WHITE}${display_path}${RESET}"
