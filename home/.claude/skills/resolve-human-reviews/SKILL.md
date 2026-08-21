@@ -24,6 +24,7 @@ bot コメントを扱う `/resolve-ai-reviews` と対になりますが、**Git
 ### 1. 対象 PR とコメントの特定
 
 - 引数に PR 番号があればそれを使う。無ければ `gh pr view --json number` で現在のブランチから特定する (該当 PR が無ければユーザーに確認)
+- **作成者を確かめる**（`gh pr view <PR> --json author -q '.author.login'`）。ユーザー本人でなければ中断して報告する（`no_operating_on_others_prs.md`）。修正の push も他人の PR へ痕跡を残す
 - `gh repo view --json nameWithOwner -q .nameWithOwner` で `OWNER/REPO` を取得する
 - インラインコメントを取得し、**人間かつトップレベル**に絞る:
 
