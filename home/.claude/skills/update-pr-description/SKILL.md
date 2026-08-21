@@ -11,6 +11,7 @@ allowed-tools: Bash(gh pr view:*) Bash(gh pr edit:*) Bash(gh pr comment:*) Bash(
 1. **PR の特定**:
    - `git branch --show-current` で現在のブランチを確認
    - `gh pr view --json number,title,body,baseRefName` で対応する PR を特定（該当 PR が無ければユーザーに確認）
+   - **作成者を確かめる**（`gh pr view <PR> --json author -q '.author.login'`）。ユーザー本人でなければ中断して報告する（`no_operating_on_others_prs.md`）
    - `baseRefName` を以降の差分計算のベースに使う
 
 2. **差分の把握**（並列実行可）:
