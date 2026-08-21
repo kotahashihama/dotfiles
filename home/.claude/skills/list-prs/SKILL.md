@@ -81,7 +81,7 @@ allowed-tools: Bash(gh pr list:*) Bash(gh pr view:*) Bash(gh pr checks:*) Bash(g
 | **こちら待ち** | draft のまま / CI が fail（コード起因）/ 未 push の変更がある |
 | **外部待ち** | 他リポジトリの PR やデプロイが前提。**PR 本文やコメントに書かれた保留条件を読み取る** |
 
-外部待ちは本文の「動作要件」節や `[memo]` コメントに書かれていることが多い。**依存先の PR 番号があれば、その状態も併記する**（`owner/repo#123` を `gh pr view` で引く）。
+外部待ちは本文の「動作要件」節や `[fyi]` コメントに書かれていることが多い。**依存先の PR 番号があれば、その状態も併記する**（`owner/repo#123` を `gh pr view` で引く）。
 
 #### draft は「今 ready にしてよいか」まで判定する
 
