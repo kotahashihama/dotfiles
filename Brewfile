@@ -68,6 +68,8 @@ brew "git-delta"
 brew "go-task"
 # Like cURL, but for gRPC
 brew "grpcurl"
+# Agent multiplexer that lives in your terminal
+brew "herdr"
 # Git-compatible distributed version control system
 brew "jj"
 # Lightweight and flexible command-line JSON processor
@@ -134,8 +136,19 @@ brew "wget"
 brew "zoxide"
 # UNIX shell (command interpreter)
 brew "zsh"
+# The best way of working with Protocol Buffers.
+brew "bufbuild/buf/buf", trusted: true
 # Git Worktree Manager for efficient worktree operations
 brew "d-kuro/tap/gwq", trusted: true
+# Everything you need to get started with Heroku
+brew "heroku/brew/heroku", trusted: true
+# pceamless は macOS の作業環境を別のPCに移行するためのツールです。
+brew "kotahashihama/tap/pceamless", trusted: true
+brew "nissy/mg/mg", trusted: true
+# The easiest idempotent schema management by SQL.
+brew "sqldef/sqldef/mysqldef", trusted: true
+# Supabase CLI
+brew "supabase/tap/supabase", trusted: true
 # Password manager that keeps all passwords secure behind one password
 cask "1password"
 # Command-line interface for 1Password
@@ -438,9 +451,3 @@ go "github.com/kyoh86/richgo"
 go "github.com/swaggo/swag/cmd/swag"
 go "github.com/mikefarah/yq/v4"
 npm "corepack"
-brew "bufbuild/buf/buf", trusted: true
-brew "heroku/brew/heroku", trusted: true
-brew "kotahashihama/tap/pceamless", trusted: true
-brew "nissy/mg/mg", trusted: true
-brew "sqldef/sqldef/mysqldef", trusted: true
-brew "supabase/tap/supabase", trusted: true
