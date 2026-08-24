@@ -20,7 +20,7 @@ allowed-tools: Bash(gh api:*) Bash(gh pr view:*) Bash(gh pr edit:*) Bash(gh pr c
 
 - `gh api repos/OWNER/REPO/pulls/<PR>/comments` でインラインレビューコメントを取得する。各要素の `id` / `path` / `line`（無ければ `original_line`）/ `body` / `user.login` / `in_reply_to_id` / `commit_id` を見る。
 - **トップレベルの bot コメントのみ**を対象にする（`in_reply_to_id` が null かつ `user.login` が `github-actions[bot]` 等の AI レビュアー）。既に自分が返信済み（誰かの reply が既に付いている）ものは二重対応しない。
-- レビュー本文（`gh pr view --json reviews`）にサマリがあれば併せて確認する。
+- **レビュー提出の本文は、長さを見てから読む**（`gh api repos/OWNER/REPO/pulls/<PR>/reviews --paginate -q '.[] | "[\(.id)] body=\(.body|length)字"'`）。**`body=0字` の提出はインラインを束ねる入れ物**で、読む文章が無い。**出どころの無いものを指摘として数えない**。
 - 各コメントの **接頭辞**（`[must]` / `[imo]` / `[nits]` / `[ask]` / `[fyi]`）で優先度を判断する。
 - **対象 bot コメントの件数**をここで確定し、後続 Step 3 の並列化判定 (閾値 3 件) に使う。
 
