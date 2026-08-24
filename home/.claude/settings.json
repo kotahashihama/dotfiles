@@ -61,6 +61,16 @@
             "command": "bash ~/.claude/hooks/report-dotfiles-state.sh"
           }
         ]
+      },
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/herdr-agent-state.sh session",
+            "timeout": 10
+          }
+        ]
       }
     ],
     "Stop": [
