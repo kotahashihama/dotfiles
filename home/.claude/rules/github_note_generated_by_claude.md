@@ -77,3 +77,4 @@ Claude がユーザーに代わって GitHub へ書き込むテキスト全般�
 - `github_rich_formatting.md`（GitHub の表現手段）: **本ルールが `NOTE` を占有している**。他の Alert と混ざらないよう、あちらが用途を分ける
 - `github_cross_repo_reference.md`（他リポジトリの PR / issue の書き方）: どちらも GitHub へ書く文章の書式を定める
 - `github_one_sentence_per_line.md`（1 文ごとに改行し行末の句点を落とす）: あちらは本文の書き方、本ルールは末尾に置く Note を定める。**Note の定型文はあちらの対象外**
+- `github_no_authorship_voice.md`（本文中で書き手の帰属を匂わせない）: **開示の場所は本ルールが持つ**。あちらは本文中の言い回しを扱い、Note で足りている開示を本文でも重ねて書かないことを定める
