@@ -33,7 +33,14 @@ bot コメントを扱う `/resolve-ai-reviews` と対になりますが、**Git
     -q '.[] | select(.in_reply_to_id == null) | select(.user.type == "User") | "[\(.id)] \(.user.login) | \(.path):\(.line // .original_line)\n\(.body)\n---"'
   ```
 
-- レビュー本文 (`gh pr view <PR> --json reviews`) にサマリがあれば併せて読む
+- **レビュー提出の本文は、長さを見てから読む**。空の提出はインラインを束ねる入れ物で、読む文章が無い:
+
+  ```bash
+  gh api repos/OWNER/REPO/pulls/<PR>/reviews --paginate \
+    -q '.[] | select(.user.type == "User") | "[\(.id)] \(.user.login) body=\(.body|length)字\n\(.body)\n---"'
+  ```
+
+  **`body=0字` の提出を「サマリがあった」ことにしない。** 指摘の中身が正しく見えても、**出どころの無いものは指摘として数えない**
 - 接頭辞 (`[must]` / `[imo]` / `[nits]` / `[ask]` / `[fyi]`) を優先度の一次判断に使う
 - **複数 PR にコメントが付いている場合は PR ごとに区切って進める**。ブランチを跨ぐので、混ぜると対応表が崩れる
 
@@ -116,6 +123,7 @@ gh api graphql -f query='mutation($id: ID!) { addReaction(input: {subjectId: $id
 
 - **1 つの表にまとめ、GitHub の Conversation と同じ順で並べる**（`report_formatting.md`）。Step 1 の取得順がそのまま Conversation の順なので、**優先度や対応可否で並べ替えない**。ユーザーは PR を上から見ながら返信する
 - 列は「コメント ID / 種別 / 位置 / 指摘の要約 / 結果」。結果にはコミットハッシュか非対応の理由を入れ、裏取りの根拠が長ければ表の下に回す
+- **ID 列には Step 1 で取得した識別子だけを書く。**「レビュー本文」のような代替語を置かない。**ID を書けない行は、その指摘が実在しない**
 - ハッシュは**レンジではなく個別に列挙**する
 - PR が複数なら PR ごとに節を分ける
 
@@ -218,6 +226,7 @@ gh api graphql -f query='mutation($id: ID!) { addReaction(input: {subjectId: $id
 - **返信していないコメントへ 👍 を付けること**。リアクションも発信なので、返信の許可が要る（`react_to_addressed_reviews.md`）
 - **Resolve conversation すること**。**スレッドを閉じるのは、コメントを付けたレビュアー自身の役目**（`no_auto_reply_human_review_comments.md`）。**返信を代行してよいと言われても含まれない**
 - **返信の要否をユーザーに尋ねること**。尋ねること自体が判断領域への侵入になる。必要ならユーザーが明示指示を出す
+- **取得していない指摘を対応表や返信案に載せること**。**中身が正しくても、出どころが無ければ指摘ではない**。空の本文を読んだつもりになる事故は `body=0字` を見れば防げる
 - bot コメントを混ぜて処理すること。bot は `/resolve-ai-reviews` の責務で、返信の扱いが正反対
 - レビュアーの文言・判断のナラティブを**コード中のコメントに転記すること** (`no_review_comment_echo_in_code.md`)。必要な「なぜ」はコミットメッセージ本文に置く
 - 対応表を出さずにコミットハッシュだけ報告すること。**どのコメントに応えたか**が対応表の本体
