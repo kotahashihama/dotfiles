@@ -104,5 +104,6 @@ awk '{ n = gsub(/\*\*/, "&"); if (n % 2) print FILENAME ":" FNR ": " $0 }' <本�
 - `github_cross_repo_reference.md` / `github_command_comments.md`: どちらも GitHub へ書く文章の書式を定める
 - `github_rich_formatting.md`（GitHub の表現手段）: あちらは**構造の選び方**、本ルールは**文の表記**
 - `no_space_between_number_and_unit.md`（数値と単位の空白）: どちらも**日本語の表記**を定める。**一括置換で対になる記法と NG 例が壊れる**のは本ルールが扱う
+- `recheck_after_every_revision.md`（書き直すたびに確かめ直す）: **本ルールの検査は 3 周目（形）で使う**。あちらが周ごとの観点を定める
 - `concise_first_then_detail.md`（簡潔に）: あちらは**量**を扱う。本ルールは**改行と表記**
 - `/review-pr` / `/create-pr` / `/update-pr-description` / `/resolve-ai-reviews` / `/resolve-human-reviews`: 本ルールが土台で、各スキルは投稿先固有の事情を上乗せする
