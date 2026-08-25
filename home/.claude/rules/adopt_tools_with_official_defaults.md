@@ -64,3 +64,4 @@ lint・検査・フォーマッタなどを新しく導入するとき、**閾�
 - `write_for_installed_versions.md`（入っているバージョンで書く）: あちらは**書くコード**、本ルールは**入れるツールの設定**。どちらも「確かめてから決める」
 - `write_invariant_why_in_code.md`（不変の WHY だけ残す）: **設定コメントに実測値を書かない**根拠。数値は設定そのものが持つ
 - `treat_user_suggestions_as_proposals.md`（ユーザーの案には賛否を返す）: 値の提案を受けたときも、既定を調べたうえで賛否を返す
+- `base_records_on_measurements.md`（記録は実測に基づける）: **実測から閾値を逆算しない**という同じ形。あちらは記録、本ルールは設定が対象
