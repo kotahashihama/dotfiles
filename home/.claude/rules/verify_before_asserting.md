@@ -182,3 +182,4 @@ grep -rl '<語>' home/.claude/skills/ private/.claude/skills/     # 実体を直
 - `background_heavy_work.md`（重い作業の流し方）: 「結果は必ず回収する」を定める。**回収した結果が成立しているか**は本ルールが扱う
 - `write_for_installed_versions.md`（入っているバージョンで書く）: 本ルールは**書く文章**の裏取り、あちらは**書くコード**が前提とするバージョンの裏取り
 - `no_suppressing_lint_and_type_errors.md`（検査を黙らせない）: **エラーの全文を読んでから判断する**のは、本ルールの「返ってきたものを読み違えていないか」と同じ形。先頭だけ読むと原因を取り違える
+- `treat_user_suggestions_as_proposals.md`（ユーザーの案には賛否を返す）: 本ルールは**ユーザーの述べた事実**、あちらは**ユーザーの出した案**。どちらも鵜呑みにしない点は同じ
