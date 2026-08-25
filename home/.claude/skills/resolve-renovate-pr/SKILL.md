@@ -295,3 +295,4 @@ pnpm install --frozen-lockfile     # 再生成後に通ることまで確かめ�
 - `/wait-ci` — CI の完了待ち。古い run を掴む事故を避ける判定は向こうが持つ
 - `/cp` — 追随修正のコミットとプッシュ
 - `/ship-pr` — 切り出した別 PR を出すとき（`use_ship_pr_for_pr_creation.md`）
+- `/propose-tech-updates` — **こちらは PR が出た後**、あちらは**PR が無い段階で何をすべきか決める**。renovate が拾わないもの（CI の改善・記法の統一・検査の穴）はあちらの担当
