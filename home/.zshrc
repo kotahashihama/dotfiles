@@ -27,15 +27,25 @@ for f in options utility; do
 done
 
 # プラグイン。宣言は ~/.config/sheldon/plugins.toml
+#
+# compinit を挟んで 2 段階で読む。fpath を足すもの（zsh-completions）は前、
+# ウィジェットを扱うもの（fzf-tab 以下）は後でないと成立しない。
+# profiles で pre / post に分けている。
+#
 # 未取得だと source が空になるので、その場合だけ案内を出す。
 # ここで入力を求めると Powerlevel10k の instant prompt と競合する
-if ! eval "$(sheldon source 2>/dev/null)"; then
+if ! eval "$(sheldon --profile pre source 2>/dev/null)"; then
   print -P '%F{yellow}sheldon: プラグインが未取得です。`sheldon lock` を実行してください%f'
 fi
 
-# 補完系。プラグインが fpath へ入った後で compinit を走らせる必要がある
 autoload -Uz compinit
 compinit -C
+
+# fzf-tab は compinit の後、ウィジェットを包む 2 本より前に入る必要がある
+eval "$(sheldon --profile post source 2>/dev/null)"
+
+# 補完の見せ方。fzf-tab を読み込んだ後でないと zstyle が効かない
+[[ -r ~/.config/zsh/completion.zsh ]] && . ~/.config/zsh/completion.zsh
 
 # キーバインドはプラグインの後。ウィジェットが定義されてからでないと結び付かない
 [[ -r ~/.config/zsh/keybindings.zsh ]] && . ~/.config/zsh/keybindings.zsh
