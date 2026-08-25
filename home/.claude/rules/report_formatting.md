@@ -55,7 +55,7 @@ PR: https://github.com/owner/repo/pull/392（draft）   ← （draft）まで UR
 run: https://github.com/owner/repo/actions/runs/123 は success。   ← 「。」が含まれる
 ```
 
-**全角・半角を問わず括弧は URL 文字として扱われうる**ので、半角に変えても解決しません。補足を**前に置く**か、**Markdown link** にするか、**表のセルに分ける**——URL は行末で終わらせるのが最も安全です。
+**全角・半角を問わず括弧は URL 文字として扱われうる**ので、半角に変えても解決しません。補足を**前に置く**か、**Markdown link** にするか、**表のセルに分ける**。URL は行末で終わらせるのが最も安全です。
 
 ```
 PR を作成しました: https://github.com/owner/repo/pull/392
