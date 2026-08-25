@@ -183,3 +183,4 @@ grep -rl '<語>' home/.claude/skills/ private/.claude/skills/     # 実体を直
 - `write_for_installed_versions.md`（入っているバージョンで書く）: 本ルールは**書く文章**の裏取り、あちらは**書くコード**が前提とするバージョンの裏取り
 - `no_suppressing_lint_and_type_errors.md`（検査を黙らせない）: **エラーの全文を読んでから判断する**のは、本ルールの「返ってきたものを読み違えていないか」と同じ形。先頭だけ読むと原因を取り違える
 - `treat_user_suggestions_as_proposals.md`（ユーザーの案には賛否を返す）: 本ルールは**ユーザーの述べた事実**、あちらは**ユーザーの出した案**。どちらも鵜呑みにしない点は同じ
+- `adopt_tools_with_official_defaults.md`（ツールは公式の既定値から）: **既定値と段階導入の手引きも裏取りの対象**。実測から閾値を逆算しない
