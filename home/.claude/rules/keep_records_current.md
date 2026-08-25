@@ -125,3 +125,4 @@ gh api graphql -f query='query($id: ID!) { node(id: $id) { ... on IssueComment {
 - `ask_before_editing_claude_assets.md`（設定は尋ねてから）: 触る**前**に尋ねる側。本ルールは触った**後**の鮮度
 - `/update-pr-description`（PR 本文と補足コメントの更新）: PR 側の実行手段
 - `/list-prs`（PR 一覧）: 腐った参照をまとめて検出できる
+- `verify_merge_with_checks.md`（マージは検査を通すまで終わっていない）: マージで差分が動いたら、本ルールの対象になる
