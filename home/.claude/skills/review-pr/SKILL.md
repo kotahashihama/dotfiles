@@ -542,6 +542,7 @@ gh api graphql -f query='mutation { minimizeComment(input: {subjectId: "<node_id
 
 - `/resolve-human-reviews`（受ける側）: 指摘の**受け手**の手順。本スキルは出し手
 - `react_to_addressed_reviews.md`（対応した指摘へ 👍）: **受け手側**の規定。出し手側は上記「再レビュー」が定める
+- `/review-pr-deeply`（並列版）: **Step 4 だけを差し替える**。サブエージェントを並列起動して多観点で見るが、その他の手順は本スキルに従う
 - `/review-code`・`/review-code-deeply` 等のプロジェクトスキル: レビューの**中身**。本スキルは対象特定・裏取り・整形・投稿を担う
 - `no_auto_reply_human_review_comments.md`: 人間のコメントへ勝手に返信しないことを定める。**本スキルが扱うのは新規レビューの投稿**であり、既存コメントへの返信ではない
 - `concise_first_then_detail.md`（簡潔に、表と Mermaid の使い分け）: 「コメント本文の書き方」の土台。`/create-pr`・`/update-pr-description` も同じ土台に乗る
