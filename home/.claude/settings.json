@@ -5,6 +5,10 @@
     "EDITOR": "cursor --wait",
     "VISUAL": "cursor --wait"
   },
+  "attribution": {
+    "commit": "Co-Authored-By: Claude Code <noreply@anthropic.com>",
+    "pr": "> [!NOTE]\n> この PR 説明は Claude Code を使って作成されています。"
+  },
   "permissions": {
     "allow": [
       "mcp__backlog__get_*",
@@ -20,6 +24,9 @@
       "mcp__backlog__delete_project"
     ]
   },
+  "fallbackModel": [
+    "sonnet"
+  ],
   "hooks": {
     "PostToolUse": [
       {
@@ -122,7 +129,8 @@
   "outputStyle": "Explanatory",
   "language": "Japanese",
   "spinnerTipsEnabled": false,
-  "effortLevel": "auto",
+  "awaySummaryEnabled": true,
+  "askUserQuestionTimeout": "never",
   "autoUpdatesChannel": "latest",
   "tui": "fullscreen",
   "voice": {
@@ -132,16 +140,7 @@
   "skipDangerousModePermissionPrompt": true,
   "showTurnDuration": true,
   "remoteControlAtStartup": true,
-  "agentPushNotifEnabled": true,
-  "voiceEnabled": true,
-  "attribution": {
-    "commit": "Co-Authored-By: Claude Code <noreply@anthropic.com>",
-    "pr": "> [!NOTE]\n> この PR 説明は Claude Code を使って作成されています。"
-  },
   "crossSessionInbound": "accept",
-  "awaySummaryEnabled": true,
-  "askUserQuestionTimeout": "never",
-  "fallbackModel": [
-    "sonnet"
-  ]
+  "agentPushNotifEnabled": true,
+  "voiceEnabled": true
 }
