@@ -126,5 +126,6 @@ gh api graphql -f query='query($id: ID!) { node(id: $id) { ... on IssueComment {
 - `/update-pr-description`（PR 本文と補足コメントの更新）: PR 側の実行手段
 - `/list-prs`（PR 一覧）: 腐った参照をまとめて検出できる
 - `verify_merge_with_checks.md`（マージは検査を通すまで終わっていない）: マージで差分が動いたら、本ルールの対象になる
+- `recheck_after_every_revision.md`（書き直すたびに全体を確かめ直す）: 本ルールは**実態とのズレ**、あちらは**出どころとのズレ**。触っていない箇所でも後者は起きる
 - `base_records_on_measurements.md`（記録は実測に基づける）: あちらは**確かさ**、本ルールは**鮮度**。どちらも記録が信用できる状態を保つ
 - `no_instruction_echo_in_output.md`（成果物に指示を書かない）: あちらは**そもそも書かないもの**、本ルールは**書いたものを実態に合わせ続けること**
