@@ -5,15 +5,25 @@ shell = "zsh"
 # 補完定義の追加。compinit より前に fpath へ入る必要がある
 [plugins.zsh-completions]
 github = "zsh-users/zsh-completions"
+profiles = ["pre"]
+
+# Tab の候補一覧を fzf に置き換える。compinit の後、
+# ウィジェットを包むプラグイン（下の 2 本）より前に読む必要がある
+[plugins.fzf-tab]
+github = "Aloxaf/fzf-tab"
+profiles = ["post"]
 
 # 履歴からの入力候補
 [plugins.zsh-autosuggestions]
 github = "zsh-users/zsh-autosuggestions"
+profiles = ["post"]
 
 # 履歴の部分一致検索（↑ / ↓ で絞り込む）
 [plugins.zsh-history-substring-search]
 github = "zsh-users/zsh-history-substring-search"
+profiles = ["post"]
 
 # コマンドの正誤を色で示す。他のウィジェットを包むので最後に読む
 [plugins.zsh-syntax-highlighting]
 github = "zsh-users/zsh-syntax-highlighting"
+profiles = ["post"]
