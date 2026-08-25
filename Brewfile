@@ -203,7 +203,6 @@ cask "discord"
 cask "docker-desktop"
 # Client for the Dropbox cloud storage service
 cask "dropbox"
-cask "fig"
 # Collaborative team software
 cask "figma"
 # Web browser

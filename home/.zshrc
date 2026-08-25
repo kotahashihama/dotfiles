@@ -245,7 +245,6 @@ release-awssession-token() {
 export GODEBUG=asyncpreemptoff=1
 
 # Antigravity
-[[ -f "$HOME/fig-export/dotfiles/dotfile.zsh" ]] && builtin source "$HOME/fig-export/dotfiles/dotfile.zsh"
 export PATH="$HOME/.antigravity/antigravity/bin:$PATH"
 
 # OpenClaw
