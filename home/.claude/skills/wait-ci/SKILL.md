@@ -80,7 +80,7 @@ run ID / conclusion / URL を1行で返す。`failure` なら**原因の分類**
 
 ## してはいけないこと
 
-- **`--branch <feature>` で絞ること**（`issue_comment` 起点を取りこぼす）
+- **`--branch <feature>` で絞ること**（ `issue_comment` 起点を取りこぼす）
 - **「最新 run が completed か」だけで判定すること**（古い run で即座に抜ける）
 - 時刻をカットオフに使うこと（取り逃がして永久に待つ）
 - フォアグラウンドで待つこと（メインループが長時間ブロックされる）

@@ -96,9 +96,9 @@ push した時点ではもう別のことを考えています。
 
 ## 関連
 
-- `code_comment_why_and_what.md`（コメントは WHY に熱量を、WHAT は簡潔に）: **土台**。あちらが「WHY を書け」を定め、本ルールが**どの WHY か**を絞る
-- `no_review_comment_echo_in_code.md`（レビュアーの文言を転記しない）: 同じく土台からの切り出し。あちらは**出どころ**、本ルールは**賞味期限**で弾く
-- `github_rich_formatting.md`（GitHub の表現手段）: PR へ置くときの書き方
-- `write_for_installed_versions.md`（入っているバージョンで書く）: あちらは**コードをどのバージョンに合わせるか**、本ルールは**その事情をどこに書くか**
-- `adopt_tools_with_official_defaults.md`（ツールは公式の既定値から）: **設定コメントに実測値を書かない**根拠として本ルールを参照している
-- `no_instruction_echo_in_output.md`（成果物に指示を書かない）: あちらは**出どころ**（ユーザーの指示か）で弾く。本ルールは**賞味期限**で弾く
+- `code_comment_why_and_what.md` （コメントは WHY に熱量を、WHAT は簡潔に）: **土台**。あちらが「WHY を書け」を定め、本ルールが**どの WHY か**を絞る
+- `no_review_comment_echo_in_code.md` （レビュアーの文言を転記しない）: 同じく土台からの切り出し。あちらは**出どころ**、本ルールは**賞味期限**で弾く
+- `github_rich_formatting.md` （GitHub の表現手段）: PR へ置くときの書き方
+- `write_for_installed_versions.md` （入っているバージョンで書く）: あちらは**コードをどのバージョンに合わせるか**、本ルールは**その事情をどこに書くか**
+- `adopt_tools_with_official_defaults.md` （ツールは公式の既定値から）: **設定コメントに実測値を書かない**根拠として本ルールを参照している
+- `no_instruction_echo_in_output.md` （成果物に指示を書かない）: あちらは**出どころ**（ユーザーの指示か）で弾く。本ルールは**賞味期限**で弾く

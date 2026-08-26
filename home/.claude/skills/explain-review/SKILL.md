@@ -30,7 +30,7 @@ PR に付いたレビューコメントを取得し、**1件ずつ意図を噛�
 | 省略 | **現在のブランチに紐づく PR** の未解決コメント全件 |
 | PR 番号 / URL | その PR の未解決コメント全件 |
 | ＋ コメント ID | **その1件だけ**に絞る |
-| ＋ 絞り込み | 「人間のだけ」「`[must]` だけ」等 |
+| ＋ 絞り込み | 「人間のだけ」「 `[must]` だけ」等 |
 
 **ユーザーがコメント本文を直接貼った場合は、取得を飛ばして**その1件を扱う（ルールがそのまま適用される場面）。
 
@@ -46,8 +46,8 @@ gh api repos/OWNER/REPO/pulls/<PR>/reviews       # レビュー本文
 gh api repos/OWNER/REPO/issues/<PR>/comments     # PR コメント欄
 ```
 
-- **並び順は `created_at` 昇順のまま維持する。** Conversation タブの並びと揃う（`report_formatting.md`）
-- **`/ai-review` のようなコマンドコメントは除外する。** 本文を trim して**コマンド1行だけか**で判定する（`github_command_comments.md`）。投稿者名では分けられない
+- **並び順は `created_at` 昇順のまま維持する。** Conversation タブの並びと揃う（ `report_formatting.md` ）
+- **`/ai-review` のようなコマンドコメントは除外する。** 本文を trim して**コマンド1行だけか**で判定する（ `github_command_comments.md` ）。投稿者名では分けられない
 - **解決済みかどうかを見る。** 既に Resolve されたスレッドは既定で対象外。ユーザーが「全部見せて」と言えば含める
 
 ### 2. 人間 / bot を判別する
@@ -57,9 +57,9 @@ gh api repos/OWNER/REPO/issues/<PR>/comments     # PR コメント欄
 | 投稿者 | 対応するときの渡し先 |
 | --- | --- |
 | 人間 | **`/resolve-human-reviews`**（返信・Resolve はしない。対応表を会話で渡す） |
-| bot | `/resolve-ai-reviews`（返信と Resolve まで含む） |
+| bot | `/resolve-ai-reviews` （返信と Resolve まで含む） |
 
-**判別を文脈で行わない。** 「AI っぽい書き方」で決めると、人間のコメントに返信する事故が起きます（`no_auto_reply_human_review_comments.md`）。
+**判別を文脈で行わない。** 「AI っぽい書き方」で決めると、人間のコメントに返信する事故が起きます（ `no_auto_reply_human_review_comments.md` ）。
 
 ### 3. 1件ずつ、ルールの型で説明する
 
@@ -67,9 +67,9 @@ gh api repos/OWNER/REPO/issues/<PR>/comments     # PR コメント欄
 
 本スキルとして足すのは次の3点。
 
-- **指摘が現状のコードに当てはまるか確かめる。** レビュー後に push していれば、**既に直っていることがあります**。`file:line` は動くので、必ず今のコードを読む（`verify_before_asserting.md`）
+- **指摘が現状のコードに当てはまるか確かめる。** レビュー後に push していれば、**既に直っていることがあります**。`file:line` は動くので、必ず今のコードを読む（ `verify_before_asserting.md` ）
 - **セッションの文脈と照合する。** これまでの user 指示・実装判断・PR 本文の明記事項と抵触する指摘は、**正論に見えても採らない選択がある**。抵触を見つけたら、その旨を添えて判断を仰ぐ
-- **要点を `file:line` で指す**（`report_formatting.md`）。抜粋が要るなら1件につき1個
+- **要点を `file:line` で指す**（ `report_formatting.md` ）。抜粋が要るなら1件につき1個
 
 #### 噛み砕き方
 
@@ -83,7 +83,7 @@ gh api repos/OWNER/REPO/issues/<PR>/comments     # PR コメント欄
 - **指摘どおりにすると何が変わるか。** 副作用があるならそれも
 - **なぜレビュアーがそう見たか。** 前提が違うだけのこともある
 
-**観点が3つ以上並ぶなら表に畳む**（指摘 / 現状 / 判断）。散文で書くと、1件が長くなって全体が読まれません（`concise_first_then_detail.md`）。
+**観点が3つ以上並ぶなら表に畳む**（指摘 / 現状 / 判断）。散文で書くと、1件が長くなって全体が読まれません（ `concise_first_then_detail.md` ）。
 
 **指摘の前提になっているコードを深く読む必要があるなら、`/explain-code` へ渡す。** ここで実装の解説を始めると、対応可否の判断がその下に埋まります。
 
@@ -96,7 +96,7 @@ gh api repos/OWNER/REPO/issues/<PR>/comments     # PR コメント欄
 | **まず一覧表** | コメント ID / 投稿者種別 / 位置 / 指摘の要約 / **推奨**（対応 / 見送り / 要判断） |
 | **次に個別の解説** | **「要判断」と重いものだけ**を厚く書く。自明なものは表の1行で足りる |
 
-**並び順は取得順のまま。** 重要度で並べ替えない ―― ユーザーは PR を開いて上から突き合わせます（`report_formatting.md`）。
+**並び順は取得順のまま。** 重要度で並べ替えない ―― ユーザーは PR を開いて上から突き合わせます（ `report_formatting.md` ）。
 
 ### 5. 学びとして残す
 
@@ -122,9 +122,9 @@ gh api repos/OWNER/REPO/issues/<PR>/comments     # PR コメント欄
 
 **対応可否はユーザーの領分です。** 推奨は出しますが、決めるのはユーザー。
 
-- 選択肢が2つ以上あるなら **`AskUserQuestion` で出す**（`decide_or_ask.md`）
+- 選択肢が2つ以上あるなら **`AskUserQuestion` で出す**（ `decide_or_ask.md` ）
 - **勝手に修正へ進まない。** GO が出てから `/resolve-human-reviews` か `/resolve-ai-reviews` へ渡す
-- **返信要否を聞かない。** 人間コメントへの返信はユーザーが判断する領分で、こちらから確認すること自体が侵入になる（`no_auto_reply_human_review_comments.md`）
+- **返信要否を聞かない。** 人間コメントへの返信はユーザーが判断する領分で、こちらから確認すること自体が侵入になる（ `no_auto_reply_human_review_comments.md` ）
 
 ## 出力の目安
 
@@ -137,7 +137,7 @@ gh api repos/OWNER/REPO/issues/<PR>/comments     # PR コメント欄
 ## やってはいけないこと
 
 - **コードを書き換えること。** 説明だけを行う。修正は GO が出てから、対応スキルの担当
-- **GitHub 上で返信・Resolve すること。** 本スキルの範囲外（`no_auto_reply_human_review_comments.md`）
+- **GitHub 上で返信・Resolve すること。** 本スキルの範囲外（ `no_auto_reply_human_review_comments.md` ）
 - **ルールのテンプレートを自前で再定義すること。** 1件あたりの型は `explain_review_comment_first.md` が持つ
 - **人間 / bot を文脈で判別すること。** `user.type` で機械的に分ける
 - **コマンドコメントを解説対象に含めること。** 本文が trim してコマンド1行なら除外する
@@ -150,9 +150,9 @@ gh api repos/OWNER/REPO/issues/<PR>/comments     # PR コメント欄
 
 ## 関連
 
-- `explain_review_comment_first.md`（レビューコメントの意図を先に噛み砕く）: **土台。** 1件あたりの型・テンプレート・尋ねて止まることはあちらが定める。本スキルは**取得と横断**、そして**学びとして残すこと**を足す
-- `no_auto_reply_human_review_comments.md`（人間コメントへ返信しない）: 返信と Resolve をしない根拠
-- `/resolve-human-reviews` / `/resolve-ai-reviews`（対応の実行）: **GO が出た後の渡し先。** 本スキルは判断材料を揃えるところまで
-- `/explain-code`（実装の説明）: **同じ explain 系。** 指摘の前提になっているコードを深く読むならあちらへ渡す
-- `report_formatting.md`（報告に貼る識別子の書式）: 一覧の並び順と `file:line` の書式はあちらが持つ
-- `github_command_comments.md`（コマンドコメントの別扱い）: 取得時に除外する根拠
+- `explain_review_comment_first.md` （レビューコメントの意図を先に噛み砕く）: **土台。** 1件あたりの型・テンプレート・尋ねて止まることはあちらが定める。本スキルは**取得と横断**、そして**学びとして残すこと**を足す
+- `no_auto_reply_human_review_comments.md` （人間コメントへ返信しない）: 返信と Resolve をしない根拠
+- `/resolve-human-reviews` / `/resolve-ai-reviews` （対応の実行）: **GO が出た後の渡し先。** 本スキルは判断材料を揃えるところまで
+- `/explain-code` （実装の説明）: **同じ explain 系。** 指摘の前提になっているコードを深く読むならあちらへ渡す
+- `report_formatting.md` （報告に貼る識別子の書式）: 一覧の並び順と `file:line` の書式はあちらが持つ
+- `github_command_comments.md` （コマンドコメントの別扱い）: 取得時に除外する根拠

@@ -4,7 +4,7 @@ argument-hint: "[PR 番号 または URL] (省略時は現在のブランチか�
 allowed-tools: Skill, Bash(gh pr view:*) Bash(gh repo view:*) Bash(gh api:*) Bash(gh run list:*) Bash(git branch:*) Bash(sleep:*) Bash(while:*)
 ---
 
-**`/request-ai-reviews` と `/resolve-ai-reviews` を一続きで回す**ラッパーです。1周は「`/ai-review` 投稿 → ワークフロー完了待ち → 指摘があれば対応」。
+**`/request-ai-reviews` と `/resolve-ai-reviews` を一続きで回す**ラッパーです。1周は「 `/ai-review` 投稿 → ワークフロー完了待ち → 指摘があれば対応」。
 
 引数で回数を渡せば、その回数を上限に繰り返します。指摘があった周は `/resolve-ai-reviews` が修正を push するため、**次の周は変わった差分に対するレビュー**になります。
 
@@ -62,7 +62,7 @@ allowed-tools: Skill, Bash(gh pr view:*) Bash(gh repo view:*) Bash(gh api:*) Bas
 
 - 周ごとに **run ID / conclusion / 指摘件数 / 対応内容（あれば push ハッシュ）** を1行で並べる。
 - 打ち止めた理由（指摘ゼロ / 回数到達 / 失敗による中断）を明記する。
-- 対応が入った周があれば、そのコミットハッシュを直接列挙する（`report_formatting.md`）。
+- 対応が入った周があれば、そのコミットハッシュを直接列挙する（ `report_formatting.md` ）。
 
 ## 出力の目安
 

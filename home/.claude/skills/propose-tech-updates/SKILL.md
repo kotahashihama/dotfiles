@@ -163,7 +163,7 @@ gh run list --workflow "<name>" --limit 20 --json databaseId,conclusion,createdA
 
 ## 関連
 
-- `verify_before_asserting.md`（断定の前に裏を取る）: **バージョンも「非推奨」も「速くなる」も裏取りの対象**
-- `write_for_installed_versions.md`（入っているバージョンで書く）: あちらは**書くときにどの版へ合わせるか**、本スキルは**版を上げるべきかの判断**
-- `/resolve-renovate-pr`（renovate の PR を仕上げる）: **あちらは PR が出た後**、本スキルは**PR が無い段階で何をすべきか決める**。依存を上げたいだけなら renovate が拾うので、本スキルは「renovate が拾わないもの」を扱う
-- `concise_first_then_detail.md`（簡潔に）: 提案も結論から。3件までに絞るのは同じ理由
+- `verify_before_asserting.md` （断定の前に裏を取る）: **バージョンも「非推奨」も「速くなる」も裏取りの対象**
+- `write_for_installed_versions.md` （入っているバージョンで書く）: あちらは**書くときにどの版へ合わせるか**、本スキルは**版を上げるべきかの判断**
+- `/resolve-renovate-pr` （renovate の PR を仕上げる）: **あちらは PR が出た後**、本スキルは**PR が無い段階で何をすべきか決める**。依存を上げたいだけなら renovate が拾うので、本スキルは「renovate が拾わないもの」を扱う
+- `concise_first_then_detail.md` （簡潔に）: 提案も結論から。3件までに絞るのは同じ理由

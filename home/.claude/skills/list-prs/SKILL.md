@@ -12,7 +12,7 @@ allowed-tools: Bash(gh pr list:*) Bash(gh pr view:*) Bash(gh pr checks:*) Bash(g
 
 **カレントリポジトリだけを見ない。** 1つのプロダクトが FE / BE / インフラに分かれており、**PR は単独で完結しません**。片方だけ見ても、何が何を待っているか分からない。
 
-- 対象はローカルにクローン済みの関連リポジトリ全部（`~/Documents/repositories/github.com/<org>/` 配下を `ls` で列挙）
+- 対象はローカルにクローン済みの関連リポジトリ全部（ `~/Documents/repositories/github.com/<org>/` 配下を `ls` で列挙）
 - **リポジトリごとの取得は独立なので、単一メッセージ内で並列に発行する**
 
   ```bash
@@ -34,17 +34,17 @@ allowed-tools: Bash(gh pr list:*) Bash(gh pr view:*) Bash(gh pr checks:*) Bash(g
 | **approve の有無** | **`latestOpinionatedReviews` を GraphQL で引く**（下記。`reviewDecision` と `latestReviews` は使わない） |
 | コメント欄 | `gh api repos/OWNER/REPO/issues/<PR>/comments` を**投稿者を問わず**読む。自分の保留メモと、**レビュアーの申し送り**の両方が要る |
 
-**CI が fail のときは原因まで見る。** `approval required`（レビュー承認待ち）のようにコードと無関係な失敗があり、これを「壊れている」と報告すると誤解を招く。`gh run view <id> --log-failed` で末尾を確認する。
+**CI が fail のときは原因まで見る。** `approval required` （レビュー承認待ち）のようにコードと無関係な失敗があり、これを「壊れている」と報告すると誤解を招く。`gh run view <id> --log-failed` で末尾を確認する。
 
 ### 3. ブランチとの対応を見る
 
 - カレントブランチがどの PR に対応するかを明示する
-- ローカルに未 push のコミットや未コミット変更があれば添える（`git status --porcelain` / `git rev-list --count @{upstream}..HEAD`）
-- base ブランチが進んでいれば、その旨も（`git rev-list --count HEAD..origin/<base>`）
+- ローカルに未 push のコミットや未コミット変更があれば添える（ `git status --porcelain` / `git rev-list --count @{upstream}..HEAD` ）
+- base ブランチが進んでいれば、その旨も（ `git rev-list --count HEAD..origin/<base>` ）
 
 ### 4. 紐づきを洗い出す
 
-**横断で見る一番の目的がここ。** 各 PR の**本文と自分のコメント**から PR 参照を抽出し（`owner/repo#123` / 同一リポジトリの `#123` / コメントへのアンカー付き URL）、参照先の状態を引く（`gh pr view <ref> --json state,mergedAt,isDraft`（approve が要るなら `latestOpinionatedReviews` を併せて引く））。**リポジトリをまたぐ参照も対象**。
+**横断で見る一番の目的がここ。** 各 PR の**本文と自分のコメント**から PR 参照を抽出し（ `owner/repo#123` / 同一リポジトリの `#123` / コメントへのアンカー付き URL）、参照先の状態を引く（ `gh pr view <ref> --json state,mergedAt,isDraft` （approve が要るなら `latestOpinionatedReviews` を併せて引く））。**リポジトリをまたぐ参照も対象**。
 
 紐づきが分かったら、**どちらが待たせている側か**まで判定する。
 
@@ -81,7 +81,7 @@ allowed-tools: Bash(gh pr list:*) Bash(gh pr view:*) Bash(gh pr checks:*) Bash(g
 | **こちら待ち** | draft のまま / CI が fail（コード起因）/ 未 push の変更がある |
 | **外部待ち** | 他リポジトリの PR やデプロイが前提。**PR 本文やコメントに書かれた保留条件を読み取る** |
 
-外部待ちは本文の「動作要件」節や `[fyi]` コメントに書かれていることが多い。**依存先の PR 番号があれば、その状態も併記する**（`owner/repo#123` を `gh pr view` で引く）。
+外部待ちは本文の「動作要件」節や `[fyi]` コメントに書かれていることが多い。**依存先の PR 番号があれば、その状態も併記する**（ `owner/repo#123` を `gh pr view` で引く）。
 
 #### draft は「今 ready にしてよいか」まで判定する
 
@@ -89,14 +89,14 @@ allowed-tools: Bash(gh pr list:*) Bash(gh pr view:*) Bash(gh pr checks:*) Bash(g
 
 | 判定 | 材料 |
 | --- | --- |
-| **出せる** | CI が緑（`approval required` の fail は除く）で、依存先がマージされていなくてもレビューは成立する |
+| **出せる** | CI が緑（ `approval required` の fail は除く）で、依存先がマージされていなくてもレビューは成立する |
 | **出さないほうがよい** | 前提が未確定で**レビュー中に設計が変わりうる** / 依存先の契約が固まっていない / 他 PR とマージ順を調整中で先に出すと誤解を招く |
 
 **依存先が未マージ = 出せない、ではありません。** 判定は「**レビュアーが今読んで、指摘が無駄にならないか**」で行う。契約が固まっていて FE 先行が安全な変更（nullable 化・新フィールドの受け入れなど）は、依存先が open でもレビューに出せます。むしろ**こちらが遅れると依存先を止める**ので、その旨を添える。
 
 依存先が approve 済み・マージ待ちなら、**こちらが律速になっている**ことを明記する。
 
-**ready 化そのものは絶対にしない**（`no_auto_ready_pr.md`）。判定を示して、実行はユーザーに委ねる。
+**ready 化そのものは絶対にしない**（ `no_auto_ready_pr.md` ）。判定を示して、実行はユーザーに委ねる。
 
 ### 5.5. レビューの急ぎ度を判定する
 
@@ -159,7 +159,7 @@ gh pr view <PR> --json files -q '[.files[].path]'
 
 | 優先 | 手 |
 | --- | --- |
-| 1 | **セルを短い語に言い換える**（`ready / CI 緑` → `ready緑`） |
+| 1 | **セルを短い語に言い換える**（ `ready / CI 緑` → `ready緑` ） |
 | 2 | **列を減らし、外した情報は表の下へリストで出す**（まず「紐づき」から） |
 | 3 | **表をやめて箇条書きにする**。1 PR 1行で `PR — 何を（状態・急・次）` の形 |
 
@@ -169,7 +169,7 @@ gh pr view <PR> --json files -q '[.files[].path]'
 | --- | --- | --- |
 | PR | `FE v2 #395` のように**通称 + 世代 + 番号**。**v1 / v2を必ず付ける**。番号だけではどちらの世代か判別できない | 12桁 |
 | 何を | **1行の説明**。PR タイトルの写しではなく「何が変わるか」 | **15字以内** |
-| 状態 | `ready緑` / `draft緑` のように詰める。approve 済みは記号1つ（`✓`）で足す | 8桁 |
+| 状態 | `ready緑` / `draft緑` のように詰める。approve 済みは記号1つ（ `✓` ）で足す | 8桁 |
 | 急 | `高` / `中` / `低`。列名も1字にする | 2桁 |
 | 次 | `マージ可` / `ready可` / `approve待ち` / `外部待ち` | 10桁 |
 
@@ -218,7 +218,7 @@ gh pr view <PR> --json files -q '[.files[].path]'
 
 - **優先度は `[優先度: 中]` の形**。そのまま依頼文の一部になる
 - **空行を入れるのはグループの間だけ。** `[優先度: 中]` の直後も、見出しと URL の間も詰める。**空行が多いと1かたまりに見えない**
-- **URL は1行1本、行末で終わらせる**。タイトルや状態を後ろに付けるとリンクが壊れる（`report_formatting.md`）
+- **URL は1行1本、行末で終わらせる**。タイトルや状態を後ろに付けるとリンクが壊れる（ `report_formatting.md` ）
 - **順序に意味があるかで記号を変える。** スタックは `1. 2. 3.`、独立した PR は `- `
 
   | 形 | 記号 | 理由 |
@@ -237,7 +237,7 @@ gh pr view <PR> --json files -q '[.files[].path]'
   | 独立していて小さいもの | 短時間で片付き、滞留しにくい |
   | **読む量が多いもの** | 後回しでも困らない。時間が取れるときに読んでもらう |
 
-  量は差分行数で見る（`gh pr view <PR> --json additions,deletions`）。
+  量は差分行数で見る（ `gh pr view <PR> --json additions,deletions` ）。
 
   **条件が並んだら BE を先に。** 契約を出す側なので、**BE が固まらないと FE が動けない**ことが多い。ものによるが既定はこの順。
 - ペアなら **BE → FE の順**に並べる。契約を出す側から読むほうが理解が早い

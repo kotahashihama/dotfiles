@@ -8,7 +8,7 @@
 投稿先が GitHub のコメント欄でも、**宛先が人ではなく機械**のもの。
 
 - `/ai-review` 等のスラッシュコマンド（GitHub Actions が `issue_comment` の本文で検知する）
-- bot への指示として定義された定型文字列（`@dependabot rebase` 等）
+- bot への指示として定義された定型文字列（ `@dependabot rebase` 等）
 
 ## 書くとき: 本文はコマンドだけにする
 
@@ -31,6 +31,6 @@ PR 説明の更新時に「自分が投稿したコメント」を点検する�
 
 ## 関連
 
-- `github_note_generated_by_claude.md`（生成者表示）: そちらが「Claude が書いたものには Note を添える」を定め、本ルールがその適用外を定める
-- `/request-ai-reviews`（`/ai-review` の投稿）: 投稿側の手順。本文をコマンド1行に保つ責務を持つ
-- `/update-pr-description`（PR 説明と補足コメントの更新）: 読む側の手順。抽出時にコマンドコメントを除外する
+- `github_note_generated_by_claude.md` （生成者表示）: そちらが「Claude が書いたものには Note を添える」を定め、本ルールがその適用外を定める
+- `/request-ai-reviews` （ `/ai-review` の投稿）: 投稿側の手順。本文をコマンド1行に保つ責務を持つ
+- `/update-pr-description` （PR 説明と補足コメントの更新）: 読む側の手順。抽出時にコマンドコメントを除外する

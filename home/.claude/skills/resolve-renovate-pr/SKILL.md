@@ -10,7 +10,7 @@ renovate PR は**ライブラリ側が変わっただけ**の PR です。差分
 
 ## 対象
 
-**patch は automerge される設定であることが多い**（renovate 設定の `automerge`）。それでも open で残っているなら、**automerge が効かなかった＝CI が通っていない**ということなので、対象に含めます。
+**patch は automerge される設定であることが多い**（renovate 設定の `automerge` ）。それでも open で残っているなら、**automerge が効かなかった＝CI が通っていない**ということなので、対象に含めます。
 
 引数が無ければ open な renovate PR を一覧し、どれを扱うか尋ねる。
 
@@ -23,8 +23,8 @@ gh pr list --author "app/renovate" --state open --json number,title,mergeStateSt
 ### 1. 何を上げる PR かを読む
 
 - **PR 本文の表**: パッケージ名と before → after。1つの PR が複数パッケージをまとめていることがある
-- **ブランチ名の prefix**（`renovate/major-*` 等）で更新種別を判定する
-- **リポジトリの renovate 設定**（`renovate.json` / `.github/renovate.json` / `package.json` の `renovate` キー）
+- **ブランチ名の prefix**（ `renovate/major-*` 等）で更新種別を判定する
+- **リポジトリの renovate 設定**（ `renovate.json` / `.github/renovate.json` / `package.json` の `renovate` キー）
 
 **設定にはたいてい運用が書いてあります。** 誰がマージするか・approve が要るか・automerge するかが更新種別ごとに分かれている。**CI 側にも同じ分岐がある**ので `.github/workflows/` も見る。ここを読まずに進めると、後から「approve が要る PR だった」と気づくことになります。
 
@@ -41,7 +41,7 @@ gh pr list --author "app/renovate" --state open --json number,title,mergeStateSt
 | **上流が対応を表明しているか** | 本家リポジトリの issue。`not planned` で閉じているのか、着手中なのか |
 | **公式の回避策** | 互換パッケージ・移行ガイド・エイリアス指定。**「API が無い」と「使う手段が無い」は別** |
 
-**Web で調べ、検索結果の要約で止めない。** 要約は出典を落とすので、**リンク先の原文まで開く**（`verify_before_asserting.md`）。ユーザーが参考記事を渡してきたら、それも読む。
+**Web で調べ、検索結果の要約で止めない。** 要約は出典を落とすので、**リンク先の原文まで開く**（ `verify_before_asserting.md` ）。ユーザーが参考記事を渡してきたら、それも読む。
 
 | 見送りに傾く兆候 | 上げられる目 |
 | --- | --- |
@@ -52,7 +52,7 @@ gh pr list --author "app/renovate" --state open --json number,title,mergeStateSt
 
 **「見送り」と書く前に、手順3で実際に動かす。** 動かさずに出した結論は、たいてい外れます。
 
-**見送ると判断しても、PR を閉じない・renovate 設定に無視ルールを書かない。** どちらも取り消しにくく、依存と CI の方針はユーザーの領分です（`ask_before_editing_claude_assets.md`）。理由を PR へコメントし（手順7）、判断を仰ぐ。
+**見送ると判断しても、PR を閉じない・renovate 設定に無視ルールを書かない。** どちらも取り消しにくく、依存と CI の方針はユーザーの領分です（ `ask_before_editing_claude_assets.md` ）。理由を PR へコメントし（手順7）、判断を仰ぐ。
 
 ### 3. ローカルで再現する
 
@@ -72,11 +72,11 @@ git worktree add --detach <一時パス> origin/<renovate ブランチ>
 **ロックファイルを手で編集しない。** 依存を入れるのはパッケージマネージャの仕事で、手で書いた木は解決できない組み合わせになります。ロックの通りに入れてから、リポジトリ既定のコマンドで build / lint / test を流す。
 
 **パッケージマネージャ自身のメジャー更新では、非対話で止まることがある。** 既存の依存ディレクトリを作り直す前に確認を求める実装があり、
-**TTY が無いと中断します**（`ERR_PNPM_ABORTED_REMOVE_MODULES_DIR_NO_TTY` 等）。`CI=true` のような非対話フラグを付けて流す。
+**TTY が無いと中断します**（ `ERR_PNPM_ABORTED_REMOVE_MODULES_DIR_NO_TTY` 等）。`CI=true` のような非対話フラグを付けて流す。
 
-**重いのでバックグラウンドで流し、待つ間に1の調査を進める**（`background_heavy_work.md`）。
+**重いのでバックグラウンドで流し、待つ間に1の調査を進める**（ `background_heavy_work.md` ）。
 
-**新しいバージョンだけを base に当てて測る手もある。** パッケージマネージャの一時実行（`pnpm dlx <pkg>@<version>` 等）を使えば、
+**新しいバージョンだけを base に当てて測る手もある。** パッケージマネージャの一時実行（ `pnpm dlx <pkg>@<version>` 等）を使えば、
 **base のツリーはそのままに、そのツールだけ新しくして**検査できます。
 renovate ブランチ一式を入れ直すより速く、**どの変更がどの失敗を生んだか**の切り分けもしやすい。
 
@@ -117,7 +117,7 @@ renovate ブランチ一式を入れ直すより速く、**どの変更がどの
 | **CI 全体** | **速くならないこともある。** 効く工程が CI の経路に入っていなければ変わらない |
 | 周辺の工程（build / lint / test） | 「全部速くなる」という誤解を防ぐ |
 
-**before は、PR の差分表が示すバージョン。** 「`^5.7.2` → `^7.0.0`」なら before は5系です。
+**before は、PR の差分表が示すバージョン。** 「 `^5.7.2` → `^7.0.0` 」なら before は5系です。
 **追随の過程で入れた互換パッケージや中間バージョンと比べても、それは before ではありません。**
 
 計測の作法は `verify_before_asserting.md` が定めます（**3回測って平均・キャッシュを毎回捨てる・交互に測る**）。
@@ -139,10 +139,10 @@ gh pr checks <PR>                         # 落ちているジョブの一覧
 gh run view --job <job-id> --log-failed   # 中身
 ```
 
-**落ちているジョブを全部見る。** 失敗は層になっていることがあり、1つ直しても次が出ます。**成功表示だけを根拠にしない**のも同じ理由（`verify_before_asserting.md`）。
+**落ちているジョブを全部見る。** 失敗は層になっていることがあり、1つ直しても次が出ます。**成功表示だけを根拠にしない**のも同じ理由（ `verify_before_asserting.md` ）。
 
 **push したら、CI の完了まで見る。** 待ち方は `/wait-ci` へ委譲する。古い run を掴んで即座に抜ける事故を避ける判定を持っています。
-**走らせただけで放置しない**（`keep_records_current.md`）。
+**走らせただけで放置しない**（ `keep_records_current.md` ）。
 
 ### 5. 追随修正は、その renovate ブランチへ入れる
 
@@ -163,11 +163,11 @@ git diff --output=<パス>   # 当て直せるように控える
 **切り出しを考えたときは、必ず実測してから決める。** formatter の出力規則が変わった場合が典型で、
 **新しい版の整形結果は古い版では「未整形」と判定されます**。この形の修正を別 PR にすると base が落ちます。
 
-**追随は、上げた先のバージョンで書く。** 移行後の API が既に入っているので、古い書き方のまま通すと非推奨を抱えたままになります（`write_for_installed_versions.md`）。
+**追随は、上げた先のバージョンで書く。** 移行後の API が既に入っているので、古い書き方のまま通すと非推奨を抱えたままになります（ `write_for_installed_versions.md` ）。
 
-**ビルド・CI・lint の設定に触るなら、その前に `AskUserQuestion` で尋ねる**（`ask_before_editing_claude_assets.md`）。依存を上げる依頼は、設定への白紙委任ではありません。
+**ビルド・CI・lint の設定に触るなら、その前に `AskUserQuestion` で尋ねる**（ `ask_before_editing_claude_assets.md` ）。依存を上げる依頼は、設定への白紙委任ではありません。
 
-コミットとプッシュは `/cp` へ委譲する。**明示指示があるときだけ**（`no_auto_commit.md`）。
+コミットとプッシュは `/cp` へ委譲する。**明示指示があるときだけ**（ `no_auto_commit.md` ）。
 
 ### 6. 衝突とロックファイルは、待たずに自分で片付ける
 
@@ -192,7 +192,7 @@ gh pr view <PR> --json commits --jq '.commits[-1] | "\(.oid[0:8]) \(.committedDa
 | やること | 自分でやる方法 |
 | --- | --- |
 | base の取り込み | `git merge origin/<base>` してロックファイルを再生成 |
-| ロックファイルの作り直し | **消して作り直す**（`rm <lock>` してから解決のみ実行する） |
+| ロックファイルの作り直し | **消して作り直す**（ `rm <lock>` してから解決のみ実行する） |
 | バージョン指定の追随 | マニフェストを直してから再生成 |
 
 **ロックファイルの全体更新（lock file maintenance）も自分でできます。** 消して作り直せば、その時点の最新解決になります。
@@ -211,7 +211,7 @@ pnpm install --frozen-lockfile     # 再生成後に通ることまで確かめ�
 
 **再生成したら、もう一度 frozen で検算する。** 生成できたことと、CI と同じ条件で通ることは別です。
 
-**ロックファイル以外も同じです。** 衝突0件でも参照切れや型の不一致は素通りするので、lint → 型検査 → テストまで通す（`verify_merge_with_checks.md`）。
+**ロックファイル以外も同じです。** 衝突0件でも参照切れや型の不一致は素通りするので、lint → 型検査 → テストまで通す（ `verify_merge_with_checks.md` ）。
 
 > **順序を間違えると、再生成分がコミットから落ちます。**
 > マージ解決で `git add` したあとに再生成すると、**再生成後の内容はステージされていません**。
@@ -229,22 +229,22 @@ pnpm install --frozen-lockfile     # 再生成後に通ることまで確かめ�
 
 - **何が壊れて、なぜ壊れたか**
 - **見送るなら、その理由と、いつなら上げられるか**
-- 別 PR へ切り出したなら、その参照（`owner/repo#123` の形。`github_cross_repo_reference.md`）
+- 別 PR へ切り出したなら、その参照（ `owner/repo#123` の形。`github_cross_repo_reference.md` ）
 - **調べたが問題なかったこと**も1行。書かないと「見ていない」と区別が付かない
 - **速度を測ったなら、その結果と計測条件**。速くならなかった工程も併せて書く
 
 アノテーションは **`[fyi]`** を使う。書式と使い分けは `github_rich_formatting.md` が定めます。
 
-書き方は `github_one_sentence_per_line.md` と `github_rich_formatting.md` に従い、末尾へ生成者表示を置く（`github_note_generated_by_claude.md`）。**renovate は bot なので、投稿に追加の許可は要りません**（`no_auto_reply_human_review_comments.md` の対象外）。
+書き方は `github_one_sentence_per_line.md` と `github_rich_formatting.md` に従い、末尾へ生成者表示を置く（ `github_note_generated_by_claude.md` ）。**renovate は bot なので、投稿に追加の許可は要りません**（ `no_auto_reply_human_review_comments.md` の対象外）。
 
 **同じ内容を重ねて投稿しない。** 既に自分のコメントがあるなら、`gh api` でそのコメントを編集して更新する。
 
-**ただし判断が覆ったときは編集しない。** 前のコメントを `Outdated` で畳み、**新しい判断は別コメントで投稿する**（`keep_records_current.md`）。
+**ただし判断が覆ったときは編集しない。** 前のコメントを `Outdated` で畳み、**新しい判断は別コメントで投稿する**（ `keep_records_current.md` ）。
 書き換えると**訂正したこと自体が消え**、「前回の判断を訂正します」と書いても読み手には何のことか分かりません。
 
 **新しい側から前のコメントへリンクを貼る。** 畳まれているので、リンクが無いと読み手が探すことになります。
 
-**push するたびに、投稿済みのコメントを読み返す。** 状況を書いたコメントは、**自分が手を動かした瞬間に古くなります**（`keep_records_current.md`）。
+**push するたびに、投稿済みのコメントを読み返す。** 状況を書いたコメントは、**自分が手を動かした瞬間に古くなります**（ `keep_records_current.md` ）。
 
 | 書いたこと | push 後に反転しやすい |
 | --- | --- |
@@ -270,7 +270,7 @@ pnpm install --frozen-lockfile     # 再生成後に通ることまで確かめ�
 - **そのまま緑だった**: 上げた依存・確認した範囲・残る条件を3〜5行
 - **追随が要った**: 4の分類ごとに何をしたか、押したコミットのハッシュ、切り出した別 PR、投稿したコメントの URL
 - **見送り推奨**: 何が対応していないかを1〜2行で。判断は `AskUserQuestion` で尋ねる
-- いずれも **PR の URL を添える**（`report_formatting.md`）
+- いずれも **PR の URL を添える**（ `report_formatting.md` ）
 
 ## やってはいけないこと
 
@@ -296,5 +296,5 @@ pnpm install --frozen-lockfile     # 再生成後に通ることまで確かめ�
 - `/resolve-conflicts` — base の取り込みとコンフリクト解消。**ロックファイルは再生成で解く**点だけ本スキルが上書きする
 - `/wait-ci` — CI の完了待ち。古い run を掴む事故を避ける判定は向こうが持つ
 - `/cp` — 追随修正のコミットとプッシュ
-- `/ship-pr` — 切り出した別 PR を出すとき（`use_ship_pr_for_pr_creation.md`）
+- `/ship-pr` — 切り出した別 PR を出すとき（ `use_ship_pr_for_pr_creation.md` ）
 - `/propose-tech-updates` — **こちらは PR が出た後**、あちらは**PR が無い段階で何をすべきか決める**。renovate が拾わないもの（CI の改善・記法の統一・検査の穴）はあちらの担当

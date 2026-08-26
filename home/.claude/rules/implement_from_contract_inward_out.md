@@ -105,7 +105,7 @@ API がまだ無くても、**契約さえあれば作り始められます**。
 
 ## 関連
 
-- `notify_related_repo_sessions.md`（他リポジトリへの連絡）: **契約を決めたら、相手側へ伝えるところまでが1セット**。決めただけでは相手は動けない
-- `verify_before_asserting.md`（断定の前に裏を取る）: 「相手側はもう対応済み」を推測で埋めない
-- `split_and_stack_prs.md`（大きい変更は分ける）: 層ごとに区切ると、そのまま分割の単位になる
-- `write_for_installed_versions.md`（入っているバージョンで書く）: 本ルールは**作る順序**、あちらは**何を使って書くか**
+- `notify_related_repo_sessions.md` （他リポジトリへの連絡）: **契約を決めたら、相手側へ伝えるところまでが1セット**。決めただけでは相手は動けない
+- `verify_before_asserting.md` （断定の前に裏を取る）: 「相手側はもう対応済み」を推測で埋めない
+- `split_and_stack_prs.md` （大きい変更は分ける）: 層ごとに区切ると、そのまま分割の単位になる
+- `write_for_installed_versions.md` （入っているバージョンで書く）: 本ルールは**作る順序**、あちらは**何を使って書くか**

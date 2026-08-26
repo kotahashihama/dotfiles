@@ -24,7 +24,7 @@ bot コメントを扱う `/resolve-ai-reviews` と対になりますが、**Git
 ### 1. 対象 PR とコメントの特定
 
 - 引数に PR 番号があればそれを使う。無ければ `gh pr view --json number` で現在のブランチから特定する (該当 PR が無ければユーザーに確認)
-- **作成者を確かめる**（`gh pr view <PR> --json author -q '.author.login'`）。ユーザー本人でなければ中断して報告する（`no_operating_on_others_prs.md`）。修正の push も他人の PR へ痕跡を残す
+- **作成者を確かめる**（ `gh pr view <PR> --json author -q '.author.login'` ）。ユーザー本人でなければ中断して報告する（ `no_operating_on_others_prs.md` ）。修正の push も他人の PR へ痕跡を残す
 - `gh repo view --json nameWithOwner -q .nameWithOwner` で `OWNER/REPO` を取得する
 - インラインコメントを取得し、**人間かつトップレベル**に絞る:
 
@@ -83,7 +83,7 @@ bot コメントを扱う `/resolve-ai-reviews` と対になりますが、**Git
 
 ### 6. PR 説明と補足コメントの追随
 
-**レビュー対応で差分が動いたら、それを説明している記述も同時に直す**（`keep_records_current.md`）。指摘が「説明の誤り」だった場合は、**コードを変えなくても本文の修正が対応そのもの**になる。
+**レビュー対応で差分が動いたら、それを説明している記述も同時に直す**（ `keep_records_current.md` ）。指摘が「説明の誤り」だった場合は、**コードを変えなくても本文の修正が対応そのもの**になる。
 
 | 見るもの | 直す観点 |
 | --- | --- |
@@ -96,7 +96,7 @@ bot コメントを扱う `/resolve-ai-reviews` と対になりますが、**Git
 
 ### 7. リアクションは、返信を代行したときだけ付ける
 
-**返信していない段階では 👍 を付けません**（`react_to_addressed_reviews.md`）。リアクションもレビュアーへ向けた発信なので、**返信と同じ許可が要る**。人間レビューでは返信が明示指示制なので、指示が出るまではどちらも行わない。
+**返信していない段階では 👍 を付けません**（ `react_to_addressed_reviews.md` ）。リアクションもレビュアーへ向けた発信なので、**返信と同じ許可が要る**。人間レビューでは返信が明示指示制なので、指示が出るまではどちらも行わない。
 
 ユーザーが返信を代行するよう指示した場合は、**その返信を投稿したコメントにだけ**付ける。
 
@@ -108,7 +108,7 @@ gh api -X POST repos/OWNER/REPO/pulls/comments/<comment_id>/reactions -f content
 
 **本文が空のレビュー提出には付けない。** インラインコメントを束ねるだけの入れ物で、読む文章が無い。
 
-**REST に該当のエンドポイントが無い**ので GraphQL を使う（`/reactions` は issue コメントとインラインコメントにしかない）。
+**REST に該当のエンドポイントが無い**ので GraphQL を使う（ `/reactions` は issue コメントとインラインコメントにしかない）。
 
 ```bash
 gh api graphql -f query='query{repository(owner:"OWNER",name:"REPO"){pullRequest(number:NNN){reviews(first:50){nodes{id state author{login} body}}}}}' \
@@ -121,7 +121,7 @@ gh api graphql -f query='mutation($id: ID!) { addReaction(input: {subjectId: $id
 
 **GitHub には何も書かず、会話で報告する。** これがこのスキルの成果物。
 
-- **1つの表にまとめ、GitHub の Conversation と同じ順で並べる**（`report_formatting.md`）。Step 1の取得順がそのまま Conversation の順なので、**優先度や対応可否で並べ替えない**。ユーザーは PR を上から見ながら返信する
+- **1つの表にまとめ、GitHub の Conversation と同じ順で並べる**（ `report_formatting.md` ）。Step 1の取得順がそのまま Conversation の順なので、**優先度や対応可否で並べ替えない**。ユーザーは PR を上から見ながら返信する
 - 列は「コメント ID / 種別 / 位置 / 指摘の要約 / 結果」。結果にはコミットハッシュか非対応の理由を入れ、裏取りの根拠が長ければ表の下に回す
 - **ID 列には Step 1で取得した識別子だけを書く。**「レビュー本文」のような代替語を置かない。**ID を書けない行は、その指摘が実在しない**
 - ハッシュは**レンジではなく個別に列挙**する
@@ -144,13 +144,13 @@ gh api graphql -f query='mutation($id: ID!) { addReaction(input: {subjectId: $id
 
 **案にも謝罪の文言を入れない**（下記「謝罪の文言は書かない」）。ここで入ると、そのまま投稿される。
 
-**理由の案と回答の案では、GitHub の表現手段を使ってよい**（手段の選び方は `github_rich_formatting.md`）。散文で書くと長くなるものを表や `<details>` へ畳む。`IMPORTANT` / `WARNING` は**本文に1〜2個**まで（末尾の生成者表示 Note は数えない）。返信は本文より短いので、2つ要る場面は稀。
+**理由の案と回答の案では、GitHub の表現手段を使ってよい**（手段の選び方は `github_rich_formatting.md` ）。散文で書くと長くなるものを表や `<details>` へ畳む。`IMPORTANT` / `WARNING` は**本文に1〜2個**まで（末尾の生成者表示 Note は数えない）。返信は本文より短いので、2つ要る場面は稀。
 
 **ハッシュ返信は対象外。** 1行目にハッシュ、末尾に Note という形が決まっており、畳むほどの中身が無い。
 
 ## ユーザーから返信を指示された場合
 
-**既定は「返信しない」で、ユーザーが明示指示したときだけ代行する**（`no_auto_reply_human_review_comments.md`）。指示が出たら次の書式で返す。
+**既定は「返信しない」で、ユーザーが明示指示したときだけ代行する**（ `no_auto_reply_human_review_comments.md` ）。指示が出たら次の書式で返す。
 
 **マージまで指示されたら、それは返信を含む指示。** 「対応してマージしておいて」と言われた場合、**返信してからマージする**。マージすると PR が閉じ、**指摘したレビュアーには対応内容が届かないまま終わる**ため。
 
@@ -167,12 +167,12 @@ gh api graphql -f query='mutation($id: ID!) { addReaction(input: {subjectId: $id
 | 決めごと | 内容 |
 | --- | --- |
 | 宛先 | **レビュアーの GitHub ID をメンション**。1行目に置き、本文は次の行から |
-| ハッシュ | **空白区切りで列挙**。レンジにしない（`report_formatting.md`） |
+| ハッシュ | **空白区切りで列挙**。レンジにしない（ `report_formatting.md` ） |
 | 動詞 | **差分の性質に当てる**（下記） |
 | **🙇🏽‍♂️** | **ハッシュ返信の行末に、空白を空けずに付ける**（下記） |
-| 生成者表示の Note | **付ける**。末尾に空行を挟んでブロックを置く（`github_note_generated_by_claude.md`） |
+| 生成者表示の Note | **付ける**。末尾に空行を挟んでブロックを置く（ `github_note_generated_by_claude.md` ） |
 
-**🙇🏽‍♂️ は感謝であって、謝罪ではない。** 「いいご指摘をありがとう」の意味で置くもので、**相手が人間だから要る**。bot への返信（`/resolve-ai-reviews`）には付けない。
+**🙇🏽‍♂️ は感謝であって、謝罪ではない。** 「いいご指摘をありがとう」の意味で置くもので、**相手が人間だから要る**。bot への返信（ `/resolve-ai-reviews` ）には付けない。
 
 **付くのはハッシュ返信だけ。** 指摘を受けて**直したことを報告する形**に添えるもので、非対応の返信（直していない）と `[ask]` への回答（聞かれて答えているだけ）は、その形に当たらない。
 
@@ -227,9 +227,9 @@ gh api graphql -f query='mutation($id: ID!) { addReaction(input: {subjectId: $id
 ## やってはいけないこと
 
 - **GitHub 上でレビューコメントに返信すること**。`gh api .../replies`、`gh pr comment`、`gh pr review` のいずれも使わない（ユーザーの明示指示がある場合は上記の書式に従う）
-- **報告の末尾で返信の話題を持ち出すこと**。「明示指示をお待ちします」「返信の判断だけ残っています」はいずれもこれに当たる。修正の報告は**ハッシュと対応表だけ**で閉じる（`no_auto_reply_human_review_comments.md`）
-- **返信していないコメントへ 👍 を付けること**。リアクションも発信なので、返信の許可が要る（`react_to_addressed_reviews.md`）
-- **Resolve conversation すること**。**スレッドを閉じるのは、コメントを付けたレビュアー自身の役目**（`no_auto_reply_human_review_comments.md`）。**返信を代行してよいと言われても含まれない**
+- **報告の末尾で返信の話題を持ち出すこと**。「明示指示をお待ちします」「返信の判断だけ残っています」はいずれもこれに当たる。修正の報告は**ハッシュと対応表だけ**で閉じる（ `no_auto_reply_human_review_comments.md` ）
+- **返信していないコメントへ 👍 を付けること**。リアクションも発信なので、返信の許可が要る（ `react_to_addressed_reviews.md` ）
+- **Resolve conversation すること**。**スレッドを閉じるのは、コメントを付けたレビュアー自身の役目**（ `no_auto_reply_human_review_comments.md` ）。**返信を代行してよいと言われても含まれない**
 - **返信の要否をユーザーに尋ねること**。尋ねること自体が判断領域への侵入になる。必要ならユーザーが明示指示を出す
 - **取得していない指摘を対応表や返信案に載せること**。**中身が正しくても、出どころが無ければ指摘ではない**。空の本文を読んだつもりになる事故は `body=0字` を見れば防げる
 - bot コメントを混ぜて処理すること。bot は `/resolve-ai-reviews` の責務で、返信の扱いが正反対
