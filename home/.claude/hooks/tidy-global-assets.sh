@@ -34,7 +34,8 @@ link=$(readlink "$HOME/.claude/settings.json" 2>/dev/null) || exit 0
 repo=$(git -C "$(dirname "$link")" rev-parse --show-toplevel 2>/dev/null) || exit 0
 
 changed=$(git -C "$repo" status --porcelain --untracked-files=all -- \
-  home/.claude/rules home/.claude/skills home/.claude/hooks home/.claude/CLAUDE.md home/.claude/settings.json \
+  home/.claude/rules home/.claude/skills home/.claude/hooks home/.claude/agents \
+  home/.claude/CLAUDE.md home/.claude/settings.json \
   2>/dev/null | awk '{print $NF}')
 [ -n "$changed" ] || exit 0
 
@@ -62,7 +63,8 @@ files = [f for f in sys.argv[1].split("|") if f]
 CHECKS = [
     ("/rules/", "**ルール**: 分割（1 ファイル 2 主題）/ マージ（同じ主題が散っている）/ 削除（無くても挙動が変わらない・既定に入った・**自分が実行できない**）/ 横断（skills や CLAUDE.md にルールへ引き上げるべき規定が無いか）"),
     ("/skills/", "**スキル**: 分割（1 スキルが複数の責務）/ マージ（同じ手順が重複、委譲で解けないか）/ 整合（委譲先の手順を自前で再定義していないか、相互参照が実態と合うか）/ 横断（固有でない規定が混ざっていないか）"),
-    ("/hooks/", "**フック**: 実物の入力で 1 回通したか（自分で組み立てた入力だけでは形の食い違いに気づけない）/ 誤検知の範囲は狭いか / 出力は additionalContext か（systemMessage は Claude に届かない）"),
+    ("/hooks/", "**フック**: 実物の入力で 1 回通したか（自分で組み立てた入力だけでは形の食い違いに気づけない）/ 誤検知の範囲は狭いか / 出力は additionalContext か（systemMessage は Claude に届かない）/ 分割（1 本が複数の主題を抱えている）/ マージ（同じイベントで同じ入力を見ている）/ 削除（settings.json に登録が無い・検査対象が 0 件のまま・既定に入った）/ 強制力（止めたいのに PostToolUse に置いていないか。あそこは知らせるだけ）"),
+    ("/agents/", "**エージェント**: 削除（呼ばれなくなった・既定の型で足りる）/ 整合（CLAUDE.md の自律起動の方針と合っているか）/ 出力契約が検算できる形か"),
     ("CLAUDE.md", "**CLAUDE.md**: rules と重複していないか（CLAUDE.md は前提、rules は規約）/ 指す先が実在するか"),
     ("settings.json", "**settings.json**: フックの参照先が実在し実行可能か / 発火条件が広すぎないか / 「毎回やる」と書いてある処理をフックへ寄せられないか"),
 ]
