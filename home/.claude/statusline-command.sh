@@ -38,7 +38,7 @@ cwd=$(echo "$input" | jq -r '.workspace.current_dir // .cwd // empty')
 model=$(echo "$input" | jq -r '.model.display_name // ""')
 used_pct=$(echo "$input" | jq -r '.context_window.used_percentage // empty')
 
-# 既定ではどこにも出ないもの。jq は 1 回にまとめ、cut で切り出す
+# 既定ではどこにも出ないもの。jq は1回にまとめ、cut で切り出す
 extra=$(echo "$input" | jq -r '[
   (.effort.level // ""), (.output_style.name // ""), (.worktree.name // "")
 ] | @tsv')
@@ -85,7 +85,7 @@ if [ -n "$toplevel" ]; then
   fi
 
   # worktree の中は本体とパスが似ている。別ツリーを編集する事故を防ぐため
-  # 末尾に 🌳 を出す。名前はブランチから読み取れるなら省く（同じ語が 2 度並ぶ）
+  # 末尾に 🌳 を出す。名前はブランチから読み取れるなら省く（同じ語が2度並ぶ）
   wt_part=""
   if [ -n "$wt_name" ]; then
     case "$branch" in
