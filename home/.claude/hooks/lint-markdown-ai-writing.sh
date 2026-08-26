@@ -105,11 +105,33 @@ def suiko(paths):
             for d in docs}
 
 
+def spacing(paths):
+    """日本語の表記。textlint も suiko も見ないので自前で判定する"""
+    mod_path = os.path.join(HOOK_DIR, "check-japanese-spacing.py")
+    try:
+        import importlib.util
+        spec = importlib.util.spec_from_file_location("cjs", mod_path)
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+    except Exception:
+        return {}
+    out = {}
+    for p in paths:
+        try:
+            out[os.path.abspath(p)] = [
+                {"ruleId": "表記/" + name, "line": n, "message": name}
+                for n, name, _src in mod.check(p)]
+        except Exception:
+            pass
+    return out
+
+
 base = head_version(path)
 targets = [path] + ([base] if base else [])
 results = lint(targets)
-for k, v in suiko(targets).items():
-    results[k] = results.get(k, []) + v
+for extra in (suiko(targets), spacing(targets)):
+    for k, v in extra.items():
+        results[k] = results.get(k, []) + v
 
 
 def key(msg, lines):
