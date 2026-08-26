@@ -93,7 +93,9 @@ for path in edited_markdown()[:20]:
 if not hits:
     raise SystemExit(0)
 
-mark = os.path.join(tempfile.gettempdir(), "claude-writingguard-" + pid)
+# 鍵は Stop フック共通。別々に持つと、同じターンで 2 本とも止めて
+# 差し戻しが 2 回になる。見送った側は次のターンで拾う
+mark = os.path.join(tempfile.gettempdir(), "claude-stopguard-" + pid)
 if os.path.exists(mark):
     raise SystemExit(0)
 open(mark, "w").close()
