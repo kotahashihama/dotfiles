@@ -52,7 +52,7 @@ allowed-tools: Skill, Bash(gh pr list:*) Bash(gh pr view:*) Bash(gh pr checks:*)
 - **控えたブランチへ戻す**
 - 1つの表で、**走査した全 PR** を出す。仕上げたものだけでなく「元から完成していた」ものも並べる（**何を見たかが分かる**）
 - 列は PR / 判定（完成 / 仕上げた / 未完のまま）/ 何が欠けていたか / 対応したコミット
-- **ready 化は絶対にしない**（`no_auto_ready_pr.md`）。仕上がった旨を報告して、実行はユーザーに委ねる
+- **ready 化は絶対にしない**（ `no_auto_ready_pr.md` ）。仕上がった旨を報告して、実行はユーザーに委ねる
 
 ## 出力の目安
 
@@ -73,6 +73,6 @@ allowed-tools: Skill, Bash(gh pr list:*) Bash(gh pr view:*) Bash(gh pr checks:*)
 
 ## 関連
 
-- `list-prs`（一覧を出す）: **状態を見せる**のがあちら、**直す**のがこちら。判定の観点も違う
-- `finalize-pr`（1本を仕上げる）: 実際の仕上げはすべて委譲する
-- `no_auto_ready_pr.md`（レビュー依頼は明示指示のみ）: 仕上げても ready 化・再依頼はしない
+- `list-prs` （一覧を出す）: **状態を見せる**のがあちら、**直す**のがこちら。判定の観点も違う
+- `finalize-pr` （1本を仕上げる）: 実際の仕上げはすべて委譲する
+- `no_auto_ready_pr.md` （レビュー依頼は明示指示のみ）: 仕上げても ready 化・再依頼はしない

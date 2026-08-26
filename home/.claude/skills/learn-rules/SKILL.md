@@ -21,7 +21,7 @@ allowed-tools: Bash(git status:*) Bash(git diff:*) Bash(git add:*) Bash(git comm
 | **頻度が示された**（「毎回」「今後は」「基本方針として」） | 好みではなく事実の訂正（それは記憶違いの訂正） |
 | **既存の資産が実態と食い違っていた** | 既定の挙動や既存資産で既に覆えている |
 
-**既存資産との重なりを先に見る。** `ls ~/.claude/rules/` と `ls ~/.claude/skills/` を出し、**語ではなく主題で**近いものを探す（`verify_before_asserting.md`）。近いものがあれば**新設せず、そちらへ足す**。
+**既存資産との重なりを先に見る。** `ls ~/.claude/rules/` と `ls ~/.claude/skills/` を出し、**語ではなく主題で**近いものを探す（ `verify_before_asserting.md` ）。近いものがあれば**新設せず、そちらへ足す**。
 
 ### 2. 種類と置き場を見立てる
 
@@ -41,10 +41,10 @@ allowed-tools: Bash(git status:*) Bash(git diff:*) Bash(git add:*) Bash(git comm
 
 | 内容 | 実体の置き場 |
 | --- | --- |
-| 汎用の規約・手順 | `home/`（**GitHub 上で全世界から読める**） |
+| 汎用の規約・手順 | `home/` （**GitHub 上で全世界から読める**） |
 | 社内の呼称・リポジトリ名・GitHub ID・プロダクトの状況 | `private/` |
 
-**迷ったら `private/` に倒す**（`no_internal_names_in_public_assets.md`）。公開は取り消せません。
+**迷ったら `private/` に倒す**（ `no_internal_names_in_public_assets.md` ）。公開は取り消せません。
 
 **既存を直す場合は、実体がどちら側かを確かめる。** `~/.claude/` はリンクなので、`readlink -f` で実体を見ないと判別できません。
 
@@ -58,11 +58,11 @@ allowed-tools: Bash(git status:*) Bash(git diff:*) Bash(git add:*) Bash(git comm
 | **置き場所が悪い**（読まれない所にある） | ルールへ引き上げる / 実行時に開く手順へ落とす |
 | **要らない**（既定に取り込まれた・実行できない） | 消す |
 
-**「次から気をつける」で閉じない。** 同じ逸脱が繰り返されるルールは、内容ではなく形に問題があります（`rule_conventions.md`）。
+**「次から気をつける」で閉じない。** 同じ逸脱が繰り返されるルールは、内容ではなく形に問題があります（ `rule_conventions.md` ）。
 
 ### 4. 承認を受ける
 
-**必ず `AskUserQuestion` を出す**（`ask_before_editing_claude_assets.md`）。案が1つでも「はい / いいえ」の2択にします。地の文の問いかけは読み飛ばされ、答えないまま既成事実になります。
+**必ず `AskUserQuestion` を出す**（ `ask_before_editing_claude_assets.md` ）。案が1つでも「はい / いいえ」の2択にします。地の文の問いかけは読み飛ばされ、答えないまま既成事実になります。
 
 出すもの。
 
@@ -70,7 +70,7 @@ allowed-tools: Bash(git status:*) Bash(git diff:*) Bash(git add:*) Bash(git comm
 - **どこに置くか**と理由。既存を直すなら、**どの記述がどう実態とズレているか**を引用する
 - **その案を推す理由**
 
-**承認を得たら、書く前に他セッションへ1行予告する。** グローバル資産の実体は1つで、どのセッションからも同じファイルが見えます。**ユーザーの承認は予告を代替しません**（`ask_before_editing_claude_assets.md`）。対象を名指しして送り、返事を待ってから書く。相手が同じ箇所を諮っている最中なら、そのまま任せる。
+**承認を得たら、書く前に他セッションへ1行予告する。** グローバル資産の実体は1つで、どのセッションからも同じファイルが見えます。**ユーザーの承認は予告を代替しません**（ `ask_before_editing_claude_assets.md` ）。対象を名指しして送り、返事を待ってから書く。相手が同じ箇所を諮っている最中なら、そのまま任せる。
 
 ### 5. 書く
 
@@ -78,8 +78,8 @@ allowed-tools: Bash(git status:*) Bash(git diff:*) Bash(git add:*) Bash(git comm
 
 | 置き場 | 従う規約 |
 | --- | --- |
-| `rules/` | `rule_conventions.md`（章立て・命名・量） |
-| `skills/` | `align_skill_md_format.md`（frontmatter・命名・引数） |
+| `rules/` | `rule_conventions.md` （章立て・命名・量） |
+| `skills/` | `align_skill_md_format.md` （frontmatter・命名・引数） |
 | `hooks` | 下記「フックを書くときだけの注意」 |
 
 **自分が実行できない規定を書かない。** 途中でユーザーへ渡すことになるなら、それは規約ではなく依頼です。
@@ -94,7 +94,7 @@ allowed-tools: Bash(git status:*) Bash(git diff:*) Bash(git add:*) Bash(git comm
 
 ### 6. 棚卸しまで済ませる
 
-**手を入れたら、その置き場全体を見直すまでが1セット**（`rule_conventions.md` / `align_skill_md_format.md`）。
+**手を入れたら、その置き場全体を見直すまでが1セット**（ `rule_conventions.md` / `align_skill_md_format.md` ）。
 
 - **分割**: 1ファイルに主題が2つ以上ある
 - **マージ**: 同じ主題が複数に散っている
@@ -110,9 +110,9 @@ allowed-tools: Bash(git status:*) Bash(git diff:*) Bash(git add:*) Bash(git comm
 sh scripts/git-hooks/pre-commit    # 公開側の固有名を検査
 ```
 
-- メッセージは Karma スタイル（`karma_commit_style.md`）。scope は `claude` / `hooks` / `mise` 等
+- メッセージは Karma スタイル（ `karma_commit_style.md` ）。scope は `claude` / `hooks` / `mise` 等
 - **`private/` 側は `.gitignore` 対象**なのでコミット不要
-- dotfiles 以外のリポジトリで作業しているなら、**自分でコミットせず dotfiles のセッションへ依頼する**（`notify_related_repo_sessions.md`）
+- dotfiles 以外のリポジトリで作業しているなら、**自分でコミットせず dotfiles のセッションへ依頼する**（ `notify_related_repo_sessions.md` ）
 
 ## 出力の目安
 
@@ -133,7 +133,7 @@ sh scripts/git-hooks/pre-commit    # 公開側の固有名を検査
 
 ## 関連
 
-- `ask_before_editing_claude_assets.md`（設定は尋ねてから）: **土台。** 気づく手掛かり・置き場の見立て・承認の形はあちらが定める。本スキルは**実行の手順**を足す
+- `ask_before_editing_claude_assets.md` （設定は尋ねてから）: **土台。** 気づく手掛かり・置き場の見立て・承認の形はあちらが定める。本スキルは**実行の手順**を足す
 - `rule_conventions.md` / `align_skill_md_format.md`: 書き方と整理。**5と6の中身はあちらが持つ**
-- `no_internal_names_in_public_assets.md`（公開側に社内固有名を書かない）: 2の軸2の根拠
-- `verify_before_asserting.md`（断定の前に裏を取る）: 「無い」を語で判定しない、フックは実物の入力で通す
+- `no_internal_names_in_public_assets.md` （公開側に社内固有名を書かない）: 2の軸2の根拠
+- `verify_before_asserting.md` （断定の前に裏を取る）: 「無い」を語で判定しない、フックは実物の入力で通す

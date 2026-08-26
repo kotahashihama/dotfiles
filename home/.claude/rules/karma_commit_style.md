@@ -13,7 +13,7 @@
 <footer>
 ```
 
-- 1行目（subject 行）は `type(scope): 要約` の形。`scope` は省略可（`type: 要約`）。
+- 1行目（subject 行）は `type(scope): 要約` の形。`scope` は省略可（ `type: 要約` ）。
 - subject は **日本語の体言止め（名詞・サ変動詞の語幹で終える）** で書く。「〜を追加」「〜を削除」「〜を修正」「〜の分離」のように名詞止めにし、「〜した」「〜する」のような動詞終止形・命令形にはしない。
 - 末尾にピリオドや句点は付けない。目安50文字程度。
 - 本文が必要なら1行空けて `body` に「なぜ・何を」を書く。
@@ -27,7 +27,7 @@ Claude が作ったコミットには、`footer` に次の1行を置く。
 Co-Authored-By: Claude Code <noreply@anthropic.com>
 ```
 
-**モデル名は書かない。** `Claude Opus 5` のように書くと、リリースのたびに古くなる。書き手はいずれも Claude Code なので、クライアント名に統一する（`github_note_generated_by_claude.md` が GitHub 上の文章に対して定めているのと同じ理由）。
+**モデル名は書かない。** `Claude Opus 5` のように書くと、リリースのたびに古くなる。書き手はいずれも Claude Code なので、クライアント名に統一する（ `github_note_generated_by_claude.md` が GitHub 上の文章に対して定めているのと同じ理由）。
 
 **これはコミットを作るすべての経路に適用する。** `/cp` だけでなく、レビュー対応やコンフリクト解消の途中で作るコミットも対象。
 
@@ -45,7 +45,7 @@ Co-Authored-By: Claude Code <noreply@anthropic.com>
 
 ## scope
 
-- 変更の対象領域を表す短い識別子（例: `csv_import`, `auth`, `jobs`）。
+- 変更の対象領域を表す短い識別子（例: `csv_import`, `auth`, `jobs` ）。
 - `type(scope):` プレフィックスは英小文字で書き、subject 本体は日本語の体言止めで書く。
 
 ## 例
@@ -64,7 +64,7 @@ chore: 依存パッケージの更新
 - 既存コミットを Karma スタイルへ直す指示があれば、**ツリー（変更内容）は一切変えずメッセージだけ**書き換える。
 - `git rebase -i` が使えない環境では「ベースへ `reset --hard` → 各コミットを `cherry-pick` → 直後に `commit --amend` でメッセージ差し替え」で再構築し、`git diff <backup> HEAD` がゼロであることを確認する。
 - 共有ブランチの履歴書き換え後の push は `--force-with-lease` を使う。
-- **他の人のレビューが始まった PR では実行しない**（`no_rebase_under_human_review.md`）。メッセージだけの書き換えでもコミットの同一性は失われる。
+- **他の人のレビューが始まった PR では実行しない**（ `no_rebase_under_human_review.md` ）。メッセージだけの書き換えでもコミットの同一性は失われる。
 
 ## なぜ
 
@@ -79,4 +79,4 @@ chore: 依存パッケージの更新
 
 ## 関連
 
-- `github_one_sentence_per_line.md`（GitHub へ書く日本語の改行と句点）: 句点を落とす点は同じだが、**あちらは PR 本文・コメントが対象**。本ルールは commit subject の1行だけ
+- `github_one_sentence_per_line.md` （GitHub へ書く日本語の改行と句点）: 句点を落とす点は同じだが、**あちらは PR 本文・コメントが対象**。本ルールは commit subject の1行だけ

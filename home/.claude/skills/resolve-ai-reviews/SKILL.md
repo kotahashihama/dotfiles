@@ -13,15 +13,15 @@ allowed-tools: Bash(gh api:*) Bash(gh pr view:*) Bash(gh pr edit:*) Bash(gh pr c
 ### 1. 対象 PR とリポジトリの特定
 
 - 引数に PR 番号があればそれを使う。無ければ `gh pr view --json number,headRefName` で現在のブランチの PR を特定する（該当 PR が無ければユーザーに確認）。
-- **作成者を確かめる**（`gh pr view <PR> --json author -q '.author.login'`）。ユーザー本人でなければ、そのまま中断して報告する（`no_operating_on_others_prs.md`）。返信・Resolve・push はいずれも他人の PR へ痕跡を残す。
+- **作成者を確かめる**（ `gh pr view <PR> --json author -q '.author.login'` ）。ユーザー本人でなければ、そのまま中断して報告する（ `no_operating_on_others_prs.md` ）。返信・Resolve・push はいずれも他人の PR へ痕跡を残す。
 - `gh repo view --json nameWithOwner -q .nameWithOwner` で `OWNER/REPO` を取得し、以降の `gh api` に使う。
 
 ### 2. レビューコメントの取得と分類
 
-- `gh api repos/OWNER/REPO/pulls/<PR>/comments` でインラインレビューコメントを取得する。各要素の `id` / `path` / `line`（無ければ `original_line`）/ `body` / `user.login` / `in_reply_to_id` / `commit_id` を見る。
-- **トップレベルの bot コメントのみ**を対象にする（`in_reply_to_id` が null かつ `user.login` が `github-actions[bot]` 等の AI レビュアー）。既に自分が返信済み（誰かの reply が既に付いている）ものは二重対応しない。
-- **レビュー提出の本文は、長さを見てから読む**（`gh api repos/OWNER/REPO/pulls/<PR>/reviews --paginate -q '.[] | "[\(.id)] body=\(.body|length)字"'`）。**`body=0字` の提出はインラインを束ねる入れ物**で、読む文章が無い。**出どころの無いものを指摘として数えない**。
-- 各コメントの **接頭辞**（`[must]` / `[imo]` / `[nits]` / `[ask]` / `[fyi]`）で優先度を判断する。
+- `gh api repos/OWNER/REPO/pulls/<PR>/comments` でインラインレビューコメントを取得する。各要素の `id` / `path` / `line` （無ければ `original_line` ）/ `body` / `user.login` / `in_reply_to_id` / `commit_id` を見る。
+- **トップレベルの bot コメントのみ**を対象にする（ `in_reply_to_id` が null かつ `user.login` が `github-actions[bot]` 等の AI レビュアー）。既に自分が返信済み（誰かの reply が既に付いている）ものは二重対応しない。
+- **レビュー提出の本文は、長さを見てから読む**（ `gh api repos/OWNER/REPO/pulls/<PR>/reviews --paginate -q '.[] | "[\(.id)] body=\(.body|length)字"'` ）。**`body=0字` の提出はインラインを束ねる入れ物**で、読む文章が無い。**出どころの無いものを指摘として数えない**。
+- 各コメントの **接頭辞**（ `[must]` / `[imo]` / `[nits]` / `[ask]` / `[fyi]` ）で優先度を判断する。
 - **対象 bot コメントの件数**をここで確定し、後続 Step 3の並列化判定 (閾値3件) に使う。
 
 ### 2.5. セッション文脈スナップショットの組み立て (必須)
@@ -182,7 +182,7 @@ user 判断が確定するまで、該当コメントには何もしない (修�
 
 #### 対応したコメントへリアクションを付ける
 
-**ハッシュを返信したコメントに `+1`（👍）を付ける**（`react_to_addressed_reviews.md`）。**返信とセット**で、一覧から対応済みが分かる状態にする。返信を投稿していないコメントには付けない。
+**ハッシュを返信したコメントに `+1` （👍）を付ける**（ `react_to_addressed_reviews.md` ）。**返信とセット**で、一覧から対応済みが分かる状態にする。返信を投稿していないコメントには付けない。
 
 ```bash
 gh api -X POST repos/OWNER/REPO/pulls/comments/<comment_id>/reactions -f content='+1'
@@ -235,7 +235,7 @@ gh api -X POST repos/OWNER/REPO/pulls/comments/<comment_id>/reactions -f content
 
 **`/finalize-pr` はこのスキルから自動起動しない。** レビュー対応で入れた差分の点検は必要だが、**呼び出し元が周回の途中か最後かを知っている**ため、判断はそちらに委ねる。
 
-- **単体で呼ばれた場合**: 完了報告に「`/finalize-pr` で点検すると差分の規約違反と PR 説明の鮮度を確認できる」と1行添える
+- **単体で呼ばれた場合**: 完了報告に「 `/finalize-pr` で点検すると差分の規約違反と PR 説明の鮮度を確認できる」と1行添える
 - **`/loop-ai-reviews` から呼ばれた場合**: 何もしない（あちらが最後に1回だけ実行する）
 
 ## 出力の目安

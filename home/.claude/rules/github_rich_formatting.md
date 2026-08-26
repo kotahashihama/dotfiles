@@ -65,7 +65,7 @@ GitHub には5種ありますが、**使うのは3種**に絞ります。選択�
 
 | 種類 | 使う場面 |
 | --- | --- |
-| `NOTE` | **生成者表示に占有されている**（`github_note_generated_by_claude.md`）。他の用途に使わない |
+| `NOTE` | **生成者表示に占有されている**（ `github_note_generated_by_claude.md` ）。他の用途に使わない |
 | `IMPORTANT` | **知らないと動かせない・順序を誤ると壊れる**（マージ順、DB の再生成、前提の設定） |
 | `WARNING` | **既存の挙動が壊れうる**（この経路だけ並行更新に弱い、この条件で値が落ちる） |
 
@@ -116,7 +116,7 @@ https://github.com/OWNER/REPO/blob/<commit>/path/to/file.go#L42-L48
 
 **閉じる時機は自分で決める。** 依存する変更が別 PR に残っている、リリースまで開けておきたい、複数 PR で1つの課題を分けている。いずれも**マージ＝完了ではありません**。
 
-参照するだけなら `#123` と書けば足ります（`github_cross_repo_reference.md`）。リンクは張られ、閉じません。
+参照するだけなら `#123` と書けば足ります（ `github_cross_repo_reference.md` ）。リンクは張られ、閉じません。
 
 ## 脚注は着地位置に注意する
 
@@ -146,14 +146,14 @@ https://github.com/OWNER/REPO/blob/<commit>/path/to/file.go#L42-L48
 ## 例外
 
 - ユーザーが形式を指定した場合
-- **コマンドコメント**は本文をコマンド1行に保つ（`github_command_comments.md`）
+- **コマンドコメント**は本文をコマンド1行に保つ（ `github_command_comments.md` ）
 
 ## 関連
 
-- `concise_first_then_detail.md`（簡潔に）: **表と Mermaid の使い分けはあちら**。本ルールは GitHub でしか使えない手段を足す
-- `github_note_generated_by_claude.md`（生成者表示）: **`NOTE` を占有している**。他の Alert と混ざらないよう、用途を分ける
-- `github_cross_repo_reference.md`（他リポジトリの参照）: **`#123` は参照するだけで閉じない**。閉じるキーワードを避ける根拠はあちらと対で読む
-- `github_one_sentence_per_line.md`（1文ごとに改行）: あちらは**文の表記**、本ルールは**構造の選び方**
-- `write_invariant_why_in_code.md`（不変の WHY だけコードに残す）: **移ろう文脈の行き先が `[fyi]`**。本ルールがその書式を定める
-- `report_formatting.md`（報告に貼る識別子の書式）: **`path:line` の扱いが逆になる**。会話ではクリックできるので使い、GitHub では差分が動くので使わない
+- `concise_first_then_detail.md` （簡潔に）: **表と Mermaid の使い分けはあちら**。本ルールは GitHub でしか使えない手段を足す
+- `github_note_generated_by_claude.md` （生成者表示）: **`NOTE` を占有している**。他の Alert と混ざらないよう、用途を分ける
+- `github_cross_repo_reference.md` （他リポジトリの参照）: **`#123` は参照するだけで閉じない**。閉じるキーワードを避ける根拠はあちらと対で読む
+- `github_one_sentence_per_line.md` （1文ごとに改行）: あちらは**文の表記**、本ルールは**構造の選び方**
+- `write_invariant_why_in_code.md` （不変の WHY だけコードに残す）: **移ろう文脈の行き先が `[fyi]`**。本ルールがその書式を定める
+- `report_formatting.md` （報告に貼る識別子の書式）: **`path:line` の扱いが逆になる**。会話ではクリックできるので使い、GitHub では差分が動くので使わない
 - `/create-pr` / `/update-pr-description` / `/review-pr` / `/resolve-ai-reviews` / `/resolve-human-reviews`: 本ルールが土台で、各スキルは投稿先固有の事情を上乗せする

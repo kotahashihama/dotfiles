@@ -5,7 +5,7 @@
 
 ## ブランチ名
 
-`<type>/<slug>` の形で、**slug は kebab-case**（`feat/talent-work-history-v1-passthrough`）。type はコミットの `<type>` と同じ語彙を使う（`karma_commit_style.md`）。
+`<type>/<slug>` の形で、**slug は kebab-case**（ `feat/talent-work-history-v1-passthrough` ）。type はコミットの `<type>` と同じ語彙を使う（ `karma_commit_style.md` ）。
 
 **アンダースコア繋ぎにしない。** 個人の好みではなく**チームの慣習に合わせる**もので、一覧に並んだとき自分のブランチだけ表記が違うと目に付きます。
 
@@ -87,7 +87,7 @@ lint ルールの追加・型検査の導入・閾値の引き上げは、**そ�
 
 - `gh stack view` で現在の並びを確認できる
 - 下段の変更を上段へ伝播するときは `gh stack rebase`、リモートと揃えるときは `gh stack sync`
-  - **上段に他の人のレビューが付いていたら `gh stack rebase` を使わない**。上段の履歴まで書き換わる（`no_rebase_under_human_review.md`）。その PR だけ `git merge` で取り込む
+  - **上段に他の人のレビューが付いていたら `gh stack rebase` を使わない**。上段の履歴まで書き換わる（ `no_rebase_under_human_review.md` ）。その PR だけ `git merge` で取り込む
 - PR 本文にも**どのブランチの上に積んでいるか**を1行書く。スタック表示に気づかないレビュアーがいる
 
 ### 下段の履歴を書き換えると、上段の差分が壊れる
@@ -111,7 +111,7 @@ lint ルールの追加・型検査の導入・閾値の引き上げは、**そ�
 下段をマージした時点で必ず通る道**です。スタックを積むなら、**上段を作り直す前提で計画する**。
 
 **復旧は履歴ベースの手段では通りません。** `git merge` は衝突が大量に出て、片側を採ると主題か修正の
-どちらかが消える。`cherry-pick` は選別基準が立たない（下表）。3点比較（`A...B`）は merge-base が遡りすぎて
+どちらかが消える。`cherry-pick` は選別基準が立たない（下表）。3点比較（ `A...B` ）は merge-base が遡りすぎて
 下段の内容を拾う。**ツリー同士を直接比較して作り直す**のが唯一通った手段です。
 
 **`cherry-pick` の選別は3通り試して全部だめでした。** どれも**やってみるまで駄目と分かりません**。
@@ -156,11 +156,11 @@ gh stack link <下段のPR> <次のPR> ... <上段のPR>
 
 ## 例外
 
-- `gh stack` 拡張が入っていない環境では `--base` の指定に留め、PR 本文で依存関係を明示する（`gh extension install github/gh-stack` で導入できる）
+- `gh stack` 拡張が入っていない環境では `--base` の指定に留め、PR 本文で依存関係を明示する（ `gh extension install github/gh-stack` で導入できる）
 - 1本しかブランチが無いときは不要
 
 ## 関連
 
-- `report_formatting.md`（報告に貼る識別子の書式）: スタックを報告するときも PR 番号を直接列挙する
-- `no_rebase_under_human_review.md`（レビュー中は履歴を書き換えない）: スタックの取り込み方を、上段のレビュー状況で切り替える。**一度でも merge したブランチは rebase しない**。マージコミットが平坦化され、衝突の解決ごと消える
-- `verify_merge_with_checks.md`（マージは検査を通すまで終わっていない）: 本ルールは**取り込む前**の依存判定、あちらは**取り込んだ後**の検証
+- `report_formatting.md` （報告に貼る識別子の書式）: スタックを報告するときも PR 番号を直接列挙する
+- `no_rebase_under_human_review.md` （レビュー中は履歴を書き換えない）: スタックの取り込み方を、上段のレビュー状況で切り替える。**一度でも merge したブランチは rebase しない**。マージコミットが平坦化され、衝突の解決ごと消える
+- `verify_merge_with_checks.md` （マージは検査を通すまで終わっていない）: 本ルールは**取り込む前**の依存判定、あちらは**取り込んだ後**の検証

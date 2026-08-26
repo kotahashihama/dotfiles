@@ -11,8 +11,8 @@
 
 | 実体の置き場 | git | 編集後 |
 | --- | --- | --- |
-| `home/.claude/`（rules / skills / hooks / agents / settings.json / CLAUDE.md） | **管理下** | **コミットが要る** |
-| `private/.claude/` と `private/.claude-memory/`（メモリ・社内固有名を含むスキル） | `.gitignore` 対象 | 不要 |
+| `home/.claude/` （rules / skills / hooks / agents / settings.json / CLAUDE.md） | **管理下** | **コミットが要る** |
+| `private/.claude/` と `private/.claude-memory/` （メモリ・社内固有名を含むスキル） | `.gitignore` 対象 | 不要 |
 
 **どちら側かの見分け方は `no_internal_names_in_public_assets.md` が持ちます**（スキルは両側にあり、リンク越しでは判別できない）。**`private/` 側なら連絡は要りません。**
 
@@ -20,9 +20,9 @@
 
 **`home/` 側を編集したら、dotfiles のセッションが起動していないか `ListAgents` で確認する。**
 
-- 起動していれば `SendMessage` で**何をどう編集したか**を伝えてコミットを促す（`notify_related_repo_sessions.md`）。向こうは編集したことを知らない
+- 起動していれば `SendMessage` で**何をどう編集したか**を伝えてコミットを促す（ `notify_related_repo_sessions.md` ）。向こうは編集したことを知らない
 - 起動していなければ**ユーザーへ1行**添える。「dotfiles に未コミットの変更が N 件」で足りる
-- **自分で dotfiles をコミットしない**（`no_auto_commit.md`）。作業中のリポジトリと別の履歴を勝手に作らない
+- **自分で dotfiles をコミットしない**（ `no_auto_commit.md` ）。作業中のリポジトリと別の履歴を勝手に作らない
 
 **編集のたびに毎回連絡しない。** 一連の作業が一段落した時点でまとめて1回。細切れに送ると、向こうがコミット単位を切れなくなります。
 
@@ -31,7 +31,7 @@
 ## 禁止する挙動
 
 - **編集して連絡しないこと**。環境を作り直した時点で消える
-- **自分で dotfiles をコミットすること**。作業中のリポジトリと別の履歴を勝手に作らない（`no_auto_commit.md`）
+- **自分で dotfiles をコミットすること**。作業中のリポジトリと別の履歴を勝手に作らない（ `no_auto_commit.md` ）
 - **編集のたびに連絡すること**。細切れに送ると、向こうがコミット単位を切れない
 - **通達への返信で終えること**。返信先がコミット担当とは限らない
 
@@ -43,12 +43,12 @@
 
 ## 例外
 
-- `private/` 側の編集（`.gitignore` 対象なのでコミット不要）
+- `private/` 側の編集（ `.gitignore` 対象なのでコミット不要）
 - ユーザーが「連絡不要」と明示した場合
 
 ## 関連
 
-- `ask_before_editing_claude_assets.md`（設定は尋ねてから）: **本ルールは触った後**。あちらは触ってよいかの判断
-- `no_internal_names_in_public_assets.md`（公開側に社内固有名を書かない）: **どちら側かの見分け方**をあちらが持つ
-- `notify_related_repo_sessions.md`（担当セッションへ連絡する）: 連絡の形はあちらが定める
-- `no_auto_commit.md`（コミットは明示指示のみ）: 自分でコミットしない根拠
+- `ask_before_editing_claude_assets.md` （設定は尋ねてから）: **本ルールは触った後**。あちらは触ってよいかの判断
+- `no_internal_names_in_public_assets.md` （公開側に社内固有名を書かない）: **どちら側かの見分け方**をあちらが持つ
+- `notify_related_repo_sessions.md` （担当セッションへ連絡する）: 連絡の形はあちらが定める
+- `no_auto_commit.md` （コミットは明示指示のみ）: 自分でコミットしない根拠

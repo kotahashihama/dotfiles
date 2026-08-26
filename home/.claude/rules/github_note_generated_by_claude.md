@@ -66,15 +66,15 @@ Claude がユーザーに代わって GitHub へ書き込むテキスト全般�
 そもそも対象外のもの。
 
 - `git commit` のメッセージ・PR タイトル（こちらは `Co-Authored-By` トレーラーが役割を担う）
-- **コマンドコメント**（`/ai-review` 等、ワークフローが本文を検知するもの）。Note を足すと検知が壊れる（`github_command_comments.md`）
+- **コマンドコメント**（ `/ai-review` 等、ワークフローが本文を検知するもの）。Note を足すと検知が壊れる（ `github_command_comments.md` ）
 
 ## 関連
 
-- `react_to_addressed_reviews.md`（返信した指摘とレビュー提出へ 👍）: 本ルールは**書く文章の書式**、あちらは**リアクション**。どちらも返信を投稿した後の話
-- `github_command_comments.md`（コマンドコメントの別扱い）: 本ルールの適用外を定める。宛先が人ではなく機械のコメントには Note を付けない
-- `no_auto_reply_human_review_comments.md`（人間コメントへの自動返信禁止）: そもそも投稿してよいかを規定。本ルールは**投稿すると決まった後の書式**を規定する
+- `react_to_addressed_reviews.md` （返信した指摘とレビュー提出へ 👍）: 本ルールは**書く文章の書式**、あちらは**リアクション**。どちらも返信を投稿した後の話
+- `github_command_comments.md` （コマンドコメントの別扱い）: 本ルールの適用外を定める。宛先が人ではなく機械のコメントには Note を付けない
+- `no_auto_reply_human_review_comments.md` （人間コメントへの自動返信禁止）: そもそも投稿してよいかを規定。本ルールは**投稿すると決まった後の書式**を規定する
 - `/create-pr` / `/update-pr-description` / `/review-pr` / `/resolve-ai-reviews` / `/resolve-human-reviews` の各スキルにも同じ規定がある。本ルールはスキル経由でない自然文依頼の経路を含めて横断的に適用する
-- `github_rich_formatting.md`（GitHub の表現手段）: **本ルールが `NOTE` を占有している**。他の Alert と混ざらないよう、あちらが用途を分ける
-- `github_cross_repo_reference.md`（他リポジトリの PR / issue の書き方）: どちらも GitHub へ書く文章の書式を定める
-- `github_one_sentence_per_line.md`（1文ごとに改行し行末の句点を落とす）: あちらは本文の書き方、本ルールは末尾に置く Note を定める。**Note の定型文はあちらの対象外**
-- `github_no_authorship_voice.md`（本文中で書き手の帰属を匂わせない）: **開示の場所は本ルールが持つ**。あちらは本文中の言い回しを扱い、Note で足りている開示を本文でも重ねて書かないことを定める
+- `github_rich_formatting.md` （GitHub の表現手段）: **本ルールが `NOTE` を占有している**。他の Alert と混ざらないよう、あちらが用途を分ける
+- `github_cross_repo_reference.md` （他リポジトリの PR / issue の書き方）: どちらも GitHub へ書く文章の書式を定める
+- `github_one_sentence_per_line.md` （1文ごとに改行し行末の句点を落とす）: あちらは本文の書き方、本ルールは末尾に置く Note を定める。**Note の定型文はあちらの対象外**
+- `github_no_authorship_voice.md` （本文中で書き手の帰属を匂わせない）: **開示の場所は本ルールが持つ**。あちらは本文中の言い回しを扱い、Note で足りている開示を本文でも重ねて書かないことを定める

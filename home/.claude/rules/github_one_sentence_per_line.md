@@ -28,9 +28,9 @@ Claude がユーザーに代わって GitHub へ書き込む日本語のテキ�
 
 ## 期待する書き方
 
-- **改行するのは文の区切りだけ。** 読点（`、`）では折らない
+- **改行するのは文の区切りだけ。** 読点（ `、` ）では折らない
 - **箇条書き・表のセルの中も同じ。** セル内に2文入るなら、そのセルは長すぎるので分ける
-- **文中の句点は残す。** 意図して1行に2文置いたとき（`hoge。fuga`）だけ、前の句点が文中に残る
+- **文中の句点は残す。** 意図して1行に2文置いたとき（ `hoge。fuga` ）だけ、前の句点が文中に残る
 - 段落を分けたいところでは**空行**を入れる。行間が広がって区切りが見える
 - GitHub の issue / PR / discussion では、**単一改行がそのまま改行として描画される**。1文ごとに行が分かれ、長い段落も追いやすくなる
 - **リポジトリ内の `.md` ファイルは挙動が違う**（単一改行は空白になる）。本ルールが対象にするのは GitHub 上の投稿だけ
@@ -94,16 +94,16 @@ awk '{ n = gsub(/\*\*/, "&"); if (n % 2) print FILENAME ":" FNR ": " $0 }' <本�
 - **コードブロック・引用の中身**はそのまま。原文の改行も句点も変えない
 - **生成者表示 Note の定型文**。文言は `github_note_generated_by_claude.md` が固定している
 - **PR テンプレートに元から書かれている固定文**。リポジトリ側の文章なので逐語のまま残す
-- **コマンドコメント**（`/ai-review` 等）は本文をコマンド1行に保つ（`github_command_comments.md`）
+- **コマンドコメント**（ `/ai-review` 等）は本文をコマンド1行に保つ（ `github_command_comments.md` ）
 - ユーザーが文面を指定して「これをそのまま投稿して」と指示した場合
 
 ## 関連
 
-- `github_note_generated_by_claude.md`（生成者表示）: **その定型文だけは本ルールの対象外**。文言をあちらが固定している
-- `karma_commit_style.md`（コミットメッセージ）: 句点を落とす点は同じだが、**あちらは commit subject の1行だけ**。本ルールは GitHub 上の文章全体
+- `github_note_generated_by_claude.md` （生成者表示）: **その定型文だけは本ルールの対象外**。文言をあちらが固定している
+- `karma_commit_style.md` （コミットメッセージ）: 句点を落とす点は同じだが、**あちらは commit subject の1行だけ**。本ルールは GitHub 上の文章全体
 - `github_cross_repo_reference.md` / `github_command_comments.md`: どちらも GitHub へ書く文章の書式を定める
-- `github_rich_formatting.md`（GitHub の表現手段）: あちらは**構造の選び方**、本ルールは**文の表記**
-- `no_space_between_number_and_unit.md`（数値と単位の空白）: どちらも**日本語の表記**を定める。**一括置換で対になる記法と NG 例が壊れる**のは本ルールが扱う
-- `recheck_after_every_revision.md`（書き直すたびに確かめ直す）: **本ルールの検査は3周目（形）で使う**。あちらが周ごとの観点を定める
-- `concise_first_then_detail.md`（簡潔に）: あちらは**量**を扱う。本ルールは**改行と表記**
+- `github_rich_formatting.md` （GitHub の表現手段）: あちらは**構造の選び方**、本ルールは**文の表記**
+- `no_space_between_number_and_unit.md` （数値と単位の空白）: どちらも**日本語の表記**を定める。**一括置換で対になる記法と NG 例が壊れる**のは本ルールが扱う
+- `recheck_after_every_revision.md` （書き直すたびに確かめ直す）: **本ルールの検査は3周目（形）で使う**。あちらが周ごとの観点を定める
+- `concise_first_then_detail.md` （簡潔に）: あちらは**量**を扱う。本ルールは**改行と表記**
 - `/review-pr` / `/create-pr` / `/update-pr-description` / `/resolve-ai-reviews` / `/resolve-human-reviews`: 本ルールが土台で、各スキルは投稿先固有の事情を上乗せする

@@ -79,7 +79,7 @@
 
 ## 関連
 
-- `focus_insights_on_judgment.md`（洞察は判断材料に絞る）: サマリは「何をしたか」、あちらは「**なぜそう決めたか**」。**実装を代行したときは、捨てた選択肢と固有の制約もあちらの対象**
-- `plain_language_explanation.md`（技術説明の噛み砕き）と併用する。特に BE/インフラの変更は平易さを優先
-- `concise_first_then_detail.md`（結論ファースト・全体簡潔）と併用: サマリ自体も結論から
-- `report_formatting.md`（報告に貼る識別子の書式）と併用: サマリ内でハッシュや URL を示す際も同様
+- `focus_insights_on_judgment.md` （洞察は判断材料に絞る）: サマリは「何をしたか」、あちらは「**なぜそう決めたか**」。**実装を代行したときは、捨てた選択肢と固有の制約もあちらの対象**
+- `plain_language_explanation.md` （技術説明の噛み砕き）と併用する。特に BE/インフラの変更は平易さを優先
+- `concise_first_then_detail.md` （結論ファースト・全体簡潔）と併用: サマリ自体も結論から
+- `report_formatting.md` （報告に貼る識別子の書式）と併用: サマリ内でハッシュや URL を示す際も同様

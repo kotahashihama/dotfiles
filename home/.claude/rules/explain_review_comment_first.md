@@ -53,7 +53,7 @@
 - 意図を先に噛み砕いて共有することで、user が判断する材料が揃い、その場で
   対応/非対応/別方針のいずれもスムーズに選べる
 - レビュアーが人間の場合、対応方針そのものが人間同士のコミュニケーション事項
-  （`no_auto_reply_human_review_comments.md` とも整合する）
+  （ `no_auto_reply_human_review_comments.md` とも整合する）
 
 ## テンプレート例
 
@@ -90,9 +90,9 @@
 
 ## 関連
 
-- `no_auto_reply_human_review_comments.md`（人間コメントへの自動返信禁止）と併用: 本ルールは "対応行動" 側、あちらは "返信行動" 側を規定
-- `decide_or_ask.md`（自分で決めるか尋ねるか）: 本ルールが扱う場面の**判断軸**を示す
-- `plain_language_explanation.md`（技術説明の噛み砕き）: 意図の咀嚼は平易な表現で
-- `summarize_after_each_task.md`（各作業後のサマリ）: 対応が終わった段階で改めてサマリ
-- `/explain-review`（レビューコメントの解説スキル）: **本ルールが土台で、あちらは取得と横断を足す**。複数件を PR から取ってきて一覧にする手順はあちらが持つ。1件あたりの型は本ルールのまま
-- `treat_user_suggestions_as_proposals.md`（ユーザーの案には賛否を返す）: 本ルールは**他人の指摘**、あちらは**ユーザー自身の案**が対象。推奨判断を添える点は同じ
+- `no_auto_reply_human_review_comments.md` （人間コメントへの自動返信禁止）と併用: 本ルールは "対応行動" 側、あちらは "返信行動" 側を規定
+- `decide_or_ask.md` （自分で決めるか尋ねるか）: 本ルールが扱う場面の**判断軸**を示す
+- `plain_language_explanation.md` （技術説明の噛み砕き）: 意図の咀嚼は平易な表現で
+- `summarize_after_each_task.md` （各作業後のサマリ）: 対応が終わった段階で改めてサマリ
+- `/explain-review` （レビューコメントの解説スキル）: **本ルールが土台で、あちらは取得と横断を足す**。複数件を PR から取ってきて一覧にする手順はあちらが持つ。1件あたりの型は本ルールのまま
+- `treat_user_suggestions_as_proposals.md` （ユーザーの案には賛否を返す）: 本ルールは**他人の指摘**、あちらは**ユーザー自身の案**が対象。推奨判断を添える点は同じ

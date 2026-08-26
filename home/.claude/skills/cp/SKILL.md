@@ -4,7 +4,7 @@ argument-hint: "(引数なし。ステージ済み・未ステージの変更を
 allowed-tools: Bash(git status:*) Bash(git diff:*) Bash(git log:*) Bash(git add:*) Bash(git commit:*) Bash(git push:*) Bash(git branch:*)
 ---
 
-このスキルが起動した時点で、ユーザーが「コミットとプッシュをしてよい」と明示的に承認した状態とみなす（`/cp` を打つ行為自体が `~/.claude/rules/no_auto_commit.md` の言う「明示的な指示」に該当する）。確認質問は挟まず、即実行する。
+このスキルが起動した時点で、ユーザーが「コミットとプッシュをしてよい」と明示的に承認した状態とみなす（ `/cp` を打つ行為自体が `~/.claude/rules/no_auto_commit.md` の言う「明示的な指示」に該当する）。確認質問は挟まず、即実行する。
 
 ## 進め方
 
@@ -21,10 +21,10 @@ allowed-tools: Bash(git status:*) Bash(git diff:*) Bash(git log:*) Bash(git add:
    - 1行目は `<type>(<scope>): <subject>` の形。`type(scope):` は英小文字、subject は **日本語の体言止め**（「〜の追加」「〜の修正」「〜の分離」など）
    - subject 末尾にピリオド・句点なし。50文字目安
    - 本文が必要なら1行空けて「なぜ・何を」を書く。コミットに至った経緯ではなく **差分の意図** を書く
-   - 末尾に生成者のトレーラーを置く。**文言はルール側が持つ**（`karma_commit_style.md` の「生成者のトレーラー」）
+   - 末尾に生成者のトレーラーを置く。**文言はルール側が持つ**（ `karma_commit_style.md` の「生成者のトレーラー」）
 
 4. **ステージング & コミット**:
-   - 既にステージ済みのものがあればそれを尊重しつつ、未ステージの変更は **対象ファイルを名指しで** `git add <path>...` する（`git add -A` / `git add .` は使わない）
+   - 既にステージ済みのものがあればそれを尊重しつつ、未ステージの変更は **対象ファイルを名指しで** `git add <path>...` する（ `git add -A` / `git add .` は使わない）
    - コミットメッセージは HEREDOC で渡す:
      ```
      git commit -m "$(cat <<'EOF'
@@ -56,11 +56,11 @@ allowed-tools: Bash(git status:*) Bash(git diff:*) Bash(git log:*) Bash(git add:
 
 8. **完了報告**:
    - 変更ファイル数 / 増減行数を1行で報告
-   - **push したコミットを1行ずつ列挙**する: `<短縮ハッシュ> <subject>` を全件並べる（`git log --oneline <oldsha>..<newsha>` の出力をそのまま貼る形。**報告にレンジ表記は使わない** — `report_formatting.md`）
-   - コミット後に変更が残っていない（`working tree clean`）ことを確認
+   - **push したコミットを1行ずつ列挙**する: `<短縮ハッシュ> <subject>` を全件並べる（ `git log --oneline <oldsha>..<newsha>` の出力をそのまま貼る形。**報告にレンジ表記は使わない** — `report_formatting.md` ）
+   - コミット後に変更が残っていない（ `working tree clean` ）ことを確認
 
 9. **PR の鮮度を確認**（PR がある場合のみ）:
-   - push で差分が動いたので、**本文と補足コメントが実態と食い違っていないか**を見る（`keep_records_current.md`）
+   - push で差分が動いたので、**本文と補足コメントが実態と食い違っていないか**を見る（ `keep_records_current.md` ）
    - ズレていれば `/update-pr-description` を案内する。**このスキルでは直さない**
    - **AI レビューを回すかはユーザーに尋ねる**。1周ごとに課金されるので自動で回さない
 
