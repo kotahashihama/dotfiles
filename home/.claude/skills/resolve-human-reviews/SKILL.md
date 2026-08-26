@@ -227,6 +227,7 @@ gh api graphql -f query='mutation($id: ID!) { addReaction(input: {subjectId: $id
 ## やってはいけないこと
 
 - **GitHub 上でレビューコメントに返信すること**。`gh api .../replies`、`gh pr comment`、`gh pr review` のいずれも使わない（ユーザーの明示指示がある場合は上記の書式に従う）
+- **報告の末尾で返信の話題を持ち出すこと**。「明示指示をお待ちします」「返信の判断だけ残っています」はいずれもこれに当たる。修正の報告は**ハッシュと対応表だけ**で閉じる（`no_auto_reply_human_review_comments.md`）
 - **返信していないコメントへ 👍 を付けること**。リアクションも発信なので、返信の許可が要る（`react_to_addressed_reviews.md`）
 - **Resolve conversation すること**。**スレッドを閉じるのは、コメントを付けたレビュアー自身の役目**（`no_auto_reply_human_review_comments.md`）。**返信を代行してよいと言われても含まれない**
 - **返信の要否をユーザーに尋ねること**。尋ねること自体が判断領域への侵入になる。必要ならユーザーが明示指示を出す
