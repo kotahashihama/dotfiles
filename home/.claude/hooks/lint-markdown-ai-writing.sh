@@ -1,6 +1,7 @@
 #!/bin/bash
 #
-# 編集した Markdown を textlint に掛け、AI っぽい書き方を知らせる PostToolUse フック。
+# 編集した Markdown を textlint と suiko に掛け、AI っぽい書き方を知らせる
+# PostToolUse フック。
 #
 # 止めない。既存の指摘が 137 件あるので、error で止めると作業が進まない。
 # 書いている最中に届けば、直す判断はその場でできる。
@@ -20,9 +21,11 @@ import json, os, re, subprocess, sys, tempfile
 HOOK_DIR = os.environ["HOOK_DIR"]
 TEXTLINT = os.path.join(HOOK_DIR, "textlint", "node_modules", ".bin", "textlint")
 CONFIG = os.path.join(HOOK_DIR, "textlint", ".textlintrc.json")
+SUIKO = os.path.join(HOOK_DIR, "suiko", "bin", "suiko")
+SUIKO_DIR = os.path.join(HOOK_DIR, "suiko")
 
-if not os.path.exists(TEXTLINT):
-    sys.exit(0)          # 未インストールなら黙って通す（npm ci が済んでいない環境）
+if not os.path.exists(TEXTLINT) and not os.path.exists(SUIKO):
+    sys.exit(0)          # どちらも未導入なら黙って通す
 
 try:
     path = json.load(sys.stdin).get("tool_input", {}).get("file_path", "")
@@ -66,13 +69,47 @@ def lint(paths):
     if not out.startswith("["):
         return {}            # 設定が読めない等。黙って通す
     try:
-        return {f["filePath"]: f["messages"] for f in json.loads(out)}
+        return {os.path.abspath(f["filePath"]): f["messages"]
+                for f in json.loads(out)}
     except Exception:
         return {}
 
 
+def suiko(paths):
+    """suiko を 1 回だけ起動し、ファイルごとの指摘を返す
+
+    textlint はパターン照合、suiko は形態素解析と統計で見る。取るものが
+    違うので、重なる分（箇条書きのラベル・述語コロン）は後で束ねる。
+    """
+    if not os.path.exists(SUIKO):
+        return {}
+    try:
+        r = subprocess.run([SUIKO, "lint", "--genre", "tech", "--no-config", "--json"] + paths,
+                           capture_output=True, text=True, timeout=30,
+                           cwd=SUIKO_DIR)
+    except Exception:
+        return {}
+    out = (r.stdout or "").strip()
+    # 1 ファイルならオブジェクト、複数なら配列を返す
+    if not out.startswith(("[", "{")):
+        return {}
+    try:
+        docs = json.loads(out)
+    except Exception:
+        return {}
+    if isinstance(docs, dict):
+        docs = [docs]
+    return {os.path.abspath(d["file"]): [{"ruleId": "suiko/" + f["category"],
+                         "line": f["line"],
+                         "message": f["detail"]} for f in d.get("findings", [])]
+            for d in docs}
+
+
 base = head_version(path)
-results = lint([path] + ([base] if base else []))
+targets = [path] + ([base] if base else [])
+results = lint(targets)
+for k, v in suiko(targets).items():
+    results[k] = results.get(k, []) + v
 
 
 def key(msg, lines):
@@ -89,12 +126,10 @@ def read(p):
 
 
 now_lines = read(path)
-now = {key(m, now_lines): m for m in results.get(os.path.abspath(path),
-                                                 results.get(path, []))}
+now = {key(m, now_lines): m for m in results.get(os.path.abspath(path), [])}
 was = set()
 if base:
-    was = {key(m, read(base)) for m in results.get(os.path.abspath(base),
-                                                   results.get(base, []))}
+    was = {key(m, read(base)) for m in results.get(os.path.abspath(base), [])}
     try:
         os.unlink(base)
     except OSError:
@@ -111,7 +146,7 @@ if not fresh:
 
 fresh.sort(key=lambda km: km[1]["line"])
 name = os.path.basename(path)
-out = ["この編集で新しく出た textlint の指摘です（%s、%d件）。"
+out = ["この編集で新しく出た指摘です（%s、%d件）。"
        "**止めていません。直すかどうかは中身で判断してください**" % (name, len(fresh))]
 for k, m in fresh[:8]:
     rule = m["ruleId"].split("/")[-1]

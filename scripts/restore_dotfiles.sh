@@ -37,6 +37,10 @@ if command -v npm >/dev/null 2>&1; then
     || echo "⚠️  textlint の導入に失敗しました。Markdown の検査フックは黙って通ります"
 fi
 
+# 同じフックが使う suiko。版と sha256 は install.sh の隣に固定してある
+bash "$DOTFILES_DIR/home/.claude/hooks/suiko/install.sh" >/dev/null \
+  || echo "⚠️  suiko の導入に失敗しました。Markdown の検査は textlint だけで動きます"
+
 # 公開側への混入を検査するフックを有効にする
 if git -C "$DOTFILES_DIR" rev-parse --git-dir >/dev/null 2>&1; then
   git -C "$DOTFILES_DIR" config core.hooksPath scripts/git-hooks
