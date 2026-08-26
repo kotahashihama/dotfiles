@@ -86,6 +86,13 @@ def check_text(text, code=False):
         # 入るのが普通で、規約の例（`「変更履歴」 hoge` `、 hoge`）も後ろ側
         if re.search(YAKUMONO + r' ', t):
             hits.append((n, '全角約物の後ろ', line.strip()))
+        # 句読点の直前だけは前側も見る。`、` `。` の前に空白が入る形は
+        # 無い。他の約物（`「` `（`）はリスト記号や強調の閉じで空白が
+        # 入るので、前側を見ると誤検知になる
+        # 判定は masked 側。t はバッククォート周りの空白を潰しているので、
+        # 句読点の直前の空白まで消えてしまう
+        if re.search(r' [、。]', masked):
+            hits.append((n, '句読点の直前', line.strip()))
     return hits
 
 
