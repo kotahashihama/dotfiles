@@ -28,7 +28,7 @@ print(json.dumps({"hookSpecificOutput": {
 # 1) 既存ファイルへの `>` — noclobber で黙って失敗し、ループの中では
 #    前の周回の内容が残ったまま後続が走る（verify_before_asserting.md）
 #    `>|` `>>` `2>` `&>` `>(` は対象外。
-# 引用符の中身を落としてから見る（`grep -c ">"` を誤検知しないため）
+# 引用符の中身を落としてから見る（ `grep -c ">"` を誤検知しないため）
 nohd=$(printf '%s' "$cmd" | python3 -c '
 import sys, re
 s = sys.stdin.read()
@@ -123,7 +123,7 @@ fi
 
 # 4b) 秘匿値らしい変数を echo / printf する。
 #     二重引用符は展開されるので、ここでは単引用符の中だけを落として見る
-#     （`stripped` を使うと `echo "$API_KEY"` が素通りする）。
+#     （ `stripped` を使うと `echo "$API_KEY"` が素通りする）。
 #     存在確認の `[ -n "$VAR" ]` は値を出さないので、echo / printf に限る。
 sq=$(printf '%s' "$nohd" | python3 -c '
 import sys, re
@@ -145,7 +145,7 @@ fi
 #    判断材料と見立てを渡すところまで（review-pr スキル）。条件が無いので
 #    形で弾ける（「明示指示があったか」のような会話の状態は見られない）。
 if printf '%s' "$sq" | grep -qE 'gh[[:space:]]+pr[[:space:]]+review[^|;&]*(--approve|--request-changes|[[:space:]]-a([[:space:]]|$))'; then
-  deny 'PR の承認 / 変更要求はユーザー本人が行います。レビューを投稿するなら `--comment`（API なら `"event":"COMMENT"`）で、是非の表明は会話でユーザーへ渡してください（review-pr スキル「承認は GitHub に書かず、見立てはユーザーへ渡す」）'
+  deny 'PR の承認 / 変更要求はユーザー本人が行います。レビューを投稿するなら `--comment` （API なら `"event":"COMMENT"` ）で、是非の表明は会話でユーザーへ渡してください（review-pr スキル「承認は GitHub に書かず、見立てはユーザーへ渡す」）'
 fi
 
 exit 0

@@ -107,8 +107,8 @@ for where, n, name, src in hits[:6]:
 if len(hits) > 6:
     lines.append("- ほか %d件" % (len(hits) - 6))
 lines += ["",
-          "数値と単位・日本語と数字のあいだは詰める（`2 万件` → `2万件`）。",
-          "全角の約物の後ろは空けない（`「変更履歴」 hoge` → `「変更履歴」hoge`）。",
+          "数値と単位・日本語と数字のあいだは詰める（ `2万件 ` → `2万件 ` ）。",
+          "全角の約物の後ろは空けない（ ` 「変更履歴」 hoge` → ` 「変更履歴」hoge` ）。",
           "ダッシュは使わず句点で切る。",
           "  → no_space_between_number_and_unit.md / no_em_dash_in_japanese.md"]
 sys.stderr.write("\n".join(lines))
