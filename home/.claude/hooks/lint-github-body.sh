@@ -1,0 +1,191 @@
+#!/bin/bash
+#
+# GitHub へ投稿する本文を、書式の規約に照らして弾く PreToolUse フック。
+#
+# 対象は取り消せない投稿だけ。PR 説明・コメント・レビュー・issue の本文が
+# 外部へ出た後は、消しても通知と記録が残る。ルールは読み飛ばせるが、
+# ここは必ず走る（rule_conventions.md の「強制が要るなら hooks へ」）。
+#
+# 判定できるのは本文の形だけ。中身が適切かは扱わない。
+#
+set -u
+
+payload=$(cat)
+printf '%s' "$payload" | GH_LINT_MODE=check python3 -c '
+import json, os, re, subprocess, sys
+
+RAW = sys.stdin.read()
+try:
+    _p = json.loads(RAW)
+    cmd = _p.get("tool_input", {}).get("command", "")
+    CWD = _p.get("cwd") or os.getcwd()
+except Exception:
+    sys.exit(0)
+if not cmd or not re.search(r"\bgh\s+(pr|issue|api)\b", cmd):
+    sys.exit(0)
+
+# 本文を投稿しないサブコマンドは対象外
+if re.search(r"\bgh\s+(pr|issue)\s+(list|view|checks|status|diff|ready|close|merge)\b", cmd) \
+        and not re.search(r"--body", cmd):
+    sys.exit(0)
+
+
+def bodies(cmd):
+    """コマンド文字列から、投稿される本文の候補を取り出す"""
+    found = []
+    # 1) ヒアドキュメント（gh pr edit --body "$(cat <<EOF ... EOF)" が最も多い）
+    for m in re.finditer(r"<<-?[\x27\"]?([A-Za-z_][A-Za-z0-9_]*)[\x27\"]?\n(.*?)\n\s*\1\b",
+                         cmd, re.S):
+        found.append(m.group(2))
+    # 2) --body / -b / -f body= に続く引用符つきの値
+    for m in re.finditer(r"(?:--body|-b|(?:-f|--field|--raw-field)\s+body)[= ]\s*"
+                         r"([\x27\"])(.*?)\1", cmd, re.S):
+        v = m.group(2)
+        if "<<" not in v:
+            found.append(v)
+    # 3) --body-file のファイル実体
+    for m in re.finditer(r"--body-file[= ]\s*([\x27\"]?)([^\s\x27\"]+)\1", cmd):
+        try:
+            found.append(open(m.group(2), encoding="utf-8").read())
+        except OSError:
+            pass
+    return [f for f in found if f.strip()]
+
+
+UNIT = (r"(?:万|億|千|百|つ|件|行|本|回|個|人|箇所|秒|分|時間|日|週|月|年|倍|割|"
+        r"文字|字|語|種|通り|段|層|周|重|度|点|ファイル|ケース|パターン|コミット|"
+        r"ページ|MB|GB|KB|TB|MiB|GiB|ms|%|vCPU|px)")
+JA = r"[ぁ-んァ-ヶ一-龥々〜]"
+YAKUMONO = r"[、。「」『』（）【】・？！]"
+
+NOTE = "> このコメントは Claude Code を使って作成されています。"
+NOTE_PR = "> この PR 説明は Claude Code を使って作成されています。"
+
+
+def prose_lines(body):
+    """コードブロックと引用を除いた、地の文の行を (行番号, 本文) で返す"""
+    out, inblock = [], False
+    for n, line in enumerate(body.split("\n"), 1):
+        if line.lstrip().startswith("```"):
+            inblock = not inblock
+            continue
+        if inblock or line.lstrip().startswith(">"):
+            continue
+        out.append((n, re.sub(r"`[^`]*`", " ", line)))
+    return out
+
+
+def check(body):
+    """規約違反を (規約名, 説明, 該当行) の一覧で返す"""
+    hits = []
+    stripped = body.strip()
+
+    # コマンドコメントは本文をコマンド 1 行に保つ（github_command_comments.md）
+    if re.fullmatch(r"/[a-z][a-z0-9-]*", stripped):
+        return []
+
+    lines = prose_lines(body)
+
+    if "Claude Code を使って作成" not in body:
+        hits.append(("github_note_generated_by_claude.md",
+                     "末尾に生成者表示の Note ブロックが無い。次を本文の末尾へ空行1行を挟んで置く\n"
+                     "  > [!NOTE]\n"
+                     "  " + NOTE + "\n"
+                     "  （PR 説明なら「" + NOTE_PR.lstrip("> ") + "」）", []))
+
+    bad = [n for n, l in lines if re.search(r"。\s*$", l)]
+    if bad:
+        hits.append(("github_one_sentence_per_line.md",
+                     "行末に句点がある。1文で改行し、行末の 。 は落とす（？ と ！ は残す）",
+                     bad))
+
+    bad = [n for n, l in lines
+           if re.search(r"[0-9] " + UNIT, l)
+           or re.search(JA + r" [0-9]", l)
+           or re.search(r"[0-9](?:" + UNIT + r")? " + JA, l)]
+    if bad:
+        hits.append(("no_space_between_number_and_unit.md",
+                     "数値と単位・日本語のあいだに空白がある（`2 万件` → `2万件`）", bad))
+
+    # 全角の約物の隣は空けない。ただし半角スラッシュ（A / B）と表の区切りは対象外
+    bad = []
+    for n, l in lines:
+        t = re.sub(r"\s+/\s+", "/", l)          # A / B を退避
+        t = re.sub(r"\s*\|\s*", "|", t)          # 表のセル区切りを退避
+        if re.search(YAKUMONO + r" ", t) or re.search(r" " + YAKUMONO, t):
+            bad.append(n)
+    if bad:
+        hits.append(("no_space_between_number_and_unit.md",
+                     "全角の約物の隣に空白がある（「変更履歴」 hoge → 「変更履歴」hoge）", bad))
+
+    bad = [n for n, l in lines if "——" in l]
+    if bad:
+        hits.append(("no_em_dash_in_japanese.md",
+                     "ダッシュを使っている。句点で切って次の文にする", bad))
+
+    bad = [n for n, l in lines if re.search(r"\b(Closes|Fixes|Resolves)\s+#?\d", l, re.I)]
+    if bad:
+        hits.append(("github_rich_formatting.md",
+                     "自動クローズのキーワードがある。マージした瞬間に対象が閉じる。"
+                     "参照だけなら #123 と書く", bad))
+
+    bad = [n for n, l in lines
+           if re.search(r"自分の言葉で|自分の判断で|AI が書|Claude が判断", l)]
+    if bad:
+        hits.append(("github_no_authorship_voice.md",
+                     "書き手の帰属を匂わせる表現がある。変更そのものを主語にする", bad))
+
+    bad = [n for n, l in lines
+           if re.search(r"(FE|BE|フロント|バック|別リポ|担当|先方)\s*(と|の)?\s*連携|合意済み|エージェント\s*(間|と)|担当セッション|別セッション|(マージ順|リリース)\s*(の)?\s*調整", l)]
+    if bad:
+        hits.append(("no_agent_coordination_in_pr.md",
+                     "エージェント間の調整に触れている。成果物には状態だけを書く", bad))
+
+    return hits
+
+
+def orphan_refs(body):
+    """owner を省略した #123 のうち、同一リポジトリに存在しないものを返す"""
+    nums = {m.group(1) for m in re.finditer(r"(?<![\w/])#(\d+)", body)}
+    if not nums:
+        return []
+    missing = []
+    for n in sorted(nums, key=int):
+        try:
+            r = subprocess.run(["gh", "api", "repos/{owner}/{repo}/issues/" + n,
+                                "--jq", ".number"],
+                               capture_output=True, timeout=4, cwd=CWD, text=True)
+        except Exception:
+            return []                    # 引けないなら黙って通す
+        if r.returncode == 0:
+            continue
+        # 404 だけが「存在しない」。リポジトリを解決できない等は通す
+        if "HTTP 404" not in (r.stderr or ""):
+            return []
+        missing.append(n)
+    return missing
+
+
+problems = []
+for body in bodies(cmd):
+    for rule, msg, lines in check(body):
+        where = ("（%s行目）" % "・".join(map(str, lines[:6]))) if lines else ""
+        problems.append("- %s%s\n  → %s" % (msg, where, rule))
+    for n in orphan_refs(body):
+        problems.append("- #%s が同一リポジトリに見つからない。他リポジトリなら "
+                        "owner/repo#%s と書く\n  → github_cross_repo_reference.md"
+                        % (n, n))
+
+if not problems:
+    sys.exit(0)
+
+reason = ("GitHub へ投稿する本文が書式の規約に反しています。"
+          "投稿は取り消せないので、直してから出してください。\n\n"
+          + "\n".join(problems))
+print(json.dumps({"hookSpecificOutput": {
+    "hookEventName": "PreToolUse",
+    "permissionDecision": "deny",
+    "permissionDecisionReason": reason,
+}}, ensure_ascii=False))
+'
+exit 0
