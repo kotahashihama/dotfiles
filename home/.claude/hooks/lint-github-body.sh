@@ -63,13 +63,25 @@ NOTE_PR = "> この PR 説明は Claude Code を使って作成されていま�
 
 
 def prose_lines(body):
-    """コードブロックと引用を除いた、地の文の行を (行番号, 本文) で返す"""
-    out, inblock = [], False
+    """自分が書いた地の文の行を (行番号, 本文) で返す
+
+    除くのは、コードブロック・引用・HTML コメント。HTML コメントは PR
+    テンプレートの固定文で、リポジトリ側の文章なので逐語のまま残す
+    （github_one_sentence_per_line.md の例外）。
+    """
+    out, inblock, incomment = [], False, False
     for n, line in enumerate(body.split("\n"), 1):
         if line.lstrip().startswith("```"):
             inblock = not inblock
             continue
-        if inblock or line.lstrip().startswith(">"):
+        opened = "<!--" in line
+        closed = "-->" in line
+        skip = inblock or incomment or opened or line.lstrip().startswith(">")
+        if opened and not closed:
+            incomment = True
+        if closed:
+            incomment = False
+        if skip:
             continue
         out.append((n, re.sub(r"`[^`]*`", " ", line)))
     return out
