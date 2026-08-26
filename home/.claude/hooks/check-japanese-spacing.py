@@ -18,6 +18,10 @@ UNIT = (r'(?:万|億|千|百|つ|件|行|本|回|個|人|箇所|秒|分|時間|�
         r'ページ|MB|GB|KB|TB|MiB|GiB|ms|%|vCPU|px)')
 JA = r'[ぁ-んァ-ヶ一-龥々〜]'
 YAKUMONO = r'[、。「」『』（）【】・？！]'
+# インラインコードとの境界は、約物の形で分かれる。囲む約物は右側にグリフが
+# 来るのでコードの背景と接し、句読点は右下にグリフがあって右側が空白になる
+BRACKET = r'[「」『』（）【】]'
+TIGHT = r'[、。・？！]'
 
 # 直前が英字か記号なら識別子の一部（`BE v2 と` `Go 1.21 で` `#3150 の`）。
 # 「英単語 + 空白 + 数字」も名前の一部（`TypeScript 7` `Go 8`）。規約は
@@ -89,13 +93,16 @@ def check_text(text, code=False):
         # インラインコードの前後は空ける。ただし句読点の直前は詰めるので、
         # 後ろ側から `、` `。` は外す
         for mm in re.finditer(r'`[^`\n]+`', line):
-            b = line[mm.start() - 1] if mm.start() else ''
-            a = line[mm.end()] if mm.end() < len(line) else ''
-            tight = ((b and re.match('(?:' + JA + '|' + YAKUMONO + ')', b))
-                     or (a and a not in '、。'
-                         and re.match('(?:' + JA + '|' + YAKUMONO + ')', a)))
-            if tight:
+            b = line[:mm.start()]
+            a = line[mm.end():]
+            # 仮名漢字と囲む約物のあいだは空ける
+            if (re.search('(?:' + JA + '|' + BRACKET + ')$', b)
+                    or re.match('(?:' + JA + '|' + BRACKET + ')', a)):
                 hits.append((n, 'インラインコードの前後', line.strip()))
+                break
+            # 句読点と中黒のあいだは詰める
+            if re.search(TIGHT + ' $', b) or re.match(' ' + TIGHT, a):
+                hits.append((n, '句読点とコードのあいだ', line.strip()))
                 break
         # 句読点の直前だけは前側も見る。`、` `。` の前に空白が入る形は
         # 無い。他の約物（`「` `（`）はリスト記号や強調の閉じで空白が
