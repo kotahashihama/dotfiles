@@ -37,11 +37,11 @@ tar czf - \
   --exclude 'private/.ssh/agent' \
   --exclude 'private/.config/iterm2/sockets' \
   --exclude '*/cache/*' --exclude '*/Cache/*' --exclude '*/logs/*' --exclude '*.log' \
-  `# ツールが再取得できる実体。設定ではないので運ばない` \
+  `# ツールが再取得できる実体。設定ではないので運ばない ` \
   --exclude 'private/.config/tfenv/versions' \
   --exclude 'private/.config/raycast/extensions' \
   --exclude 'private/.config/gcloud/virtenv' \
-  `# 実行時の状態。設定は defaults 側で持つ` \
+  `# 実行時の状態。設定は defaults 側で持つ ` \
   --exclude 'private/.config/iterm2/AppSupport' \
   --exclude '__pycache__' --exclude '*.pyc' \
   private | gpg_encrypt > "$PRIVATE_ARCHIVE"

@@ -37,7 +37,7 @@ if not r.strip():
 SIGNS = [
     (r"^fatal: ",                       "git が fatal で終了している"),
     (r"^error: (?:failed|cannot|unable)", "git が error で終了している"),
-    (r"cannot overwrite existing file",  "noclobber がリダイレクトを拒んだ（`>|` を使う）"),
+    (r"cannot overwrite existing file",  "noclobber がリダイレクトを拒んだ（ `>|` を使う）"),
     (r"^[^\n]*: command not found",      "コマンドが見つかっていない"),
     (r"^[^\n]*: Permission denied",      "権限で拒否されている"),
     (r"^Traceback \(most recent call",   "Python が例外で終了している"),

@@ -130,7 +130,7 @@ def check(body):
                      bad))
 
     # 表記の判定は check-japanese-spacing.py に集約する。ここに書き写すと、
-    # 識別子の除外（`#3145 の` `d8d6db797 で`）のような後からの修正が
+    # 識別子の除外（ `#3145 の ` `d8d6db797 で ` ）のような後からの修正が
     # 片方にしか入らない
     for n, name, _src in spacing(body):
         hits.append(("no_space_between_number_and_unit.md",
@@ -146,7 +146,7 @@ def check(body):
             bad.append(n)
     if bad:
         hits.append(("github_one_sentence_per_line.md",
-                     "対になる記法が閉じていない（`**` `~~` バッククォート）。"
+                     "対になる記法が閉じていない（ `**` `~~` バッククォート）。"
                      "強調が行をまたいで効く。**読んでも気づけないので必ず数える**", bad))
 
     bad = [n for n, _r, l in lines if "——" in l]
