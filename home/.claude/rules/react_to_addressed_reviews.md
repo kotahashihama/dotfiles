@@ -54,7 +54,7 @@ gh api -X POST repos/OWNER/REPO/pulls/comments/<comment_id>/reactions -f content
 gh api graphql -f query='mutation($id: ID!) { addReaction(input: {subjectId: $id, content: THUMBS_UP}) { reaction { content } } }' -F id="<review node id>"
 ```
 
-**返信の直後にまとめて付ける。** 返信を投稿したコメントを一度に処理する。1 件ごとに付けると通知が細切れになる。
+**返信の直後にまとめて付ける。** 返信を投稿したコメントを一度に処理する。1件ごとに付けると通知が細切れになる。
 
 ## なぜ
 

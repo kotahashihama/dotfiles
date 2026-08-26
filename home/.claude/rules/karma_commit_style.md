@@ -13,15 +13,15 @@
 <footer>
 ```
 
-- 1 行目（subject 行）は `type(scope): 要約` の形。`scope` は省略可（`type: 要約`）。
+- 1行目（subject 行）は `type(scope): 要約` の形。`scope` は省略可（`type: 要約`）。
 - subject は **日本語の体言止め（名詞・サ変動詞の語幹で終える）** で書く。「〜を追加」「〜を削除」「〜を修正」「〜の分離」のように名詞止めにし、「〜した」「〜する」のような動詞終止形・命令形にはしない。
-- 末尾にピリオドや句点は付けない。目安 50 文字程度。
-- 本文が必要なら 1 行空けて `body` に「なぜ・何を」を書く。
+- 末尾にピリオドや句点は付けない。目安50文字程度。
+- 本文が必要なら1行空けて `body` に「なぜ・何を」を書く。
 - `Co-Authored-By` や `BREAKING CHANGE:` 等のトレーラーは `footer` に置く。
 
 ## 生成者のトレーラー
 
-Claude が作ったコミットには、`footer` に次の 1 行を置く。
+Claude が作ったコミットには、`footer` に次の1行を置く。
 
 ```
 Co-Authored-By: Claude Code <noreply@anthropic.com>
@@ -79,4 +79,4 @@ chore: 依存パッケージの更新
 
 ## 関連
 
-- `github_one_sentence_per_line.md`（GitHub へ書く日本語の改行と句点）: 句点を落とす点は同じだが、**あちらは PR 本文・コメントが対象**。本ルールは commit subject の 1 行だけ
+- `github_one_sentence_per_line.md`（GitHub へ書く日本語の改行と句点）: 句点を落とす点は同じだが、**あちらは PR 本文・コメントが対象**。本ルールは commit subject の1行だけ
