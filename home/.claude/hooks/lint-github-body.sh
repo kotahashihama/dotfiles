@@ -11,6 +11,8 @@
 set -u
 
 payload=$(cat)
+HOOK_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+export HOOK_DIR
 printf '%s' "$payload" | GH_LINT_MODE=check python3 -c '
 import json, os, re, subprocess, sys
 
@@ -62,6 +64,22 @@ NOTE = "> このコメントは Claude Code を使って作成されています
 NOTE_PR = "> この PR 説明は Claude Code を使って作成されています。"
 
 
+def spacing(body):
+    """日本語の表記。判定は check-japanese-spacing.py が持つ"""
+    import importlib.util
+    p = os.path.join(os.environ.get("HOOK_DIR", ""),
+                     "check-japanese-spacing.py")
+    if not os.path.exists(p):
+        return []
+    try:
+        spec = importlib.util.spec_from_file_location("cjs", p)
+        m = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(m)
+        return m.check_text(body)
+    except Exception:
+        return []
+
+
 def prose_lines(body):
     """自分が書いた地の文の行を (行番号, 生の行, コードを伏せた行) で返す
 
@@ -111,24 +129,12 @@ def check(body):
                      "行末に句点がある。1文で改行し、行末の 。 は落とす（？ と ！ は残す）",
                      bad))
 
-    bad = [n for n, _r, l in lines
-           if re.search(r"[0-9] " + UNIT, l)
-           or re.search(JA + r" [0-9]", l)
-           or re.search(r"[0-9](?:" + UNIT + r")? " + JA, l)]
-    if bad:
+    # 表記の判定は check-japanese-spacing.py に集約する。ここに書き写すと、
+    # 識別子の除外（`#3145 の` `d8d6db797 で`）のような後からの修正が
+    # 片方にしか入らない
+    for n, name, _src in spacing(body):
         hits.append(("no_space_between_number_and_unit.md",
-                     "数値と単位・日本語のあいだに空白がある（`2 万件` → `2万件`）", bad))
-
-    # 全角の約物の隣は空けない。ただし半角スラッシュ（A / B）と表の区切りは対象外
-    bad = []
-    for n, _r, l in lines:
-        t = re.sub(r"\s+/\s+", "/", l)          # A / B を退避
-        t = re.sub(r"\s*\|\s*", "|", t)          # 表のセル区切りを退避
-        if re.search(YAKUMONO + r" ", t) or re.search(r" " + YAKUMONO, t):
-            bad.append(n)
-    if bad:
-        hits.append(("no_space_between_number_and_unit.md",
-                     "全角の約物の隣に空白がある（「変更履歴」 hoge → 「変更履歴」hoge）", bad))
+                     "表記が規約に反している（%s）" % name, [n]))
 
     # 対になる記法。1文1行なので、行内で閉じていなければ壊れている。
     # 一括置換の直後にだけ出る形で、読んでも気づけない
