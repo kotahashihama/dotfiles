@@ -74,7 +74,7 @@ UNCHANGED=0
 SALVAGED=0
 
 # DRY_RUN=1 を渡すと、何が起きるかだけ出して変更しない。
-# 37 本のリンクを張るので、初回は先に見えたほうがよい。
+# 37本のリンクを張るので、初回は先に見えたほうがよい。
 DRY_RUN=${DRY_RUN:-}
 
 # リンクを張る。既存の実体があれば消さずに退避する。
@@ -115,12 +115,12 @@ link_into_home() {
   LINKED=$((LINKED + 1))
 }
 
-# 集計を 1 行で出す。
+# 集計を1行で出す。
 report_links() {
   printf '   リンク %s 本 / そのまま %s 本 / 退避 %s 件\n' "$LINKED" "$UNCHANGED" "$SALVAGED"
 }
 
-# 1 つの置き場 (home / private) を ~ へリンクする。
+# 1つの置き場 (home / private) を ~ へリンクする。
 # PARTIAL_DIRS に該当する要素は掘り下げ、そうでない要素をリンクする。
 #
 # 再帰は使わない。POSIX sh に局所変数が無く、再帰呼び出しが親のループ変数を
@@ -158,7 +158,7 @@ import_macos_defaults() {
     [ -f "$f" ] || continue
     defaults import "$(basename "$f" .plist)" "$f" && n=$((n + 1))
   done
-  echo "   書き出した設定を取り込みました: $n ドメイン"
+  echo "   書き出した設定を取り込みました: ${n}ドメイン"
 }
 
 # 拡張子とアプリの関連付けを適用する。アプリが未導入なら失敗するが、
@@ -175,5 +175,5 @@ apply_associations() {
     [ -n "$bundle" ] || continue
     duti -s "$bundle" "$ext" "$role" 2>/dev/null && n=$((n + 1))
   done < "$file"
-  echo "   関連付けを適用しました: $n / $(wc -l < "$file" | tr -d ' ') 件"
+  echo "   関連付けを適用しました: $n / $(wc -l < "$file" | tr -d ' ')件"
 }

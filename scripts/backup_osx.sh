@@ -34,7 +34,7 @@ for f in "$DEST"/*.plist; do
   grep -qxF "$d" "$DOMAINS_FILE" || { rm -f "$f"; echo "   除去: $d（一覧に無い）"; }
 done
 
-echo "👍 macOS の設定を書き出しました: $exported ドメイン / $(du -sh "$DEST" | cut -f1)"
+echo "👍 macOS の設定を書き出しました: ${exported}ドメイン / $(du -sh "$DEST" | cut -f1)"
 [ -n "$skipped" ] && echo "   未設定のため飛ばした:$skipped"
 
 # 入れ直せば済むものは一覧だけ持っていく。実体を運ぶより軽く、腐らない。

@@ -7,7 +7,7 @@
 # 同期を切っている場合と、iCloud ごと失った場合の控えとして持っておく。
 #
 # 書き戻しは DB を直接書き換えることになり壊しやすいので、この一覧を見ながら
-# 手で入れ直す前提にする。14 件程度なら数分で終わる。
+# 手で入れ直す前提にする。14件程度なら数分で終わる。
 #
 set -e
 
@@ -23,7 +23,7 @@ mkdir -p "$DEST"
 if sqlite3 "$DB" \
   "select ZSHORTCUT, ZPHRASE from ZTEXTREPLACEMENTENTRY where ZSHORTCUT is not null order by ZSHORTCUT;" \
   > "$DEST/text-replacements.tsv" 2>/dev/null; then
-  echo "👍 テキスト置換を書き出しました: $(wc -l < "$DEST/text-replacements.tsv" | tr -d ' ') 件"
+  echo "👍 テキスト置換を書き出しました: $(wc -l < "$DEST/text-replacements.tsv" | tr -d ' ')件"
 else
   echo "   テキスト置換を読み取れませんでした。飛ばします"
   rm -f "$DEST/text-replacements.tsv"

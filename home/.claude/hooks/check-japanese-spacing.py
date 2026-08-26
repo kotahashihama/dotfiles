@@ -2,13 +2,13 @@
 
 textlint も suiko も、数値と単位のあいだの空白や全角の約物の後ろの空白は
 見ない。書く場所ごとに別々の実装を置くと judgement がずれるので、判定は
-ここ 1 か所に置き、ファイル・GitHub への投稿・会話への応答から呼ぶ。
+ここ1か所に置き、ファイル・GitHub への投稿・会話への応答から呼ぶ。
 
 規約は no_space_between_number_and_unit.md と no_em_dash_in_japanese.md。
 
 使い方:
     python3 check-japanese-spacing.py <ファイル>...
-    → 違反を「パス:行番号\tカテゴリ\t該当行」で 1 件 1 行に出す
+    → 違反を「パス:行番号\tカテゴリ\t該当行」で1件1行に出す
 """
 import re
 import sys
@@ -23,9 +23,9 @@ YAKUMONO = r'[、。「」『』（）【】・？！]'
 # 「英単語 + 空白 + 数字」も名前の一部（`TypeScript 7` `Go 8`）。規約は
 # 「英字 ↔ 日本語は空白を入れる」としているので、そちらは正しい形。
 # ただしその英字の前が日本語ならラベルなので（`案 A 3 件`）、除外から外す
-NOT_ID_L = (r'(?<![A-Za-z0-9._#/-])'
+NOT_ID_L = (r'(?<![A-Za-z0-9._#/=$-])'
             r'(?:(?<![A-Za-z] )|(?<=' + JA + r' [A-Za-z] ))')
-NOT_ID_R = r'(?![0-9A-Za-z._/-])'
+NOT_ID_R = r'(?![0-9A-Za-z._/=-])'
 
 CHECKS = [
     ('数値と単位', re.compile(NOT_ID_L + r'[0-9]+ ' + UNIT)),
@@ -59,12 +59,18 @@ def prose(text):
         yield n, line
 
 
-def check_text(text):
-    """違反を (行番号, カテゴリ, 該当行) で返す"""
+def check_text(text, code=False):
+    """違反を (行番号, カテゴリ, 該当行) で返す
+
+    code=True はコードのファイル。コメントと文字列だけを見たいので、
+    日本語を含む行に絞る。言語ごとにコメント記号を並べるより漏れが少ない。
+    """
     hits = []
-    for n, line in prose(text):
+    lines = ((n, l) for n, l in enumerate(text.split('\n'), 1)
+             if re.search(JA, l)) if code else prose(text)
+    for n, line in lines:
         # インラインコードは対象外。空白で伏せると、直後の約物が
-        # 「前に空白がある」と誤判定されるので 1 文字へ置き換える
+        # 「前に空白がある」と誤判定されるので1文字へ置き換える
         masked = re.sub(r'`[^`]*`', 'X', line)
         for name, pat in CHECKS:
             if pat.search(masked):
@@ -79,8 +85,13 @@ def check_text(text):
     return hits
 
 
+# Markdown 以外はコードとして扱う。コメントと文字列に日本語が出る
+MARKDOWN = ('.md', '.markdown')
+
+
 def check(path):
-    return check_text(open(path, encoding='utf-8').read())
+    text = open(path, encoding='utf-8').read()
+    return check_text(text, code=not path.endswith(MARKDOWN))
 
 
 if __name__ == '__main__':

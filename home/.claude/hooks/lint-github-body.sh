@@ -92,7 +92,7 @@ def check(body):
     hits = []
     stripped = body.strip()
 
-    # コマンドコメントは本文をコマンド 1 行に保つ（github_command_comments.md）
+    # コマンドコメントは本文をコマンド1行に保つ（github_command_comments.md）
     if re.fullmatch(r"/[a-z][a-z0-9-]*", stripped):
         return []
 
@@ -130,7 +130,7 @@ def check(body):
         hits.append(("no_space_between_number_and_unit.md",
                      "全角の約物の隣に空白がある（「変更履歴」 hoge → 「変更履歴」hoge）", bad))
 
-    # 対になる記法。1 文 1 行なので、行内で閉じていなければ壊れている。
+    # 対になる記法。1文1行なので、行内で閉じていなければ壊れている。
     # 一括置換の直後にだけ出る形で、読んでも気づけない
     bad = []
     for n, raw, _l in lines:
@@ -184,7 +184,7 @@ def orphan_refs(body):
             return []                    # 引けないなら黙って通す
         if r.returncode == 0:
             continue
-        # 404 だけが「存在しない」。リポジトリを解決できない等は通す
+        # 404だけが「存在しない」。リポジトリを解決できない等は通す
         if "HTTP 404" not in (r.stderr or ""):
             return []
         missing.append(n)

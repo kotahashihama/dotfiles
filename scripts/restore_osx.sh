@@ -132,7 +132,7 @@ apply_associations "$ROOT/private/.associations/duti.txt"
 
 KEYBOARD="$ROOT/private/.keyboard/text-replacements.tsv"
 if [ -f "$KEYBOARD" ]; then
-  echo "   テキスト置換 $(wc -l < "$KEYBOARD" | tr -d ' ') 件は自動で戻りません。"
+  echo "   テキスト置換 $(wc -l < "$KEYBOARD" | tr -d ' ')件は自動で戻りません。"
   echo "   iCloud 同期が有効なら自動、そうでなければ $KEYBOARD を見て手で入れてください"
 fi
 

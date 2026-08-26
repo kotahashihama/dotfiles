@@ -2,13 +2,13 @@
 #
 # グローバル資産の文章を textlint と suiko に掛ける。
 #
-# フックは編集した 1 ファイルの、しかも新しく出た指摘だけを返す。溜まった
+# フックは編集した1ファイルの、しかも新しく出た指摘だけを返す。溜まった
 # ぶんは誰も見に行かないので、全体を見るときはこちらを使う。
 #
 # 使い方:
 #   ./scripts/lint_docs.sh              全体の内訳を出す
 #   ./scripts/lint_docs.sh <ファイル>…  対象を絞る
-#   ./scripts/lint_docs.sh --detail     1 件ずつ該当行つきで出す
+#   ./scripts/lint_docs.sh --detail     1件ずつ該当行つきで出す
 #
 set -u
 
@@ -30,7 +30,7 @@ if [ ${#files[@]} -eq 0 ]; then
          home/.claude/CLAUDE.md home/.claude/agents/*.md)
 fi
 
-echo "対象: ${#files[@]} ファイル"
+echo "対象: ${#files[@]}ファイル"
 
 if [ -x "$TEXTLINT" ]; then
   "$TEXTLINT" -c "$HOOKS/textlint/.textlintrc.json" -f json "${files[@]}" 2>/dev/null \
@@ -94,7 +94,7 @@ fi
 python3 "$HOOKS/check-japanese-spacing.py" "${files[@]}" >| /tmp/lint_docs_spacing.$$ 2>/dev/null
 n=$(wc -l < /tmp/lint_docs_spacing.$$ | tr -d ' ')
 echo ""
-echo "== 表記: $n 件 =="
+echo "== 表記: ${n}件 =="
 if [ "$n" != 0 ]; then
   cut -f2 /tmp/lint_docs_spacing.$$ | sort | uniq -c | awk '{printf "   %-32s %4d\n", $2, $1}'
   [ "$detail" = 1 ] && sed 's|^|   |' /tmp/lint_docs_spacing.$$

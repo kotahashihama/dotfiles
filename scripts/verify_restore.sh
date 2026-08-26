@@ -67,11 +67,11 @@ echo "── 3. シェルの起動 ──"
 check "エイリアスが引ける" "$(HOME="$W/fakehome" zsh -ic 'source ~/.zsh_aliases/main.zsh; for a in cldw ssml gst dcu; do alias $a >/dev/null 2>&1 || echo NG; done; (( $+functions[cld] )) || echo NG' 2>/dev/null | grep -c NG)" "0"
 check "秘匿値が空でも起動" "$(HOME="$W/fakehome" zsh -ic 'echo OK' 2>/dev/null | grep -c OK)" "1"
 
-echo "── 4. 冪等性（2 回目のリストア） ──"
-check "2 回目の終了コード"         "$(restore)" "0"
-check "2 回目もリンク先が正しい"   "$(lnk .zsh_aliases)" "home/.zsh_aliases"
-check "2 回目に退避が発生しない"   "$(ls -d "$W/fakehome"/dotfiles-salvaged-* 2>/dev/null | wc -l | tr -d ' ')" "0"
-check "2 回目も skills 件数が同じ" "$(ls -A "$W/fakehome/.claude/skills" | wc -l | tr -d ' ')" "$SKILLS"
+echo "── 4. 冪等性（2回目のリストア） ──"
+check "2回目の終了コード"         "$(restore)" "0"
+check "2回目もリンク先が正しい"   "$(lnk .zsh_aliases)" "home/.zsh_aliases"
+check "2回目に退避が発生しない"   "$(ls -d "$W/fakehome"/dotfiles-salvaged-* 2>/dev/null | wc -l | tr -d ' ')" "0"
+check "2回目も skills 件数が同じ" "$(ls -A "$W/fakehome/.claude/skills" | wc -l | tr -d ' ')" "$SKILLS"
 
 echo "── 5. 既存の実体がある ~ への上書き ──"
 setup; backup; rm -rf "$W/repo/private"
@@ -142,7 +142,7 @@ check "is_partial が無関係を弾く"     "$(grep -c P3 "$W/fn.txt")" "1"
 check "is_no_link が一致を拾う"       "$(grep -c N1 "$W/fn.txt")" "1"
 check "is_no_link が無関係を弾く"     "$(grep -c N2 "$W/fn.txt")" "1"
 
-# link_into_home の 3 分岐
+# link_into_home の3分岐
 LW="$W/lih"; rm -rf "$LW"; mkdir -p "$LW/src" "$LW/home"
 echo src > "$LW/src/f"
 ( . "$D/scripts/lib.sh" >/dev/null 2>&1
@@ -162,14 +162,14 @@ OW="$W/out"; rm -rf "$OW"; mkdir -p "$OW"
 check "backup_osx が plist を出す"     "$(ls -A "$OW/private/.macos-defaults" 2>/dev/null | grep -c plist | awk '{print ($1>0)?"あり":"なし"}')" "あり"
 check "backup_osx が一覧を出す"        "$(ls -A "$OW/private/.inventory" 2>/dev/null | wc -l | tr -d ' ' | awk '{print ($1>0)?"あり":"なし"}')" "あり"
 ( cd "$D" && DOTFILES_DIR="$OW" sh scripts/backup_associations.sh ) >/dev/null 2>&1
-check "backup_associations の出力形式" "$(awk 'NF!=3{bad=1} END{print (bad)?"不正":"3 列"}' "$OW/private/.associations/duti.txt" 2>/dev/null)" "3 列"
+check "backup_associations の出力形式" "$(awk 'NF!=3{bad=1} END{print (bad)?"不正":"3列"}' "$OW/private/.associations/duti.txt" 2>/dev/null)" "3列"
 ( cd "$D" && DOTFILES_DIR="$OW" sh scripts/backup_keyboard.sh ) >/dev/null 2>&1
 check "backup_keyboard が出力する"     "$([ -f "$OW/private/.keyboard/text-replacements.tsv" ] && echo あり || echo なし)" "あり"
 
 echo "── 12. 取り込みの関数 ──"
 IW="$W/imp"; rm -rf "$IW"; mkdir -p "$IW/defaults"
 defaults export com.apple.TextEdit "$IW/defaults/com.apple.TextEdit.plist" 2>/dev/null
-check "defaults を取り込む"       "$( ( . "$D/scripts/lib.sh"; import_macos_defaults "$IW/defaults" ) 2>/dev/null | grep -oE '[0-9]+ ドメイン')" "1 ドメイン"
+check "defaults を取り込む"       "$( ( . "$D/scripts/lib.sh"; import_macos_defaults "$IW/defaults" ) 2>/dev/null | grep -oE '[0-9]+ドメイン')" "1ドメイン"
 check "書き出しが無ければ飛ばす"  "$( ( . "$D/scripts/lib.sh"; import_macos_defaults "$IW/nothere" ) 2>/dev/null | grep -c 'ありません')" "1"
 check "関連付けの入力が無ければ何もしない" "$( ( . "$D/scripts/lib.sh"; apply_associations "$IW/nothere.txt" ) 2>/dev/null | wc -l | tr -d ' ')" "0"
 

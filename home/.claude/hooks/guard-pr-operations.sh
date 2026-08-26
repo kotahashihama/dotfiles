@@ -76,7 +76,7 @@ if num and user:
             "しません。指示が番号を名指ししていれば進めてよいですが、"
             "そうでなければ止めてください\n  → no_operating_on_others_prs.md" % (num, author))
 
-# 2) レビュー中の履歴書き換え。他人のコメントが 1 件でもあれば足場が動く
+# 2) レビュー中の履歴書き換え。他人のコメントが1件でもあれば足場が動く
 if re.search(r"git\s+rebase|git\s+push[^|;&]*(--force|--force-with-lease|\s-f(\s|$))", cmd):
     if num and user:
         raw = gh(["pr", "view", num, "--json", "comments,reviews",

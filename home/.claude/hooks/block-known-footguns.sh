@@ -40,7 +40,7 @@ stripped=$(printf '%s' "$nohd" | python3 -c '
 import sys, re
 s = sys.stdin.read()
 # ヒアドキュメントの中身はシェルではない。別言語の比較演算子
-# (len(x) > 5 など) をリダイレクトと読まないよう、先に丸ごと落とす
+# (len(x) > 5など) をリダイレクトと読まないよう、先に丸ごと落とす
 s = re.sub(r"\x27[^\x27]*\x27", "", s)   # シングルクォート
 s = re.sub(r"\"[^\"]*\"", "", s)          # ダブルクォート
 print(s)')
@@ -130,7 +130,7 @@ import sys, re
 print(re.sub(r"\x27[^\x27]*\x27", "", sys.stdin.read()))')
 
 if printf '%s' "$sq" | grep -qE '(^|[[:space:]|;&(])(echo|printf|print)[[:space:]][^|;&]*\$\{?[A-Za-z_]*'"$SECRET"; then
-  deny '秘匿値らしい変数を出力しています。存在確認に値は要りません——`[ -n "$VAR" ] && echo set || echo unset` で足ります。`${VAR:-未設定}` も設定済みなら実値が出ます（no_secret_values_in_output.md）'
+  deny '秘匿値らしい変数を出力しています。存在確認に値は要りません。`[ -n "$VAR" ] && echo set || echo unset` で足ります。`${VAR:-未設定}` も設定済みなら実値が出ます（no_secret_values_in_output.md）'
 fi
 
 # 4c) 秘匿値が並んでいる置き場を読む。実際に漏れたのはここからで、
