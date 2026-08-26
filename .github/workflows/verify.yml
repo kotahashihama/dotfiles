@@ -23,10 +23,11 @@ jobs:
         run: |
           fail=0
           for f in scripts/*.sh scripts/git-hooks/pre-commit; do
-            # verify_restore.sh はプロセス置換を使うため bash で書かれている
-            case "$f" in
-              */verify_restore.sh) bash -n "$f" || { echo "✗ $f"; fail=1; } ;;
-              *)                   sh   -n "$f" || { echo "✗ $f"; fail=1; } ;;
+            # shebang で振り分ける。ファイル名を決め打ちすると、bash で書いた
+            # スクリプトを足すたびに CI が落ちる
+            case "$(head -1 "$f")" in
+              *bash) bash -n "$f" || { echo "✗ $f"; fail=1; } ;;
+              *)     sh   -n "$f" || { echo "✗ $f"; fail=1; } ;;
             esac
           done
           exit $fail
@@ -38,14 +39,15 @@ jobs:
           # SC2012/SC2010/SC2126: ls の使い方。扱うのは自分で決めた名前だけなので許容する
           # SC2034/SC2030/SC2031: source した先で使う変数を未使用と誤判定する
           EXCLUDE=SC1090,SC1091,SC2012,SC2010,SC2126,SC2034,SC2030,SC2031
-          # verify_restore.sh だけ bash。sh で見ると bash 固有の記法が誤検出になる。
+          # shebang で方言を決める。sh で書いたものを bash で見ると、逆に
+          # bash 固有の記法が誤検出になる。
           # 1 ファイルずつ渡す。変数へ溜めて展開する形はシェルによって単語分割の
           # 有無が違い、全部が 1 つのファイル名として渡る事故が起きる。
           fail=0
           for f in scripts/*.sh scripts/git-hooks/pre-commit; do
-            case "$f" in
-              */verify_restore.sh) shellcheck -s bash -e "$EXCLUDE" "$f" || fail=1 ;;
-              *)                   shellcheck -s sh   -e "$EXCLUDE" "$f" || fail=1 ;;
+            case "$(head -1 "$f")" in
+              *bash) shellcheck -s bash -e "$EXCLUDE" "$f" || fail=1 ;;
+              *)     shellcheck -s sh   -e "$EXCLUDE" "$f" || fail=1 ;;
             esac
           done
           exit $fail
