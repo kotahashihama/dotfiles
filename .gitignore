@@ -15,3 +15,6 @@ secrets.env
 
 # フックが使う textlint。lockfile から npm ci で復元する
 home/.claude/hooks/textlint/node_modules/
+
+# フックが使う suiko。version と sha256 から install.sh で取得する
+home/.claude/hooks/suiko/bin/
