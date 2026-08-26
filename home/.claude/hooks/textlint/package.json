@@ -1,0 +1,9 @@
+{
+  "name": "claude-hooks-textlint",
+  "private": true,
+  "description": "PostToolUse フックが使う textlint。実行は lint-markdown-ai-writing.sh から",
+  "devDependencies": {
+    "@textlint-ja/textlint-rule-preset-ai-writing": "^1.7.0",
+    "textlint": "^15.8.0"
+  }
+}

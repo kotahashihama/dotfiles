@@ -12,3 +12,6 @@ secrets.env
 
 # リストア時の退避先
 /dotfiles-salvaged-*
+
+# フックが使う textlint。lockfile から npm ci で復元する
+home/.claude/hooks/textlint/node_modules/

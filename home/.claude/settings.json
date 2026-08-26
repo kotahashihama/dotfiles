@@ -46,6 +46,15 @@
             "command": "bash ~/.claude/hooks/surface-swallowed-failures.sh"
           }
         ]
+      },
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/lint-markdown-ai-writing.sh"
+          }
+        ]
       }
     ],
     "PreToolUse": [

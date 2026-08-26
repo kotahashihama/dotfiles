@@ -57,8 +57,9 @@ check "リポジトリ実体 (private)"        "$(cat "$W/repo/private/.zsh_alia
 check "メモリが projects 配下へ復元"    "$(ls -A "$W/fakehome/.claude/projects" 2>/dev/null | wc -l | tr -d ' ' | awk '{print ($1>0)?"あり":"なし"}')" "あり"
 check "メモリが ~ 直下に張られない"     "$([ -e "$W/fakehome/.claude-memory" ] && echo あり || echo なし)" "なし"
 # 実体で残ってよいのは PARTIAL_DIRS のトップレベル（子を個別にリンクするため）と、
-# Desktop・gpg が作る .gnupg だけ。固定リストにすると PARTIAL_DIRS を増やすたびに偽の失敗が出る。
-expected_real=$( { . "$D/scripts/lib.sh"; printf '%s\n' "$PARTIAL_DIRS"; } | cut -d/ -f1 | sort -u; printf 'Desktop\n.gnupg\n.secrets\n' )
+# Desktop・gpg が作る .gnupg・npm が作る .npm だけ。固定リストにすると
+# PARTIAL_DIRS を増やすたびに偽の失敗が出る。
+expected_real=$( { . "$D/scripts/lib.sh"; printf '%s\n' "$PARTIAL_DIRS"; } | cut -d/ -f1 | sort -u; printf 'Desktop\n.gnupg\n.secrets\n.npm\n' )
 unexpected=$(find "$W/fakehome" -maxdepth 1 -type d ! -path "$W/fakehome" -exec basename {} \; | sort | comm -23 - <(printf '%s\n' "$expected_real" | sort -u))
 check "~ 直下に想定外の実体が無い"      "$(printf '%s' "$unexpected" | grep -c . | tr -d ' ')" "0"
 
