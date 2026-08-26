@@ -75,8 +75,11 @@ def check_text(text, code=False):
         for name, pat in CHECKS:
             if pat.search(masked):
                 hits.append((n, name, line.strip()))
-        # 全角の約物の隣。半角スラッシュ（A / B）と表の区切りは対象外
-        t = re.sub(r'\s+/\s+', '/', masked)
+        # 全角の約物の隣。半角スラッシュ（A / B）と表の区切りは対象外。
+        # インラインコードの前後は空けるのが規約なので、そこも対象外
+        t = re.sub(r'`[^`]*`', 'X', re.sub(r'\s*`', '`', re.sub(r'`\s*', '`', line)))
+        t = t.replace('**', '').replace('~~', '')
+        t = re.sub(r'\s+/\s+', '/', t)
         t = re.sub(r'\s*\|\s*', '|', t)
         # 見るのは約物の「後ろ」だけ。前側はリスト記号や強調の閉じで空白が
         # 入るのが普通で、規約の例（`「変更履歴」 hoge` `、 hoge`）も後ろ側
