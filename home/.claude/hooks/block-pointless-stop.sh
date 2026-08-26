@@ -40,6 +40,8 @@ if not any(re.search(p, msg) for p in PATTERNS):
     raise SystemExit(0)
 
 # 同じプロンプトで二度は止めない
+# 鍵は Stop フック共通。別々に持つと、同じターンで 2 本とも止めて
+# 差し戻しが 2 回になる。見送った側は次のターンで拾う
 mark = os.path.join(tempfile.gettempdir(), "claude-stopguard-" + pid)
 if os.path.exists(mark):
     raise SystemExit(0)
