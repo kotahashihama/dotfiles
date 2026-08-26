@@ -5,7 +5,7 @@ on:
     branches: [main]
   pull_request:
 
-# 連続して push したとき、古い実行を打ち切る。最後の 1 本だけ見れば足りる
+# 連続して push したとき、古い実行を打ち切る。最後の1本だけ見れば足りる
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -41,8 +41,8 @@ jobs:
           EXCLUDE=SC1090,SC1091,SC2012,SC2010,SC2126,SC2034,SC2030,SC2031
           # shebang で方言を決める。sh で書いたものを bash で見ると、逆に
           # bash 固有の記法が誤検出になる。
-          # 1 ファイルずつ渡す。変数へ溜めて展開する形はシェルによって単語分割の
-          # 有無が違い、全部が 1 つのファイル名として渡る事故が起きる。
+          # 1ファイルずつ渡す。変数へ溜めて展開する形はシェルによって単語分割の
+          # 有無が違い、全部が1つのファイル名として渡る事故が起きる。
           fail=0
           for f in scripts/*.sh scripts/git-hooks/pre-commit; do
             case "$(head -1 "$f")" in
