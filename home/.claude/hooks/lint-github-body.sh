@@ -63,7 +63,7 @@ NOTE_PR = "> この PR 説明は Claude Code を使って作成されていま�
 
 
 def prose_lines(body):
-    """自分が書いた地の文の行を (行番号, 本文) で返す
+    """自分が書いた地の文の行を (行番号, 生の行, コードを伏せた行) で返す
 
     除くのは、コードブロック・引用・HTML コメント。HTML コメントは PR
     テンプレートの固定文で、リポジトリ側の文章なので逐語のまま残す
@@ -83,7 +83,7 @@ def prose_lines(body):
             incomment = False
         if skip:
             continue
-        out.append((n, re.sub(r"`[^`]*`", " ", line)))
+        out.append((n, line, re.sub(r"`[^`]*`", " ", line)))
     return out
 
 
@@ -105,13 +105,13 @@ def check(body):
                      "  " + NOTE + "\n"
                      "  （PR 説明なら「" + NOTE_PR.lstrip("> ") + "」）", []))
 
-    bad = [n for n, l in lines if re.search(r"。\s*$", l)]
+    bad = [n for n, _r, l in lines if re.search(r"。\s*$", l)]
     if bad:
         hits.append(("github_one_sentence_per_line.md",
                      "行末に句点がある。1文で改行し、行末の 。 は落とす（？ と ！ は残す）",
                      bad))
 
-    bad = [n for n, l in lines
+    bad = [n for n, _r, l in lines
            if re.search(r"[0-9] " + UNIT, l)
            or re.search(JA + r" [0-9]", l)
            or re.search(r"[0-9](?:" + UNIT + r")? " + JA, l)]
@@ -121,7 +121,7 @@ def check(body):
 
     # 全角の約物の隣は空けない。ただし半角スラッシュ（A / B）と表の区切りは対象外
     bad = []
-    for n, l in lines:
+    for n, _r, l in lines:
         t = re.sub(r"\s+/\s+", "/", l)          # A / B を退避
         t = re.sub(r"\s*\|\s*", "|", t)          # 表のセル区切りを退避
         if re.search(YAKUMONO + r" ", t) or re.search(r" " + YAKUMONO, t):
@@ -130,24 +130,37 @@ def check(body):
         hits.append(("no_space_between_number_and_unit.md",
                      "全角の約物の隣に空白がある（「変更履歴」 hoge → 「変更履歴」hoge）", bad))
 
-    bad = [n for n, l in lines if "——" in l]
+    # 対になる記法。1 文 1 行なので、行内で閉じていなければ壊れている。
+    # 一括置換の直後にだけ出る形で、読んでも気づけない
+    bad = []
+    for n, raw, _l in lines:
+        # コードスパンを先に落とす。`.claude/rules/**` のようなグロブを数えない
+        rest = re.sub(r"`[^`]*`", " ", raw)
+        if rest.count("**") % 2 or rest.count("~~") % 2 or rest.count("`") % 2:
+            bad.append(n)
+    if bad:
+        hits.append(("github_one_sentence_per_line.md",
+                     "対になる記法が閉じていない（`**` `~~` バッククォート）。"
+                     "強調が行をまたいで効く。**読んでも気づけないので必ず数える**", bad))
+
+    bad = [n for n, _r, l in lines if "——" in l]
     if bad:
         hits.append(("no_em_dash_in_japanese.md",
                      "ダッシュを使っている。句点で切って次の文にする", bad))
 
-    bad = [n for n, l in lines if re.search(r"\b(Closes|Fixes|Resolves)\s+#?\d", l, re.I)]
+    bad = [n for n, _r, l in lines if re.search(r"\b(Closes|Fixes|Resolves)\s+#?\d", l, re.I)]
     if bad:
         hits.append(("github_rich_formatting.md",
                      "自動クローズのキーワードがある。マージした瞬間に対象が閉じる。"
                      "参照だけなら #123 と書く", bad))
 
-    bad = [n for n, l in lines
+    bad = [n for n, _r, l in lines
            if re.search(r"自分の言葉で|自分の判断で|AI が書|Claude が判断", l)]
     if bad:
         hits.append(("github_no_authorship_voice.md",
                      "書き手の帰属を匂わせる表現がある。変更そのものを主語にする", bad))
 
-    bad = [n for n, l in lines
+    bad = [n for n, _r, l in lines
            if re.search(r"(FE|BE|フロント|バック|別リポ|担当|先方)\s*(と|の)?\s*連携|合意済み|エージェント\s*(間|と)|担当セッション|別セッション|(マージ順|リリース)\s*(の)?\s*調整", l)]
     if bad:
         hits.append(("no_agent_coordination_in_pr.md",
