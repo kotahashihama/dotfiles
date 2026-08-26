@@ -31,6 +31,12 @@ if [ -d "$DOTFILES_DIR/private/.claude-memory" ]; then
   done
 fi
 
+# Markdown を検査するフックの依存を入れる。lockfile があるので npm ci で揃う
+if command -v npm >/dev/null 2>&1; then
+  (cd "$DOTFILES_DIR/home/.claude/hooks/textlint" && npm ci --silent) \
+    || echo "⚠️  textlint の導入に失敗しました。Markdown の検査フックは黙って通ります"
+fi
+
 # 公開側への混入を検査するフックを有効にする
 if git -C "$DOTFILES_DIR" rev-parse --git-dir >/dev/null 2>&1; then
   git -C "$DOTFILES_DIR" config core.hooksPath scripts/git-hooks
