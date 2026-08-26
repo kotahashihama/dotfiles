@@ -95,14 +95,17 @@ def check_text(text, code=False):
         for mm in re.finditer(r'`[^`\n]+`', line):
             b = line[:mm.start()]
             a = line[mm.end():]
+            # 該当箇所だけを切り出す。1 行に複数のコードがあると、行の全文
+            # だけではどこが該当したのか探すことになる
+            near = b[-4:] + mm.group(0) + a[:4]
             # 仮名漢字と囲む約物のあいだは空ける
             if (re.search('(?:' + JA + '|' + BRACKET + ')$', b)
                     or re.match('(?:' + JA + '|' + BRACKET + ')', a)):
-                hits.append((n, 'インラインコードの前後', line.strip()))
+                hits.append((n, 'インラインコードの前後', near))
                 break
             # 句読点と中黒のあいだは詰める
             if re.search(TIGHT + ' $', b) or re.match(' ' + TIGHT, a):
-                hits.append((n, '句読点とコードのあいだ', line.strip()))
+                hits.append((n, '句読点とコードのあいだ', near))
                 break
         # 句読点の直前だけは前側も見る。`、` `。` の前に空白が入る形は
         # 無い。他の約物（`「` `（`）はリスト記号や強調の閉じで空白が
