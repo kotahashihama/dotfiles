@@ -1,11 +1,15 @@
 #!/bin/bash
 #
-# 会話への応答の表記を検査する Stop フック。
+# 応答と、このターンで編集した Markdown の表記を検査する Stop フック。
 #
 # 書式の規約は「こちらが書くものすべて」が対象だが、フックが掛かるのは
 # ファイルへの書き込みと GitHub への投稿だけだった。**書く量が最も多いのは
 # 会話**で、そこに検査が無い（no_secret_values_in_output.md の「効くのは
 # 形が決まっている経路だけ」と同じ穴）。
+#
+# ファイル側もここで見る。PostToolUse は「知らせる」だけで止められない
+# （公式ドキュメント: PostToolUse cannot block; the tool already ran）ので、
+# 書いた直後の指摘を無視できてしまう。Stop なら直すまで終われない。
 #
 # 1 プロンプトにつき 1 回しか止めない。誤検知しても 1 ターン余計に進むだけ。
 #
@@ -17,7 +21,7 @@ export HOOK_DIR
 
 python3 - "$payload" <<'PY'
 import importlib.util
-import json, os, sys, tempfile
+import json, os, subprocess, sys, tempfile
 
 try:
     d = json.loads(sys.argv[1])
@@ -39,7 +43,53 @@ try:
 except Exception:
     raise SystemExit(0)
 
-hits = mod.check_text(msg)
+hits = [("応答", n, name, src) for n, name, src in mod.check_text(msg)]
+
+
+def edited_markdown():
+    """このリポジトリで未コミットの .md を返す"""
+    try:
+        r = subprocess.run(["git", "status", "--porcelain", "--", "*.md"],
+                           capture_output=True, text=True, timeout=5,
+                           cwd=d.get("cwd") or os.getcwd())
+        top = subprocess.run(["git", "rev-parse", "--show-toplevel"],
+                             capture_output=True, text=True, timeout=5,
+                             cwd=d.get("cwd") or os.getcwd())
+    except Exception:
+        return []
+    if r.returncode != 0 or top.returncode != 0:
+        return []
+    root = top.stdout.strip()
+    out = []
+    for line in r.stdout.split("\n"):
+        if len(line) > 3 and line[0] != "D" and line[1] != "D":
+            out.append(os.path.join(root, line[3:].strip().strip(chr(34))))
+    return [p for p in out if p.endswith(".md") and os.path.exists(p)]
+
+
+def head_hits(path):
+    """HEAD 版の指摘。既存分は数えないため"""
+    d2 = os.path.dirname(path)
+    try:
+        top = subprocess.run(["git", "-C", d2, "rev-parse", "--show-toplevel"],
+                             capture_output=True, text=True, timeout=5)
+        rel = os.path.relpath(path, top.stdout.strip())
+        show = subprocess.run(["git", "-C", d2, "show", "HEAD:" + rel],
+                              capture_output=True, text=True, timeout=5)
+    except Exception:
+        return set()
+    if show.returncode != 0:
+        return set()
+    return {(name, src) for _n, name, src in mod.check_text(show.stdout)}
+
+
+for path in edited_markdown()[:20]:
+    was = head_hits(path)
+    name_only = os.path.basename(path)
+    for n, name, src in mod.check(path):
+        if (name, src) not in was:
+            hits.append((name_only, n, name, src))
+
 if not hits:
     raise SystemExit(0)
 
@@ -48,12 +98,12 @@ if os.path.exists(mark):
     raise SystemExit(0)
 open(mark, "w").close()
 
-lines = ["**応答の表記が規約に反しています。直してから返してください**", ""]
-for n, name, src in hits[:6]:
-    lines.append("- %d 行目 %s" % (n, name))
+lines = ["**表記が規約に反しています。直してから返してください**", ""]
+for where, n, name, src in hits[:6]:
+    lines.append("- %s %d行目 %s" % (where, n, name))
     lines.append("    %s" % src[:72])
 if len(hits) > 6:
-    lines.append("- ほか %d 件" % (len(hits) - 6))
+    lines.append("- ほか %d件" % (len(hits) - 6))
 lines += ["",
           "数値と単位・日本語と数字のあいだは詰める（`2 万件` → `2万件`）。",
           "全角の約物の後ろは空けない（`「変更履歴」 hoge` → `「変更履歴」hoge`）。",
