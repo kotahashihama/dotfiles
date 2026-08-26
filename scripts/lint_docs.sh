@@ -60,7 +60,9 @@ fi
 if [ -x "$SUIKO" ]; then
   # 相対パスは cwd を移す都合で解決できない。絶対パスへ直して渡す
   abs=()
-  for f in "${files[@]}"; do abs+=("$PWD/$f"); done
+  for f in "${files[@]}"; do
+    case "$f" in /*) abs+=("$f") ;; *) abs+=("$PWD/$f") ;; esac
+  done
   "$SUIKO" lint --genre tech --no-config --json "${abs[@]}" 2>/dev/null \
     | DETAIL=$detail python3 -c '
 import json, os, sys, collections
@@ -87,3 +89,14 @@ if os.environ.get("DETAIL") == "1":
 else
   echo "  suiko 未導入（bash home/.claude/hooks/suiko/install.sh）"
 fi
+
+# 表記の検査。textlint も suiko も数値と単位の空白は見ない
+python3 "$HOOKS/check-japanese-spacing.py" "${files[@]}" >| /tmp/lint_docs_spacing.$$ 2>/dev/null
+n=$(wc -l < /tmp/lint_docs_spacing.$$ | tr -d ' ')
+echo ""
+echo "== 表記: $n 件 =="
+if [ "$n" != 0 ]; then
+  cut -f2 /tmp/lint_docs_spacing.$$ | sort | uniq -c | awk '{printf "   %-32s %4d\n", $2, $1}'
+  [ "$detail" = 1 ] && sed 's|^|   |' /tmp/lint_docs_spacing.$$
+fi
+rm -f /tmp/lint_docs_spacing.$$

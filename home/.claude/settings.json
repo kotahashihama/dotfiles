@@ -103,6 +103,10 @@
           {
             "type": "command",
             "command": "bash ~/.claude/hooks/block-pointless-stop.sh"
+          },
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/check-writing-in-reply.sh"
           }
         ]
       }
