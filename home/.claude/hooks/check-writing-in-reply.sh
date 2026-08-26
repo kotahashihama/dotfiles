@@ -11,7 +11,7 @@
 # （公式ドキュメント: PostToolUse cannot block; the tool already ran）ので、
 # 書いた直後の指摘を無視できてしまう。Stop なら直すまで終われない。
 #
-# 1 プロンプトにつき 1 回しか止めない。誤検知しても 1 ターン余計に進むだけ。
+# 1プロンプトにつき1回しか止めない。誤検知しても1ターン余計に進むだけ。
 #
 set -u
 
@@ -93,8 +93,8 @@ for path in edited_markdown()[:20]:
 if not hits:
     raise SystemExit(0)
 
-# 鍵は Stop フック共通。別々に持つと、同じターンで 2 本とも止めて
-# 差し戻しが 2 回になる。見送った側は次のターンで拾う
+# 鍵は Stop フック共通。別々に持つと、同じターンで2本とも止めて
+# 差し戻しが2回になる。見送った側は次のターンで拾う
 mark = os.path.join(tempfile.gettempdir(), "claude-stopguard-" + pid)
 if os.path.exists(mark):
     raise SystemExit(0)

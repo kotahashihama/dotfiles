@@ -21,11 +21,11 @@ mkdir -p "$DEST"
 
 n=0
 for ext in $EXTS; do
-  # duti -x は「アプリ名 / パス / バンドル ID」の 3 行を返す
+  # duti -x は「アプリ名 / パス / バンドル ID」の3行を返す
   bundle=$(duti -x "$ext" 2>/dev/null | sed -n '3p')
   [ -n "$bundle" ] || continue
   printf '%s %s all\n' "$bundle" "$ext" >> "$DEST/duti.txt"
   n=$((n + 1))
 done
 
-echo "👍 関連付けを書き出しました: $n 件"
+echo "👍 関連付けを書き出しました: ${n}件"

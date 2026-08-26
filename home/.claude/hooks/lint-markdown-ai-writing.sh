@@ -3,7 +3,7 @@
 # 編集した Markdown を textlint と suiko に掛け、AI っぽい書き方を知らせる
 # PostToolUse フック。
 #
-# 止めない。既存の指摘が 137 件あるので、error で止めると作業が進まない。
+# 止めない。既存の指摘が137件あるので、error で止めると作業が進まない。
 # 書いている最中に届けば、直す判断はその場でできる。
 #
 # HEAD 版との差分を取り、**この編集で新しく出たものだけ**を返す。既存の
@@ -58,7 +58,7 @@ def head_version(p):
 
 
 def lint(paths):
-    """textlint を 1 回だけ起動し、ファイルごとの指摘を返す"""
+    """textlint を1回だけ起動し、ファイルごとの指摘を返す"""
     try:
         r = subprocess.run([TEXTLINT, "-c", CONFIG, "-f", "json"] + paths,
                            capture_output=True, text=True, timeout=30,
@@ -76,7 +76,7 @@ def lint(paths):
 
 
 def suiko(paths):
-    """suiko を 1 回だけ起動し、ファイルごとの指摘を返す
+    """suiko を1回だけ起動し、ファイルごとの指摘を返す
 
     textlint はパターン照合、suiko は形態素解析と統計で見る。取るものが
     違うので、重なる分（箇条書きのラベル・述語コロン）は後で束ねる。
@@ -90,7 +90,7 @@ def suiko(paths):
     except Exception:
         return {}
     out = (r.stdout or "").strip()
-    # 1 ファイルならオブジェクト、複数なら配列を返す
+    # 1ファイルならオブジェクト、複数なら配列を返す
     if not out.startswith(("[", "{")):
         return {}
     try:

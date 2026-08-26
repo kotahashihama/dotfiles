@@ -32,8 +32,8 @@ more=$([ "$n" -gt 8 ] && echo "（ほか $((n - 8)) 件）" || echo "")
 python3 -c '
 import json, sys
 print(json.dumps({"systemMessage": sys.argv[1]}, ensure_ascii=False))
-' "dotfiles に未コミットの変更が ${n} 件あります。前のセッションが編集して伝え漏らした可能性があります。
+' "dotfiles に未コミットの変更が ${n}件あります。前のセッションが編集して伝え漏らした可能性があります。
 ${files}
 ${more}
-このセッションの作業と無関係なら、dotfiles の担当セッションへ知らせるか、ユーザーへ 1 行伝えてください（ask_before_editing_claude_assets.md）。自分でコミットはしない（no_auto_commit.md）"
+このセッションの作業と無関係なら、dotfiles の担当セッションへ知らせるか、ユーザーへ1行伝えてください（ask_before_editing_claude_assets.md）。自分でコミットはしない（no_auto_commit.md）"
 exit 0
