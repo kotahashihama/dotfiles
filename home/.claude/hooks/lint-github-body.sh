@@ -80,21 +80,31 @@ def spacing(body):
         return []
 
 
+# PR テンプレートが地の文として置く節。見出しから次の見出しまでを検査から外す。
+# リポジトリ側が書いた文章なので、こちらの規約を当てても直す先が無い
+# （github_one_sentence_per_line.md の例外）。
+TEMPLATE_SECTIONS = ("レビューのルール", "AI レビュー")
+
+
 def prose_lines(body):
     """自分が書いた地の文の行を (行番号, 生の行, コードを伏せた行) で返す
 
-    除くのは、コードブロック・引用・HTML コメント。HTML コメントは PR
-    テンプレートの固定文で、リポジトリ側の文章なので逐語のまま残す
+    除くのは、コードブロック・引用・HTML コメント・テンプレートの固定節。
+    いずれも PR テンプレートの固定文で、リポジトリ側の文章なので逐語のまま残す
     （github_one_sentence_per_line.md の例外）。
     """
-    out, inblock, incomment = [], False, False
+    out, inblock, incomment, intemplate = [], False, False, False
     for n, line in enumerate(body.split("\n"), 1):
         if line.lstrip().startswith("```"):
             inblock = not inblock
             continue
+        # 見出しに当たったらテンプレート節かどうかを判定し直す
+        heading = re.match(r"^#{1,6}\s+(.+?)\s*$", line)
+        if heading:
+            intemplate = heading.group(1) in TEMPLATE_SECTIONS
         opened = "<!--" in line
         closed = "-->" in line
-        skip = inblock or incomment or opened or line.lstrip().startswith(">")
+        skip = inblock or incomment or intemplate or opened or line.lstrip().startswith(">")
         if opened and not closed:
             incomment = True
         if closed:
@@ -131,8 +141,12 @@ def check(body):
 
     # 表記の判定は check-japanese-spacing.py に集約する。ここに書き写すと、
     # 識別子の除外（ `#3145 の ` `d8d6db797 で ` ）のような後からの修正が
-    # 片方にしか入らない
+    # 片方にしか入らない。
+    # ただし対象は地の文だけ。あちらは本文全体を見るので、行番号で絞る
+    prose_numbers = {n for n, _raw, _l in lines}
     for n, name, _src in spacing(body):
+        if n not in prose_numbers:
+            continue
         hits.append(("no_space_between_number_and_unit.md",
                      "表記が規約に反している（%s）" % name, [n]))
 
@@ -176,8 +190,13 @@ def check(body):
 
 
 def orphan_refs(body):
-    """owner を省略した #123 のうち、同一リポジトリに存在しないものを返す"""
-    nums = {m.group(1) for m in re.finditer(r"(?<![\w/])#(\d+)", body)}
+    """owner を省略した #123 のうち、同一リポジトリに存在しないものを返す
+
+    見るのは地の文だけ。テンプレートの固定節が参照する番号は、リポジトリ側
+    の文章なので直せない
+    """
+    prose = "\n".join(raw for _n, raw, _l in prose_lines(body))
+    nums = {m.group(1) for m in re.finditer(r"(?<![\w/])#(\d+)", prose)}
     if not nums:
         return []
     missing = []
