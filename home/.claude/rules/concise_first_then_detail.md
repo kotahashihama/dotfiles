@@ -87,6 +87,7 @@
 ## 例外
 
 - ユーザーが「詳しく」「深く」「噛み砕いて」と明示指示した場合は、その粒度に合わせて展開する
+- **裏取りが要る問いでは、裏取りが先** (`verify_before_asserting.md`)。本ルールの「結論を先に」は、**結論が出てからの話**
 - 設計判断・レビュー対応など、選択肢比較 + 推奨 + 影響 の3点セットが必要な場面では、テンプレート (`explain_review_comment_first.md` 等) の要求粒度を優先
 - BE/インフラの技術説明は `plain_language_explanation.md` の噛み砕き粒度を優先 (ただし冗長にはしない)
 
@@ -97,6 +98,7 @@
 - `no_ai_style_writing.md` （AI が書いたと分かる文体で書かない）: あちらは**表現**。短く畳んでも、演出や実況が残れば読まれない
 - `plain_language_explanation.md` (平易に噛み砕く) と両立させる: **短く、かつ平易に**
 - `explain_review_comment_first.md` (レビュー対応の粒度) の要求は本ルールより優先
+- `verify_before_asserting.md` （断定の前に裏を取る）: **裏取りが要る問いでは、裏取りが先**。調べながら書くと、本ルールの「結論を先に」が**未検証の見立てを結論の位置へ置く**形に化ける
 - `summarize_after_each_task.md` (各作業後のサマリ) も本ルールに従って短く
 - `github_rich_formatting.md` （GitHub の表現手段）: **表と Mermaid の使い分けは本ルールが持つ**。あちらは GitHub でしか使えない手段（Alert / `<details>` / 脚注）を足す
 - `create-pr` / `update-pr-description` スキル: 本ルールを土台に、**PR 固有の事情**（GitHub のレンダリング挙動、テンプレの節構成、補足コメントへの切り出し）を上乗せする
