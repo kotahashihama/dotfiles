@@ -31,8 +31,12 @@ try:
     path = json.load(sys.stdin).get("tool_input", {}).get("file_path", "")
 except Exception:
     sys.exit(0)
-if not path.endswith(".md") or not os.path.exists(path):
+if not os.path.exists(path):
     sys.exit(0)
+
+# textlint と suiko は Markdown 前提なので .md だけに掛ける。
+# 表記の検査はコードのコメントも対象なので、拡張子で絞らない。
+is_md = path.endswith(".md")
 
 
 def head_version(p):
@@ -48,8 +52,10 @@ def head_version(p):
                               capture_output=True, text=True, timeout=5)
         if show.returncode != 0:
             return None      # 新規ファイル。比較対象が無い
-        f = tempfile.NamedTemporaryFile("w", suffix=".md", delete=False,
-                                        encoding="utf-8")
+        # 拡張子は元ファイルへ合わせる。表記の検査が .md かどうかで
+        # 判定を変えるため、揃えないと HEAD 側と作業版で結果がずれる
+        f = tempfile.NamedTemporaryFile("w", suffix=os.path.splitext(p)[1] or ".md",
+                                        delete=False, encoding="utf-8")
         f.write(show.stdout)
         f.close()
         return f.name
@@ -128,8 +134,8 @@ def spacing(paths):
 
 base = head_version(path)
 targets = [path] + ([base] if base else [])
-results = lint(targets)
-for extra in (suiko(targets), spacing(targets)):
+results = lint(targets) if is_md else {}
+for extra in ((suiko(targets) if is_md else {}), spacing(targets)):
     for k, v in extra.items():
         results[k] = results.get(k, []) + v
 
