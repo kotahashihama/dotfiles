@@ -31,6 +31,13 @@ NOT_ID_L = (r'(?<![A-Za-z0-9._#/=$-])'
             r'(?:(?<![A-Za-z] )|(?<=' + JA + r' [A-Za-z] ))')
 NOT_ID_R = r'(?![0-9A-Za-z._/=-])'
 
+# 約物とダッシュを「文字そのもの」として名指す形は対象外。詰めると
+# `行末の。は落とす` になり、どの文字の話か読めなくなる。左は空白か開き
+# 括弧、右は空白で、約物が単独で立っている形だけを外す
+NAMED = re.compile(r'(?<=[ （「『【])[、。・？！](?= )')
+# ダッシュを拾う正規表現そのもの。クォートの中身が `——` だけの形
+LITERAL_DASH = re.compile(r'''(['"])——\1''')
+
 CHECKS = [
     ('数値と単位', re.compile(NOT_ID_L + r'[0-9]+ ' + UNIT)),
     ('日本語と数字', re.compile(JA + r' [0-9]+' + NOT_ID_R)),
@@ -75,7 +82,8 @@ def check_text(text, code=False):
     for n, line in lines:
         # インラインコードは対象外。空白で伏せると、直後の約物が
         # 「前に空白がある」と誤判定されるので1文字へ置き換える
-        masked = re.sub(r'`[^`]*`', 'X', line)
+        masked = NAMED.sub('X', LITERAL_DASH.sub('X',
+                                                  re.sub(r'`[^`]*`', 'X', line)))
         for name, pat in CHECKS:
             if pat.search(masked):
                 hits.append((n, name, line.strip()))
@@ -86,6 +94,7 @@ def check_text(text, code=False):
         # 描画すると約物の隣にはならない
         t = re.sub(r'\s+/\s+', '/', t)
         t = re.sub(r'\s*\|\s*', '|', t)
+        t = NAMED.sub('X', t)
         # 見るのは約物の「後ろ」だけ。前側はリスト記号や強調の閉じで空白が
         # 入るのが普通で、規約の例（ ` 「変更履歴」 hoge` `、 hoge` ）も後ろ側
         if re.search(YAKUMONO + r' ', t):
