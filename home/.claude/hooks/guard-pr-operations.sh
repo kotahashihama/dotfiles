@@ -68,8 +68,12 @@ def ask(reason):
 user = me()
 num = pr_number()
 
-# 1) 他人の PR。作成者が本人でなければ、読む以外は触らない
-if num and user:
+# 1) 他人の PR。作成者が本人でなければ、読む以外は触らない。
+# ただしレビューの新規投稿は規約が例外として認めている（no_operating_on_others_prs.md
+# の「レビューを書くことは読む側の行為で、本ルールの対象外」）。他人の PR を
+# レビューするのが /review-pr の用途なので、ここで止めると毎回引っかかる
+is_review_post = bool(re.search(r"/pulls?/\d+/reviews\b", cmd)) and "-X POST" in cmd
+if num and user and not is_review_post:
     author = gh(["pr", "view", num, "--json", "author", "--jq", ".author.login"])
     if author and author != user:
         ask("**#%s は %s の PR です。** 作成者が本人でない PR へは、状態を読む以外の操作を"
