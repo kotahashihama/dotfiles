@@ -7,6 +7,7 @@ tap "kotahashihama/tap"
 tap "nissy/mg"
 tap "openresty/brew"
 tap "sqldef/sqldef"
+tap "stablyai/orca"
 tap "supabase/tap"
 # Protocol buffers (Google's data interchange format)
 brew "protobuf"
@@ -240,6 +241,8 @@ cask "nordvpn"
 cask "notion"
 # Knowledge base that works on top of a local folder of plain text Markdown files
 cask "obsidian"
+# Agent development environment running CLI agents in parallel git worktrees
+cask "orca"
 # Collaboration platform for API development
 cask "postman"
 # Flexible software sketchbook and a language for learning how to code
