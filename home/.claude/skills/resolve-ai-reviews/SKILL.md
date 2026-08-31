@@ -133,10 +133,10 @@ user 判断が確定するまで、該当コメントには何もしない (修�
 
 ### 7. コミット & プッシュ
 
-- `~/.claude/rules/no_auto_commit.md`: `/resolve-ai-reviews` 起動時点で「文脈整合の対応内容 (自律判定 + user 確定)」のコミット & プッシュは承認済みとみなし、確認質問を挟まず実行する。**Step 3の文脈照合と Step 5の user 判断を経ていない対応は含めない**。
-- `~/.claude/rules/karma_commit_style.md` に従う。1行目は `<type>(<scope>): <subject>`、subject は **日本語の体言止め**。**subject に「レビュー対応」「指摘修正」等の meta を書かず、差分の意図そのもの** を書く (例: `refactor(...): 〇〇の util.ToPtr への統一`)。
-- 未ステージの変更は **対象ファイルを名指しで** `git add` (`-A` / `.` は使わない)。`--amend` / `--no-verify` / force 系は使わない。
-- コミット後、現在のブランチを `git push` (force は使わない)。`git rev-parse HEAD` で **返信に使うコミットハッシュ** を取得する。
+**手順は `/cp` に従う**（ステージングの粒度・メッセージの書式・フラグの扱い・push）。**ここで書き直さない。** このスキル固有の事情は次の2点だけ。
+
+- **承認の範囲を狭める**。`/resolve-ai-reviews` の起動が承認にあたるのは「文脈整合の対応内容 (自律判定 + user 確定)」だけで、**Step 3の文脈照合と Step 5の user 判断を経ていない対応は含めない**。
+- push の後、`git rev-parse HEAD` で **返信に使うコミットハッシュ** を取得する。**Step 8の入力**になるので、報告用の列挙とは別に控える。
 
 ### 8. 各コメントへの返信と Resolve conversation
 
@@ -260,7 +260,7 @@ gh api -X POST repos/OWNER/REPO/pulls/comments/<comment_id>/reactions -f content
 - 末尾 Note ブロックを付け忘れて返信すること (ハッシュ返信・理由返信を問わず必須)。
 - 返信を投稿したスレッドを Resolve conversation せずに放置すること (ユーザーの再判断待ちを明示した返信は除く)。
 - **補足コメントを投稿したのに PR 本文からリンクを貼らないこと**。読み手が存在に気づけない
-- `git add -A` / `.`、`--amend`、`--no-verify`、force push、主ブランチへの直接 push。
+- **コミットの手順をここで書き直すこと**（ステージングの粒度・フラグ・push）。`/cp` が持つので、**あちらを直したときに取り残される**。
 - 修正なのに品質チェック (format/lint/test) を通さずにコミットすること。
 - レビュー基準コミットと現在の HEAD の差を無視して、既に直っている指摘を二重に直すこと。
 
