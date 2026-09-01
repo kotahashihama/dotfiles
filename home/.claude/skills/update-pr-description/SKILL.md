@@ -13,6 +13,12 @@ allowed-tools: Bash(gh pr view:*) Bash(gh pr edit:*) Bash(gh pr comment:*) Bash(
    - `gh pr view --json number,title,body,baseRefName` で対応する PR を特定（該当 PR が無ければユーザーに確認）
    - **作成者を確かめる**（ `gh pr view <PR> --json author -q '.author.login'` ）。ユーザー本人でなければ中断して報告する（ `no_operating_on_others_prs.md` ）
    - `baseRefName` を以降の差分計算のベースに使う
+   - **本文に自分が書いていない内容が入っていないか見る**
+     - **投稿者では判定できない。** ユーザー名義で投稿するので、こちらの編集も相手の編集も同じ login になる
+     - **添付の参照を数える。** `![` `user-attachments` `<video` `githubusercontent` を現在の本文から拾い、**新しい本文にも同じものがあるか**を見る
+     - **画像・動画・スクリーンショットが最も消えやすい。** 本文をテキストとして組み立てるので、添付は持ち回らない
+     - 消したことに気づけるのは投稿者だけで、**こちらからは見えない**。取得しただけでは足りず、**添付という観点で数える**
+     - 消してしまったら `userContentEdits` から復元できる（ `keep_records_current.md` ）。ただし**指摘されるまで気づけない**
 
 2. **差分の把握**（並列実行可）:
    - `git diff <base>...HEAD --stat` でファイル単位の規模感
@@ -126,7 +132,9 @@ allowed-tools: Bash(gh pr view:*) Bash(gh pr edit:*) Bash(gh pr comment:*) Bash(
    - 食い違いが見つかったら**本文を実態に合わせる**（差分の方を本文に合わせない）
 
 6. **更新**:
+   - **投稿の直前にもう一度本文を取得し、Step 1 から増えていないか見る**。組み立てている間に追記されることがある
    - `gh pr edit <number> --body "$(cat <<'EOF' ... EOF)"` で HEREDOC を使って本文を更新
+     - **これは全文置換で、渡さなかった行は消える。** 自分が書いていない内容も組み立てへ含める
    - タイトルも更新する場合は `--title "..."` も併用（シェル展開されないクオートに注意）
    - HEREDOC の終端は `EOF` シングルクォート版で、本文の `$` や `` ` `` がシェル展開されないようにする
 
@@ -173,4 +181,5 @@ allowed-tools: Bash(gh pr view:*) Bash(gh pr edit:*) Bash(gh pr comment:*) Bash(
 - **本文だけ更新して補足コメントを古いまま放置すること**（どちらが正しいか読み手が判断できなくなる）
 - 補足コメントを更新する際に**末尾の Note ブロックを落とすこと**（ `github_note_generated_by_claude.md` ）
 - 本文に書いた数値・識別子・影響範囲の主張を、**差分と照合せずに更新すること**（Step 5）。既存本文を流用した箇所ほど古い記述が残りやすい
+- **自分が書いていない内容を、全文置換で消すこと**。画像・動画は特に消えやすく、消したことに気づけるのは投稿者だけ
 - 他人が投稿したコメントを編集すること（対象は自分が投稿したものだけ）
