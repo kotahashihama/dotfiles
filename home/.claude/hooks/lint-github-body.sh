@@ -216,11 +216,44 @@ def orphan_refs(body):
     return missing
 
 
+ATTACH = re.compile(
+    r"!\[[^\]]*\]\([^)]+\)"                      # 画像の記法
+    r"|https://github\.com/user-attachments/\S+"   # 貼り付けた画像と動画
+    r"|https://github\.com/[\w.-]+/[\w.-]+/assets/\S+"
+    r"|<video\b[^>]*>", re.I)
+
+
+def lost_attachments(cmd, body):
+    """全文置換で消える添付を返す
+
+    本文の書き直しは行が減るのが普通なので、行の差分では誤検知になる。
+    添付だけは意図して消すことがほぼ無いので、そこに絞って見る。
+    実際にユーザーが貼った動画2件を全文置換で消した事故がある。
+    """
+    if not re.search(r"\bgh\s+pr\s+edit\b", cmd):
+        return []
+    m = re.search(r"\bgh\s+pr\s+edit\s+(\d+)", cmd)
+    args = ["gh", "pr", "view"] + ([m.group(1)] if m else []) + ["--json", "body", "-q", ".body"]
+    try:
+        r = subprocess.run(args, capture_output=True, text=True, timeout=15)
+    except Exception:
+        return []
+    if r.returncode != 0:
+        return []                      # PR を引けないときは通す
+    now = set(ATTACH.findall(r.stdout))
+    return sorted(a for a in now if a not in body)
+
+
 problems = []
 for body in bodies(cmd):
     for rule, msg, lines in check(body):
         where = ("（%s行目）" % "・".join(map(str, lines[:6]))) if lines else ""
         problems.append("- %s%s\n  → %s" % (msg, where, rule))
+    for a in lost_attachments(cmd, body):
+        problems.append("- 現在の本文にある添付が、新しい本文に入っていない\n"
+                        "  %s\n"
+                        "  → 全文置換で消える。ユーザーが後から貼ったものかもしれない"
+                        % a[:100])
     for n in orphan_refs(body):
         problems.append("- #%s が同一リポジトリに見つからない。他リポジトリなら "
                         "owner/repo#%s と書く\n  → github_cross_repo_reference.md"
