@@ -16,7 +16,7 @@ HOOK_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 export HOOK_DIR
 
 printf '%s' "$payload" | python3 -c '
-import json, os, re, subprocess, sys, tempfile
+import io, json, os, re, subprocess, sys, tempfile
 
 HOOK_DIR = os.environ["HOOK_DIR"]
 TEXTLINT = os.path.join(HOOK_DIR, "textlint", "node_modules", ".bin", "textlint")
@@ -27,17 +27,62 @@ SUIKO_DIR = os.path.join(HOOK_DIR, "suiko")
 if not os.path.exists(TEXTLINT) and not os.path.exists(SUIKO):
     sys.exit(0)          # どちらも未導入なら黙って通す
 
+WATCH = ["home/.claude/rules", "home/.claude/skills", "home/.claude/hooks",
+         "home/.claude/agents", "home/.claude/CLAUDE.md"]
+
+
+def changed_paths():
+    """Bash で書き換えたときの対象。tool_input にパスが無いので git から拾う
+
+    ヒアドキュメントや python -c で編集するとこの経路になる。1度報告した
+    ものは (パス, mtime) で覚え、同じ内容で繰り返し出さない。
+    """
+    link = os.path.realpath(os.path.expanduser("~/.claude/settings.json"))
+    try:
+        repo = subprocess.run(["git", "-C", os.path.dirname(link),
+                               "rev-parse", "--show-toplevel"],
+                              capture_output=True, text=True, timeout=5)
+        if repo.returncode != 0:
+            return []
+        root = repo.stdout.strip()
+        r = subprocess.run(["git", "-C", root, "status", "--porcelain",
+                            "--untracked-files=all", "--"] + WATCH,
+                           capture_output=True, text=True, timeout=5)
+    except Exception:
+        return []
+    seen_file = os.path.join(tempfile.gettempdir(),
+                             "claude-lintmd-%s.seen" % os.environ.get("CLAUDE_SESSION_ID", "x"))
+    try:
+        seen = set(io.open(seen_file, encoding="utf-8").read().split("\n"))
+    except OSError:
+        seen = set()
+    out, add = [], []
+    for line in r.stdout.split("\n"):
+        f = line[3:].strip().strip(chr(34))
+        if not f.endswith(".md"):
+            continue
+        full = os.path.join(root, f)
+        if not os.path.exists(full):
+            continue
+        mark = "%s\t%s" % (full, int(os.path.getmtime(full)))
+        if mark in seen:
+            continue
+        out.append(full)
+        add.append(mark)
+    if add:
+        with io.open(seen_file, "a", encoding="utf-8") as fh:
+            fh.write("\n".join(add) + "\n")
+    return out
+
+
 try:
-    path = json.load(sys.stdin).get("tool_input", {}).get("file_path", "")
+    data = json.load(sys.stdin)
 except Exception:
     sys.exit(0)
-if not os.path.exists(path):
+one = data.get("tool_input", {}).get("file_path", "")
+paths = [one] if one and os.path.exists(one) else changed_paths()
+if not paths:
     sys.exit(0)
-
-# textlint と suiko は Markdown 前提なので .md だけに掛ける。
-# 表記の検査はコードのコメントも対象なので、拡張子で絞らない。
-is_md = path.endswith(".md")
-
 
 def head_version(p):
     """HEAD 版を一時ファイルへ書き出す。無ければ None"""
@@ -132,12 +177,11 @@ def spacing(paths):
     return out
 
 
-base = head_version(path)
-targets = [path] + ([base] if base else [])
-results = lint(targets) if is_md else {}
-for extra in ((suiko(targets) if is_md else {}), spacing(targets)):
-    for k, v in extra.items():
-        results[k] = results.get(k, []) + v
+def read(p):
+    try:
+        return open(p, encoding="utf-8").read().split("\n")
+    except OSError:
+        return []
 
 
 def key(msg, lines):
@@ -146,42 +190,52 @@ def key(msg, lines):
     return (msg["ruleId"], src)
 
 
-def read(p):
-    try:
-        return open(p, encoding="utf-8").read().split("\n")
-    except OSError:
-        return []
+def review(path):
+    """1ファイルぶんの、この編集で新しく出た指摘を返す"""
+    is_md = path.endswith(".md")
+    base = head_version(path)
+    targets = [path] + ([base] if base else [])
+    results = lint(targets) if is_md else {}
+    for extra in ((suiko(targets) if is_md else {}), spacing(targets)):
+        for k, v in extra.items():
+            results[k] = results.get(k, []) + v
+
+    now_lines = read(path)
+    now = {key(m, now_lines): m for m in results.get(os.path.abspath(path), [])}
+    was = set()
+    if base:
+        was = {key(m, read(base)) for m in results.get(os.path.abspath(base), [])}
+        try:
+            os.unlink(base)
+        except OSError:
+            pass
+
+    fresh = [(k, m) for k, m in now.items() if k not in was]
+    # NG 例の行は規約に違反している形で正しい（github_one_sentence_per_line.md）
+    fresh = [(k, m) for k, m in fresh
+             if "❌" not in k[1] and "悪い例" not in k[1] and not k[1].startswith(">")]
+    fresh.sort(key=lambda km: km[1]["line"])
+    return fresh
 
 
-now_lines = read(path)
-now = {key(m, now_lines): m for m in results.get(os.path.abspath(path), [])}
-was = set()
-if base:
-    was = {key(m, read(base)) for m in results.get(os.path.abspath(base), [])}
-    try:
-        os.unlink(base)
-    except OSError:
-        pass
+out = []
+for path in paths:
+    fresh = review(path)
+    if not fresh:
+        continue
+    name = os.path.basename(path)
+    out.append("この編集で新しく出た指摘です（%s、%d件）。"
+               "**止めていません。直すかどうかは中身で判断してください**"
+               % (name, len(fresh)))
+    for k, m in fresh[:8]:
+        rule = m["ruleId"].split("/")[-1]
+        out.append("- %s:%d  %s" % (name, m["line"], m["message"].split("。")[0]))
+        out.append("    %s  → %s" % (k[1][:70], rule))
+    if len(fresh) > 8:
+        out.append("- ほか %d件" % (len(fresh) - 8))
 
-fresh = [(k, m) for k, m in now.items() if k not in was]
-
-# NG 例の行は規約に違反している形で正しい（github_one_sentence_per_line.md）
-fresh = [(k, m) for k, m in fresh
-         if "❌" not in k[1] and "悪い例" not in k[1] and not k[1].startswith(">")]
-
-if not fresh:
+if not out:
     sys.exit(0)
-
-fresh.sort(key=lambda km: km[1]["line"])
-name = os.path.basename(path)
-out = ["この編集で新しく出た指摘です（%s、%d件）。"
-       "**止めていません。直すかどうかは中身で判断してください**" % (name, len(fresh))]
-for k, m in fresh[:8]:
-    rule = m["ruleId"].split("/")[-1]
-    out.append("- %s:%d  %s" % (name, m["line"], m["message"].split("。")[0]))
-    out.append("    %s  → %s" % (k[1][:70], rule))
-if len(fresh) > 8:
-    out.append("- ほか %d件" % (len(fresh) - 8))
 
 print(json.dumps({"hookSpecificOutput": {
     "hookEventName": "PostToolUse",
