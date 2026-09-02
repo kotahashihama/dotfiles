@@ -10,7 +10,8 @@
           "powerline_symbol": "",
           "options": {
             "home_icon": "~",
-            "style": "unique"
+            "style": "powerlevel",
+            "max_width": 45
           },
           "style": "powerline",
           "template": "  {{ .Path }} ",
