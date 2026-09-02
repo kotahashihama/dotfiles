@@ -52,6 +52,16 @@ elif command -v gh >/dev/null 2>&1; then
   echo "ℹ️  gh の認証がまだです。gh auth login のあとで gh extension install を実行してください"
 fi
 
+# 外部のスキル。実体は ~/.agents 配下に入るのでこのリポジトリでは運ばない。
+# ~/.claude/skills へリンクが張られるところまでインストーラがやる
+if command -v npx >/dev/null 2>&1; then
+  for skill in coji/natural-japanese; do
+    [ -e "$HOME/.agents/skills/${skill#*/}" ] && continue
+    npx --yes skills add "$skill" >/dev/null 2>&1 \
+      || echo "⚠️  $skill の導入に失敗しました"
+  done
+fi
+
 # 公開側への混入を検査するフックを有効にする
 if git -C "$DOTFILES_DIR" rev-parse --git-dir >/dev/null 2>&1; then
   git -C "$DOTFILES_DIR" config core.hooksPath scripts/git-hooks
