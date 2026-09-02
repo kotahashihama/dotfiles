@@ -26,6 +26,11 @@ except Exception:
 if not cmd or not re.search(r"\bgh\s+(pr|issue|api)\b", cmd):
     sys.exit(0)
 
+# --help を叩くだけのコマンドは投稿しない。フラグ名を grep するときに
+# --body が文字列として現れ、本文の投稿と読み違える
+if re.search(r"(?:^|[|;&\s])gh\s[^|;&]*--help\b", cmd):
+    sys.exit(0)
+
 # 本文を投稿しないサブコマンドは対象外
 if re.search(r"\bgh\s+(pr|issue)\s+(list|view|checks|status|diff|ready|close|merge)\b", cmd) \
         and not re.search(r"--body", cmd):
