@@ -101,10 +101,10 @@ brew "neovim"
 brew "node"
 # Selects the right Node package manager based on lockfiles
 brew "ni"
+# Prompt theme engine for any shell
+brew "oh-my-posh"
 # Object-relational database system
 brew "postgresql@14"
-# Theme for zsh
-brew "powerlevel10k"
 # Framework for managing multi-language pre-commit hooks
 brew "pre-commit"
 # Go support for Google's protocol buffers

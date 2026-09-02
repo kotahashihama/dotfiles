@@ -2,21 +2,10 @@
 [[ -f "${HOME}/Library/Application Support/kiro-cli/shell/zshrc.pre.zsh" ]] && builtin source "${HOME}/Library/Application Support/kiro-cli/shell/zshrc.pre.zsh"
 
 #
-# Powerlevel10k
+# oh-my-posh
 #
 
-# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
-# Initialization code that may require console input (password prompts, [y/n]
-# confirmations, etc.) must go above this block; everything else may go below.
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  . "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
-
-# テーマ本体。Prezto の prompt モジュール経由をやめ、brew の実体を直接読む
-. "$(brew --prefix powerlevel10k)/share/powerlevel10k/powerlevel10k.zsh-theme"
-
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || . ~/.p10k.zsh
+eval "$(oh-my-posh init zsh --config ~/.config/oh-my-posh/config.omp.json)"
 
 #
 # zsh の設定
@@ -33,7 +22,7 @@ done
 # profiles で pre / post に分けている。
 #
 # 未取得だと source が空になるので、その場合だけ案内を出す。
-# ここで入力を求めると Powerlevel10k の instant prompt と競合する
+# ここで入力を求めるとシェルの起動が止まる
 if ! eval "$(sheldon --profile pre source 2>/dev/null)"; then
   print -P '%F{yellow}sheldon: プラグインが未取得です。`sheldon lock` を実行してください%f'
 fi
