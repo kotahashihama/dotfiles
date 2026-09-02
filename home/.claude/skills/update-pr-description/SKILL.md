@@ -27,9 +27,9 @@ allowed-tools: Bash(gh pr view:*) Bash(gh pr edit:*) Bash(gh pr comment:*) Bash(
 
 3. **本文・補足コメントの組み立て方針**:
 
-   > この節は `/create-pr` と `/update-pr-description` で**共通**。片方を直したらもう片方も揃える。
-   > ただし**逐語コピーしない**。`/create-pr` は非公開側、`/update-pr-description` は公開側にあり、
-   > **例に使う識別子は置き場に従う**（`no_internal_names_in_public_assets.md`）。揃えるのは規定の中身。
+   > **この節が正本。** `/create-pr` からも参照される。
+   > **あちらへ写さない。** 写すと片方だけ古くなる（実際に58行ずれた）。
+   > 作成のときにだけ要るもの（テンプレの埋め方・Backlog 節）は `/create-pr` 側に置く。
 
    **この方針は PR 本文と別コメントの両方に等しく適用する。** 別コメントは「細部を置く場所」であって「基準を緩める場所」ではない。量・流れ・表と図・過程を書かないことは同じく守る。
 
