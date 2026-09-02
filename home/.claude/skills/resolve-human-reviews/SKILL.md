@@ -160,9 +160,10 @@ gh api graphql -f query='mutation($id: ID!) { addReaction(input: {subjectId: $id
 @<レビュアーの GitHub ID>
 <ハッシュ1> <ハッシュ2> で<動詞>ました🙇🏽‍♂️
 
-> [!NOTE]
-> このコメントは Claude Code を使って作成されています。
+<生成者表示の Note ブロック>
 ```
+
+**生成者表示の文言は `github_note_generated_by_claude.md` が持つ。** ここには写さない
 
 | 決めごと | 内容 |
 | --- | --- |
