@@ -9,6 +9,16 @@ tap "openresty/brew"
 tap "sqldef/sqldef"
 tap "stablyai/orca"
 tap "supabase/tap"
+# Yet another cross-platform graphical process/system monitor
+brew "bottom"
+# Disk Usage/Free Utility - a better 'df' alternative
+brew "duf"
+# More intuitive version of du in rust
+brew "dust"
+# User-friendly cURL replacement (command-line HTTP client)
+brew "httpie"
+# Modern replacement for ps written in Rust
+brew "procs"
 # Protocol buffers (Google's data interchange format)
 brew "protobuf"
 # Library for decimal floating point arithmetic
