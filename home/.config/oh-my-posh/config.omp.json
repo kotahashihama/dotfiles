@@ -11,7 +11,7 @@
           "options": {
             "home_icon": "~",
             "style": "powerlevel",
-            "max_width": 40
+            "max_width": 45
           },
           "style": "powerline",
           "template": "  {{ .Path }} ",
@@ -179,7 +179,8 @@
           "type": "time"
         }
       ],
-      "type": "prompt"
+      "type": "prompt",
+      "overflow": "break"
     },
     {
       "alignment": "left",
