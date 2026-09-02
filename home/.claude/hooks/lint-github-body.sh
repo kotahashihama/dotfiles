@@ -40,9 +40,16 @@ if re.search(r"\bgh\s+(pr|issue)\s+(list|view|checks|status|diff|ready|close|mer
 def bodies(cmd):
     """コマンド文字列から、投稿される本文の候補を取り出す"""
     found = []
-    # 1) ヒアドキュメント（gh pr edit --body "$(cat <<EOF ... EOF)" が最も多い）
+    # 1) ヒアドキュメント。本文と見なすのは、その手前に gh の本文フラグが
+    #    あるときだけ。スクリプトのヒアドキュメントへ規約の文面として
+    #    コマンドの書き方を書くと、全体を投稿本文と読み違える
     for m in re.finditer(r"<<-?[\x27\"]?([A-Za-z_][A-Za-z0-9_]*)[\x27\"]?\n(.*?)\n\s*\1\b",
                          cmd, re.S):
+        head = cmd[:m.start()]
+        if not re.search(r"\bgh\s+(pr|issue|api)\b", head):
+            continue
+        if not re.search(r"(--body\b|--body-file\b|\s-b\b|\s-F\b|body=)", head):
+            continue
         found.append(m.group(2))
     # 2) --body / -b / -f body= に続く引用符つきの値
     for m in re.finditer(r"(?:--body|-b|(?:-f|--field|--raw-field)\s+body)[= ]\s*"
