@@ -1,6 +1,3 @@
-# Kiro CLI pre block. Keep at the top of this file.
-[[ -f "${HOME}/Library/Application Support/kiro-cli/shell/zshrc.pre.zsh" ]] && builtin source "${HOME}/Library/Application Support/kiro-cli/shell/zshrc.pre.zsh"
-
 #
 # oh-my-posh
 #
@@ -251,6 +248,3 @@ export PATH="$HOME/.antigravity/antigravity/bin:$PATH"
 
 # uv / rye
 [[ -f "$HOME/.local/bin/env" ]] && . "$HOME/.local/bin/env"
-
-# Kiro CLI post block. Keep at the bottom of this file.
-[[ -f "${HOME}/Library/Application Support/kiro-cli/shell/zshrc.post.zsh" ]] && builtin source "${HOME}/Library/Application Support/kiro-cli/shell/zshrc.post.zsh"
