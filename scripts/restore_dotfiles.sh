@@ -41,6 +41,17 @@ fi
 bash "$DOTFILES_DIR/home/.claude/hooks/suiko/install.sh" >/dev/null \
   || echo "⚠️  suiko の導入に失敗しました。Markdown の検査は textlint だけで動きます"
 
+# gh の拡張。Brewfile は本体しか運ばないので、ここで入れる。
+# 新規マシンでは認証が先なので、通っていなければ案内だけ出して飛ばす
+if command -v gh >/dev/null 2>&1 && gh auth status >/dev/null 2>&1; then
+  for ext in dlvhdr/gh-dash github/gh-stack; do
+    gh extension install "$ext" >/dev/null 2>&1 \
+      || echo "⚠️  $ext の導入に失敗しました"
+  done
+elif command -v gh >/dev/null 2>&1; then
+  echo "ℹ️  gh の認証がまだです。gh auth login のあとで gh extension install を実行してください"
+fi
+
 # 公開側への混入を検査するフックを有効にする
 if git -C "$DOTFILES_DIR" rev-parse --git-dir >/dev/null 2>&1; then
   git -C "$DOTFILES_DIR" config core.hooksPath scripts/git-hooks
