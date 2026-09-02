@@ -28,7 +28,10 @@ if not cmd or not re.search(r"\bgh\s+(pr|issue|api)\b", cmd):
 
 # --help を叩くだけのコマンドは投稿しない。フラグ名を grep するときに
 # --body が文字列として現れ、本文の投稿と読み違える
-if re.search(r"(?:^|[|;&\s])gh\s[^|;&]*--help\b", cmd):
+#
+# gh の手前は空白や | だけでなく $( や ` にもなる。単語でない文字を
+# 広く許す（\w を挟むと mygh のような別コマンドには当たらない）
+if re.search(r"(?:^|[^\w./-])gh\s[^|;&]*(?:--help\b|\s-h\b)", cmd):
     sys.exit(0)
 
 # 本文を投稿しないサブコマンドは対象外
