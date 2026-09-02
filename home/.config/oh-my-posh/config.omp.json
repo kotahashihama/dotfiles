@@ -10,7 +10,7 @@
           "powerline_symbol": "",
           "options": {
             "home_icon": "~",
-            "style": "full"
+            "style": "unique"
           },
           "style": "powerline",
           "template": "  {{ .Path }} ",
@@ -104,6 +104,22 @@
           "type": "azfunc"
         },
         {
+          "type": "terraform",
+          "style": "powerline",
+          "powerline_symbol": "",
+          "background": "#844FBA",
+          "foreground": "#ffffff",
+          "template": " {{ .WorkspaceName }}{{ if .Version }} {{ .Version }}{{ end }} "
+        },
+        {
+          "type": "kubectl",
+          "style": "powerline",
+          "powerline_symbol": "",
+          "background": "#316CE6",
+          "foreground": "#ffffff",
+          "template": " {{ .Context }}{{ if .Namespace }} :: {{ .Namespace }}{{ end }} "
+        },
+        {
           "background_templates": [
             "{{if contains \"default\" .Profile}}#FFA400{{end}}",
             "{{if contains \"jan\" .Profile}}#f1184c{{end}}"
@@ -148,7 +164,7 @@
             "always_enabled": true
           },
           "style": "powerline",
-          "template": " {{ if gt .Code 0 }}{{ reason .Code }}{{ else }}{{ end }} ",
+          "template": " {{ if gt .Code 0 }}{{ reason .Code }} {{ .Code }}{{ else }}{{ end }} ",
           "type": "status"
         },
         {
