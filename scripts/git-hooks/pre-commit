@@ -20,10 +20,31 @@ fail=0
 # 値の形で書く。「変数名」で書くと、このファイル自身やパターンを説明した
 # ドキュメントに一致してしまう。
 creds='sk-ant-api[0-9]{2}-[A-Za-z0-9_-]{30}|sk-proj-[A-Za-z0-9_-]{30}|ghp_[A-Za-z0-9]{36}|github_pat_[A-Za-z0-9_]{30}|AKIA[0-9A-Z]{16}|xox[bpsa]-[0-9]{10}|_authToken[[:space:]]*=[[:space:]]*[A-Za-z0-9]|BEGIN [A-Z ]*PRIVATE KEY-----'
+# 一般形も見る。形式の決まったトークンだけだと、DB の接続情報のような
+# ありふれた形が素通りする。値の形を要求して、変数名だけの行や
+# 雛形のプレースホルダには当てない。
+generic='(PASSWORD|PASSWD|SECRET|API_?KEY|ACCESS_KEY|CLIENT_SECRET|AUTH_TOKEN)[A-Z_]*[[:space:]]*[=:][[:space:]]*"?[A-Za-z0-9!@#$%^&*_.+-]{8,}'
+dburl='[a-z][a-z0-9+.-]*://[^[:space:]/:@]+:[^[:space:]/@]{4,}@'
+# 雛形や例に書く値と、変数の参照。ここに当たる行は除く
+holder='(xxx|XXX|your[-_]|dummy|sample|example|changeme|CHANGEME|REDACTED|placeholder|\*\*\*|<[a-zA-Z_ -]+>|=[[:space:]]*"?\$\{?[A-Za-z_])'
+
 for f in $staged; do
   [ -f "$f" ] || continue
   if git show ":$f" 2>/dev/null | grep -qaE "$creds"; then
     echo "✗ 認証情報らしき文字列: $f" >&2
+    fail=1
+  fi
+done
+
+# 1-b) 一般形の認証情報
+for f in $staged; do
+  [ -f "$f" ] || continue
+  hit=$(git show ":$f" 2>/dev/null | grep -aE "$generic" | grep -avE "$holder" | head -1)
+  if [ -z "$hit" ]; then
+    hit=$(git show ":$f" 2>/dev/null | grep -aE "$dburl" | grep -avE "$holder" | head -1)
+  fi
+  if [ -n "$hit" ]; then
+    echo "✗ 認証情報らしき値: $f" >&2
     fail=1
   fi
 done
