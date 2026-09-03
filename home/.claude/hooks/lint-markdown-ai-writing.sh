@@ -134,8 +134,20 @@ def suiko(paths):
     """
     if not os.path.exists(SUIKO):
         return {}
+    # 設定は dotfiles のものだけ読む。cwd の .suiko.toml を拾うと、
+    # 作業中のリポジトリの許可がグローバル資産の検査へ効いてしまう。
+    # 規約が扱う形は規約の中に現れるので、そこだけ許可を置いている
+    # dirname の数で辿ると、階層を1つ増やしたときに黙って外れる
+    conf, d = None, os.path.dirname(SUIKO)
+    while d != "/":
+        if os.path.exists(os.path.join(d, ".suiko.toml")):
+            conf = os.path.join(d, ".suiko.toml")
+            break
+        d = os.path.dirname(d)
+    scope = ["--config", conf] if conf else ["--no-config"]
     try:
-        r = subprocess.run([SUIKO, "lint", "--genre", "tech", "--no-config", "--json"] + paths,
+        r = subprocess.run([SUIKO, "lint", "--genre", "tech", "--json"]
+                           + scope + paths,
                            capture_output=True, text=True, timeout=30,
                            cwd=SUIKO_DIR)
     except Exception:
