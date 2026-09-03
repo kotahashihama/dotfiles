@@ -1,7 +1,7 @@
 ---
 description: 現在のブランチに紐づく既存の GitHub PR について、ベースブランチに対する最終差分の観点で本文を書き直して更新する。PR 本文だけでなく、自分が投稿した補足情報用のコメント (契約・データモデル・調査結果など) も最新差分と整合しているか点検して更新する。コミット中の経緯 (レビュー対応・途中リファクタ) は書かず、最終状態のスナップショットとして整える。ユーザーが「PR 説明を更新して」「PR description 書き直して」と指示したときに使う。
 argument-hint: "[PR 番号 または URL] (省略時は現在のブランチから特定)"
-allowed-tools: Bash(gh pr view:*) Bash(gh pr edit:*) Bash(gh pr comment:*) Bash(gh pr list:*) Bash(gh api:*) Bash(git status:*) Bash(git diff:*) Bash(git log:*) Bash(git branch:*) Read
+allowed-tools: Bash(gh pr view:*) Bash(gh pr edit:*) Bash(gh pr comment:*) Bash(gh pr list:*) Bash(gh api:*) Bash(git status:*) Bash(git diff:*) Bash(git log:*) Bash(git branch:*) Bash(git show:*) Bash(git ls-tree:*) Read
 ---
 
 現在のブランチに紐づく PR の説明を、ベースブランチに対する差分観点で書き直して更新してください。**PR 本文に加えて、自分が投稿した補足情報用のコメントも更新対象**です。
@@ -23,7 +23,10 @@ allowed-tools: Bash(gh pr view:*) Bash(gh pr edit:*) Bash(gh pr comment:*) Bash(
 2. **差分の把握**（並列実行可）:
    - `git diff <base>...HEAD --stat` でファイル単位の規模感
    - `git diff <base>...HEAD` で全変更内容（大きい場合は要点だけ抜き出す）
-   - **`.github/pull_request_template.md` を Read で読む**（既存本文から構成を推測しない。テンプレが更新されていることがある）。存在しない場合はシンプルな「Summary」「Test plan」構成にフォールバック
+   - **テンプレートは base のブランチから読む**（ `git show origin/<base>:<テンプレートのパス>` ）。存在しない場合はシンプルな「Summary」「Test plan」構成にフォールバック
+     - **作業ツリーのものを Read しない。** 別のブランチの版を読むことになる。**base が `develop` のとき、`main` にしか入っていない節を読んでしまう**。リリースの流れが一方向だと、上流の変更が下流へ降りていないことがある
+     - **ファイル名の大文字小文字はリポジトリで違う。** macOS のファイルシステムは区別しないので `Read` では気づけない。`git ls-tree origin/<base> .github/ --name-only` で実体を見る
+     - 既存本文から構成を推測しない。テンプレが更新されていることがある
 
 3. **本文・補足コメントの組み立て方針**:
 
