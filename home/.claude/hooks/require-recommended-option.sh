@@ -35,12 +35,14 @@ for q in questions:
 if not bad:
     sys.exit(0)
 
-print("**選択肢に推奨が示されていません。付けてから尋ねてください**\n")
-for h in bad:
-    print("- 「%s」の選択肢の label に「推奨」がありません" % h)
-print()
-print("推す案を先頭へ置き、label の末尾へ「（推奨）」を付ける。")
-print("推奨を出さないと、判断コストをユーザーへ全部渡すことになる。")
-print("  → decide_or_ask.md")
-sys.exit(2)
+reason = ("選択肢に推奨が示されていません。付けてから尋ねてください。\n\n"
+          + "\n".join("- 「%s」の選択肢の label に「推奨」がありません" % h for h in bad)
+          + "\n\n推す案を先頭へ置き、label の末尾へ「（推奨）」を付ける。"
+          + "\n推奨を出さないと、判断コストをユーザーへ全部渡すことになる。"
+          + "\n  → decide_or_ask.md")
+print(json.dumps({"hookSpecificOutput": {
+    "hookEventName": "PreToolUse",
+    "permissionDecision": "deny",
+    "permissionDecisionReason": reason,
+}}, ensure_ascii=False))
 PY
