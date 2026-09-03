@@ -44,6 +44,10 @@ Co-Authored-By: Claude Code <noreply@anthropic.com>
 - `build` / `ci`: ビルド設定・CI の変更
 - `chore`: その他（依存更新、雑務など）
 
+**ルール・スキルは「振る舞いが変わるか」で分ける。** 毎セッション読まれて判断を変えるので `feat`、`README` や `docs/` の説明だけなら `docs`。
+
+**ファイルの拡張子で判定しない。** ルールも `docs/` の説明も `.md` なので、拡張子では分かれない。
+
 ## scope
 
 - 変更の対象領域を表す短い識別子（例: `csv_import`, `auth`, `jobs` ）。
