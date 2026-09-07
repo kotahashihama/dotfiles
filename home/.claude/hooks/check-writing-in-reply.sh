@@ -100,16 +100,26 @@ if os.path.exists(mark):
     raise SystemExit(0)
 open(mark, "w").close()
 
-lines = ["**表記が規約に反しています。直してから返してください**", ""]
+# 指摘と例はコードブロックへ入れる。裸で置くと、受け取った側が引用した
+# だけで再び検査に当たる（実際に差し戻しが2回になった）。NG 例は
+# 「違反した形で正しい」ので、囲まないと自分自身を弾く
+lines = ["**表記が規約に反しています。直してから返してください**", "", "```"]
 for where, n, name, src in hits[:6]:
-    lines.append("- %s %d行目 %s" % (where, n, name))
+    lines.append("%s %d行目 %s" % (where, n, name))
     lines.append("    %s" % src[:72])
 if len(hits) > 6:
-    lines.append("- ほか %d件" % (len(hits) - 6))
-lines += ["",
-          "数値と単位・日本語と数字のあいだは詰める。`2 万件` ではなく `2万件`",
-          "全角の約物の後ろは空けない。`「変更履歴」 hoge` ではなく `「変更履歴」hoge`",
-          "ダッシュは使わず句点で切る。",
+    lines.append("ほか %d件" % (len(hits) - 6))
+lines += ["```",
+          "",
+          "```",
+          "数値と単位・日本語と数字のあいだは詰める",
+          "  NG: 2 万件   OK: 2万件",
+          "全角の約物の後ろは空けない",
+          "  NG: 「変更履歴」 hoge   OK: 「変更履歴」hoge",
+          "インラインコードの直後に全角の約物を置かない",
+          "  NG: `code`（説明）   OK: `code` （説明）",
+          "ダッシュは使わず句点で切る",
+          "```",
           "  → no_space_between_number_and_unit.md / no_em_dash_in_japanese.md"]
 sys.stderr.write("\n".join(lines))
 raise SystemExit(2)
