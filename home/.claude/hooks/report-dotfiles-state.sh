@@ -35,5 +35,5 @@ print(json.dumps({"systemMessage": sys.argv[1]}, ensure_ascii=False))
 ' "dotfiles に未コミットの変更が ${n}件あります。前のセッションが編集して伝え漏らした可能性があります。
 ${files}
 ${more}
-このセッションの作業と無関係なら、dotfiles の担当セッションへ知らせるか、ユーザーへ1行伝えてください（ask_before_editing_claude_assets.md）。自分でコミットはしない（no_auto_commit.md）"
+このセッションの作業と無関係なら、dotfiles の担当セッションへ知らせるか、ユーザーへ1行伝えてください（ask_before_editing_claude_assets.md）。自分でコミットはしない（decide_or_ask.md）"
 exit 0

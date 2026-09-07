@@ -75,4 +75,4 @@
 
 - 断定の前に一次情報で裏を取る（ `rules/verify_before_asserting.md` ）
 - 結論を先に、全体は簡潔に（ `rules/concise_first_then_detail.md` ）
-- コミット・push・レビュー依頼（ready 化と再依頼）は明示指示があるときだけ（ `rules/no_auto_commit.md`、`rules/no_auto_ready_pr.md` ）
+- コミット・push・レビュー依頼（ready 化と再依頼）は明示指示があるときだけ（ `rules/decide_or_ask.md`、`rules/no_auto_ready_pr.md` ）

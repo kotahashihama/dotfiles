@@ -44,7 +44,7 @@ DECL = re.compile(r"(続けて|次に|次は|この後|続いて)[^。\n]{0,30}"
                   r"(呼びます|実行します|進めます|流します|やります|直します|"
                   r"確認します|見ます|作ります|足します|測ります)")
 
-# 取り消せない操作は、宣言して止まるのが正しい（no_auto_commit.md /
+# 取り消せない操作は、宣言して止まるのが正しい（decide_or_ask.md /
 # no_auto_ready_pr.md / no_auto_reply_human_review_comments.md）
 WAIT_OK = re.compile(r"(push|マージ|merge|ready|コミット|commit|返信|投稿|"
                      r"再依頼|force|Resolve)")

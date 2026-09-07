@@ -167,7 +167,7 @@ git diff --output=<パス>   # 当て直せるように控える
 
 **ビルド・CI・lint の設定に触るなら、その前に `AskUserQuestion` で尋ねる**（ `ask_before_editing_claude_assets.md` ）。依存を上げる依頼は、設定への白紙委任ではありません。
 
-コミットとプッシュは `/cp` へ委譲する。**明示指示があるときだけ**（ `no_auto_commit.md` ）。
+コミットとプッシュは `/cp` へ委譲する。**明示指示があるときだけ**（ `decide_or_ask.md` ）。
 
 ### 6. 衝突とロックファイルは、待たずに自分で片付ける
 

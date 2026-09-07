@@ -12,13 +12,13 @@
 | ロード | **常に全文** | `paths` にマッチしたときだけ |
 | 構成 | **1層**（ルールに直接書く） | 2層（ルールは入口、`docs/` が本体） |
 | 内容 | 振る舞いの規約（コミット・レビュー・報告の仕方） | コードの規約（命名・配置・実装パターン） |
-| 命名 | スネークケース (`no_auto_commit.md`) | ケバブケース (`data-fetching.md`) |
+| 命名 | スネークケース (`no_auto_ready_pr.md`) | ケバブケース (`data-fetching.md`) |
 
 命名の型は3つある。**どれでもよいが、ファイル名だけで何の規約か分かること**を優先する。
 
 | 型 | 使うとき | 例 |
 | --- | --- | --- |
-| `no_` 始まり | 禁止が主題 | `no_auto_commit` / `no_agent_coordination_in_pr` |
+| `no_` 始まり | 禁止が主題 | `no_auto_ready_pr` / `no_agent_coordination_in_pr` |
 | 動詞始まり | 「〜せよ」が主題 | `verify_before_asserting` / `summarize_after_each_task` |
 | 名詞句 | 書式・スタイルそのものが主題 | `karma_commit_style` / `plain_language_explanation` |
 

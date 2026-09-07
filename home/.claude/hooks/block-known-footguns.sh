@@ -54,13 +54,13 @@ if printf '%s' "$stripped" | grep -qE '(^|[^0-9&>|=-])>[^>|(=][[:space:]]*[^|(&[
 fi
 
 # 2) `git add -A` / `git add .` — 設定系ファイルが意識せず混ざる
-#    （ask_before_editing_claude_assets.md / no_auto_commit.md）
+#    （ask_before_editing_claude_assets.md / decide_or_ask.md）
 if printf '%s' "$stripped" | grep -qE 'git[[:space:]]+add[[:space:]]+(-A|--all|\.)([[:space:]]|$)'; then
   deny 'git add は対象ファイルを名指ししてください。-A / . は設定系ファイルを意識せず巻き込みます（ask_before_editing_claude_assets.md）'
 fi
 
 # 3) 保護ブランチへの force push — 共有している履歴を壊す
-#    （no_auto_commit.md / no_rebase_under_human_review.md）
+#    （decide_or_ask.md / no_rebase_under_human_review.md）
 #
 #    作業ブランチへの force は止めない。スタックの下段が squash でマージ
 #    されると上段の差分が壊れ、rebase --onto での復旧に force が要る。

@@ -73,4 +73,4 @@ allowed-tools: Skill, Bash(git status:*) Bash(git branch:*) Bash(git diff:*) Bas
 ## 前提
 
 - ブランチが PR に紐づいていることを確認するのは各下位スキルの責務。本スキル側では追加確認をしない
-- `no_auto_commit` / `karma_commit_style` 等のグローバルルールは `cp` 側が既に見ているため、本スキルで重複して参照しない
+- `decide_or_ask` / `karma_commit_style` 等のグローバルルールは `cp` 側が既に見ているため、本スキルで重複して参照しない
