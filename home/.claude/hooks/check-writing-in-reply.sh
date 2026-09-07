@@ -21,7 +21,7 @@ export HOOK_DIR
 
 python3 - "$payload" <<'PY'
 import importlib.util
-import json, os, subprocess, sys, tempfile
+import io, json, os, subprocess, sys, tempfile
 
 try:
     d = json.loads(sys.argv[1])
@@ -95,10 +95,18 @@ if not hits:
 
 # 鍵は Stop フック共通。別々に持つと、同じターンで2本とも止めて
 # 差し戻しが2回になる。見送った側は次のターンで拾う
+#
+# 1回だけ止める形にしていたが、差し戻し後の応答の22%（59回中13回）が
+# まだ違反していた。2回目を通すと同じ内容が2回表示される。
+# 上限は3回。外すと直せない違反で往復が終わらない
 mark = os.path.join(tempfile.gettempdir(), "claude-stopguard-" + pid)
-if os.path.exists(mark):
+try:
+    done = int(io.open(mark, encoding="utf-8").read().strip() or 0)
+except Exception:
+    done = 0
+if done >= 3:
     raise SystemExit(0)
-open(mark, "w").close()
+io.open(mark, "w", encoding="utf-8").write(str(done + 1))
 
 # 指摘と例はコードブロックへ入れる。裸で置くと、受け取った側が引用した
 # だけで再び検査に当たる（実際に差し戻しが2回になった）。NG 例は
