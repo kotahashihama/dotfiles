@@ -11,7 +11,7 @@
 | --- | --- | --- |
 | 状況 | 答えによって**やることが変わる** | やることは決まっている |
 | 例 | 案 A と案 B のどちらを採るか | 決めた案を実装する |
-| 例 | 取り消せない操作の可否（ `no_auto_commit.md` ） | 取り消せる編集・調査・検証 |
+| 例 | 取り消せない操作の可否（ `decide_or_ask.md` ） | 取り消せる編集・調査・検証 |
 | 例 | 方針・粒度・公開範囲（ `decide_or_ask.md` ） | 手段の選択 |
 | 形 | **`AskUserQuestion` で選択肢を出す** | 「よければ着手します」で終える |
 
@@ -52,7 +52,7 @@
 ## 例外
 
 - ユーザーが「一旦止めて」「ここまでで」と明示した場合
-- 取り消せない操作（ `no_auto_commit.md` / `no_auto_ready_pr.md` ）
+- 取り消せない操作（ `decide_or_ask.md` / `no_auto_ready_pr.md` ）
 - ユーザーの領分に踏み込む場合（ `decide_or_ask.md` / `ask_before_editing_claude_assets.md` ）
 - 積んだタスクが**互いに矛盾する**場合（ `carry_out_stacked_instructions.md` ）
 

@@ -104,7 +104,7 @@ PR のレビューコメントへの対応を報告するときは、**GitHub �
 
 ## 関連
 
-- `no_auto_commit.md` （コミット・プッシュは明示指示のみ）と対で使う。指示で走った作業の報告フォーマット部分を本ルールが担う
+- `decide_or_ask.md` （自分で決めるか尋ねるか）と対で使う。指示で走った作業の報告フォーマット部分を本ルールが担う
 - `summarize_after_each_task.md` （各作業後にサマリを添える）と併用: サマリ内で識別子を示す場合も本ルールに従う
 - `github_cross_repo_reference.md` （GitHub 上で他リポジトリの PR / issue を参照する書式）: あちらは GitHub へ書く文章、本ルールはユーザーへの報告が対象
 - `github_rich_formatting.md` （GitHub の表現手段）: **`path:line` の扱いが逆になる**。会話ではクリックできるので使い、GitHub では差分が動くので使わない

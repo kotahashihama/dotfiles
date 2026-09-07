@@ -4,7 +4,7 @@ argument-hint: "(引数なし。ステージ済み・未ステージの変更を
 allowed-tools: Bash(git status:*) Bash(git diff:*) Bash(git log:*) Bash(git add:*) Bash(git commit:*) Bash(git push:*) Bash(git branch:*)
 ---
 
-このスキルが起動した時点で、ユーザーが「コミットとプッシュをしてよい」と明示的に承認した状態とみなす（ `/cp` を打つ行為自体が `~/.claude/rules/no_auto_commit.md` の言う「明示的な指示」に該当する）。確認質問は挟まず、即実行する。
+このスキルが起動した時点で、ユーザーが「コミットとプッシュをしてよい」と明示的に承認した状態とみなす（ `/cp` を打つ行為自体が `decide_or_ask.md` の言う「一意に読める指示」に該当する）。確認質問は挟まず、即実行する。
 
 ## 進め方
 
