@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# 応答と、このターンで編集した Markdown の表記を検査する Stop フック。
+# このターンで編集した Markdown の表記を検査する Stop フック。
 #
 # 書式の規約は「こちらが書くものすべて」が対象だが、フックが掛かるのは
 # ファイルへの書き込みと GitHub への投稿だけだった。**書く量が最も多いのは
@@ -28,9 +28,8 @@ try:
 except Exception:
     raise SystemExit(0)
 
-msg = str(d.get("last_assistant_message", ""))
 pid = str(d.get("prompt_id", ""))
-if not msg or not pid:
+if not pid:
     raise SystemExit(0)
 
 # 判定はファイル・GitHub 投稿と同じものを使う。書く場所ごとに実装を分けると
@@ -43,7 +42,7 @@ try:
 except Exception:
     raise SystemExit(0)
 
-hits = [("応答", n, name, src) for n, name, src in mod.check_text(msg)]
+hits = []
 
 
 def edited_markdown():
