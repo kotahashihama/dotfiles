@@ -66,11 +66,12 @@ allowed-tools: Bash(gh pr view:*) Bash(gh pr diff:*) Bash(gh api:*) Bash(gh repo
 
 **順序・分岐・関係が主題なら、散文で書かずに図にする。** ` ```mermaid ` フェンスがそのまま描画されます。
 
+**使い分けと、描いた図の判定は `concise_first_then_detail.md` の「畳み方」が持つ。** ここには説明固有の事情だけを置く。
+
 | 主題 | 使うもの |
 | --- | --- |
 | 処理の順序、その順でないと壊れる理由 | `flowchart LR` |
 | 複数の登場人物のやりとり、並行操作の衝突 | `sequenceDiagram` |
-| 前と後の対比、経路ごとの違い | `flowchart` の `subgraph` を2つ |
 | テーブルの関係 | `erDiagram` |
 
 **図が効くのは「並べて見ないと分からない」もの**です。1本道の処理や、名前を見れば分かることに図は要りません。
