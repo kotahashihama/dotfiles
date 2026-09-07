@@ -115,7 +115,7 @@
           },
           {
             "type": "command",
-            "command": "bash ~/.claude/hooks/check-writing-in-reply.sh"
+            "command": "bash ~/.claude/hooks/check-writing-in-files.sh"
           }
         ]
       }
