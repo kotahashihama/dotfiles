@@ -31,7 +31,7 @@ GitHub が自動でリンクにし、タイトルと open/closed も表示され
 
 ## 関連
 
-- `github_note_generated_by_claude.md` （生成者表示）: どちらも GitHub へ書く文章の書式を定める
+- `github_note_generated_by_claude.md` （生成者表示）: **あちらは投稿先全般**（課題管理ツール・チャットを含む）、本ルールは GitHub のみ
 - `github_one_sentence_per_line.md` （1文ごとに改行し行末の句点を落とす）: 同上
 - `report_formatting.md` （報告に貼る識別子の書式）: あちらはユーザーへの報告、本ルールは GitHub 上の文章が対象。**バッククォートの扱いが逆になる**。会話では囲んでコードとして示し、GitHub では囲むと自動リンクが消える
 - `/create-pr` / `/update-pr-description` / `/review-pr` / `/resolve-ai-reviews` / `/resolve-human-reviews`: 本ルールが土台。**他リポジトリの PR を挙げる場面はどのスキルでも出る**
