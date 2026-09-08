@@ -52,7 +52,7 @@
 
 **常に効かせたいものは rules、呼ばれたときだけ効かせたいものは skills。** 書き方と整理の規約は `rules/rule_conventions.md` と `rules/align_skill_md_format.md`。
 
-**汎用の規約は rules、そのリポジトリだけの事実は memory。** どちらも毎セッション読まれるので、同じことを書くと二重にロードされる（ `rules/rule_conventions.md` の「auto memory との境界」）。
+**汎用の規約は rules、そのリポジトリだけの事実は memory。** どちらも毎セッション読まれるので、同じことを書くと二重にロードされる（ `/organize-rules` の「auto memory との境界」）。
 
 ### 公開側と非公開側
 
