@@ -123,7 +123,7 @@ awk '{ n = gsub(/\*\*/, "&"); if (n % 2) print FILENAME ":" FNR ": " $0 }' <本�
 - `karma_commit_style.md` （コミットメッセージ）: 句点を落とす点は同じだが、**あちらは commit subject の1行だけ**。本ルールは GitHub 上の文章全体
 - `code_comment_why_and_what.md` （コメントは WHY に熱量を）: 同じく句点を落とすが、**あちらはコードコメント**。本ルールが `.md` を対象外にしている理由（単一改行が空白になる）は、**コードコメントには当てはまらない**
 - `github_cross_repo_reference.md` / `github_command_comments.md`: どちらも GitHub へ書く文章の書式を定める
-- `github_rich_formatting.md` （GitHub の表現手段）: あちらは**構造の選び方**、本ルールは**文の表記**
+- `/format-github-post` （投稿する文章の畳み方）: あちらは**構造の選び方**、本ルールは**文の表記**
 - `no_space_between_number_and_unit.md` （数値と単位の空白）: どちらも**日本語の表記**を定める。**一括置換で対になる記法と NG 例が壊れる**のは本ルールが扱う
 - `recheck_after_every_revision.md` （書き直すたびに確かめ直す）: **本ルールの検査は3周目（形）で使う**。あちらが周ごとの観点を定める
 - `concise_first_then_detail.md` （簡潔に）: あちらは**量**を扱う。本ルールは**改行と表記**

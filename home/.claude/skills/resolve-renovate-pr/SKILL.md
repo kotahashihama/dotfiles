@@ -235,7 +235,7 @@ pnpm install --frozen-lockfile     # 再生成後に通ることまで確かめ�
 
 アノテーションは **`[fyi]`** を使う。書式と使い分けは `github_rich_formatting.md` が定めます。
 
-書き方は `github_one_sentence_per_line.md` と `github_rich_formatting.md` に従い、末尾へ生成者表示を置く（ `github_note_generated_by_claude.md` ）。**renovate は bot なので、投稿に追加の許可は要りません**（ `no_auto_reply_human_review_comments.md` の対象外）。
+書き方は `github_one_sentence_per_line.md` と `/format-github-post` に従い、末尾へ生成者表示を置く（ `github_note_generated_by_claude.md` ）。**renovate は bot なので、投稿に追加の許可は要りません**（ `no_auto_reply_human_review_comments.md` の対象外）。
 
 **同じ内容を重ねて投稿しない。** 既に自分のコメントがあるなら、`gh api` でそのコメントを編集して更新する。
 
