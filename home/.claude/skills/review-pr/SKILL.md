@@ -475,7 +475,7 @@ Mermaid の使い分けは、`flowchart` が分岐・処理順・依存、`seque
 
 置くなら**図（全体像）→ 表（項目ごと）**の順。**同じ情報を2つの形式で持たない。** 差分から自明な指摘（命名、並び順、typo）に図は足さない。
 
-**畳む手段は表と Mermaid だけではない。** Alert / `<details>` / 脚注の使い分けは `github_rich_formatting.md` が持つ。
+**畳む手段は表と Mermaid だけではない。** Alert / `<details>` / 脚注の使い分けは `/format-github-post` が持つ。
 
 **レビューコメントでは `<details>` が効く。** 「散文は1コメント5行以内」を守ると根拠を書き切れないことがあるが、**畳めば本文を短く保ったまま置ける**。
 
@@ -582,7 +582,7 @@ gh api graphql -f query='mutation { minimizeComment(input: {subjectId: "<node_id
 - `concise_first_then_detail.md` （簡潔に、表と Mermaid の使い分け）: 「コメント本文の書き方」の土台。`/create-pr`・`/update-pr-description` も同じ土台に乗る
 - `github_note_generated_by_claude.md`: 生成者表示の書式
 - `github_one_sentence_per_line.md`: GitHub へ書く日本語は1文ごとに改行し、行末の句点を落とす。総括・インラインの両方が対象
-- `github_rich_formatting.md` （伝わる形を選ぶ）: Alert / `<details>` / 脚注の使い分け。1コメントに置ける Alert は**本文に1〜2個**（生成者表示の `NOTE` は数えない）
+- `/format-github-post` （投稿する文章の畳み方）: Alert / `<details>` / 脚注の使い分け。1コメントに置ける Alert は**本文に1〜2個**（生成者表示の `NOTE` は数えない）
 - `focus_insights_on_judgment.md` （代行するほど、渡す責任が増える）: Step 7「報告に入れるもの」の土台。**ユーザー自身がレビューできる状態を保つ**ことを定める
 - `verify_before_asserting.md`: Step 5〜6の土台。**ユーザーの発言も裏取りの対象**という点は、PR 本文の主張にもそのまま当てはまる
 - `report_formatting.md` （報告に貼る識別子の書式）: 投稿後の報告に添える URL の土台。**PR とインライン1件ずつ**を出すことを定める

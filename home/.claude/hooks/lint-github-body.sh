@@ -185,7 +185,7 @@ def check(body):
 
     bad = [n for n, _r, l in lines if re.search(r"\b(Closes|Fixes|Resolves)\s+#?\d", l, re.I)]
     if bad:
-        hits.append(("github_rich_formatting.md",
+        hits.append(("skills/format-github-post/SKILL.md",
                      "自動クローズのキーワードがある。マージした瞬間に対象が閉じる。"
                      "参照だけなら #123 と書く", bad))
 

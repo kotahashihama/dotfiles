@@ -144,7 +144,7 @@ gh api graphql -f query='mutation($id: ID!) { addReaction(input: {subjectId: $id
 
 **案にも謝罪の文言を入れない**（下記「謝罪の文言は書かない」）。ここで入ると、そのまま投稿される。
 
-**理由の案と回答の案では、GitHub の表現手段を使ってよい**（手段の選び方は `github_rich_formatting.md` ）。散文で書くと長くなるものを表や `<details>` へ畳む。`IMPORTANT` / `WARNING` は**本文に1〜2個**まで（末尾の生成者表示 Note は数えない）。返信は本文より短いので、2つ要る場面は稀。
+**理由の案と回答の案では、GitHub の表現手段を使ってよい**（手段の選び方は `/format-github-post` ）。散文で書くと長くなるものを表や `<details>` へ畳む。`IMPORTANT` / `WARNING` は**本文に1〜2個**まで（末尾の生成者表示 Note は数えない）。返信は本文より短いので、2つ要る場面は稀。
 
 **ハッシュ返信は対象外。** 1行目にハッシュ、末尾に Note という形が決まっており、畳むほどの中身が無い。
 
