@@ -121,3 +121,4 @@ git push --force-with-lease
 - `explain_review_comment_first.md`: 尋ねるときの形を、レビュー対応の文脈で具体化したもの
 - `ask_before_editing_claude_assets.md` （設定は尋ねてから）: ユーザーの領分にあたる例。**必ず `AskUserQuestion` で出す**という強い形を定める
 - `treat_user_suggestions_as_proposals.md` （ユーザーの案には賛否を返す）: **向きが逆で対になる**。本ルールは**取り消せない操作で、指示と読めるかを厳しく見る**。あちらは**軽い変更で、指示と読みすぎない**
+- `decide_when_spec_is_silent.md` （仕様が無いところは既存の倒し方に合わせる）: **「前提の読み方が割れる」を理由に、あちらへ寄せない**。本ルールが尋ねるのは**外へ出る判断**（方針・粒度・公開範囲・取り消せない操作）で、**内側で閉じる実装の細部**はあちらが着地させる
