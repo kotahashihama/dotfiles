@@ -1,6 +1,6 @@
 ---
 description: PR を新規作成し、続けて AI レビューを N 周回すところまでを一続きで実行する。プロジェクト側に深いレビューのスキルがあれば PR 作成前に回したうえで、/create-pr と /loop-ai-reviews を順に呼ぶラッパーで、点検・コミット・PR 本文の組み立て・レビュー対応は各スキルが担う。ユーザーが「PR を出してレビューまで回して」「/ship-pr」等を指示したときに使う。
-argument-hint: "[--rounds N (省略時2、上限5)] [create-pr へ渡す情報 (ブランチ・base・Backlog 等)]"
+argument-hint: "[--rounds N (省略時2、上限5)] [--screenshot] [create-pr へ渡す情報 (ブランチ・base・Backlog 等)]"
 allowed-tools: Bash(gh pr view:*) Bash(git branch:*) Skill
 ---
 
@@ -22,6 +22,8 @@ allowed-tools: Bash(gh pr view:*) Bash(git branch:*) Skill
 **`--rounds N`** で指定し、**省略時は2** とする。上限5は `loop-ai-reviews` 側で丸められる。
 
 **裸の数値を周回数として解釈しない。** 残りの引数は `create-pr` へそのまま渡す情報として扱う。
+
+**`--screenshot` はそのまま `create-pr` へ渡す。** 判定は `update-pr-description` が持つので、ここでは通過だけ。
 
 **AI レビューは1周ごとに課金される。** 開始前に「PR を作成し、AI レビューを N 周回す」と1行伝える。Step 2の深いレビューを回すなら、**それも含めて先に伝える**（サブエージェントを並列起動するぶん重い）。
 
