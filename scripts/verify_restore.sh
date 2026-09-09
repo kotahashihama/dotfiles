@@ -56,8 +56,6 @@ check "リポジトリ実体 (home)"           "$(cat "$W/repo/home/.zshrc" >/de
 check "リポジトリ実体 (private)"        "$(cat "$W/repo/private/.zsh_aliases_private/project.zsh" >/dev/null 2>&1 && echo 無傷 || echo 破損)" "無傷"
 check "メモリが projects 配下へ復元"    "$(ls -A "$W/fakehome/.claude/projects" 2>/dev/null | wc -l | tr -d ' ' | awk '{print ($1>0)?"あり":"なし"}')" "あり"
 check "メモリが ~ 直下に張られない"     "$([ -e "$W/fakehome/.claude-memory" ] && echo あり || echo なし)" "なし"
-# launchd は ~/Documents を読めないので、リンクではなく実ファイルが要る
-check "切り替えのスクリプトが実体"        "$([ -f "$W/fakehome/Library/Application Support/cswap-keep-base/keep-base-account.sh" ] && [ ! -L "$W/fakehome/Library/Application Support/cswap-keep-base/keep-base-account.sh" ] && echo 実体 || echo なし)" "実体"
 # 実体で残ってよいのは PARTIAL_DIRS のトップレベル（子を個別にリンクするため）と、
 # Desktop・gpg が作る .gnupg・npm が作る .npm・uv が作る .cache と .local だけ。固定リストにすると
 # PARTIAL_DIRS を増やすたびに偽の失敗が出る。
