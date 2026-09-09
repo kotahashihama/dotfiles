@@ -62,6 +62,25 @@ if command -v npx >/dev/null 2>&1; then
   done
 fi
 
+# Claude Code のアカウント切り替え。uv の tool として入る
+if command -v uv >/dev/null 2>&1; then
+  uv tool install claude-swap >/dev/null 2>&1 \
+    || echo "⚠️  claude-swap の導入に失敗しました。アカウントの切り替えは手で行うことになります"
+fi
+
+# 切り替えを回す常駐が実行するスクリプト。launchd は ~/Documents を読めないため
+# （TCC。リンクを実行させると Operation not permitted で落ちる）、実ファイルを置く。
+# 登録はここでは行わない。偽の HOME で流したときに本物の launchd を触ってしまう
+KEEP_BASE="$DOTFILES_DIR/private/.claude/scripts/keep-base-account.sh"
+if [ -f "$KEEP_BASE" ]; then
+  KEEP_BASE_DIR="$HOME/Library/Application Support/cswap-keep-base"
+  mkdir -p "$KEEP_BASE_DIR" \
+    && cp -f "$KEEP_BASE" "$KEEP_BASE_DIR/keep-base-account.sh" \
+    && chmod +x "$KEEP_BASE_DIR/keep-base-account.sh" \
+    || echo "⚠️  切り替えを回すスクリプトの配置に失敗しました"
+  echo "ℹ️  cswap login でアカウントを登録したあと、csup で切り替えの常駐を有効にしてください"
+fi
+
 # 公開側への混入を検査するフックを有効にする
 if git -C "$DOTFILES_DIR" rev-parse --git-dir >/dev/null 2>&1; then
   git -C "$DOTFILES_DIR" config core.hooksPath scripts/git-hooks
