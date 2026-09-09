@@ -96,6 +96,10 @@ PR のレビューコメントへの対応を報告するときは、**GitHub �
 
 **GitHub へ書く文章では使いません。** 差分が動いて別の行を指すため、あちらはパーマリンク（ `/format-github-post` ）。**同じ `path:line` が、会話では正解で GitHub では禁止**という関係です。
 
+## Mermaid には `mermaid` タグ付きのフェンスを使う
+
+**開きに `mermaid` を付け、末尾を閉じる。** タグがあると貼り先がコードブロックとして扱うのでハイライトが効き（Notion 等）、閉じを落とすと後続の文章まで飲まれます。**使うかどうかの判断は `concise_first_then_detail.md`。**
+
 ## 例外
 
 - ユーザーが「レンジで教えて」等と明示指示した場合はそれに従う
@@ -108,6 +112,8 @@ PR のレビューコメントへの対応を報告するときは、**GitHub �
 - `summarize_after_each_task.md` （各作業後にサマリを添える）と併用: サマリ内で識別子を示す場合も本ルールに従う
 - `github_cross_repo_reference.md` （GitHub 上で他リポジトリの PR / issue を参照する書式）: あちらは GitHub へ書く文章、本ルールはユーザーへの報告が対象
 - `/format-github-post` （投稿する文章の畳み方）: **`path:line` の扱いが逆になる**。会話ではクリックできるので使い、GitHub では差分が動くので使わない
+- `concise_first_then_detail.md` （簡潔に）: **Mermaid と表を使うかどうかの判断はあちら**。本ルールは会話へ出すときの書式だけを定める
 - `base_records_on_measurements.md` （記録は実測に基づける）: 本ルールは**会話での報告**の書式、あちらは**後から引かれる文書**の確かさ。会話で出した推定を、そのまま記録へ写さない
 - `/explain-code` （実装を噛み砕いて説明する）: 本ルールが土台で、あちらは**読む順の案内**を上乗せする
+- `/explain-code` / `/review-pr` / `/update-pr-description`: **どれも「GitHub が ```mermaid を描画する」を持つが、主題が違う**。本ルールは貼り先でハイライトを効かせるための書式
 - `/resolve-ai-reviews` / `/resolve-human-reviews` （レビュー対応スキル）: 対応表の並び順と列構成は本ルールに従う
