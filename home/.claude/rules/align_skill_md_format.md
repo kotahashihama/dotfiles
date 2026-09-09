@@ -35,7 +35,4 @@
 
 - `rule_conventions.md` （置き分けの軸）: **常に効かせたいものはルール、呼ばれたときだけはスキル**。書き方と整理の手順は `/organize-rules` が持ち、**ルールとスキルを対で見直す**規定もそちらにある
 - `ask_before_editing_claude_assets.md` （尋ねてから手を入れる）: **手を入れてよいかの判断**を規定する。本ルールは手を入れると決まった後の書き方と整理
-
 - `/organize-rules` （書き方と整理）: **命名・引数・整理の手順はあちら**
-- `rule_conventions.md` （置き分けの軸）: 常に効かせたいものはルール、呼ばれたときだけはスキル
-- `ask_before_editing_claude_assets.md` （尋ねてから手を入れる）: 手を入れてよいかの判断
