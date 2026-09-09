@@ -62,23 +62,18 @@ if command -v npx >/dev/null 2>&1; then
   done
 fi
 
-# Claude Code のアカウント切り替え。uv の tool として入る
-if command -v uv >/dev/null 2>&1; then
-  uv tool install claude-swap >/dev/null 2>&1 \
-    || echo "⚠️  claude-swap の導入に失敗しました。アカウントの切り替えは手で行うことになります"
+# Claude Code のアカウント切り替え。インストーラが sha256 を検証してから置く。
+# --nocargo でビルド済みのバイナリを取る（cargo があると既定でソースから建てる）
+if [ ! -x "$HOME/.local/bin/clauth" ] && command -v curl >/dev/null 2>&1; then
+  curl -fsSL https://raw.githubusercontent.com/uwuclxdy/clauth/mommy/install.sh \
+    | bash -s -- --nocargo >/dev/null 2>&1 \
+    || echo "⚠️  clauth の導入に失敗しました。アカウントの切り替えは手で行うことになります"
 fi
 
-# 切り替えを回す常駐が実行するスクリプト。launchd は ~/Documents を読めないため
-# （TCC。リンクを実行させると Operation not permitted で落ちる）、実ファイルを置く。
-# 登録はここでは行わない。偽の HOME で流したときに本物の launchd を触ってしまう
-KEEP_BASE="$DOTFILES_DIR/private/.claude/scripts/keep-base-account.sh"
-if [ -f "$KEEP_BASE" ]; then
-  KEEP_BASE_DIR="$HOME/Library/Application Support/cswap-keep-base"
-  mkdir -p "$KEEP_BASE_DIR" \
-    && cp -f "$KEEP_BASE" "$KEEP_BASE_DIR/keep-base-account.sh" \
-    && chmod +x "$KEEP_BASE_DIR/keep-base-account.sh" \
-    || echo "⚠️  切り替えを回すスクリプトの配置に失敗しました"
-  echo "ℹ️  cswap login でアカウントを登録したあと、csup で切り替えの常駐を有効にしてください"
+# アカウントはブラウザ経由でしか登録できないので、案内だけ出す。
+# 常駐の登録もここでは行わない。偽の HOME で流すと本物の launchd を触ってしまう
+if [ -x "$HOME/.local/bin/clauth" ]; then
+  echo "ℹ️  clauth login <名前> でアカウントを登録し、launchctl bootstrap gui/\$(id -u) ~/Library/LaunchAgents/com.kotahashihama.clauth-daemon.plist で常駐を有効にしてください"
 fi
 
 # 公開側への混入を検査するフックを有効にする

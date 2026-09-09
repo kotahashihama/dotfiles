@@ -248,3 +248,11 @@ export PATH="$HOME/.antigravity/antigravity/bin:$PATH"
 
 # uv / rye
 [[ -f "$HOME/.local/bin/env" ]] && . "$HOME/.local/bin/env"
+
+# clauth
+# 補完ファイルは #compdef 形式なので、source だけでは登録されない（compdef で結ぶ）。
+# fpath へ置く手は compinit -C のキャッシュに入るまで効かないので採らない
+if [[ -f "$HOME/.clauth/completions/clauth.zsh" ]]; then
+  source "$HOME/.clauth/completions/clauth.zsh"
+  compdef _clauth clauth
+fi

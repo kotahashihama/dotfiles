@@ -51,7 +51,6 @@ alias nuxt='./node_modules/.bin/nuxt'
 
 # 開発ツール
 . ~/.zsh_aliases/tool/main.zsh
-. ~/.zsh_aliases/tool/cswap.zsh
 
 # 非公開分
 [ -f ~/.zsh_aliases_private/main.zsh ] && . ~/.zsh_aliases_private/main.zsh
