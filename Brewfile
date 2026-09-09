@@ -218,6 +218,8 @@ cask "dropbox"
 cask "figma"
 # Web browser
 cask "firefox"
+# Monospaced font with programming ligatures and Nerd Font glyphs
+cask "font-fira-code-nerd-font"
 # Virtual video-calling space
 cask "gather"
 # Set of tools to manage resources and applications hosted on Google Cloud
