@@ -49,8 +49,9 @@ def run(args):
     return p.stdout if p.returncode == 0 else None
 
 
-# push 先のブランチを、コマンドの形から拾う。実際に打たれる形を15通り並べて
-# 検証した（パイプ・リダイレクト・前段のコマンド・引数の省略）。
+# push 先のブランチを、コマンドの形から拾う。打つ形15通りと打たない形9通りを
+# 並べて検証した。片方だけでは、もう一方の壊れ方に気づけない
+# （verify_the_check_worked.md の「区切り文字を含む検査は、両方向に壊れる」）。
 #
 #   git push                       -> 現在のブランチの upstream
 #   git push origin                -> 同じ
@@ -60,12 +61,26 @@ def run(args):
 # パイプの後ろで割らないと `| tail -3` の tail を枝名に取り違える。
 # リダイレクトも行き先ごと落とさないとファイル名を拾う。
 segs = re.split(r"\|\||&&|[|;]", cmd)
-seg = next((s for s in segs if re.search(r"\bgit\s+push\b", s)), None)
+
+# セグメントの先頭が git push であることを要求する。そうしないと
+# `echo git push origin x` のように文字列として含むだけの形で鳴る（実測）。
+#
+# 環境変数の前置は許す。値が引用符で空白を含むことがある（GIT_SSH_COMMAND）。
+# 一方 `git -C <dir> push` は許さない。diff は現在のディレクトリで取るので、
+# 別のリポジトリへ push した場合に別の差分で促すことになる。
+head = r"^\s*(?:[A-Za-z_]\w*=(?:'[^']*'|\"[^\"]*\"|\S*)\s+)*git\s+push\b"
+seg = next((s for s in segs if re.match(head, s)), None)
 if seg is None:
     sys.exit(0)
+
+# --dry-run は本物の push だが何も送っていない。それでも @{1} に前回の位置が
+# あれば前回の差分で鳴るので除く。打っていないのに鳴る点は上と同じ。
+if re.search(r"--dry-run\b", seg):
+    sys.exit(0)
+
 seg = re.sub(r"\d?>>?[|&]?\s*\S*", " ", seg)
 
-words = [w for w in seg.split() if not w.startswith("-")]
+words = [w for w in seg.split() if not w.startswith("-") and "=" not in w]
 try:
     i = words.index("push")
 except ValueError:
