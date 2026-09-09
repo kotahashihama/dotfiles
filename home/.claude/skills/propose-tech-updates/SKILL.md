@@ -107,7 +107,7 @@ gh run list --workflow "<name>" --limit 20 --json databaseId,conclusion,createdA
 | CI | `gh run list` の `createdAt` と `updatedAt` の差。**3件以上の平均** |
 | 手元のビルド・テスト | 実際に走らせる。**キャッシュを捨てて3回**、平均を取る |
 
-**改善案を出すなら、前後を比べる。** 片方だけ測って「速くなるはず」と書かない。
+**改善案を出すなら、前後を比べる**（ `base_records_on_measurements.md` の「改善を主張するなら、前と後を並べる」）。
 
 ### 4. 3つの型に当てはまるものだけを残す
 
