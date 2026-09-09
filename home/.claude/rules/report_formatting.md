@@ -115,5 +115,5 @@ PR のレビューコメントへの対応を報告するときは、**GitHub �
 - `concise_first_then_detail.md` （簡潔に）: **Mermaid と表を使うかどうかの判断はあちら**。本ルールは会話へ出すときの書式だけを定める
 - `base_records_on_measurements.md` （記録は実測に基づける）: 本ルールは**会話での報告**の書式、あちらは**後から引かれる文書**の確かさ。会話で出した推定を、そのまま記録へ写さない
 - `/explain-code` （実装を噛み砕いて説明する）: 本ルールが土台で、あちらは**読む順の案内**を上乗せする
-- `/explain-code` / `/review-pr` / `/update-pr-description`: **どれも「GitHub が ```mermaid を描画する」を持つが、主題が違う**。本ルールは貼り先でハイライトを効かせるための書式
+- `/review-pr` / `/update-pr-description`: **どちらも「GitHub が ```mermaid をレンダリングする」を持つが、あちらは投稿先の話**。本ルールは会話へ出すときの書式
 - `/resolve-ai-reviews` / `/resolve-human-reviews` （レビュー対応スキル）: 対応表の並び順と列構成は本ルールに従う
