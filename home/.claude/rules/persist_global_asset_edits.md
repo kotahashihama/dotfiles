@@ -33,8 +33,4 @@
 - `no_internal_names_in_public_assets.md` （公開側に社内固有名を書かない）: **どちら側かの見分け方**をあちらが持つ
 - `notify_related_repo_sessions.md` （担当セッションへ連絡する）: 連絡の形はあちらが定める
 - `decide_or_ask.md` （自分で決めるか尋ねるか）: 自分でコミットしない根拠
-
 - `/organize-rules` （書き方と整理）: **走査のコマンドと見分け方はあちら**
-- `ask_before_editing_claude_assets.md` （設定は尋ねてから）: **本ルールは触った後**
-- `no_internal_names_in_public_assets.md` （公開側に社内固有名を書かない）: どちら側かの見分け方
-- `notify_related_repo_sessions.md` （担当セッションへ連絡する）: 連絡の形
