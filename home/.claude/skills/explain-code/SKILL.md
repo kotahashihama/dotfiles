@@ -64,7 +64,7 @@ allowed-tools: Bash(gh pr view:*) Bash(gh pr diff:*) Bash(gh api:*) Bash(gh repo
 
 ### 2. 構造を図にする
 
-**順序・分岐・関係が主題なら、散文で書かずに図にする。** ` ```mermaid ` フェンスがそのまま描画されます。
+**順序・分岐・関係が主題なら、散文で書かずに図にする。** ` ```mermaid ` タグ付きのフェンスで出す。**TUI では図になりませんが、貼り先（Notion 等）でそのまま図として扱えます**（ `report_formatting.md` ）。
 
 **使い分けと、描いた図の判定は `concise_first_then_detail.md` の「畳み方」が持つ。** ここには説明固有の事情だけを置く。
 
