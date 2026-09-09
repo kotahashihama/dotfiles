@@ -147,6 +147,8 @@ brew "wget"
 brew "zoxide"
 # UNIX shell (command interpreter)
 brew "zsh"
+# Extremely fast Python package installer and resolver, written in Rust
+brew "uv"
 # The best way of working with Protocol Buffers.
 brew "bufbuild/buf/buf", trusted: true
 # Git Worktree Manager for efficient worktree operations
