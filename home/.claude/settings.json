@@ -95,6 +95,10 @@
         "hooks": [
           {
             "type": "command",
+            "command": "bash ~/.claude/hooks/relink-settings.sh"
+          },
+          {
+            "type": "command",
             "command": "bash ~/.claude/hooks/report-dotfiles-state.sh"
           }
         ]

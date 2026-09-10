@@ -473,8 +473,9 @@ ln -s "$D/home/.claude/skills/<name>" "$HOME/.claude/skills/<name>"
 python3 - <<'EOF'
 import re, pathlib, os
 
-# ~/.claude/settings.json はリンクなので、実体から親を遡れば dotfiles の外からでも見つかる
-root = pathlib.Path(os.path.realpath(os.path.expanduser("~/.claude/settings.json")))
+# ~/.claude/CLAUDE.md はリンクなので、実体から親を遡れば dotfiles の外からでも見つかる。
+# settings.json を起点にしない。clauth が切り替えのたびに実ファイルへ置き換える
+root = pathlib.Path(os.path.realpath(os.path.expanduser("~/.claude/CLAUDE.md")))
 deny = next(p / "private/.claude/deny-patterns.txt" for p in root.parents
             if (p / "private/.claude/deny-patterns.txt").exists())
 pats = [l.strip() for l in deny.read_text(encoding="utf-8").splitlines()
