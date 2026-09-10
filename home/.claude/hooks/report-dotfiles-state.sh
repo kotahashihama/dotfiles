@@ -11,9 +11,12 @@
 #
 set -u
 
-# settings.json のリンク先から dotfiles の作業ツリーを引く。
+# CLAUDE.md のリンク先から dotfiles の作業ツリーを引く。
 # パスを直接書くと、リポジトリを移したときに黙って効かなくなる。
-link=$(readlink "$HOME/.claude/settings.json" 2>/dev/null) || exit 0
+#
+# settings.json を起点にしない。clauth がアカウントを切り替えるたびに実ファイルへ
+# 置き換えるので、まさに知らせるべき場面でリンクが引けず黙って終わる。
+link=$(readlink "$HOME/.claude/CLAUDE.md" 2>/dev/null) || exit 0
 [ -n "$link" ] || exit 0
 repo=$(git -C "$(dirname "$link")" rev-parse --show-toplevel 2>/dev/null) || exit 0
 
