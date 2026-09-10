@@ -76,6 +76,21 @@ if [ -x "$HOME/.local/bin/clauth" ]; then
   echo "ℹ️  clauth login <名前> でアカウントを登録し、launchctl bootstrap gui/\$(id -u) ~/Library/LaunchAgents/com.kotahashihama.clauth-daemon.plist で常駐を有効にしてください"
 fi
 
+# Mermaid をブラウザへ描く MCP サーバー。Claude Code の TUI は図を描けないので、
+# 生成のたびに隣のブラウザへ出して確かめる
+if ! command -v claude-mermaid >/dev/null 2>&1 && command -v npm >/dev/null 2>&1; then
+  npm install -g claude-mermaid >/dev/null 2>&1 \
+    || echo "⚠️  claude-mermaid の導入に失敗しました。Mermaid は記法のままになります"
+fi
+
+# 登録は ~/.claude.json へ入る。あのファイルはセッションの状態も持つので管理下に
+# 置けず、ここで入れ直す
+if command -v claude-mermaid >/dev/null 2>&1 \
+  && ! grep -q '"mermaid"' "$HOME/.claude.json" 2>/dev/null; then
+  claude mcp add --scope user mermaid claude-mermaid >/dev/null 2>&1 \
+    || echo "⚠️  mermaid の MCP 登録に失敗しました。claude mcp add で手で入れてください"
+fi
+
 # 公開側への混入を検査するフックを有効にする
 if git -C "$DOTFILES_DIR" rev-parse --git-dir >/dev/null 2>&1; then
   git -C "$DOTFILES_DIR" config core.hooksPath scripts/git-hooks
