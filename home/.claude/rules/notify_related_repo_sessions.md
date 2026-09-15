@@ -62,6 +62,8 @@ git worktree add -q --detach <一時パス> <ref>
 git worktree remove --force <一時パス>
 ```
 
+**サーバーに見せたいなら worktree では足りない。** 開発サーバーは起動したディレクトリを配信するので、worktree で出したコミットは画面に出ません。修正前を撮るときは先に1行送ってから本体を `git checkout --detach <sha>` で動かし、撮ったら戻します。
+
 **書きたいのに相手がそのブランチを持っているなら、detached で作業する。** 作業ツリーは無傷ですがリモートのブランチは動くので、push したら伝えます。
 
 ```bash
