@@ -17,7 +17,8 @@
       "mcp__plugin_figma_figma__get_*",
       "mcp__plugin_figma_figma__list_*",
       "mcp__plugin_figma_figma__search_design_system",
-      "mcp__plugin_figma_figma__whoami"
+      "mcp__plugin_figma_figma__whoami",
+      "Bash(~/.claude/scripts/db-select.py:*)"
     ],
     "deny": [
       "mcp__backlog__add_project",
