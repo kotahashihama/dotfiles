@@ -79,6 +79,54 @@ NOTE = "> このコメントは Claude Code を使って作成されています
 NOTE_PR = "> この PR 説明は Claude Code を使って作成されています。"
 
 
+def target_owner(cmd, cwd):
+    """投稿先リポジトリの owner。決まらなければ None
+
+    --repo が最優先。無ければ作業ディレクトリの origin を見る。
+    """
+    m = re.search(r"--repo[= ]\s*[\x27\"]?(?:https://github\.com/)?"
+                  r"([\w.-]+)/[\w.-]+", cmd)
+    if m:
+        return m.group(1)
+    try:
+        r = subprocess.run(["git", "-C", cwd, "remote", "get-url", "origin"],
+                           capture_output=True, text=True, timeout=5)
+    except Exception:
+        return None
+    if r.returncode != 0:
+        return None
+    m = re.search(r"github\.com[:/]([\w.-]+)/", r.stdout)
+    return m.group(1) if m else None
+
+
+def ours(owner):
+    """その owner のリポジトリの運用をこちらが決めているか
+
+    一覧は private 側（owner 名は社内の固有名を含むので公開側に置けない）。
+    owner が決まらないときと一覧が無いときは「こちらのもの」に倒す。
+    生成者表示は、要らないところに付けても消せるが、要るところで抜けると
+    後から投稿を直すことになる（github_note_generated_by_claude.md）。
+    """
+    if not owner:
+        return True
+    # ~/.claude/hooks はリンクなので、実体へ直してから親を辿る
+    d = os.path.realpath(os.environ.get("HOOK_DIR", ""))
+    for _ in range(6):
+        p = os.path.join(d, "private", ".claude", "our-github-owners.txt")
+        if os.path.exists(p):
+            try:
+                names = [l.strip() for l in open(p, encoding="utf-8")
+                         if l.strip() and not l.startswith("#")]
+            except OSError:
+                return True
+            return owner.lower() in [n.lower() for n in names]
+        nxt = os.path.dirname(d)
+        if nxt == d:
+            break
+        d = nxt
+    return True
+
+
 def spacing(body):
     """日本語の表記。判定は check-japanese-spacing.py が持つ"""
     import importlib.util
@@ -130,7 +178,7 @@ def prose_lines(body):
     return out
 
 
-def check(body):
+def check(body, note_required=True):
     """規約違反を (規約名, 説明, 該当行) の一覧で返す"""
     hits = []
     stripped = body.strip()
@@ -141,7 +189,7 @@ def check(body):
 
     lines = prose_lines(body)
 
-    if "Claude Code を使って作成" not in body:
+    if note_required and "Claude Code を使って作成" not in body:
         hits.append(("github_note_generated_by_claude.md",
                      "末尾に生成者表示の Note ブロックが無い。次を本文の末尾へ空行1行を挟んで置く\n"
                      "  > [!NOTE]\n"
@@ -260,8 +308,9 @@ def lost_attachments(cmd, body):
 
 
 problems = []
+note_required = ours(target_owner(cmd, CWD))
 for body in bodies(cmd):
-    for rule, msg, lines in check(body):
+    for rule, msg, lines in check(body, note_required):
         where = ("（%s行目）" % "・".join(map(str, lines[:6]))) if lines else ""
         problems.append("- %s%s\n  → %s" % (msg, where, rule))
     for a in lost_attachments(cmd, body):
