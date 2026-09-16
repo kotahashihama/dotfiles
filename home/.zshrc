@@ -240,9 +240,6 @@ release-awssession-token() {
 # Terraform
 export GODEBUG=asyncpreemptoff=1
 
-# Antigravity
-export PATH="$HOME/.antigravity/antigravity/bin:$PATH"
-
 # OpenClaw
 [[ -f "$HOME/.openclaw/completions/openclaw.zsh" ]] && source "$HOME/.openclaw/completions/openclaw.zsh"
 
