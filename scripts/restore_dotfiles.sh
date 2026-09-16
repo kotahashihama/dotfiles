@@ -31,16 +31,6 @@ if [ -d "$DOTFILES_DIR/private/.claude-memory" ]; then
   done
 fi
 
-# Markdown を検査するフックの依存を入れる。lockfile があるので npm ci で揃う
-if command -v npm >/dev/null 2>&1; then
-  (cd "$DOTFILES_DIR/home/.claude/hooks/textlint" && npm ci --silent) \
-    || echo "⚠️  textlint の導入に失敗しました。Markdown の検査フックは黙って通ります"
-fi
-
-# 同じフックが使う suiko。版と sha256 は install.sh の隣に固定してある
-bash "$DOTFILES_DIR/home/.claude/hooks/suiko/install.sh" >/dev/null \
-  || echo "⚠️  suiko の導入に失敗しました。Markdown の検査は textlint だけで動きます"
-
 # gh の拡張。Brewfile は本体しか運ばないので、ここで入れる。
 # 新規マシンでは認証が先なので、通っていなければ案内だけ出して飛ばす
 if command -v gh >/dev/null 2>&1 && gh auth status >/dev/null 2>&1; then
