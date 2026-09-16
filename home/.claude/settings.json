@@ -178,10 +178,10 @@
     "mode": "hold"
   },
   "skipDangerousModePermissionPrompt": true,
+  "switchModelsOnFlag": false,
   "showTurnDuration": true,
   "remoteControlAtStartup": true,
   "crossSessionInbound": "accept",
   "agentPushNotifEnabled": true,
-  "voiceEnabled": true,
-  "switchModelsOnFlag": false
+  "voiceEnabled": true
 }
