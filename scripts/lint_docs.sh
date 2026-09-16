@@ -39,7 +39,13 @@ n=$(wc -l < /tmp/lint_docs_spacing.$$ | tr -d ' ')
 echo ""
 echo "== 表記: ${n}件 =="
 if [ "$n" != 0 ]; then
-  cut -f2 /tmp/lint_docs_spacing.$$ | sort | uniq -c | awk '{printf "   %-32s %4d\n", $2, $1}'
+  # uniq は使わない。macOS の uniq は日本語を含む相異なる行を同一として畳み、
+  # 4カテゴリ11件が1カテゴリ11件として出た（verify_the_check_worked.md）
+  cut -f2 /tmp/lint_docs_spacing.$$ | python3 -c '
+import collections, sys
+for k, v in sorted(collections.Counter(sys.stdin.read().splitlines()).items(),
+                   key=lambda kv: (-kv[1], kv[0])):
+    print("   %-32s %4d" % (k, v))'
   [ "$detail" = 1 ] && sed 's|^|   |' /tmp/lint_docs_spacing.$$
 fi
 rm -f /tmp/lint_docs_spacing.$$
