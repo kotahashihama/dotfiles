@@ -94,6 +94,14 @@
 
 **描画結果を見る**（ `recheck_after_every_revision.md` の3周目）。構文が通っても、意図した見え方になるとは限りません。
 
+**読み手が見る描画器で確かめる。** 会話へ出す図は TUI が Unicode で描くので、そちらへ流す。
+
+```bash
+printf '<ソース>' | node ~/.claude/plugins/cache/claude-code-mermaid/claude-code-mermaid/*/scripts/claude-code-mermaid.mjs
+```
+
+**貼り先がブラウザなら、そちらでも描く。** 描画器が違えば崩れ方も違うので、**通した側の結果しか保証できません**。
+
 ```bash
 npx -y -p @mermaid-js/mermaid-cli mmdc -i diagram.mmd -o diagram.svg
 ```
