@@ -113,6 +113,10 @@ brew "node"
 brew "ni"
 # Prompt theme engine for any shell
 brew "oh-my-posh"
+# Your own personal AI assistant
+brew "openclaw-cli"
+# AI coding agent, built for the terminal
+brew "opencode"
 # Object-relational database system
 brew "postgresql@14"
 # Framework for managing multi-language pre-commit hooks
