@@ -170,6 +170,7 @@ cask "alt-tab"
 cask "amazon-photos"
 # Agent orchestration platform
 cask "antigravity"
+cask "antigravity-cli"
 # Application uninstaller
 cask "appcleaner"
 # Chromium based browser
@@ -202,6 +203,7 @@ cask "cmux"
 cask "codex"
 # Write, edit, and chat about your code with AI
 cask "cursor"
+cask "cursor-cli"
 # Browser for SQLite databases
 cask "db-browser-for-sqlite"
 # AI-powered translator
