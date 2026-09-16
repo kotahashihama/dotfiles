@@ -142,7 +142,8 @@
     "codex@openai-codex": true,
     "skill-creator@claude-plugins-official": true,
     "agentkit-shopify@worldcoin-agentkit": true,
-    "agy-skills@agy-skills": true
+    "agy-skills@agy-skills": true,
+    "claude-code-mermaid@claude-code-mermaid": true
   },
   "extraKnownMarketplaces": {
     "openai-codex": {
@@ -161,6 +162,12 @@
       "source": {
         "source": "github",
         "repo": "wildriver/agy-skills"
+      }
+    },
+    "claude-code-mermaid": {
+      "source": {
+        "source": "github",
+        "repo": "gecm0/render-mermaid"
       }
     }
   },
