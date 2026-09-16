@@ -42,16 +42,6 @@ elif command -v gh >/dev/null 2>&1; then
   echo "ℹ️  gh の認証がまだです。gh auth login のあとで gh extension install を実行してください"
 fi
 
-# 外部のスキル。実体は ~/.agents 配下に入るのでこのリポジトリでは運ばない。
-# ~/.claude/skills へリンクが張られるところまでインストーラがやる
-if command -v npx >/dev/null 2>&1; then
-  for skill in coji/natural-japanese; do
-    [ -e "$HOME/.agents/skills/${skill#*/}" ] && continue
-    npx --yes skills add "$skill" >/dev/null 2>&1 \
-      || echo "⚠️  $skill の導入に失敗しました"
-  done
-fi
-
 # Claude Code のアカウント切り替え。インストーラが sha256 を検証してから置く。
 # --nocargo でビルド済みのバイナリを取る（cargo があると既定でソースから建てる）
 if [ ! -x "$HOME/.local/bin/clauth" ] && command -v curl >/dev/null 2>&1; then
