@@ -52,15 +52,6 @@
             "command": "bash ~/.claude/hooks/surface-deleted-comments.sh"
           }
         ]
-      },
-      {
-        "matcher": "Bash|Write|Edit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash ~/.claude/hooks/lint-markdown-ai-writing.sh"
-          }
-        ]
       }
     ],
     "PreToolUse": [
@@ -150,7 +141,8 @@
     "slack@claude-plugins-official": true,
     "codex@openai-codex": true,
     "skill-creator@claude-plugins-official": true,
-    "agentkit-shopify@worldcoin-agentkit": true
+    "agentkit-shopify@worldcoin-agentkit": true,
+    "agy-skills@agy-skills": true
   },
   "extraKnownMarketplaces": {
     "openai-codex": {
@@ -163,6 +155,12 @@
       "source": {
         "source": "github",
         "repo": "worldcoin/agentkit-shopify-demo"
+      }
+    },
+    "agy-skills": {
+      "source": {
+        "source": "github",
+        "repo": "wildriver/agy-skills"
       }
     }
   },
