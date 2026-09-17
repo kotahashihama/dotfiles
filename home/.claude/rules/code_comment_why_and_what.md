@@ -129,4 +129,4 @@ WHAT を書いてよいことは、**何でも書いてよいことではあり�
 - `concise_first_then_detail.md` （簡潔に）: WHAT の「1〜2行」は本ルールと同じ基準
 - `explain_from_observables.md` （観測できるものから始める）: **「指すものが1つに決まるか」の判定軸はあちら**。本ルールはそれをコードコメントへ当てる
 - `review-comments` スキル: 書いた後の点検手順。本ルールは書くときの基準
-- `/japanese-tech-writing` と `/agy-review` （文章の点検）: **日本語のコメントも対象**。書く基準は本ルール、文章としての点検はあちら（通す順序と場面は `no_ai_style_writing.md` の「まとまった日本語を出すときは、2つを順に通す」）
+- `/japanese-tech-writing` と `/agy-review` （文章の点検）: **日本語のコメントも対象**。書く基準は本ルール、文章としての点検はあちら（通す順序と場面は `no_ai_style_writing.md` の「文章の点検を通す場面と順序」）
