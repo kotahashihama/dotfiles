@@ -50,7 +50,7 @@
 
 数えるだけなら `grep` で足りる。判断の根拠として原文を読む必要がある作業（規約と差分の照合、反証）は3番目に当たる。
 
-**常に効かせたいものは rules、呼ばれたときだけ効かせたいものは skills。** 書き方と整理の規約は `rules/rule_conventions.md` と `rules/align_skill_md_format.md`。
+**常に効かせたいものは rules、呼ばれたときだけ効かせたいものは skills。** 書き方と整理の規約は `rules/rule_conventions.md` が両方を持つ。
 
 **汎用の規約は rules、そのリポジトリだけの事実は memory。** どちらも毎セッション読まれるので、同じことを書くと二重にロードされる（ `/organize-rules` の「auto memory との境界」）。
 

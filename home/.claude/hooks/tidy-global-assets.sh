@@ -77,7 +77,7 @@ shown = ", ".join(files[:5]) + (f" ほか {len(files) - 5} 件" if len(files) > 
 msg = (
     f"グローバル資産を編集しました（{shown}）。"
     "**この編集を契機に棚卸しまで済ませてください**"
-    "（rule_conventions.md の「整理の契機」/ align_skill_md_format.md の「手を入れたら全体を整理する」）。\n"
+    "（rule_conventions.md の「手を入れたものだけ直して終えない」）。\n"
     + "\n".join("- " + c for c in hit)
     + "\n整理が不要と判断した場合も、確認した旨を報告してください。"
 )

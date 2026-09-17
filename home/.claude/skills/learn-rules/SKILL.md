@@ -79,7 +79,7 @@ allowed-tools: Bash(git status:*) Bash(git diff:*) Bash(git add:*) Bash(git comm
 | 置き場 | 従う規約 |
 | --- | --- |
 | `rules/` | `rule_conventions.md` （章立て・命名・量） |
-| `skills/` | `align_skill_md_format.md` （frontmatter・命名・引数） |
+| `skills/` | `rule_conventions.md` （書式）、`/organize-rules` （frontmatter・命名・引数） |
 | `hooks` | 下記「フックを書くときだけの注意」 |
 
 **自分が実行できない規定を書かない。** 途中でユーザーへ渡すことになるなら、それは規約ではなく依頼です。
@@ -94,7 +94,7 @@ allowed-tools: Bash(git status:*) Bash(git diff:*) Bash(git add:*) Bash(git comm
 
 ### 6. 棚卸しまで済ませる
 
-**手を入れたら、その置き場全体を見直すまでが1セット**（ `rule_conventions.md` / `align_skill_md_format.md` ）。
+**手を入れたら、その置き場全体を見直すまでが1セット**（ `rule_conventions.md` ）。
 
 - **分割**: 1ファイルに主題が2つ以上ある
 - **マージ**: 同じ主題が複数に散っている
@@ -134,6 +134,6 @@ sh scripts/git-hooks/pre-commit    # 公開側の固有名を検査
 ## 関連
 
 - `ask_before_editing_claude_assets.md` （設定は尋ねてから）: **土台。** 気づく手掛かり・置き場の見立て・承認の形はあちらが定める。本スキルは**実行の手順**を足す
-- `rule_conventions.md` / `align_skill_md_format.md`: 書き方と整理。**5と6の中身はあちらが持つ**
+- `rule_conventions.md`: ルールとスキルの置き分けと整理。**5と6の中身はあちらが持つ**
 - `no_internal_names_in_public_assets.md` （公開側に社内固有名を書かない）: 2の軸2の根拠
 - `verify_before_asserting.md` （断定の前に裏を取る）: 「無い」を語で判定しない、フックは実物の入力で通す
