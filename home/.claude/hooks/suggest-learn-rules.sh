@@ -9,6 +9,11 @@ set -u
 
 payload=$(cat)
 
+# リポジトリが同じ役目のフックを持っているなら任せる。両方が動くと同じ促しが二重に出る
+if [ -n "${CLAUDE_PROJECT_DIR:-}" ] && ls "$CLAUDE_PROJECT_DIR"/.claude/hooks/suggest-learn-rules.* >/dev/null 2>&1; then
+  exit 0
+fi
+
 # プロンプトの格納キーは公式ドキュメントに明記が無い。候補すべてを繋いで見る。
 # 先勝ちで1つに絞ると、別のキーに入っていたときに静かに機能しなくなる。
 text=$(printf '%s' "$payload" | python3 -c '
@@ -28,6 +33,9 @@ print("\n".join(str(d[k]) for k in keys if isinstance(d.get(k), str) and d[k]))
 matched=$(printf '%s' "$text" | python3 -c '
 import re, sys
 t = sys.stdin.read()
+# 貼り付けた文章とコードブロックは本人の訂正ではないので除く
+t = re.sub(r"<pasted_content[^>]*>.*?</pasted_content[^>]*>", "", t, flags=re.S)
+t = re.sub(r"```.*?```", "", t, flags=re.S)
 
 patterns = (
     # 訂正・打ち消し。直前の振る舞いを否定している
