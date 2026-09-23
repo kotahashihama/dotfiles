@@ -278,7 +278,7 @@
     "slack@claude-plugins-official": true,
     "codex@openai-codex": true,
     "skill-creator@claude-plugins-official": true,
-    "agentkit-shopify@worldcoin-agentkit": true,
+    "agentkit-shopify@worldcoin-agentkit": false,
     "agy-skills@agy-skills": true,
     "claude-code-mermaid@claude-code-mermaid": true
   },
