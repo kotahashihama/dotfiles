@@ -52,7 +52,7 @@ grep -rl '<語>' home/.claude/skills/ private/.claude/skills/     # 実体を直
 2. 戻す
 3. **戻ったことを確かめる**（ `git status` が clean か、`grep` で0件か）。復元のコマンドは黙って失敗する（ `cp` の上書き確認で止まる等。`\cp -f` を使う）
 
-戻し方は、壊す前の `git status` の行数で決める。壊した分だけなら `git checkout -- <path>` （ステージ済みなら `git checkout HEAD -- <path>` ）。他にも未コミットの変更があるなら、壊す前にコピーして控え、`\cp -f` で戻す。`git checkout` は壊した分と直した分を区別しないので、直したばかりの変更ごと消えます。
+戻し方は、壊すファイルに他の未コミットの変更があるかで決める（ `git diff -- <path>` が空か）。無ければ `git checkout -- <path>` （ステージ済みなら `git checkout HEAD -- <path>` ）。あるなら、壊す前にコピーして控え、`\cp -f` で戻す。`git checkout` は壊した分と直した分を区別しないので、直したばかりの変更ごと消えます。
 
 ## 数えた対象に、自分の差分や他の作業ツリーが入っていないか
 
