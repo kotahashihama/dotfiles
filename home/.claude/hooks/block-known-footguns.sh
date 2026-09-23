@@ -148,4 +148,11 @@ if printf '%s' "$sq" | grep -qE 'gh[[:space:]]+pr[[:space:]]+review[^|;&]*(--app
   deny 'PR の承認 / 変更要求はユーザー本人が行います。レビューを投稿するなら `--comment` （API なら `"event":"COMMENT"` ）で、是非の表明は会話でユーザーへ渡してください（review-pr スキル「承認は GitHub に書かず、見立てはユーザーへ渡す」）'
 fi
 
+# 6) `docker compose down -v` — 名前付きボリュームまで消え、ローカルの DB が戻らない。
+#    特定のサービスだけ初期化したい指示でも全部消える。`down` だけなら止めない。
+#    引用符の中（コミットメッセージ等）は実行されないので、引用符を落とした側で見る
+if printf '%s' "$stripped" | grep -qE 'docker[[:space:]-]+compose[^|;&]*[[:space:]]down([[:space:]][^|;&]*)?[[:space:]](-v|--volumes)([[:space:]]|$)'; then
+  deny '`docker compose down -v` は名前付きボリュームをすべて消し、ローカルの DB が戻りません。特定のサービスだけ初期化するなら `docker compose rm -sfv <サービス>` と、そのサービスのボリュームだけを消してください。全部消す必要が本当にあるなら、ユーザーへ確認してください'
+fi
+
 exit 0
