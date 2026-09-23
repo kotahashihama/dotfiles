@@ -1,7 +1,7 @@
 #!/bin/sh
 # Claude Code statusLine command — 4-line layout
 #
-# Line 1: 🐙 repo[/subpath] │ 🌿 branch [+N ~M] [│ 🌳 worktree]
+# Line 1: 🐙 repo[/subpath] │ 🌿 branch [+N ~M] [│ 🌳 worktree] [│ 🎫 KEY-1 #2]
 #         (📂 full path instead, when outside a git repo)
 # Line 2: 🧠 progress bar used% │ 🤖 model · effort · output style
 # Line 3: 💰 5h X% (🔄 Xam) │ 7d X% (🔄 M/DD Xam)  (omitted when absent)
@@ -40,11 +40,14 @@ used_pct=$(echo "$input" | jq -r '.context_window.used_percentage // empty')
 
 # 既定ではどこにも出ないもの。jq は1回にまとめ、cut で切り出す
 extra=$(echo "$input" | jq -r '[
-  (.effort.level // ""), (.output_style.name // ""), (.worktree.name // "")
+  (.effort.level // ""), (.output_style.name // ""), (.worktree.name // ""),
+  (.pr.number // "" | tostring), (.pr.url // "")
 ] | @tsv')
 effort=$(printf '%s' "$extra" | cut -f1)
 out_style=$(printf '%s' "$extra" | cut -f2)
 wt_name=$(printf '%s' "$extra" | cut -f3)
+pr_number=$(printf '%s' "$extra" | cut -f4)
+pr_url=$(printf '%s' "$extra" | cut -f5)
 
 # ---------------------------------------------------------------------------
 # Line 1 — Location
@@ -94,7 +97,41 @@ if [ -n "$toplevel" ]; then
     esac
   fi
 
-  printf "%s\n" "🐙 ${WHITE}${repo_name}${RESET} │ 🌿 ${branch_color}${branch}${RESET}${diff_part}${wt_part}"
+  # 課題管理ツールのチケットはブランチ名に入れる運用なので、手元だけで読める
+  ticket=$(printf '%s' "$branch" | grep -oE '[A-Z][A-Z0-9_]*-[0-9]+' | head -n 1)
+
+  # GitHub の issue は、PR が閉じる issue を引く。通信が要るので結果をキャッシュし、
+  # 古ければ裏で取り直して今回は手元の値を出す（ステータスラインを待たせない）
+  gh_issues=""
+  if [ -n "$pr_number" ] && command -v gh >/dev/null 2>&1; then
+    repo_slug=$(printf '%s' "$pr_url" | sed -n 's|^https://github.com/\([^/]*/[^/]*\)/pull/.*|\1|p')
+    if [ -n "$repo_slug" ]; then
+      cache_dir="${XDG_CACHE_HOME:-$HOME/.cache}/claude-statusline"
+      cache="${cache_dir}/issues-$(printf '%s' "$repo_slug" | tr '/' '_')-${pr_number}"
+      if [ -f "$cache" ]; then
+        gh_issues=$(cat "$cache")
+        age=$(( $(date +%s) - $(stat -f %m "$cache" 2>/dev/null || echo 0) ))
+      else
+        age=999999
+      fi
+      if [ "$age" -gt 300 ]; then
+        mkdir -p "$cache_dir"
+        ( gh pr view "$pr_number" -R "$repo_slug" --json closingIssuesReferences \
+            -q '[.closingIssuesReferences[].number | "#\(.)"] | join(" ")' \
+            >| "${cache}.tmp" 2>/dev/null && mv -f "${cache}.tmp" "$cache" ) \
+          </dev/null >/dev/null 2>&1 &
+      fi
+    fi
+  fi
+
+  ticket_part=""
+  if [ -n "$ticket" ] || [ -n "$gh_issues" ]; then
+    ticket_part=" │ 🎫"
+    [ -n "$ticket" ] && ticket_part="${ticket_part} ${CYAN}${ticket}${RESET}"
+    [ -n "$gh_issues" ] && ticket_part="${ticket_part} ${CYAN}${gh_issues}${RESET}"
+  fi
+
+  printf "%s\n" "🐙 ${WHITE}${repo_name}${RESET} │ 🌿 ${branch_color}${branch}${RESET}${diff_part}${wt_part}${ticket_part}"
 else
   display_path=$(printf '%s' "$cwd" | sed "s|^${HOME}|~|")
   printf "%s\n" "📂 ${WHITE}${display_path}${RESET}"
