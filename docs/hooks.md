@@ -13,6 +13,7 @@
 | `PreToolUse` | `Bash` | **弾く**。下表の 6 種 |
 | `PostToolUse` | `Bash` | **警告する**。成功として返ったが出力に失敗の兆候がある |
 | `PostToolUse` | `Bash` `Write` `Edit` | **促す**。グローバル資産を編集したら棚卸しへ |
+| `PostToolUse` | `Bash` `Read` `Grep` | **伏せる**。秘匿値の形をした文字列を、モデルへ渡す前に置き換える。接頭辞で見分けられる形だけで、パスワードや接続文字列は拾わない |
 | `SessionStart` | 起動・再開 | **伝える**。dotfiles に未コミットの資産がある（dotfiles 自身のセッションでは黙る） |
 | **`UserPromptSubmit`** | 全部 | **促す**。訂正・好み・恒久化の要求を検知して、資産化の検討へ（`/learn-rules`） |
 | `Stop` | 全部 | **止めさせない**。「よければ着手します」で終えようとしたとき |
@@ -53,5 +54,7 @@
 - `PostToolUse` の入力フィールド名は、公式ドキュメントの記載と実物が違う。**実物を控えて確かめる**
 - `UserPromptSubmit` のプロンプト格納キーも明記が無い。**実物では `prompt`**（`session_id` / `cwd` / `prompt_id` / `permission_mode` / `hook_event_name` / `session_title` と並ぶ）
 - Claude に届けるなら `hookSpecificOutput.additionalContext`。ユーザー向けの表示欄とは別
+- **出力を置き換える `updatedToolOutput` は、元の `tool_response` と同じ形で返す。** 形が違うと黙って元の出力が使われる。文字列の置き換えだけにして構造は触らない
+- **変えていないなら `updatedToolOutput` を返さない。** 同じイベントのフックは元の出力に対して並列に走り、最後に書いたものが残る。何も変えずに返すと、他のフックの置き換えを潰す
 - 作業ツリーは**全セッションで共有**される。状態だけで判定すると他セッションの編集を拾う
 - **除去処理は検査ごとに違う。** 片方にだけ掛けると、もう片方が素通りする（実際に踏んだ）
