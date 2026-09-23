@@ -5,7 +5,7 @@
 #
 # `~/.claude/` の実体は dotfiles リポジトリで、編集しただけでは履歴に残らない。
 # 編集したセッションが伝え漏らすと、次に気づく機会が無い
-# （ask_before_editing_claude_assets.md の「編集したら永続化まで見る」）。
+# （ask_before_editing_claude_assets.md の「グローバル資産を編集したら、永続化まで見る」）。
 #
 # 変更が無ければ何も言わない。
 #
