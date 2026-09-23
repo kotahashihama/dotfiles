@@ -105,7 +105,7 @@ https://github.com/OWNER/REPO/blob/<commit>/path/to/file.go#L42-L48
 
 **閉じる時機は自分で決める。** 依存する変更が別 PR に残っている、リリースまで開けておきたい、複数 PR で1つの課題を分けている。いずれも**マージ＝完了ではありません**。
 
-参照するだけなら `#123` と書けば足ります（ `github_cross_repo_reference.md` ）。リンクは張られ、閉じません。
+参照するだけなら `#123` と書けば足ります（ `github_writing.md` ）。リンクは張られ、閉じません。
 
 ## 脚注は着地位置に注意する
 
@@ -128,9 +128,9 @@ https://github.com/OWNER/REPO/blob/<commit>/path/to/file.go#L42-L48
 
 ## 関連
 
-- `github_rich_formatting.md` （常駐のルール）: **アノテーションと、フックもスキルも通らない経路の注意はあちらが持つ**。本スキルは PR 本文・コメントを書く場面に限った手段の選び方
+- `github_writing.md` （常駐のルール）: **アノテーションと、フックもスキルも通らない経路の注意はあちらが持つ**。本スキルは PR 本文・コメントを書く場面に限った手段の選び方
 - `concise_first_then_detail.md` （簡潔に）: **表と Mermaid の使い分けはあちら**。本スキルは GitHub でしか使えない手段を足す
 - `github_note_generated_by_claude.md` （生成者表示）: **`NOTE` を占有している**。他の Alert と混ざらないよう用途を分ける
-- `github_cross_repo_reference.md` （他リポジトリの参照）: **`#123` は参照するだけで閉じない**
-- `github_one_sentence_per_line.md` （1文ごとに改行）: あちらは**文の表記**、本スキルは**構造の選び方**
+- `github_writing.md` （他リポジトリの参照）: **`#123` は参照するだけで閉じない**
+- `github_writing.md` （1文ごとに改行）: あちらは**文の表記**、本スキルは**構造の選び方**
 - `/create-pr` / `/update-pr-description` / `/review-pr` / `/resolve-ai-reviews` / `/resolve-human-reviews`: 本スキルが土台で、各スキルは投稿先固有の事情を上乗せする

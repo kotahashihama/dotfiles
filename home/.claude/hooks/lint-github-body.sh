@@ -145,7 +145,7 @@ def spacing(body):
 
 # PR テンプレートが地の文として置く節。見出しから次の見出しまでを検査から外す。
 # リポジトリ側が書いた文章なので、こちらの規約を当てても直す先が無い
-# （github_one_sentence_per_line.md の例外）。
+# （github_writing.md の例外）。
 TEMPLATE_SECTIONS = ("レビューのルール", "AI レビュー")
 
 
@@ -154,7 +154,7 @@ def prose_lines(body):
 
     除くのは、コードブロック・引用・HTML コメント・テンプレートの固定節。
     いずれも PR テンプレートの固定文で、リポジトリ側の文章なので逐語のまま残す
-    （github_one_sentence_per_line.md の例外）。
+    （github_writing.md の例外）。
     """
     out, inblock, incomment, intemplate = [], False, False, False
     for n, line in enumerate(body.split("\n"), 1):
@@ -183,7 +183,7 @@ def check(body, note_required=True):
     hits = []
     stripped = body.strip()
 
-    # コマンドコメントは本文をコマンド1行に保つ（github_command_comments.md）
+    # コマンドコメントは本文をコマンド1行に保つ（github_writing.md）
     if re.fullmatch(r"/[a-z][a-z0-9-]*", stripped):
         return []
 
@@ -198,7 +198,7 @@ def check(body, note_required=True):
 
     bad = [n for n, _r, l in lines if re.search(r"。\s*$", l)]
     if bad:
-        hits.append(("github_one_sentence_per_line.md",
+        hits.append(("github_writing.md",
                      "行末に句点がある。1文で改行し、行末の 。 は落とす（？ と ！ は残す）",
                      bad))
 
@@ -222,7 +222,7 @@ def check(body, note_required=True):
         if rest.count("**") % 2 or rest.count("~~") % 2 or rest.count("`") % 2:
             bad.append(n)
     if bad:
-        hits.append(("github_one_sentence_per_line.md",
+        hits.append(("github_writing.md",
                      "対になる記法が閉じていない（ `**` `~~` バッククォート）。"
                      "強調が行をまたいで効く。**読んでも気づけないので必ず数える**", bad))
 
@@ -240,7 +240,7 @@ def check(body, note_required=True):
     bad = [n for n, _r, l in lines
            if re.search(r"自分の言葉で|自分の判断で|AI が書|Claude が判断", l)]
     if bad:
-        hits.append(("github_no_authorship_voice.md",
+        hits.append(("github_writing.md",
                      "書き手の帰属を匂わせる表現がある。変更そのものを主語にする", bad))
 
     bad = [n for n, _r, l in lines
@@ -320,7 +320,7 @@ for body in bodies(cmd):
                         % a[:100])
     for n in orphan_refs(body):
         problems.append("- #%s が同一リポジトリに見つからない。他リポジトリなら "
-                        "owner/repo#%s と書く\n  → github_cross_repo_reference.md"
+                        "owner/repo#%s と書く\n  → github_writing.md"
                         % (n, n))
 
 if not problems:

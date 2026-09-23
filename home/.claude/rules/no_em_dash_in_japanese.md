@@ -46,6 +46,6 @@
 
 ## 関連
 
-- `github_one_sentence_per_line.md` （1文ごとに改行し句点を落とす）: **句点で切ればそのまま1行になる**。本ルールで分けた文が、あちらの単位になる
+- `github_writing.md` （1文ごとに改行し句点を落とす）: **句点で切ればそのまま1行になる**。本ルールで分けた文が、あちらの単位になる
 - `no_space_between_number_and_unit.md` （数値と単位の空白）: どちらも日本語の表記を定める
 - `concise_first_then_detail.md` （簡潔に）: ダッシュで足した補足は、たいてい削れる

@@ -44,5 +44,5 @@
 
 - `no_operating_on_others_prs.md` （他人の PR は触らない）: **本ルールより先に効く**。あちらは誰の PR か、本ルールはいつやるか。他人の PR なら、指示があってもまず作成者へ確かめる
 - `decide_or_ask.md` （自分で決めるか尋ねるか）: 取り消せない操作は尋ねるという判断軸を持つ。本ルールはそれをレビュー依頼の場面で具体化したもの
-- `no_auto_reply_human_review_comments.md` （人間コメントへ返信しない）: レビュアーへ働きかける操作を勝手にしないという点で同じ。あちらは返信と Resolve、こちらは依頼
+- `responding_to_reviews.md` （人間コメントへ返信しない）: レビュアーへ働きかける操作を勝手にしないという点で同じ。あちらは返信と Resolve、こちらは依頼
 - `use_ship_pr_for_pr_creation.md` （PR 作成は ship-pr から）: `/ship-pr` は AI レビューまで回しても draft のまま止まる。本ルールがその後の状態変更を規定する
