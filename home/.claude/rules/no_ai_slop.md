@@ -38,7 +38,7 @@
 ## 関連
 
 - `/japanese-tech-writing` （日本語技術文書の文章規範）: **冗長の排除と、対象を具体的に指すことはあちら**。本ルールは足す前の判定を持つ
-- `no_ai_style_writing.md` （AI が書いたと分かる文体で書かない）: **元は1本だった。** 本ルールは量、あちらは表現
-- `concise_first_then_detail.md` （簡潔に）: あちらは**どう畳むか**、本ルールは**そもそも足さない**
+- `no_ai_style_writing.md` （AI が書いたと分かる文体で書かない）: 元は1本だった。本ルールは量、あちらは表現
+- `concise_first_then_detail.md` （簡潔に）: あちらはどう畳むか、本ルールはそもそも足さない
 - `base_records_on_measurements.md` （記録は実測に基づける）: 中身の確かさはあちら
-- `focus_insights_on_judgment.md` （洞察は判断材料に絞る）: **何を書くか**があちら、**どれだけ足すか**が本ルール
+- `focus_insights_on_judgment.md` （洞察は判断材料に絞る）: 何を書くかがあちら、どれだけ足すかが本ルール
