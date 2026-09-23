@@ -9,7 +9,7 @@ ghq create github.com/<owner>/<repo>              # 新しく作る
 ghq get github.com/<owner>/<repo>                 # 取ってくる
 ```
 
-置き場は `$(ghq root)/github.com/<owner>/<repo>` の1通りに決まります。**パスを手で組み立てない。** ルートを変えたときに、組み立てた側だけが古い場所を指します。
+置き場は `$(ghq root)/github.com/<owner>/<repo>` の1通りに決まります。**ルートを直書きしない。** 起点は必ず `$(ghq root)` にする。ルートを変えたときに、直書きした側だけが古い場所を指します。
 
 ## GitHub にも作るとき
 

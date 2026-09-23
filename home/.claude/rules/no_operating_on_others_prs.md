@@ -5,6 +5,7 @@ PR へ何かする前に、**それが誰の PR かを確かめて**ください
 
 ```bash
 gh pr view <PR> --json author -q '.author.login'
+gh api user -q .login   # 自分のアカウント名。上の値と比べる
 ```
 
 **一覧から入るときこそ確かめる。** `gh pr list` は番号と title しか見せないので、全部が自分のものに見えます。
