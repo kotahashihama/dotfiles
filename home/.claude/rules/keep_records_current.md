@@ -110,38 +110,11 @@ PR に push したなら、本文と差分の食い違いを確認し、ズレ�
 
 追記にすると、読み手は消えた前提を追うことになります（「先程〜と書きましたが」）。誰も読んでいないなら、その往復ごと省ける。
 
-投稿してよい場面かどうかは、この節では決めません（ `no_auto_reply_human_review_comments.md` ）。ここが扱うのは、投稿済みのものをどう直すかだけです。
+投稿してよい場面かどうかは、この節では決めません（ `responding_to_reviews.md` ）。ここが扱うのは、投稿済みのものをどう直すかだけです。
 
 ### 残し方
 
-**前のコメントは編集せず、GitHub の Hide comment で `Outdated` としてマークする。**
-折りたたまれたうえで「marked as outdated」と表示され、開けば当時の内容がそのまま読めます。
-
-```bash
-gh api repos/OWNER/REPO/issues/comments/<id> --jq '.node_id'
-gh api graphql -f query='mutation($id: ID!) { minimizeComment(input: {subjectId: $id, classifier: OUTDATED}) { minimizedComment { isMinimized } } }' -F id=<node_id>
-```
-
-新しい判断は新規コメントとして投稿する。上から読めば「こう考えた → 覆った → こうなった」の流れが辿れます。
-
-新しい側から、前のコメントへリンクを貼る。畳まれている分、リンクが無いと読み手が探しに行くことになります。
-
-```markdown
-**[前のコメント](https://github.com/OWNER/REPO/pull/123#issuecomment-456)で〜と判断していましたが、それを訂正します**
-```
-
-コメントの URL は `gh api` の応答の `html_url`、または GitHub 上のコメントメニューの `Copy link` で取れます。
-
-`<details>` で自作しない。GitHub の機能を使えば、覆ったことが一目で分かる形で表示されます。
-自作すると、開くまで何が覆ったのか分からない見た目になります。
-
-**調査の内容は消さない。** 結論が覆っても、何を見て何が分かったかは次に同じ壁へ当たった人の手がかりになります。
-
-うっかり上書きしてしまったら、編集履歴から戻せます。GitHub はコメントの版を保持しています。
-
-```bash
-gh api graphql -f query='query($id: ID!) { node(id: $id) { ... on IssueComment { userContentEdits(first: 20) { nodes { editedAt diff } } } } }' -F id=<node_id>
-```
+前のコメントは編集せず、GitHub の Hide comment で `Outdated` として畳み、新しい判断は新規コメントで投稿して前のコメントへリンクを貼る。調査の内容は消さない。手順（GraphQL の呼び方・編集履歴からの戻し方）は `/update-pr-description` の `references/multi-pr.md` が持ちます。
 
 ## 禁止する挙動
 
@@ -169,7 +142,7 @@ gh api graphql -f query='query($id: ID!) { node(id: $id) { ... on IssueComment {
 ## 関連
 
 - `verify_before_asserting.md` （断定の前に裏を取る）: あちらは書くとき、本ルールは書いた後の鮮度を扱う
-- `no_auto_reply_human_review_comments.md` （人間コメントへ勝手に返信しない）: 投稿してよい場面かはあちらが決める。本ルールは投稿済みのものをどう直すかを扱う
+- `responding_to_reviews.md` （人間コメントへ勝手に返信しない）: 投稿してよい場面かはあちらが決める。本ルールは投稿済みのものをどう直すかを扱う
 - `ask_before_editing_claude_assets.md` （設定は尋ねてから）: 触る前に尋ねる側。本ルールは触った後の鮮度
 - `/update-pr-description` （PR 本文と補足コメントの更新）: PR 側の実行手段
 - `/update-backlog-comments` （課題管理ツールのコメントの点検と更新）: 課題側の実行手段。過不足・実態とのずれ・読みやすさを測る

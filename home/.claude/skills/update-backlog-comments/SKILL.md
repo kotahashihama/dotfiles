@@ -20,7 +20,7 @@ allowed-tools: Bash(gh pr view:*) Bash(gh pr list:*) Bash(gh api:*) Bash(git gre
 | 主題 | 持っている場所 |
 | --- | --- |
 | Alert が使えない投稿先での生成者表示の形 | `github_note_generated_by_claude.md` |
-| 使う記号が `[fyi]` と `[memo]` の2つだけであること | `github_rich_formatting.md` |
+| 使う記号が `[fyi]` と `[memo]` の2つだけであること | `github_writing.md` |
 | 編集するか別コメントで足すかの**判定軸** | `keep_records_current.md` |
 
 **判定軸はあちら、痕跡の見方はこちら**が持ちます。課題管理ツールにはスレッドが無いので、GitHub の返信関係では判定できません（手順5）。
@@ -84,7 +84,7 @@ allowed-tools: Bash(gh pr view:*) Bash(gh pr list:*) Bash(gh api:*) Bash(git gre
 
 | 観点 | 直す目安 |
 | --- | --- |
-| 行末の句点 | **0件になるまで**（ `github_one_sentence_per_line.md` ）。引用行は対象外 |
+| 行末の句点 | **0件になるまで**（ `github_writing.md` ）。引用行は対象外 |
 | 1文の長さ | 70字超、または読点3つ以上 |
 | 1段落の強調 | 3つ以上 |
 | 散文の量 | 表へ畳めるものが散文のままになっていないか |
@@ -158,5 +158,5 @@ allowed-tools: Bash(gh pr view:*) Bash(gh pr list:*) Bash(gh api:*) Bash(git gre
 - `verify_before_asserting.md` （断定の前に裏を取る）: 実態との照合で使う。**他人が起票した課題を書き換えない**のもあちら
 - `karma_commit_style.md` （PR に番号を付けるか）: **経緯のコメントが要るかの判定**はあちら
 - `github_note_generated_by_claude.md` （生成者表示）: **文言と、Alert が使えない投稿先での形**を持つ
-- `github_one_sentence_per_line.md` （1文ごとに改行し句点を落とす）: 行末の句点の検査
-- `github_rich_formatting.md` （投稿する文章の記号）: **`[fyi]` と `[memo]` の使い分け**
+- `github_writing.md` （1文ごとに改行し句点を落とす）: 行末の句点の検査
+- `github_writing.md` （投稿する文章の記号）: **`[fyi]` と `[memo]` の使い分け**
