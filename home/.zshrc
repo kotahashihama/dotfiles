@@ -253,3 +253,6 @@ if [[ -f "$HOME/.clauth/completions/clauth.zsh" ]]; then
   source "$HOME/.clauth/completions/clauth.zsh"
   compdef _clauth clauth
 fi
+
+# Claude Code は起動スクリプト経由で起動する（autoMode の信頼先を --settings で渡すため。~/.claude/bin/claude）
+export PATH="$HOME/.claude/bin:$PATH"

@@ -1,0 +1,10 @@
+#!/bin/sh
+# autoMode の信頼先は settings.private.json にある。Claude Code が個人の autoMode を読むのは
+# ~/.claude/settings.json と --settings だけなので、起動のたびに --settings で渡す
+real=/opt/homebrew/bin/claude
+priv="$HOME/.claude/settings.private.json"
+if [ -f "$priv" ]; then
+  # --settings は通常のファイルしか受け付けないので、リンクを実体へ解く
+  exec "$real" --settings "$(readlink -f "$priv")" "$@"
+fi
+exec "$real" "$@"
