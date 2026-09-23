@@ -3,7 +3,7 @@
 # 意味のない停止を止める Stop フック。
 #
 # 「よければ着手します」で終える形は、答えが分かっているのに委ねているだけで、
-# ユーザーは「続けて」と言うために呼ばれることになる（no_unnecessary_pausing.md）。
+# ユーザーは「続けて」と言うために呼ばれることになる（decide_or_ask.md）。
 #
 # **1プロンプトにつき1回しか止めない。** 誤検知しても1ターン余計に進むだけで、
 # 会話が止まらなくなることはない。
@@ -45,7 +45,7 @@ DECL = re.compile(r"(続けて|次に|次は|この後|続いて)[^。\n]{0,30}"
                   r"確認します|見ます|作ります|足します|測ります)")
 
 # 取り消せない操作は、宣言して止まるのが正しい（decide_or_ask.md /
-# no_auto_ready_pr.md / no_auto_reply_human_review_comments.md）
+# no_auto_ready_pr.md / responding_to_reviews.md）
 WAIT_OK = re.compile(r"(push|マージ|merge|ready|コミット|commit|返信|投稿|"
                      r"再依頼|force|Resolve)")
 
@@ -67,7 +67,7 @@ open(mark, "w").close()
 
 sys.stderr.write(
     "**やることが決まっているなら、着手の許可を求めずに進めてください**"
-    "（no_unnecessary_pausing.md）。\n\n"
+    "（decide_or_ask.md）。\n\n"
     "「よければ〜します」と書けるのは、よくない理由が思い当たらないからです。"
     "つまり答えは分かっています。分かっているなら、やる。\n\n"
     "**「次に〜します」と書いたなら、そのまま実行してください。** 宣言だけ残すと、"

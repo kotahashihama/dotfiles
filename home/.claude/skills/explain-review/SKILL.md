@@ -10,7 +10,7 @@ PR に付いたレビューコメントを取得し、**1件ずつ意図を噛�
 
 **説明だけを行い、コードは書き換えません。GitHub 上での返信・Resolve もしません。**
 
-## 土台は `explain_review_comment_first.md`
+## 土台は `responding_to_reviews.md`
 
 **1件あたりの型はルールが持っています。** 意図の咀嚼 → 現状のコード → 変更案 → 影響 → **推奨** → 対応可否を尋ねる、までがあちらの規定で、テンプレートも載っています。**本スキルはそれを再定義しません。**
 
@@ -47,7 +47,7 @@ gh api repos/OWNER/REPO/issues/<PR>/comments     # PR コメント欄
 ```
 
 - **並び順は `created_at` 昇順のまま維持する。** Conversation タブの並びと揃う（ `report_formatting.md` ）
-- **`/ai-review` のようなコマンドコメントは除外する。** 本文を trim して**コマンド1行だけか**で判定する（ `github_command_comments.md` ）。投稿者名では分けられない
+- **`/ai-review` のようなコマンドコメントは除外する。** 本文を trim して**コマンド1行だけか**で判定する（ `github_writing.md` ）。投稿者名では分けられない
 - **解決済みかどうかを見る。** 既に Resolve されたスレッドは既定で対象外。ユーザーが「全部見せて」と言えば含める
 
 ### 2. 人間 / bot を判別する
@@ -59,11 +59,11 @@ gh api repos/OWNER/REPO/issues/<PR>/comments     # PR コメント欄
 | 人間 | **`/resolve-human-reviews`**（返信・Resolve はしない。対応表を会話で渡す） |
 | bot | `/resolve-ai-reviews` （返信と Resolve まで含む） |
 
-**判別を文脈で行わない。** 「AI っぽい書き方」で決めると、人間のコメントに返信する事故が起きます（ `no_auto_reply_human_review_comments.md` ）。
+**判別を文脈で行わない。** 「AI っぽい書き方」で決めると、人間のコメントに返信する事故が起きます（ `responding_to_reviews.md` ）。
 
 ### 3. 1件ずつ、ルールの型で説明する
 
-**`explain_review_comment_first.md` のテンプレートに従う。** 指摘対象 / 問題視している点 / 提案 / 現状のコード / 変更案 / 影響 / **推奨**。
+**`responding_to_reviews.md` のテンプレートに従う。** 指摘対象 / 問題視している点 / 提案 / 現状のコード / 変更案 / 影響 / **推奨**。
 
 本スキルとして足すのは次の3点。
 
@@ -124,7 +124,7 @@ gh api repos/OWNER/REPO/issues/<PR>/comments     # PR コメント欄
 
 - 選択肢が2つ以上あるなら **`AskUserQuestion` で出す**（ `decide_or_ask.md` ）
 - **勝手に修正へ進まない。** GO が出てから `/resolve-human-reviews` か `/resolve-ai-reviews` へ渡す
-- **返信要否を聞かない。** 人間コメントへの返信はユーザーが判断する領分で、こちらから確認すること自体が侵入になる（ `no_auto_reply_human_review_comments.md` ）
+- **返信要否を聞かない。** 人間コメントへの返信はユーザーが判断する領分で、こちらから確認すること自体が侵入になる（ `responding_to_reviews.md` ）
 
 ## 出力の目安
 
@@ -137,8 +137,8 @@ gh api repos/OWNER/REPO/issues/<PR>/comments     # PR コメント欄
 ## やってはいけないこと
 
 - **コードを書き換えること。** 説明だけを行う。修正は GO が出てから、対応スキルの担当
-- **GitHub 上で返信・Resolve すること。** 本スキルの範囲外（ `no_auto_reply_human_review_comments.md` ）
-- **ルールのテンプレートを自前で再定義すること。** 1件あたりの型は `explain_review_comment_first.md` が持つ
+- **GitHub 上で返信・Resolve すること。** 本スキルの範囲外（ `responding_to_reviews.md` ）
+- **ルールのテンプレートを自前で再定義すること。** 1件あたりの型は `responding_to_reviews.md` が持つ
 - **人間 / bot を文脈で判別すること。** `user.type` で機械的に分ける
 - **コマンドコメントを解説対象に含めること。** 本文が trim してコマンド1行なら除外する
 - **今のコードを読まずに書くこと。** レビュー後の push で**既に直っている**ことがある
@@ -150,9 +150,9 @@ gh api repos/OWNER/REPO/issues/<PR>/comments     # PR コメント欄
 
 ## 関連
 
-- `explain_review_comment_first.md` （レビューコメントの意図を先に噛み砕く）: **土台。** 1件あたりの型・テンプレート・尋ねて止まることはあちらが定める。本スキルは**取得と横断**、そして**学びとして残すこと**を足す
-- `no_auto_reply_human_review_comments.md` （人間コメントへ返信しない）: 返信と Resolve をしない根拠
+- `responding_to_reviews.md` （レビューコメントの意図を先に噛み砕く）: **土台。** 1件あたりの型・テンプレート・尋ねて止まることはあちらが定める。本スキルは**取得と横断**、そして**学びとして残すこと**を足す
+- `responding_to_reviews.md` （人間コメントへ返信しない）: 返信と Resolve をしない根拠
 - `/resolve-human-reviews` / `/resolve-ai-reviews` （対応の実行）: **GO が出た後の渡し先。** 本スキルは判断材料を揃えるところまで
 - `/explain-code` （実装の説明）: **同じ explain 系。** 指摘の前提になっているコードを深く読むならあちらへ渡す
 - `report_formatting.md` （報告に貼る識別子の書式）: 一覧の並び順と `file:line` の書式はあちらが持つ
-- `github_command_comments.md` （コマンドコメントの別扱い）: 取得時に除外する根拠
+- `github_writing.md` （コマンドコメントの別扱い）: 取得時に除外する根拠

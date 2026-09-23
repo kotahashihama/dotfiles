@@ -230,13 +230,13 @@ pnpm install --frozen-lockfile     # 再生成後に通ることまで確かめ�
 
 - **何が壊れて、なぜ壊れたか**
 - **見送るなら、その理由と、いつなら上げられるか**
-- 別 PR へ切り出したなら、その参照（ `owner/repo#123` の形。`github_cross_repo_reference.md` ）
+- 別 PR へ切り出したなら、その参照（ `owner/repo#123` の形。`github_writing.md` ）
 - **調べたが問題なかったこと**も1行。書かないと「見ていない」と区別が付かない
 - **速度を測ったなら、その結果と計測条件**。速くならなかった工程も併せて書く
 
-アノテーションは **`[fyi]`** を使う。書式と使い分けは `github_rich_formatting.md` が定めます。
+アノテーションは **`[fyi]`** を使う。書式と使い分けは `github_writing.md` が定めます。
 
-書き方は `github_one_sentence_per_line.md` と `/format-github-post` に従い、末尾へ生成者表示を置く（ `github_note_generated_by_claude.md` ）。**renovate は bot なので、投稿に追加の許可は要りません**（ `no_auto_reply_human_review_comments.md` の対象外）。
+書き方は `github_writing.md` と `/format-github-post` に従い、末尾へ生成者表示を置く（ `github_note_generated_by_claude.md` ）。**renovate は bot なので、投稿に追加の許可は要りません**（ `responding_to_reviews.md` の対象外）。
 
 **同じ内容を重ねて投稿しない。** 既に自分のコメントがあるなら、`gh api` でそのコメントを編集して更新する。
 
