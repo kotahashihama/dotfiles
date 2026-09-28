@@ -51,6 +51,10 @@
           {
             "type": "command",
             "command": "bash ~/.claude/hooks/surface-deleted-comments.sh"
+          },
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/remind-pr-description-after-push.sh"
           }
         ]
       },
