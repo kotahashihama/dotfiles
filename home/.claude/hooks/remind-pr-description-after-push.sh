@@ -34,10 +34,24 @@ if "Everything up-to-date" in out or re.search(r"\[rejected\]|^error: failed to 
     sys.exit(0)
 
 # push したディレクトリ: `git -C <dir>` か `cd <dir> &&` を優先し、無ければフックの cwd
+# パスのシェルの展開は `$(ghq root)` と `$HOME` / `~` だけを開く。どれも副作用が無い。
+# それ以外の展開が残るなら黙って抜ける。cwd へ戻すと別のリポジトリの同名ブランチの PR を促しかねず、
+# 誤った PR を促すほうが、促さないより害が大きい
 workdir = d.get("cwd") or os.getcwd()
-m = re.search(r"\bgit\s+-C\s+(\S+)\s+push\b", cmd) or re.search(r"\bcd\s+(\S+)\s*&&[^;|]*\bgit\s+push\b", cmd)
+m = re.search(r"\bgit\s+-C\s+(\"[^\"]*\"|'[^']*'|\S+)\s+push\b", cmd) or re.search(
+    r"\bcd\s+(\"[^\"]*\"|'[^']*'|\S+)\s*&&[^;|]*\bgit\s+push\b", cmd)
 if m:
-    workdir = os.path.expanduser(m.group(1).strip("'\""))
+    target = m.group(1).strip("'\"")
+    if "$(ghq root)" in target:
+        try:
+            root = subprocess.check_output(["ghq", "root"], text=True, stderr=subprocess.DEVNULL, timeout=5).strip()
+        except Exception:
+            sys.exit(0)
+        target = target.replace("$(ghq root)", root)
+    target = os.path.expanduser(target.replace("${HOME}", "~").replace("$HOME", "~"))
+    if re.search(r"[$`]", target):
+        sys.exit(0)
+    workdir = target
 
 def git(*args):
     try:
