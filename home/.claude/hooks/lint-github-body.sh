@@ -292,6 +292,11 @@ def lost_attachments(cmd, body):
     本文の書き直しは行が減るのが普通なので、行の差分では誤検知になる。
     添付だけは意図して消すことがほぼ無いので、そこに絞って見る。
     実際にユーザーが貼った動画2件を全文置換で消した事故がある。
+
+    自分で貼った添付を補足コメントへ移すときのように、意図して消す場面がある。
+    本文には誰が貼ったかが残らないので、消してよいものはコマンドの側で
+    名指しする（ ALLOW_DROP_ATTACHMENTS=\x27<URL> <URL>\x27 gh pr edit ... ）。
+    名指ししていない添付は今までどおり止める。
     """
     if not re.search(r"\bgh\s+pr\s+edit\b", cmd):
         return []
@@ -304,7 +309,10 @@ def lost_attachments(cmd, body):
     if r.returncode != 0:
         return []                      # PR を引けないときは通す
     now = set(ATTACH.findall(r.stdout))
-    return sorted(a for a in now if a not in body)
+    m = re.search(r"\bALLOW_DROP_ATTACHMENTS=([\x27\"])(.*?)\1", cmd, re.S) \
+        or re.search(r"\bALLOW_DROP_ATTACHMENTS=(\S*)()", cmd)
+    allowed = (m.group(2) or m.group(1)).split() if m else []
+    return sorted(a for a in now if a not in body and not any(u in a for u in allowed))
 
 
 problems = []
@@ -316,7 +324,9 @@ for body in bodies(cmd):
     for a in lost_attachments(cmd, body):
         problems.append("- 現在の本文にある添付が、新しい本文に入っていない\n"
                         "  %s\n"
-                        "  → 全文置換で消える。ユーザーが後から貼ったものかもしれない"
+                        "  → 全文置換で消える。ユーザーが後から貼ったものかもしれない\n"
+                        "  → 自分で貼ったものを意図して消すなら、コマンドの頭に "
+                        "ALLOW_DROP_ATTACHMENTS=\x27<URL>\x27 を付けて名指しする"
                         % a[:100])
     for n in orphan_refs(body):
         problems.append("- #%s が同一リポジトリに見つからない。他リポジトリなら "
