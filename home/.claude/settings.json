@@ -24,7 +24,8 @@
       "mcp__backlog__add_project",
       "mcp__backlog__update_project",
       "mcp__backlog__delete_project"
-    ]
+    ],
+    "defaultMode": "auto"
   },
   "fallbackModel": [
     "sonnet"
@@ -275,7 +276,7 @@
   },
   "enabledPlugins": {
     "figma@claude-plugins-official": true,
-    "slack@claude-plugins-official": true,
+    "slack@claude-plugins-official": false,
     "codex@openai-codex": true,
     "skill-creator@claude-plugins-official": true,
     "agentkit-shopify@worldcoin-agentkit": false,
