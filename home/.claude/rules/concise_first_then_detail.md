@@ -88,7 +88,7 @@
 | 主題との一致 | 本文が主張していることを軸にしているか |
 | 本文との重複 | 本文の表や散文が既に持っていないか。図を足したら、重なった散文を削る |
 
-他の案と比べて選ばず、単独で読めるかで判定する。描画結果は読み手が見る描画器で確かめる（会話なら `printf '<ソース>' | node ~/.claude/plugins/cache/claude-code-mermaid/claude-code-mermaid/*/scripts/claude-code-mermaid.mjs`、ブラウザなら `npx -y -p @mermaid-js/mermaid-cli mmdc -i diagram.mmd -o diagram.svg` ）。通した側の結果しか保証できません。
+他の案と比べて選ばず、単独で読めるかで判定する。描画結果は読み手が見る描画器で確かめる（会話へ出す図は `claude-mermaid` の `mermaid_preview` でブラウザへ描く。GitHub などブラウザで読まれる先なら `npx -y -p @mermaid-js/mermaid-cli mmdc -i diagram.mmd -o diagram.svg` ）。通した側の結果しか保証できません。
 
 表の1列目に長い値を置かない。残りの列が潰れるので、短くできないなら箇条書きにする。
 
