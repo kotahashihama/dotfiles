@@ -8,6 +8,10 @@
 #
 # 判定は label への「推奨」の有無1点だけ。どれを推すかは判断が要るが、
 # 示したかどうかは文字列で決まる。
+#
+# 事実を尋ねる問い（「課題はありますか」）には推奨を付けない。文面からは
+# 判断の問いと区別できないので、呼び出し側が metadata.source に
+# 「fact:<header>,<header>」と書いた問いだけを検査から外す（ユーザーには見えない欄）。
 
 payload=$(cat)
 
@@ -20,12 +24,20 @@ try:
 except Exception:
     sys.exit(0)
 
-questions = data.get("tool_input", {}).get("questions") or []
+tool_input = data.get("tool_input", {})
+questions = tool_input.get("questions") or []
 if not questions:
     sys.exit(0)
 
+source = str((tool_input.get("metadata") or {}).get("source") or "")
+fact_headers = set()
+if source.startswith("fact:"):
+    fact_headers = {h.strip() for h in source[len("fact:"):].split(",") if h.strip()}
+
 bad = []
 for q in questions:
+    if str(q.get("header") or "") in fact_headers:
+        continue
     labels = [str(o.get("label", "")) for o in (q.get("options") or [])]
     if not labels:
         continue
@@ -39,6 +51,7 @@ reason = ("選択肢に推奨が示されていません。付けてから尋ね
           + "\n".join("- 「%s」の選択肢の label に「推奨」がありません" % h for h in bad)
           + "\n\n推す案を先頭へ置き、label の末尾へ「（推奨）」を付ける。"
           + "\n推奨を出さないと、判断コストをユーザーへ全部渡すことになる。"
+          + "\n事実を尋ねる問いなら推奨は付けず、metadata.source に「fact:<header>」を入れる。"
           + "\n  → decide_or_ask.md")
 print(json.dumps({"hookSpecificOutput": {
     "hookEventName": "PreToolUse",
