@@ -296,7 +296,7 @@ def lost_attachments(cmd, body):
     自分で貼った添付を補足コメントへ移すときのように、意図して消す場面がある。
     本文には誰が貼ったかが残らないので、消してよいものはコマンドの側で
     名指しする（ ALLOW_DROP_ATTACHMENTS=\x27<URL> <URL>\x27 gh pr edit ... ）。
-    名指ししていない添付は今までどおり止める。
+    名指ししていない添付は今までどおり止める。URL は丸ごと書く（完全一致で比べる）。
     """
     if not re.search(r"\bgh\s+pr\s+edit\b", cmd):
         return []
@@ -311,8 +311,12 @@ def lost_attachments(cmd, body):
     now = set(ATTACH.findall(r.stdout))
     m = re.search(r"\bALLOW_DROP_ATTACHMENTS=([\x27\"])(.*?)\1", cmd, re.S) \
         or re.search(r"\bALLOW_DROP_ATTACHMENTS=(\S*)()", cmd)
-    allowed = (m.group(2) or m.group(1)).split() if m else []
-    return sorted(a for a in now if a not in body and not any(u in a for u in allowed))
+    allowed = set((m.group(2) or m.group(1)).split()) if m else set()
+    # URL の一部だけを書くと全部が通ってしまうので、添付の URL と完全一致で比べる
+    def url_of(a):
+        u = re.search(r"https://[^\s)\x27\"<>]+", a)
+        return u.group(0) if u else a
+    return sorted(a for a in now if a not in body and url_of(a) not in allowed)
 
 
 problems = []
