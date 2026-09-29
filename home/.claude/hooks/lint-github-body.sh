@@ -79,15 +79,28 @@ NOTE = "> このコメントは Claude Code を使って作成されています
 NOTE_PR = "> この PR 説明は Claude Code を使って作成されています。"
 
 
+def target_repo(cmd):
+    """コマンドで指定した投稿先の owner/repo。指定が無ければ None
+
+    gh の --repo と -R は同じ意味。-R は grep -R のように他のコマンドにもあるので、
+    gh の呼び出しの中だけを見る
+    """
+    for seg in re.findall(r"\bgh\s[^;&|]*", cmd):
+        m = re.search(r"(?:--repo[= ]|(?<!\S)-R[= ]?)\s*[\x27\"]?(?:https://github\.com/)?"
+                      r"([\w.-]+/[\w.-]+)", seg)
+        if m:
+            return re.sub(r"\.git$", "", m.group(1))
+    return None
+
+
 def target_owner(cmd, cwd):
     """投稿先リポジトリの owner。決まらなければ None
 
-    --repo が最優先。無ければ作業ディレクトリの origin を見る。
+    --repo / -R が最優先。無ければ作業ディレクトリの origin を見る。
     """
-    m = re.search(r"--repo[= ]\s*[\x27\"]?(?:https://github\.com/)?"
-                  r"([\w.-]+)/[\w.-]+", cmd)
-    if m:
-        return m.group(1)
+    repo = target_repo(cmd)
+    if repo:
+        return repo.split("/")[0]
     try:
         r = subprocess.run(["git", "-C", cwd, "remote", "get-url", "origin"],
                            capture_output=True, text=True, timeout=5)
@@ -252,7 +265,7 @@ def check(body, note_required=True):
     return hits
 
 
-def orphan_refs(body):
+def orphan_refs(body, repo=None):
     """owner を省略した #123 のうち、同一リポジトリに存在しないものを返す
 
     見るのは地の文だけ。テンプレートの固定節が参照する番号は、リポジトリ側
@@ -265,7 +278,7 @@ def orphan_refs(body):
     missing = []
     for n in sorted(nums, key=int):
         try:
-            r = subprocess.run(["gh", "api", "repos/{owner}/{repo}/issues/" + n,
+            r = subprocess.run(["gh", "api", "repos/%s/issues/" % (repo or "{owner}/{repo}") + n,
                                 "--jq", ".number"],
                                capture_output=True, timeout=4, cwd=CWD, text=True)
         except Exception:
@@ -332,7 +345,7 @@ for body in bodies(cmd):
                         "  → 自分で貼ったものを意図して消すなら、コマンドの頭に "
                         "ALLOW_DROP_ATTACHMENTS=\x27<URL>\x27 を付けて名指しする"
                         % a[:100])
-    for n in orphan_refs(body):
+    for n in orphan_refs(body, target_repo(cmd)):
         problems.append("- #%s が同一リポジトリに見つからない。他リポジトリなら "
                         "owner/repo#%s と書く\n  → github_writing.md"
                         % (n, n))
