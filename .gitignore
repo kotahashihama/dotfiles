@@ -15,3 +15,6 @@ secrets.env
 
 # フックの検査モジュールを import したときに出る
 __pycache__/
+
+# cf CLI が実行したディレクトリに置くキャッシュ（アカウントの ID と名前を持つ）
+/.cloudflare/
