@@ -1,5 +1,5 @@
 ---
-description: PR を最終化する。ベースとの統合を確かめ、点検 (/review-comments + /review-conventions + /review-tests) を走らせ、必要なら修正して /cp し、必要なら /update-pr-description まで一括で行う。まとまった変更が一段落してレビューを迎える手前で使う。ユーザーが「/finalize-pr」「PR を仕上げて」「PR 出す直前の点検を」等を指示したときに使う。
+description: PR を最終化する。ベースとの統合を確かめ、点検 (/review-comments + /review-tests、リポジトリにあれば /review-conventions) を走らせ、必要なら修正して /cp し、必要なら /update-pr-description まで一括で行う。まとまった変更が一段落してレビューを迎える手前で使う。ユーザーが「/finalize-pr」「PR を仕上げて」「PR 出す直前の点検を」等を指示したときに使う。
 argument-hint: "[PR 番号 または URL] (省略時は現在のブランチから特定)"
 allowed-tools: Skill, Bash(git status:*) Bash(git branch:*) Bash(git diff:*) Bash(gh pr view:*) Bash(gh repo view:*) Bash(git rev-parse:*) Bash(git rev-list:*) Bash(git fetch:*) Bash(git worktree:*) Bash(git merge:*) Bash(go build:*) Bash(go test:*) Bash(task:*), Read
 ---
@@ -36,7 +36,7 @@ allowed-tools: Skill, Bash(git status:*) Bash(git branch:*) Bash(git diff:*) Bas
 
    **並列化するのは各点検の中。** 依存の無い `Read` / `grep` を1メッセージへまとめて発行する。壁時計時間が縮むのはここ。
 
-   **リポジトリ種別による出し分けは各スキルが内部で判定する**ので、ここでは分岐しない。3つとも常に呼ぶ。
+   `review-comments` と `review-tests` は常に呼ぶ。`review-conventions` はリポジトリ側のスキルなので、`.claude/skills/review-conventions/` があるときだけ呼ぶ。無ければ、規約の点検をしていないことを報告に書く。
 
    全部の結果が揃ってから3の修正判断に進む。
 
