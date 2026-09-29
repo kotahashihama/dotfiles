@@ -1,5 +1,5 @@
 ---
-description: PR を最終化する。ベースとの統合を確かめ、点検 (/review-comments + /review-tests、リポジトリにあれば /review-conventions) を走らせ、必要なら修正して /cp し、必要なら /update-pr-description まで一括で行う。まとまった変更が一段落してレビューを迎える手前で使う。ユーザーが「/finalize-pr」「PR を仕上げて」「PR 出す直前の点検を」等を指示したときに使う。
+description: PR を最終化する。ベースとの統合を確かめ、点検 (/triage-why-comments + /review-tests、リポジトリにあれば /review-conventions) を走らせ、必要なら修正して /cp し、必要なら /update-pr-description まで一括で行う。まとまった変更が一段落してレビューを迎える手前で使う。ユーザーが「/finalize-pr」「PR を仕上げて」「PR 出す直前の点検を」等を指示したときに使う。
 argument-hint: "[PR 番号 または URL] (省略時は現在のブランチから特定)"
 allowed-tools: Skill, Bash(git status:*) Bash(git branch:*) Bash(git diff:*) Bash(gh pr view:*) Bash(gh repo view:*) Bash(git rev-parse:*) Bash(git rev-list:*) Bash(git fetch:*) Bash(git worktree:*) Bash(git merge:*) Bash(go build:*) Bash(go test:*) Bash(task:*), Read
 ---
@@ -30,13 +30,13 @@ allowed-tools: Skill, Bash(git status:*) Bash(git branch:*) Bash(git diff:*) Bas
 
    **遅れが大きいほど CI 緑の意味が薄れる。** ベース側が同じコードを作り変えていても、ブランチ単体のビルドは通ってしまう。
 
-2. **点検の実行**: `review-comments`・`review-conventions`・`review-tests` を**順に** Skill ツールで呼ぶ。3つとも独立観点（コメント品質 / 規約遵守 / テストの過不足）で、結果は干渉しない。
+2. **点検の実行**: `triage-why-comments`・`review-conventions`・`review-tests` を**順に** Skill ツールで呼ぶ。3つとも独立観点（コメント品質 / 規約遵守 / テストの過不足）で、結果は干渉しない。
 
    **この3本は同時に呼んでも並列にならない。** `Skill` には**手順書を自分の文脈へ読み込ませる形**と、**サブエージェントで完結して結果だけ返す形**があり、点検3種は前者（ `allowed-tools` を持ち、ツールを打つのは呼び出し側）。3つ同時だと手順が混ざって取り違えるので、**1つ呼び、その手順を実行し、結果を得てから次へ進む。**
 
    **並列化するのは各点検の中。** 依存の無い `Read` / `grep` を1メッセージへまとめて発行する。壁時計時間が縮むのはここ。
 
-   `review-comments` と `review-tests` は常に呼ぶ。`review-conventions` はリポジトリ側のスキルなので、`.claude/skills/review-conventions/` があるときだけ呼ぶ。無ければ、規約の点検をしていないことを報告に書く。
+   `triage-why-comments` と `review-tests` は常に呼ぶ。`triage-why-comments` はコードコメントの評価を内部で `/review-comments` に任せ、インラインの `[fyi]` もあわせて整える。`review-conventions` はリポジトリ側のスキルなので、`.claude/skills/review-conventions/` があるときだけ呼ぶ。無ければ、規約の点検をしていないことを報告に書く。
 
    全部の結果が揃ってから3の修正判断に進む。
 
@@ -52,6 +52,7 @@ allowed-tools: Skill, Bash(git status:*) Bash(git branch:*) Bash(git diff:*) Bas
    - タイトルが差分の核と乖離した
    - 影響範囲・テスト内容の記述が現実と乖離した
    - いずれも該当しなければ呼ばない（同一内容の再送を避ける）
+   - **呼ぶときは `--skip-triage` を渡す。** コードコメントと `[fyi]` は手順2で整えてあり、渡さないと `/review-comments` が2回走る
 
 ## 出力の目安
 
