@@ -20,6 +20,17 @@ allowed-tools: Bash(gh pr view:*) Bash(gh pr edit:*) Bash(gh pr comment:*) Bash(
      - 消したことに気づけるのは投稿者だけで、**こちらからは見えない**。取得しただけでは足りず、**添付という観点で数える**
      - 消してしまったら `userContentEdits` から復元できる（ `keep_records_current.md` ）。ただし**指摘されるまで気づけない**
 
+   **作業ツリーが別のリポジトリなら git を打たずに同じ手順を回す。** worktree へ隔離されたセッションでは、他のリポジトリを対象にした git の実行がハーネスに拒否される。そのままでは Step 1 と2が成立しない。
+
+   | 手順 | 代わりに使うもの |
+   | --- | --- |
+   | `git branch --show-current` | PR 番号を引数で受け取る |
+   | `git diff <base>...HEAD` | `gh pr diff <PR> --repo <owner/repo>` |
+   | `git show <ref>:<path>` | `gh api "repos/<owner/repo>/contents/<path>?ref=<branch>"` （ `-H "Accept: application/vnd.github.raw"` ） |
+   | `/triage-why-comments` （手順2） | 同じ置き換えで回せる。git を使うのは差分の取得だけ |
+
+   **この置き換えで回すときも、Step 6 の点検は飛ばさない。** スキルを起動できないので手順を記憶で回すことになり**この段が最初に抜ける**。実際に2本の PR を投稿してから点検へ通し、指摘が4件出て同じ PR へ2回投稿することになった。
+
 2. **差分の把握**（並列実行可）:
    - `git diff <base>...HEAD --stat` でファイル単位の規模感
    - `git diff <base>...HEAD` で全変更内容（大きい場合は要点だけ抜き出す）
