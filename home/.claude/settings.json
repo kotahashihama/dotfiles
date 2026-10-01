@@ -146,6 +146,10 @@
         "hooks": [
           {
             "type": "command",
+            "command": "bash ~/.claude/hooks/require-japanese-response.sh"
+          },
+          {
+            "type": "command",
             "command": "bash ~/.claude/hooks/block-pointless-stop.sh"
           },
           {
