@@ -82,7 +82,10 @@ def asked_with_tool(path):
     return asked
 
 
-unasked = bool(ASK.search(msg)) and not asked_with_tool(str(d.get("transcript_path", "")))
+# 「」とバッククォートの中は引用なので落とす。規約やフックの話をするときに
+# 言い回しを例として引くと、判断を求めていなくても当たる（導入した直後に1件出た）
+unquoted = re.sub(r"「[^」]*」|`[^`]*`", "", msg)
+unasked = bool(ASK.search(unquoted)) and not asked_with_tool(str(d.get("transcript_path", "")))
 if not (declared or unasked or any(re.search(p, msg) for p in PATTERNS)):
     raise SystemExit(0)
 
@@ -97,7 +100,7 @@ open(mark, "w").close()
 if unasked:
     sys.stderr.write(
         "**本文で判断を求めたまま、AskUserQuestion を使わずに終えています**"
-        f"（「{ASK.search(msg).group(0)}」）。\n\n"
+        f"（「{ASK.search(unquoted).group(0)}」）。\n\n"
         "選択肢が2つ以上ある・可否を尋ねるなら、本文には背景と根拠だけを残し、"
         "案は AskUserQuestion の選択肢として出し直してください。推奨を先頭に置き、"
         "label に「（推奨）」を付けます（decide_or_ask.md「尋ねるときの形」）。\n\n"
