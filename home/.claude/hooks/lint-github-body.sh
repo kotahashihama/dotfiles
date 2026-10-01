@@ -314,9 +314,12 @@ def lost_attachments(cmd, body):
     if not re.search(r"\bgh\s+pr\s+edit\b", cmd):
         return []
     m = re.search(r"\bgh\s+pr\s+edit\s+(\d+)", cmd)
-    args = ["gh", "pr", "view"] + ([m.group(1)] if m else []) + ["--json", "body", "-q", ".body"]
+    # --repo を渡さないと、手元のリポジトリの同じ番号の PR と比べてしまう
+    repo = target_repo(cmd)
+    args = (["gh", "pr", "view"] + ([m.group(1)] if m else []) + (["--repo", repo] if repo else [])
+            + ["--json", "body", "-q", ".body"])
     try:
-        r = subprocess.run(args, capture_output=True, text=True, timeout=15)
+        r = subprocess.run(args, capture_output=True, text=True, timeout=15, cwd=CWD)
     except Exception:
         return []
     if r.returncode != 0:
