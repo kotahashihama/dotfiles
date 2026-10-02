@@ -96,7 +96,7 @@ allowed-tools: Bash(gh pr view:*) Bash(gh api:*) Bash(git diff:*) Bash(git show:
 
 ### 8. 投稿する前に点検を通す
 
-足す・書き換える `[fyi]` とコードコメントを、まとめて `/japanese-tech-writing` → `/agy-review` に通す（ `no_ai_style_writing.md` の「文章の点検を通す場面と順序」）。1件が短くても対象になる。
+足す・書き換える `[fyi]` とコードコメントを、まとめて `/japanese-tech-writing` → `/yomiyasu` に通す（ `no_ai_style_writing.md` の「文章の点検を通す場面と順序」）。1件が短くても対象になる。
 
 ### 9. 報告する
 
