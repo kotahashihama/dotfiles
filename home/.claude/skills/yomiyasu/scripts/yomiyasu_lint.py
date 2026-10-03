@@ -10,6 +10,7 @@ import sys
 import re
 import argparse
 import json
+import unicodedata
 from typing import List, Dict, Any, Tuple
 
 
@@ -45,12 +46,17 @@ SLOP_WORDS = [
 
 # 比喩動詞・AI偏愛動詞パターン
 METAPHOR_VERB_PATTERNS = [
-    (r"(地味に|よく|じわじわ)効[きくいた]", "比喩動詞「効く」の過剰使用"),
+    (r"(地味に|よく|じわじわ)効[かきくけいた]", "比喩動詞「効く」の過剰使用"),
+    (r"(データ|仕様|設計|環境|ビルド|システム|秩序)が(静かに)?壊れ", "比喩動詞「壊れる」"),
     (r"静かに(壊れ|落ち|失敗|沈黙)", "英語直訳「静かに壊れる (silently fail)」"),
     (r"黙って(無視|捨て|スキップ|破棄)", "英語直訳「黙って無視される」"),
     (r"側に倒[すしせ]", "判断を方向で表現する「〜側に倒す」"),
     (r"時間[をに]溶か[したす]", "比喩動詞「時間を溶かす」"),
     (r"(1つずつ|一つずつ)潰[していく]", "比喩動詞「潰す」"),
+    (r"(実装|詳細|コード|設計|内部|仕組み|領域|本質)(に|まで|へ)踏み込[んむみま]", "比喩動詞「踏み込む」"),
+    (r"動かしながら引き返[すし]", "比喩動詞「引き返す」"),
+    (r"代わりに添え[るた]", "比喩動詞「添える」"),
+    (r"(議論|意見|結論|方向性|価格|話題|検討)が[^。！？!?]*?収斂", "比喩動詞「収斂する」"),
     (r"した瞬間に?", "英語直訳「〜した瞬間 (the moment ...)」"),
     (r"(前提|基盤)が崩れ[るた]", "抽象比喩「前提が崩れる」"),
     (r"文化が醸成", "非生物主語「文化が醸成される」"),
@@ -213,6 +219,138 @@ def analyze_markdown_metrics(text: str) -> Dict[str, Any]:
     }
 
 
+# ---- 太字が表示されるか（GitHub などの Markdown）----
+# GitHub の Markdown では、** のすぐ内側が記号（「」（）` など）で、すぐ外側が文字だと、** を太字の印として読まず、
+# ** がそのまま表示される。新しい CommonMark（記号に Unicode の S も入る）でも、GitHub の GFM（P だけ）でも
+# 太字になる形だけを「表示される」とみなす。直し方の案は、かっこの内側だけを太字にする → 句読点を太字の外に出す
+# → 文字に接する側に半角スペースを入れる、の順に試す。
+BOLD_ASCII_PUNCT = set("!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~")
+BOLD_BRACKETS = {"「": "」", "『": "』", "（": "）", "(": ")", "【": "】", "〔": "〕", "［": "］", "[": "]",
+                 "〈": "〉", "《": "》", "“": "”", "‘": "’", "＜": "＞"}
+
+
+def _bold_ws(ch: str) -> bool:
+    return ch == "" or ch.isspace()
+
+
+def _bold_punct_gfm(ch: str) -> bool:
+    return ch != "" and (ch in BOLD_ASCII_PUNCT or unicodedata.category(ch).startswith("P"))
+
+
+def _bold_punct_new(ch: str) -> bool:
+    return ch != "" and unicodedata.category(ch)[0] in "PS"
+
+
+def _bold_can_open(prev: str, nxt: str) -> bool:
+    return all(not _bold_ws(nxt) and (not p(nxt) or _bold_ws(prev) or p(prev)) for p in (_bold_punct_gfm, _bold_punct_new))
+
+
+def _bold_can_close(prev: str, nxt: str) -> bool:
+    return all(not _bold_ws(prev) and (not p(prev) or _bold_ws(nxt) or p(nxt)) for p in (_bold_punct_gfm, _bold_punct_new))
+
+
+def _bold_code_spans(line: str):
+    """インラインコード（同じ数のバッククォートで閉じたもの）の範囲"""
+    runs = [(m.start(), m.end()) for m in re.finditer(r"`+", line)]
+    spans, k = [], 0
+    while k < len(runs):
+        s, e = runs[k]
+        for m in range(k + 1, len(runs)):
+            if runs[m][1] - runs[m][0] == e - s:
+                spans.append((s, runs[m][1]))
+                k = m
+                break
+        k += 1
+    return spans
+
+
+def _bold_pairs(line: str):
+    code = _bold_code_spans(line)
+    pos = [m.start() for m in re.finditer(r"(?<![*\\])\*\*(?!\*)", line)
+           if not any(a <= m.start() < b for a, b in code)]
+    return [(pos[k], pos[k + 1]) for k in range(0, len(pos) - 1, 2)]
+
+
+def _bold_pair_ok(line: str, i: int, j: int) -> bool:
+    ch = lambda p: line[p] if 0 <= p < len(line) else ""
+    return _bold_can_open(ch(i - 1), ch(i + 2)) and _bold_can_close(ch(j - 1), ch(j + 2))
+
+
+def _bold_close_of(s: str) -> int:
+    """s の先頭のかっこに対応する閉じかっこの位置（なければ -1）"""
+    o, c, depth = s[0], BOLD_BRACKETS[s[0]], 0
+    for k, x in enumerate(s):
+        if x == o:
+            depth += 1
+        elif x == c:
+            depth -= 1
+            if depth == 0:
+                return k
+    return -1
+
+
+def _bold_fix(line: str, i: int, j: int, k: int):
+    """k 番目の太字（i と j の **）の直し方の案。(直したあとの部分, 直し方) を返す"""
+    inner = line[i + 2:j]
+    tries = []
+    if len(inner) >= 3 and inner[0] in BOLD_BRACKETS and _bold_close_of(inner) == len(inner) - 1:
+        tries.append((inner[0] + "**" + inner[1:-1] + "**" + inner[-1], "かっこの内側だけを太字にする"))
+    if len(inner) >= 2 and inner[-1] in "。、．，！？!?":
+        tries.append(("**" + inner[:-1] + "**" + inner[-1], "句読点を太字の外に出す"))
+    ch = lambda p: line[p] if 0 <= p < len(line) else ""
+    body = inner
+    if _bold_ws(ch(i + 2)) or _bold_ws(ch(j - 1)):
+        body = inner.strip()
+    left = "" if _bold_can_open(ch(i - 1), body[:1]) else " "
+    right = "" if _bold_can_close(body[-1:], ch(j + 2)) else " "
+    tries.append((left + "**" + body + "**" + right, "太字の内側の空白を取る" if body != inner and not (left or right)
+                  else "文字に接する側に半角スペースを入れる"))
+    for middle, how in tries:
+        cand = line[:i] + middle + line[j + 2:]
+        pairs = _bold_pairs(cand)
+        if k < len(pairs) and _bold_pair_ok(cand, *pairs[k]):
+            return middle, how
+    return None, "手で直す"
+
+
+def bold_problems(text: str, skip_frontmatter: bool = True):
+    """太字にならない ** の場所と、直し方の案。コードブロック・インラインコード・HTML の行・先頭の設定部分は見ない"""
+    out, fence = [], None
+    lines = text.split("\n")
+    start = 0
+    if skip_frontmatter and lines and lines[0].strip() == "---":
+        for n in range(1, len(lines)):
+            if lines[n].strip() == "---":
+                start = n + 1
+                break
+    for no in range(start, len(lines)):
+        line = lines[no].rstrip("\r")
+        m = re.match(r"\s{0,3}(`{3,}|~{3,})(.*)$", line)
+        if fence:
+            if m and m.group(1)[0] == fence[0] and len(m.group(1)) >= fence[1] and not m.group(2).strip():
+                fence = None
+            continue
+        if m and not (m.group(1)[0] == "`" and "`" in m.group(2)):
+            fence = (m.group(1)[0], len(m.group(1)))
+            continue
+        if line.lstrip().startswith("<"):
+            continue
+        for k, (i, j) in enumerate(_bold_pairs(line)):
+            if _bold_pair_ok(line, i, j):
+                continue
+            middle, how = _bold_fix(line, i, j, k)
+            pre, post = line[max(0, i - 4):i], line[j + 2:j + 6]
+            found = pre + _bold_short(line[i:j + 2]) + post
+            suggest = pre + _bold_short(middle) + post if middle is not None else ""
+            out.append({"line": no + 1, "found": found, "suggest": suggest, "how": how})
+    return out
+
+
+def _bold_short(s: str) -> str:
+    """長い太字は、直すところ（両端）だけを見せる"""
+    return s if len(s) <= 30 else s[:12] + "…" + s[-12:]
+
+
 def lint_text(text: str) -> Dict[str, Any]:
     """文章全体を総合検査する"""
     findings = []
@@ -241,6 +379,16 @@ def lint_text(text: str) -> Dict[str, Any]:
 
     # 2. 文末重複検査
     findings.extend(check_sentence_end_repetitions(sentences))
+
+    # 2.5 太字が表示されるか（GitHub などの Markdown で ** がそのまま出るところ）
+    for p in bold_problems(text):
+        findings.append({
+            "rule": "bold_not_rendered",
+            "line": p["line"],
+            "severity": "error",
+            "message": f"太字の印（**）が記号に接していて、GitHub などでは太字にならず ** がそのまま表示されます。直し方: {p['how']}。",
+            "snippet": f"{p['found']} → {p['suggest']}" if p["suggest"] else p["found"]
+        })
 
     # 3. 語彙・構文パターン検査
     lines = text.split("\n")
@@ -322,8 +470,28 @@ def lint_text(text: str) -> Dict[str, Any]:
                 })
 
         # 比喩動詞パターン
+        kowareru_span = None
         for pattern, desc in METAPHOR_VERB_PATTERNS:
-            if re.search(pattern, plain_text):
+            if desc == "英語直訳「静かに壊れる (silently fail)」" and kowareru_span:
+                # 「壊れる」と「静かに壊れる」が同一動詞に二重反応することを防止
+                for m in re.finditer(pattern, plain_text):
+                    span = (m.start(), m.end())
+                    if kowareru_span[0] <= span[0] and span[1] <= kowareru_span[1]:
+                        continue
+                    findings.append({
+                        "rule": "metaphor_verb",
+                        "line": line_no,
+                        "severity": "warn",
+                        "message": f"{desc}が検出されました。不自然な比喩動詞であれば、ふだん使う動詞や客観的な表現に書き直してください。ただし、文字どおりの動作や状態変化を表している場合は無理に言い換える必要はありません。",
+                        "snippet": line.strip()
+                    })
+                    break
+                continue
+
+            m = re.search(pattern, plain_text)
+            if m:
+                if desc == "比喩動詞「壊れる」":
+                    kowareru_span = (m.start(), m.end())
                 findings.append({
                     "rule": "metaphor_verb",
                     "line": line_no,
@@ -399,7 +567,7 @@ def main():
         print("-" * 60)
 
         if result["is_clean"]:
-            print("[PASS] AIっぽさは検出されませんでした。設定された検査ルールによる指摘はありません。")
+            print("[PASS] 設定された検査ルールによる指摘はありません。")
         else:
             print(f"[NOTICE] {len(result['findings'])} 件の改善推奨箇所が見つかりました。\n")
             for f in result["findings"]:
