@@ -1,3 +1,8 @@
+---
+paths:
+  - "**/*.{ts,tsx,js,jsx,mjs,cjs,vue,svelte,go,py,rb,sh,bash,zsh,sql,tf,hcl,rs,swift,kt,java,php,yml,yaml,toml}"
+---
+
 # そのプロジェクトに入っているバージョンで書く
 
 コードを書くときは、そのプロジェクトに実際にインストールされている言語・ライブラリのバージョンを確かめ、そのバージョンが備える API と文法を使ってください。

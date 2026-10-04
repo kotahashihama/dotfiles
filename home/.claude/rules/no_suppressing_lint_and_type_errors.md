@@ -1,3 +1,8 @@
+---
+paths:
+  - "**/*.{ts,tsx,js,jsx,mjs,cjs,vue,svelte,go,py,rb,sh,bash,zsh,sql,tf,hcl,rs,swift,kt,java,php,yml,yaml,toml}"
+---
+
 # lint と型のエラーを抑制して回避しない
 
 `@ts-expect-error` / `@ts-ignore` / `eslint-disable` / `biome-ignore` / `as any` のような、**検査を黙らせて先に進む手段**を使わないでください。
