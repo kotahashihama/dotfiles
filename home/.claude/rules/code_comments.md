@@ -1,3 +1,8 @@
+---
+paths:
+  - "**/*.{ts,tsx,js,jsx,mjs,cjs,vue,svelte,go,py,rb,sh,bash,zsh,sql,tf,hcl,rs,swift,kt,java,php,yml,yaml,toml}"
+---
+
 # コードコメントに何を書くか
 
 コードコメントは、書かざるを得ないときだけ書いてください。何を書き、どの WHY を残し、何を持ち込まないかをまとめています。
