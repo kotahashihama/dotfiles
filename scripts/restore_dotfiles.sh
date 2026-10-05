@@ -66,6 +66,14 @@ if command -v claude >/dev/null 2>&1 \
     || echo "⚠️  mermaid の MCP 登録に失敗しました。claude mcp add で手で入れてください"
 fi
 
+# 過去の会話を検索する MCP サーバー（claude-recall）。本体は mermaid と同じく mise の宣言が入れる。
+# 会話の DB は ~/.claude/vault.db にでき、管理下に置かない（全会話の写しなので運ばない）
+if command -v claude >/dev/null 2>&1 \
+  && ! grep -q '"claude-recall"' "$HOME/.claude.json" 2>/dev/null; then
+  claude mcp add --scope user claude-recall -- recall mcp >/dev/null 2>&1 \
+    || echo "⚠️  claude-recall の MCP 登録に失敗しました。claude mcp add で手で入れてください"
+fi
+
 # 公開側への混入を検査するフックを有効にする
 if git -C "$DOTFILES_DIR" rev-parse --git-dir >/dev/null 2>&1; then
   git -C "$DOTFILES_DIR" config core.hooksPath scripts/git-hooks
