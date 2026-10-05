@@ -292,7 +292,10 @@
     "claude-code-mermaid@claude-code-mermaid": false,
     "cc-plugin-you-should-know@builtin": true,
     "image-view@claude-image-view": true,
-    "plan-progress@zycck-mods": true
+    "plan-progress@zycck-mods": true,
+    "prompt-rail@oikon48": true,
+    "md-prompt@nogu66": true,
+    "qa-guide@claude-qamods": true
   },
   "extraKnownMarketplaces": {
     "openai-codex": {
@@ -329,6 +332,24 @@
       "source": {
         "source": "github",
         "repo": "zycck/claude-mods"
+      }
+    },
+    "oikon48": {
+      "source": {
+        "source": "github",
+        "repo": "oikon48/prompt-rail"
+      }
+    },
+    "nogu66": {
+      "source": {
+        "source": "github",
+        "repo": "nogu66/md-prompt"
+      }
+    },
+    "claude-qamods": {
+      "source": {
+        "source": "github",
+        "repo": "aieo-product/claude_qamods"
       }
     }
   },
