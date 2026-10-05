@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# このターンで編集した Markdown の表記を検査する Stop フック。
+# このセッションが書いた Markdown の表記を検査する Stop フック。
 #
 # 書式の規約は「こちらが書くものすべて」が対象だが、フックが掛かるのは
 # ファイルへの書き込みと GitHub への投稿だけだった。**書く量が最も多いのは
@@ -11,7 +11,7 @@
 # （公式ドキュメント: PostToolUse cannot block; the tool already ran）ので、
 # 書いた直後の指摘を無視できてしまう。Stop なら直すまで終われない。
 #
-# 1プロンプトにつき1回しか止めない。誤検知しても1ターン余計に進むだけ。
+# 1プロンプトにつき3回まで止める（下の stopguard の鍵の説明）。
 #
 set -u
 
@@ -45,25 +45,49 @@ except Exception:
 hits = []
 
 
-def edited_markdown():
-    """このリポジトリで未コミットの .md を返す"""
+def written_paths():
+    """このセッションが Write / Edit したファイルのパス
+
+    リポジトリの未コミットの .md を全部見ていた頃は、別のセッションが置いた
+    ファイルや書きかけのファイルでも止まった。直す立場に無いものを直させる
+    ことになるので、自分が書いたものだけに絞る"""
+    out = set()
     try:
-        r = subprocess.run(["git", "status", "--porcelain", "--", "*.md"],
-                           capture_output=True, text=True, timeout=5,
-                           cwd=d.get("cwd") or os.getcwd())
-        top = subprocess.run(["git", "rev-parse", "--show-toplevel"],
-                             capture_output=True, text=True, timeout=5,
-                             cwd=d.get("cwd") or os.getcwd())
+        f = io.open(str(d.get("transcript_path", "")), encoding="utf-8")
     except Exception:
-        return []
-    if r.returncode != 0 or top.returncode != 0:
-        return []
-    root = top.stdout.strip()
-    out = []
-    for line in r.stdout.split("\n"):
-        if len(line) > 3 and line[0] != "D" and line[1] != "D":
-            out.append(os.path.join(root, line[3:].strip().strip(chr(34))))
-    return [p for p in out if p.endswith(".md") and os.path.exists(p)]
+        return out
+    with f:
+        for line in f:
+            if '"tool_use"' not in line:
+                continue
+            try:
+                m = json.loads(line).get("message") or {}
+            except Exception:
+                continue
+            for b in m.get("content") or []:
+                if (isinstance(b, dict) and b.get("type") == "tool_use"
+                        and b.get("name") in ("Write", "Edit", "MultiEdit")):
+                    fp = (b.get("input") or {}).get("file_path")
+                    if fp:
+                        out.add(os.path.realpath(fp))
+    return out
+
+
+def uncommitted(path):
+    """git の管理下にあり、HEAD から変わっているか（未追跡を含む）"""
+    try:
+        r = subprocess.run(["git", "-C", os.path.dirname(path), "status",
+                            "--porcelain", "--", os.path.basename(path)],
+                           capture_output=True, text=True, timeout=5)
+    except Exception:
+        return False
+    return r.returncode == 0 and r.stdout.strip() != ""
+
+
+def edited_markdown():
+    """このセッションが書いた .md のうち、まだコミットしていないもの"""
+    return sorted(p for p in written_paths()
+                  if p.endswith(".md") and os.path.exists(p) and uncommitted(p))
 
 
 def head_hits(path):
