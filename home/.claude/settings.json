@@ -291,7 +291,8 @@
     "agy-skills@agy-skills": true,
     "claude-code-mermaid@claude-code-mermaid": false,
     "cc-plugin-you-should-know@builtin": true,
-    "image-view@claude-image-view": true
+    "image-view@claude-image-view": true,
+    "plan-progress@zycck-mods": true
   },
   "extraKnownMarketplaces": {
     "openai-codex": {
@@ -322,6 +323,12 @@
       "source": {
         "source": "github",
         "repo": "jarrodwatts/claude-image-view"
+      }
+    },
+    "zycck-mods": {
+      "source": {
+        "source": "github",
+        "repo": "zycck/claude-mods"
       }
     }
   },
