@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# このセッションが書いた Markdown の表記を検査する Stop フック。
+# このターンに書いた Markdown の表記を検査する Stop フック。
 #
 # 書式の規約は「こちらが書くものすべて」が対象だが、フックが掛かるのは
 # ファイルへの書き込みと GitHub への投稿だけだった。**書く量が最も多いのは
@@ -21,7 +21,7 @@ export HOOK_DIR
 
 python3 - "$payload" <<'PY'
 import importlib.util
-import io, json, os, subprocess, sys, tempfile
+import io, json, os, re, subprocess, sys, tempfile
 
 try:
     d = json.loads(sys.argv[1])
@@ -45,12 +45,18 @@ except Exception:
 hits = []
 
 
+MD_IN_CMD = re.compile(r"""(?:^|[\s'"=>(])((?:~|\.{1,2})?/?[^\s'"()<>|;&*?]*\.md)(?=$|[\s'"):;|&])""")
+
+
 def written_paths():
-    """このセッションが Write / Edit したファイルのパス
+    """このターン（最後に人が入力してから）に書いた .md のパス
 
     リポジトリの未コミットの .md を全部見ていた頃は、別のセッションが置いた
-    ファイルや書きかけのファイルでも止まった。直す立場に無いものを直させる
-    ことになるので、自分が書いたものだけに絞る"""
+    ファイルや書きかけのファイルでも止まった。セッション全体の Write / Edit で
+    絞っても、昔一度書いたファイルを別のセッションが書き換えると、その分で
+    止まった。今のターンに書いたものだけを見る。
+    Bash の sed やヒアドキュメントで書いた分も、コマンドに出てくる .md の
+    パスで拾う（読んだだけの .md も入るが、未コミットでなければ当たらない）"""
     out = set()
     try:
         f = io.open(str(d.get("transcript_path", "")), encoding="utf-8")
@@ -58,18 +64,25 @@ def written_paths():
         return out
     with f:
         for line in f:
-            if '"tool_use"' not in line:
+            if '"tool_use"' not in line and '"human"' not in line:
                 continue
             try:
-                m = json.loads(line).get("message") or {}
+                e = json.loads(line)
             except Exception:
                 continue
-            for b in m.get("content") or []:
-                if (isinstance(b, dict) and b.get("type") == "tool_use"
-                        and b.get("name") in ("Write", "Edit", "MultiEdit")):
-                    fp = (b.get("input") or {}).get("file_path")
-                    if fp:
-                        out.add(os.path.realpath(fp))
+            if e.get("type") == "user" and (e.get("origin") or {}).get("kind") == "human":
+                out = set()
+                continue
+            base = e.get("cwd") or d.get("cwd") or os.getcwd()
+            for b in (e.get("message") or {}).get("content") or []:
+                if not (isinstance(b, dict) and b.get("type") == "tool_use"):
+                    continue
+                inp = b.get("input") or {}
+                if b.get("name") in ("Write", "Edit", "MultiEdit") and inp.get("file_path"):
+                    out.add(os.path.realpath(inp["file_path"]))
+                elif b.get("name") == "Bash":
+                    for m in MD_IN_CMD.finditer(str(inp.get("command", ""))):
+                        out.add(os.path.realpath(os.path.join(base, os.path.expanduser(m.group(1)))))
     return out
 
 
@@ -85,7 +98,7 @@ def uncommitted(path):
 
 
 def edited_markdown():
-    """このセッションが書いた .md のうち、まだコミットしていないもの"""
+    """このターンに書いた .md のうち、まだコミットしていないもの"""
     return sorted(p for p in written_paths()
                   if p.endswith(".md") and os.path.exists(p) and uncommitted(p))
 
