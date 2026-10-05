@@ -161,3 +161,4 @@ grep -rl '<語>' home/.claude/skills/ private/.claude/skills/     # 実体を直
 - `recheck_after_every_revision.md` （書き直すたびに確かめ直す）: 2回目以降の点検範囲はあちら
 - `background_heavy_work.md` （重い作業の流し方）: 結果を回収することはあちら。回収した結果が成立しているかは本ルール
 - `verify_merge_with_checks.md` （マージは検査を通すまで終わっていない）: 本ルールの適用場面の1つ
+- `summarize_after_each_task.md` （各作業後のサマリ）: 壊した分を戻すのは本ルール、作業全般で残した状態を片付けてから「終わった」と書くのはあちら

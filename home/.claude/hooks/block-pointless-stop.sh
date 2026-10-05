@@ -86,7 +86,17 @@ def asked_with_tool(path):
 # 言い回しを例として引くと、判断を求めていなくても当たる（導入した直後に1件出た）
 unquoted = re.sub(r"「[^」]*」|`[^`]*`", "", msg)
 unasked = bool(ASK.search(unquoted)) and not asked_with_tool(str(d.get("transcript_path", "")))
-if not (declared or unasked or any(re.search(p, msg) for p in PATTERNS)):
+
+# 終わったと書きながら、同じ応答に未検証の項目や作業で残した状態を挙げている形。
+# 自分で書き出したものを「問題ない」「相手が決めた」と言い換えて完了に数えていた。
+# ユーザーに「たしかめてよ」「後始末もしようよ」と言われてから片付けた実例がある
+DONE = re.compile(r"(残作業|積み残し|やること)は(もう)?(ありません|無い|ない)|"
+                  r"作業は(終わり|完了|ひと段落)|これで(終わり|完了)|終わりました")
+LEFT = re.compile(r"確かめていな|確かめていません|未検証|検証していな|"
+                  r"残っています|残っている|残しました|置いたまま|未追跡")
+overclaimed = bool(DONE.search(unquoted)) and bool(LEFT.search(unquoted))
+
+if not (declared or unasked or overclaimed or any(re.search(p, msg) for p in PATTERNS)):
     raise SystemExit(0)
 
 # 同じプロンプトで二度は止めない
@@ -105,6 +115,17 @@ if unasked:
         "案は AskUserQuestion の選択肢として出し直してください。推奨を先頭に置き、"
         "label に「（推奨）」を付けます（decide_or_ask.md「尋ねるときの形」）。\n\n"
         "判断を求めておらず、操作の手順を伝えているだけなら、その旨を1行で述べて終えてください。"
+    )
+    raise SystemExit(2)
+
+if overclaimed:
+    sys.stderr.write(
+        "**終わったと書いていますが、同じ応答に未検証の項目か残した状態があります**"
+        f"（「{DONE.search(unquoted).group(0)}」と「{LEFT.search(unquoted).group(0)}」）。\n\n"
+        "自分で確かめられるもの・戻せるもの（未検証の手順、切り替えたブランチや設定、"
+        "作業で置いたファイル）は、いま片付けてから報告してください。"
+        "片付けられないものが残るなら「終わった」ではなく、何が残っているかを"
+        "最後の1行に書きます（summarize_after_each_task.md）。"
     )
     raise SystemExit(2)
 
