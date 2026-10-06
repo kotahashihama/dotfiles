@@ -31,11 +31,15 @@ HOME = os.path.expanduser("~")
 # auto memory は会話の記録で、読み物ではない
 SKIP_PREFIXES = (os.path.join(HOME, ".claude", "projects") + os.sep,)
 
-# Bash で .md を書く・渡す形。読むだけのコマンド（cat・grep）は拾わない
+# Bash で .md を書く形。読むだけのコマンド（cat・grep）は拾わない
 WRITE_IN_CMD = re.compile(
-    r"""(?:>\|?|\btee(?:\s+-a)?|--body-file|-F\s+body=@)\s*['"]?([^\s'";|&<>]+\.md)\b"""
+    r"""(?:>\|?|\btee(?:\s+-a)?)\s*['"]?([^\s'";|&<>]+\.md)\b"""
     r"""|\bsed\s+-i\s+(?:''\s+)?(?:-e\s+)?(?:'[^']*'|"[^"]*"|\S+)\s+(?:-e\s+\S+\s+)*([^\s'";|&<>]+\.md)\b""")
+# .md を投稿する形。スクリプトの中で書いて投稿する経路を拾うためで、
+# このターンで点検を通した後のファイルを投稿するのは数えない
+POST_IN_CMD = re.compile(r"""(?:--body-file|-F\s+body=@)\s*['"]?([^\s'";|&<>]+\.md)\b""")
 REVIEW_IN_CMD = re.compile(r"yomiyasu_(?:lint|diff)\.py")
+MD_ARG = re.compile(r"""(?:^|[\s'"=])([^\s'";|&<>]+\.md)\b""")
 # 先頭で cd していれば、相対パスはそこから解決する
 CD_PREFIX = re.compile(r"""^\s*cd\s+['"]?([^\s'";|&]+)['"]?\s*&&""")
 
@@ -47,7 +51,7 @@ def is_review_skill(name):
 
 def scan():
     """このターン（最後に人が入力してから）で、最後に点検を通した後に書いた .md"""
-    pending = []
+    pending, reviewed = [], set()
     try:
         f = io.open(str(d.get("transcript_path", "")), encoding="utf-8")
     except Exception:
@@ -61,7 +65,7 @@ def scan():
             except Exception:
                 continue
             if e.get("type") == "user" and (e.get("origin") or {}).get("kind") == "human":
-                pending = []
+                pending, reviewed = [], set()
                 continue
             base = e.get("cwd") or d.get("cwd") or os.getcwd()
             for b in (e.get("message") or {}).get("content") or []:
@@ -70,6 +74,7 @@ def scan():
                 name = b.get("name")
                 inp = b.get("input") or {}
                 if name == "Skill" and is_review_skill(inp.get("skill")):
+                    reviewed.update(pending)
                     pending = []
                     continue
                 if name in ("Write", "Edit", "MultiEdit"):
@@ -78,15 +83,24 @@ def scan():
                         pending.append(os.path.realpath(p))
                 elif name == "Bash":
                     cmd = str(inp.get("command", ""))
-                    if REVIEW_IN_CMD.search(cmd):
-                        pending = []
-                        continue
                     cd = CD_PREFIX.match(cmd)
                     if cd:
                         base = os.path.join(base, os.path.expanduser(cd.group(1)))
+                    resolve = lambda p: os.path.realpath(os.path.join(base, os.path.expanduser(p)))
+                    if REVIEW_IN_CMD.search(cmd):
+                        # 検査に渡した .md も点検済みにする。スクリプトの中で書いた
+                        # ファイルは pending に入らないので、ここで覚えないと
+                        # 点検した後の投稿を数えてしまう
+                        reviewed.update(pending)
+                        reviewed.update(resolve(m.group(1)) for m in MD_ARG.finditer(cmd))
+                        pending = []
+                        continue
                     for m in WRITE_IN_CMD.finditer(cmd):
-                        p = m.group(1) or m.group(2)
-                        pending.append(os.path.realpath(os.path.join(base, os.path.expanduser(p))))
+                        pending.append(resolve(m.group(1) or m.group(2)))
+                    for m in POST_IN_CMD.finditer(cmd):
+                        p = resolve(m.group(1))
+                        if p not in reviewed:
+                            pending.append(p)
     seen, out = set(), []
     for p in pending:
         if p in seen or p.startswith(SKIP_PREFIXES):
