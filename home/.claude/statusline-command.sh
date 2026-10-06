@@ -4,7 +4,7 @@
 # Line 1: 🐙 repo[/subpath] │ 🌿 branch [+N ~M] [│ 🌳 worktree] [│ 🎫 KEY-1 #2]
 #         (📂 full path instead, when outside a git repo)
 # Line 2: 🧠 progress bar used% │ 🤖 model · effort · output style
-# Line 3: 💰 5h X% (🔄 Xam) │ 7d X% (🔄 M/DD Xam)  (omitted when absent)
+# Line 3: 💰 5h X% (🔄 HH:mm) │ 7d X% (🔄 M/DD HH:mm)  (omitted when absent)
 
 input=$(cat)
 
@@ -205,9 +205,8 @@ if [ -n "$five_pct" ] || [ -n "$seven_pct" ]; then
     five_int=$(printf "%.0f" "$five_pct")
     five_col=$(_rate_color "$five_pct")
     if [ -n "$five_resets" ]; then
-      # Format as hour + am/pm, e.g. "4am" or "10pm"
-      reset_hour=$(date -r "$five_resets" +%I%p 2>/dev/null \
-                 | sed 's/^0//' | tr '[:upper:]' '[:lower:]')
+      # Format as 24-hour HH:mm, e.g. "04:00" or "22:30"
+      reset_hour=$(date -r "$five_resets" +%H:%M 2>/dev/null)
       five_part="${five_col}5h ${five_int}% (🔄 ${reset_hour})${RESET}"
     else
       five_part="${five_col}5h ${five_int}%${RESET}"
@@ -219,10 +218,9 @@ if [ -n "$five_pct" ] || [ -n "$seven_pct" ]; then
     seven_int=$(printf "%.0f" "$seven_pct")
     seven_col=$(_rate_color "$seven_pct")
     if [ -n "$seven_resets" ]; then
-      # Format as M/DD HHam/pm, e.g. "3/13 10am"
+      # Format as M/DD HH:mm, e.g. "3/13 10:00"
       reset_md=$(date -r "$seven_resets" +'%-m/%d' 2>/dev/null)
-      reset_hm=$(date -r "$seven_resets" +%I%p 2>/dev/null \
-               | sed 's/^0//' | tr '[:upper:]' '[:lower:]')
+      reset_hm=$(date -r "$seven_resets" +%H:%M 2>/dev/null)
       seven_part="${seven_col}7d ${seven_int}% (🔄 ${reset_md} ${reset_hm})${RESET}"
     else
       seven_part="${seven_col}7d ${seven_int}%${RESET}"
