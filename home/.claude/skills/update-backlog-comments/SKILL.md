@@ -84,7 +84,6 @@ allowed-tools: Bash(gh pr view:*) Bash(gh pr list:*) Bash(gh api:*) Bash(git gre
 
 | 観点 | 直す目安 |
 | --- | --- |
-| 行末の句点 | **0件になるまで**（ `github_writing.md` ）。引用行は対象外 |
 | 1文の長さ | 70字超、または読点3つ以上 |
 | 1段落の強調 | 3つ以上 |
 | 散文の量 | 表へ畳めるものが散文のままになっていないか |
@@ -109,6 +108,8 @@ allowed-tools: Bash(gh pr view:*) Bash(gh pr list:*) Bash(gh api:*) Bash(git gre
 
 ### 6. 直す
 
+**直した本文は `.md` に書き、`/japanese-tech-writing` と `/yomiyasu` を通してから投稿する**（ `no_ai_style_writing.md` ）。通していないと、投稿の直前でフックに止められる。
+
 **更新できるものと、できないものがある。** 着手する前に、その場で使える操作を確かめる。
 
 | 操作 | 確かめ方 |
@@ -125,7 +126,7 @@ allowed-tools: Bash(gh pr view:*) Bash(gh pr list:*) Bash(gh api:*) Bash(git gre
 
 - 過不足: 列挙した成果物の数と、経緯が要るもの / あるものの内訳
 - 実態とのずれ: 記述ごとの確かめ方と結果を表で
-- 読みやすさ: 測った数値（行末の句点・長い行・強調）
+- 読みやすさ: 測った数値（長い行・強調）
 
 ## 出力の目安
 
@@ -158,5 +159,4 @@ allowed-tools: Bash(gh pr view:*) Bash(gh pr list:*) Bash(gh api:*) Bash(git gre
 - `verify_before_asserting.md` （断定の前に裏を取る）: 実態との照合で使う。**他人が起票した課題を書き換えない**のもあちら
 - `karma_commit_style.md` （PR に番号を付けるか）: **経緯のコメントが要るかの判定**はあちら
 - `github_note_generated_by_claude.md` （生成者表示）: **文言と、Alert が使えない投稿先での形**を持つ
-- `github_writing.md` （1文ごとに改行し句点を落とす）: 行末の句点の検査
 - `github_writing.md` （投稿する文章の記号）: **`[fyi]` と `[memo]` の使い分け**
