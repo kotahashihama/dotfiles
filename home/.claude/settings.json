@@ -358,7 +358,7 @@
     }
   },
   "outputStyle": "Explanatory",
-  "language": "Japanese",
+  "language": "japanese",
   "spinnerTipsEnabled": false,
   "awaySummaryEnabled": true,
   "askUserQuestionTimeout": "never",
