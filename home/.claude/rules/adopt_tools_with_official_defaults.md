@@ -62,6 +62,6 @@ lint・検査・フォーマッタなどを新しく導入するとき、**閾�
 
 - `verify_before_asserting.md` （断定の前に裏を取る）: **既定値も裏取りの対象**。記憶や二次記事ではなく原文を読む
 - `write_for_installed_versions.md` （入っているバージョンで書く）: あちらは書くコード、本ルールは入れるツールの設定。どちらも「確かめてから決める」
-- `code_comments.md` （不変の WHY だけ残す）: 設定コメントに実測値を書かない根拠。数値は設定そのものが持つ
+- `code_comments.md` （不変の Why not だけ残す）: 設定コメントに実測値を書かない根拠。数値は設定そのものが持つ
 - `treat_user_suggestions_as_proposals.md` （ユーザーの案には賛否を返す）: 値の提案を受けたときも、既定を調べたうえで賛否を返す
 - `base_records_on_measurements.md` （記録は実測に基づける）: 実測から閾値を逆算しないという同じ形。あちらは記録、本ルールは設定が対象
