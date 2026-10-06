@@ -374,5 +374,6 @@
   "remoteControlAtStartup": true,
   "crossSessionInbound": "accept",
   "agentPushNotifEnabled": true,
-  "voiceEnabled": true
+  "voiceEnabled": true,
+  "model": "opus"
 }
