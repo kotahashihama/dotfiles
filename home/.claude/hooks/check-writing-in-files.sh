@@ -45,7 +45,13 @@ except Exception:
 hits = []
 
 
-MD_IN_CMD = re.compile(r"""(?:^|[\s'"=>(])((?:~|\.{1,2})?/?[^\s'"()<>|;&*?]*\.md)(?=$|[\s'"):;|&])""")
+# Bash で .md を書く形。読むだけのコマンド（cat・ls・grep）は拾わない。
+# require-writing-review.sh と同じ拾い方に揃える
+WRITE_IN_CMD = re.compile(
+    r"""(?:>\|?|\btee(?:\s+-a)?)\s*['"]?([^\s'";|&<>]+\.md)\b"""
+    r"""|\bsed\s+-i\s+(?:''\s+)?(?:-e\s+)?(?:'[^']*'|"[^"]*"|\S+)\s+(?:-e\s+\S+\s+)*([^\s'";|&<>]+\.md)\b""")
+# 先頭で cd していれば、相対パスはそこから解決する
+CD_PREFIX = re.compile(r"""^\s*cd\s+['"]?([^\s'";|&]+)['"]?\s*&&""")
 
 
 def written_paths():
@@ -55,8 +61,9 @@ def written_paths():
     ファイルや書きかけのファイルでも止まった。セッション全体の Write / Edit で
     絞っても、昔一度書いたファイルを別のセッションが書き換えると、その分で
     止まった。今のターンに書いたものだけを見る。
-    Bash の sed やヒアドキュメントで書いた分も、コマンドに出てくる .md の
-    パスで拾う（読んだだけの .md も入るが、未コミットでなければ当たらない）"""
+    Bash で書いた分は、リダイレクト・sed -i・tee の書き込み先から拾う。
+    名前が出てきた .md を全部拾っていた頃は、ls で時刻を見ただけの他人の
+    未追跡の .md でも止まった"""
     out = set()
     try:
         f = io.open(str(d.get("transcript_path", "")), encoding="utf-8")
@@ -81,8 +88,12 @@ def written_paths():
                 if b.get("name") in ("Write", "Edit", "MultiEdit") and inp.get("file_path"):
                     out.add(os.path.realpath(inp["file_path"]))
                 elif b.get("name") == "Bash":
-                    for m in MD_IN_CMD.finditer(str(inp.get("command", ""))):
-                        out.add(os.path.realpath(os.path.join(base, os.path.expanduser(m.group(1)))))
+                    cmd = str(inp.get("command", ""))
+                    cd = CD_PREFIX.match(cmd)
+                    if cd:
+                        base = os.path.join(base, os.path.expanduser(cd.group(1)))
+                    for m in WRITE_IN_CMD.finditer(cmd):
+                        out.add(os.path.realpath(os.path.join(base, os.path.expanduser(m.group(1) or m.group(2)))))
     return out
 
 
