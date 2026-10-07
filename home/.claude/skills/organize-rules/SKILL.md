@@ -74,7 +74,7 @@ allowed-tools: Read Grep Glob Bash(ls:*) Bash(grep:*) Bash(wc:*)
 | **ルールを追加・変更・削除した** | ディレクトリ全体。手を入れるたびに再編成する |
 | **ルールを守れなかった／守らなかったと気づいた** | **そのルール自体**。逸脱はルール側の欠陥を示す信号 |
 | **既定の挙動が変わったと分かった** | 埋めていた穴が塞がっていないか |
-| **スキルや `CLAUDE.md` に汎用の規定を見つけた** | **ルールへ引き上げられないか**（下記） |
+| **スキルや `AGENTS.md` に汎用の規定を見つけた** | **ルールへ引き上げられないか**（下記） |
 | **auto memory に書いた／書こうとした** | **ルールと重複していないか**、そして**実行時に効く場所へ落ちているか**（下記） |
 | **失敗した／指摘を受けた** | その失敗を防ぐ規定が**どこに要るか**。メモリで足りるか、ルールやスキルの手順が要るか |
 
@@ -105,7 +105,7 @@ allowed-tools: Read Grep Glob Bash(ls:*) Bash(grep:*) Bash(wc:*)
 | 元の場所 | 引き上げる判断 |
 | --- | --- |
 | `skills/*/SKILL.md` | **その作業に固有か**を見る。固有でないならルールへ移す |
-| `CLAUDE.md` | 「〜せよ」と読めるならルールへ。前提の記述ならそのまま |
+| `AGENTS.md` | 「〜せよ」と読めるならルールへ。前提の記述ならそのまま |
 | **auto memory** | **どのリポジトリでも効く好みならルールへ。移したら元は消す**（下記） |
 
 引き上げたあとは、**元を消さずに「土台はルール」と参照を張る**。スキル側には固有の事情（ツールのレンダリング挙動、テンプレの構成）が残るので、丸ごと移すと失われる。
@@ -301,7 +301,7 @@ auto memory（ `~/.claude/projects/<project>/memory/` ）は**自分が書く学
 | 常に効かせたい振る舞いの規約 | `rules/*.md` |
 | 呼ばれたときに踏む複数手順 | `skills/<name>/SKILL.md` |
 | ツール実行に反応させたい自動処理 | `settings.json` の `hooks` |
-| 知っていれば判断が変わる前提 | `CLAUDE.md` |
+| 知っていれば判断が変わる前提 | `AGENTS.md` |
 
 **プロジェクトのルールは `paths` で絞れる。** 特定のディレクトリやファイル種別でだけ効かせたいなら frontmatter に書く。グローバルルールでも、作業中のリポジトリのファイルに合わせるパターンなら効く（ `rule_conventions.md` ）。
 
@@ -314,7 +314,7 @@ auto memory（ `~/.claude/projects/<project>/memory/` ）は**自分が書く学
 | **どの作業でも** | **ルール** | スキルには固有の事情だけ残し、土台への参照を張る |
 | **その作業を実行する間だけ** | **スキル** | ルールには置かない。呼ばれない場面で読む価値が無い |
 | **必ず走らせたい** | **フック** | 規約は消さない。deny の理由がその文章になる |
-| **知っていれば判断が変わる前提** | **`CLAUDE.md`** | 「〜せよ」と読めるならルールへ移す |
+| **知っていれば判断が変わる前提** | **`AGENTS.md`** | 「〜せよ」と読めるならルールへ移す |
 
 **判定は「呼ばれなくても効いてほしいか」。** 効いてほしいならルール、その場だけならスキル。
 
@@ -460,7 +460,7 @@ ln -s "$D/home/.claude/skills/<name>" "$HOME/.claude/skills/<name>"
 
 | 実体の置き場 | git | 編集後 |
 | --- | --- | --- |
-| `home/.claude/` （rules / skills / hooks / agents / settings.json / CLAUDE.md） | **管理下** | **コミットが要る** |
+| `home/.claude/` （rules / skills / hooks / agents / settings.json / AGENTS.md） | **管理下** | **コミットが要る** |
 | `private/.claude/` と `private/.claude-memory/` （メモリ・社内固有名を含むスキル） | `.gitignore` 対象 | 不要 |
 
 **どちら側かの見分け方は `no_internal_names_in_public_assets.md` が持ちます**（スキルは両側にあり、リンク越しでは判別できない）。**`private/` 側なら連絡は要りません。**
@@ -473,9 +473,9 @@ ln -s "$D/home/.claude/skills/<name>" "$HOME/.claude/skills/<name>"
 python3 - <<'EOF'
 import re, pathlib, os
 
-# ~/.claude/CLAUDE.md はリンクなので、実体から親を遡れば dotfiles の外からでも見つかる。
+# ~/.claude/AGENTS.md はリンクなので、実体から親を遡れば dotfiles の外からでも見つかる。
 # settings.json を起点にしない。clauth が切り替えのたびに実ファイルへ置き換える
-root = pathlib.Path(os.path.realpath(os.path.expanduser("~/.claude/CLAUDE.md")))
+root = pathlib.Path(os.path.realpath(os.path.expanduser("~/.claude/AGENTS.md")))
 deny = next(p / "private/.claude/deny-patterns.txt" for p in root.parents
             if (p / "private/.claude/deny-patterns.txt").exists())
 pats = [l.strip() for l in deny.read_text(encoding="utf-8").splitlines()

@@ -22,7 +22,7 @@
 
 | 実体の置き場 | 公開 | 固有名 |
 | --- | --- | --- |
-| `home/.claude/` （rules / skills / hooks / agents / settings.json / CLAUDE.md） | される | 書けない |
+| `home/.claude/` （rules / skills / hooks / agents / settings.json / AGENTS.md） | される | 書けない |
 | `private/.claude/` と `private/.claude-memory/` | されない | 書ける |
 
 **スキルは public と private の両方にあります。** `~/.claude/skills/` からはスキル単位でリンクされているので、編集したファイルの実体を `readlink -f` で確かめる。
