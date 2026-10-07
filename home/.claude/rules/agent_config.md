@@ -47,9 +47,13 @@ ln -s ../../.claude/skills/<名前> .agents/skills/<名前>
 
 | 仕組み | Claude Code | Codex | 埋め方 |
 | --- | --- | --- | --- |
-| `.claude/rules/` | 読む | 読まない | `AGENTS.md` に「ルールを開いて従う」と書く |
+| `.claude/rules/` | 読む | 読まない。Markdown のルールのフォルダを読む仕組みが無い | `AGENTS.md` に「ルールを開いて従う」と書く |
 | `paths` での読み込み | 効く | 効かない | 同上。作業に関わるルールを自分で開いてもらう |
 | `@path` での読み込み | 効く | 記載が無い | `@` に「読んでから従う」の文を添える |
+
+**Codex の「Rules」は、同じ名前の別の機能です。** `~/.codex/rules/` と `<repo>/.codex/rules/` に置く Starlark の `.rules` ファイルで、Codex がサンドボックスの外で実行してよいコマンドを決めます。振る舞いの規約を書く場所ではないので、Markdown のルールやそのリンクを `.codex/rules/` に置かない。
+
+Markdown のルールを Codex でも `paths` 付きで読めるようにする要望は出ています（openai/codex#34002、まだ open）。ツールをまたぐ置き場として `.agents/rules/` を標準にする提案もあり、`.agents/rules/` にリンクを置くのはこれを見越した揃えです。今の Codex の挙動は変えません。
 
 **Claude Code での効き目を落とさない。** `@` をやめて普通のパスにすると、Claude Code は中身を読み込まなくなります。Claude Code の書き方を残し、ほかのエージェントが読んで通じなさそうなら説明を添える。
 
@@ -66,6 +70,7 @@ ln -s ../../.claude/skills/<名前> .agents/skills/<名前>
 - `CLAUDE.md` に中身を書くこと。`AGENTS.md` を実体にし、`CLAUDE.md` はリンクにする
 - ほかのエージェントに合わせて、`@` での読み込みをやめること。Claude Code が読み込まなくなる
 - ルールやスキルを足して、`.agents/` のリンクを足さないこと
+- Markdown のルールやそのリンクを `.codex/rules/` に置くこと。そこはコマンドの実行の可否を決める `.rules` ファイルの置き場
 
 ## なぜ
 
