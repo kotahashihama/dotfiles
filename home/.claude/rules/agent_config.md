@@ -7,9 +7,9 @@ paths:
   - "**/.agents/**"
 ---
 
-# エージェントの設定は Claude Code に置き、ほかのエージェントへはリンクで渡す
+# エージェントの設定は Claude Code に置き、ほかのエージェントへ渡す
 
-指示・ルール・スキルの実体は Claude Code が読む場所に置き、Codex などのほかのエージェントには、シンボリックリンクで同じ実体を渡してください。
+指示・ルール・スキルの実体は Claude Code が読む場所に置き、Codex などのほかのエージェントにも同じ実体を使わせてください。指示とスキルはシンボリックリンクで渡し、ルールは `AGENTS.md` の指示で読みに行かせます。
 これは全プロジェクト共通の規約です。
 
 **実体を2か所に持たない。** 写しを置くと片方だけ直されて食い違い、どちらが正しいか決められなくなります。
@@ -21,10 +21,10 @@ paths:
 | 種類 | 実体 | リンク |
 | --- | --- | --- |
 | 指示 | `AGENTS.md` | `CLAUDE.md` → `AGENTS.md` （同じディレクトリ） |
-| ルール | `.claude/rules/<主題>.md` | `.agents/rules/<主題>.md` → `../../.claude/rules/<主題>.md` |
+| ルール | `.claude/rules/<主題>.md` | 張らない。`AGENTS.md` に読みに行くよう書く（下記） |
 | スキル | `.claude/skills/<名前>/` | `.agents/skills/<名前>` → `../../.claude/skills/<名前>` |
 
-グローバル（dotfiles の `home/` ）では、ユーザー単位の置き場が次のとおりです。ルールは Codex が読まないので `.agents/rules` は作らず、`AGENTS.md` から `~/.claude/rules/` を指します。
+グローバル（dotfiles の `home/` ）では、ユーザー単位の置き場が次のとおりです。ルールはリポジトリと同じく、`AGENTS.md` から `~/.claude/rules/` を指します。
 
 | 読む側 | 読む場所 | 置くもの |
 | --- | --- | --- |
@@ -35,11 +35,10 @@ paths:
 
 ```bash
 ln -s AGENTS.md CLAUDE.md
-ln -s ../../.claude/rules/<主題>.md .agents/rules/<主題>.md
 ln -s ../../.claude/skills/<名前> .agents/skills/<名前>
 ```
 
-**リンクの向きは、指示とそれ以外で逆になる。** ルールとスキルは Claude Code の側（ `.claude/` ）が実体で、ほかのエージェントの側（ `.agents/` ）がリンクです。指示だけは、ほかのエージェントと共通の名前（ `AGENTS.md` ）が実体で、`CLAUDE.md` がリンクです。
+**リンクの向きは、指示とスキルで逆になる。** スキルは Claude Code の側（ `.claude/` ）が実体で、ほかのエージェントの側（ `.agents/` ）がリンクです。指示だけは、ほかのエージェントと共通の名前（ `AGENTS.md` ）が実体で、`CLAUDE.md` がリンクです。
 
 指示を逆向きにするのは、Claude Code の読み方のためです。Claude Code は `AGENTS.md` を、同じ階層とその上に `CLAUDE.md` が無いときだけ読み、ユーザー単位の `AGENTS.md` の置き場もありません。`CLAUDE.md` を `AGENTS.md` へのリンクにすれば、どこで開いても1回だけ読まれます。公式ドキュメントも、リンクにした `CLAUDE.md` は中身が1回だけ読まれると案内しています。
 
@@ -53,29 +52,32 @@ ln -s ../../.claude/skills/<名前> .agents/skills/<名前>
 
 **Codex の「Rules」は、同じ名前の別の機能です。** `~/.codex/rules/` と `<repo>/.codex/rules/` に置く Starlark の `.rules` ファイルで、Codex がサンドボックスの外で実行してよいコマンドを決めます。振る舞いの規約を書く場所ではないので、Markdown のルールやそのリンクを `.codex/rules/` に置かない。
 
-Markdown のルールを Codex でも `paths` 付きで読めるようにする要望は出ています（openai/codex#34002、まだ open）。ツールをまたぐ置き場として `.agents/rules/` を標準にする提案もあり、`.agents/rules/` にリンクを置くのはこれを見越した揃えです。今の Codex の挙動は変えません。
+**ルールはリンクを張らず、読みに行かせる。** Codex は Markdown のルールのフォルダを読む仕組みを持たないので、`.agents/rules/` にリンクを張っても何も読まれません。`AGENTS.md` に「作業に関わるルールを開いて従う」と書き、Codex に自分で開かせます。
+
+Markdown のルールを Codex でも `paths` 付きで読めるようにする要望（openai/codex#34002）と、ツールをまたぐ置き場として `.agents/rules/` を標準にする提案（agentsmd/agents.md#179）は出ています。どちらかが入って読まれるようになったら、そのときにリンクを張る。
 
 **Claude Code での効き目を落とさない。** `@` をやめて普通のパスにすると、Claude Code は中身を読み込まなくなります。Claude Code の書き方を残し、ほかのエージェントが読んで通じなさそうなら説明を添える。
 
-## 足したら、リンクも足す
+## スキルを足したら、リンクも足す
 
-ルールやスキルを新しく作ったら、同じ作業の中で `.agents/` にリンクを足します。グローバルのスキルは、dotfiles の `scripts/link_agents_skills.sh` が `~/.claude/skills/` の全部へリンクを張ります。
+スキルを新しく作ったら、同じ作業の中で `.agents/skills/` にリンクを足します。グローバルのスキルは、dotfiles の `scripts/link_agents_skills.sh` が `~/.claude/skills/` の全部へリンクを張ります。
 
 消したときも同じです。実体の無いリンクを残すと、Codex が読めないスキルを一覧に出します。
 
 ## 禁止する挙動
 
 - 指示・ルール・スキルの写しを、エージェントごとに置くこと。片方だけ直されて食い違う
+- 読まれないのに `.agents/rules/` へルールのリンクを張ること。張っても Codex の挙動は変わらず、置き場だけが増える
 - `.agents/` のリンクの側を編集すること。実体を直す
 - `CLAUDE.md` に中身を書くこと。`AGENTS.md` を実体にし、`CLAUDE.md` はリンクにする
 - ほかのエージェントに合わせて、`@` での読み込みをやめること。Claude Code が読み込まなくなる
-- ルールやスキルを足して、`.agents/` のリンクを足さないこと
+- スキルを足して、`.agents/skills/` のリンクを足さないこと
 - Markdown のルールやそのリンクを `.codex/rules/` に置くこと。そこはコマンドの実行の可否を決める `.rules` ファイルの置き場
 
 ## なぜ
 
 - 同じ規約を2つのエージェントで使うなら、実体は1つでないと必ず食い違う
-- Claude Code を基準にしているので、実体は Claude Code の読む場所に置く。ほかのエージェントはリンクを辿れる
+- Claude Code を基準にしているので、実体は Claude Code の読む場所に置く。ほかのエージェントは、読む仕組みがあるものはリンクを辿り、無いものは指示で開く
 - Claude Code と Codex は読み込む場所と仕組みが違う。差を書いておかないと、片方でだけ効かない規約が増える
 
 ## 例外

@@ -1,1 +1,0 @@
-../../.claude/rules/managed-file-purity.md
