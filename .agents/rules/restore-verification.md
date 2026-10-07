@@ -1,0 +1,1 @@
+../../.claude/rules/restore-verification.md
