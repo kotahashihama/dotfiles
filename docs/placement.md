@@ -122,6 +122,6 @@ sesame() {
 
 | 資産 | 管理 |
 | --- | --- |
-| `CLAUDE.md` `rules/` `skills/` `hooks/` `settings.json` `statusline-command.sh` | する |
+| `AGENTS.md` （ `CLAUDE.md` はそこへのリンク） `rules/` `skills/` `hooks/` `settings.json` `statusline-command.sh` | する |
 | `agents/` `output-styles/` | する（現時点では空） |
 | `commands/` | **しない**。[skills に統合済み](https://code.claude.com/docs/en/skills)で、新規はすべて `skills/` に置くため空のまま |
