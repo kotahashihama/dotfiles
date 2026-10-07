@@ -94,6 +94,12 @@ fi
 
 report_links
 
+# Codex にも同じスキルを渡す。~/.claude/skills/ の各スキルへ ~/.agents/skills/ からリンクを張る
+if [ -z "$DRY_RUN" ]; then
+  bash "$DOTFILES_DIR/scripts/link_agents_skills.sh" \
+    || echo "⚠️  ~/.agents/skills へのリンクに失敗しました。scripts/link_agents_skills.sh を手で流してください"
+fi
+
 if [ -n "$DRY_RUN" ]; then
   echo "🔎 DRY_RUN のため何も変更していません。実行するなら DRY_RUN を外してください"
 else

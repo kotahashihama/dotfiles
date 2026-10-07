@@ -29,7 +29,7 @@ for a in "$@"; do
 done
 if [ ${#files[@]} -eq 0 ]; then
   files=(home/.claude/rules/*.md home/.claude/skills/*/SKILL.md
-         home/.claude/CLAUDE.md home/.claude/agents/*.md)
+         home/.claude/AGENTS.md home/.claude/agents/*.md)
   # 取り込んだ外部の文書は原文のまま置くので、こちらの表記規約を当てない。
   # 1件でも残ると「0件」を基準に使えなくなる
   keep=()
