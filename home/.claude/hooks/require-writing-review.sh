@@ -30,6 +30,8 @@ if not pid:
 HOME = os.path.expanduser("~")
 # auto memory は会話の記録で、読み物ではない
 SKIP_PREFIXES = (os.path.join(HOME, ".claude", "projects") + os.sep,)
+# 一時ディレクトリは使い捨ての置き場で、後から読まれない
+TEMP_PREFIXES = tuple(sorted({os.path.realpath(t) + os.sep for t in (tempfile.gettempdir(), "/tmp")}))
 
 # Bash で .md を書く形。読むだけのコマンド（cat・grep）は拾わない
 WRITE_IN_CMD = re.compile(
@@ -103,7 +105,10 @@ def scan():
                             pending.append(p)
     seen, out = set(), []
     for p in pending:
-        if p in seen or p.startswith(SKIP_PREFIXES):
+        if p in seen or p.startswith(SKIP_PREFIXES) or p.startswith(TEMP_PREFIXES):
+            continue
+        # 展開されないまま残った変数や、引用の中の文字列は実在のパスではない
+        if any(c in p for c in "$`\\\n"):
             continue
         seen.add(p)
         out.append(p)
