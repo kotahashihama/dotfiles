@@ -2,7 +2,7 @@
 
 macOS の設定ファイル一式。`~` 側は実体を持たず、このリポジトリへシンボリックリンクを張る。**編集はリポジトリ内で完結する。**
 
-`CLAUDE.md` はこのファイルへのリンク。スキルの実体は `.claude/skills/` にあり、`.agents/skills/` に同じものへのリンクを置いている。ルールの実体は `.claude/rules/` にある。Claude Code 以外のエージェントはルールを自動で読み込まないので、作業に関わるものを開いて従う（ `~/.claude/rules/agent_config.md` ）。
+`CLAUDE.md` は置かない。スキルの実体は `.claude/skills/` にあり、`.agents/skills/` に同じものへのリンクを置いている。ルールの実体は `.claude/rules/` にある。Claude Code 以外のエージェントはルールを自動で読み込まないので、作業に関わるものを開いて従う（ `~/.claude/rules/agent_config.md` ）。
 
 ## まず読むもの
 
