@@ -47,3 +47,4 @@
 - `responding_to_reviews.md` （人間コメントへ返信しない）: レビュアーへ働きかける操作を勝手にしないという点で同じ。あちらは返信と Resolve、こちらは依頼
 - `use_ship_pr_for_pr_creation.md` （PR 作成は ship-pr から）: `/ship-pr` は AI レビューまで回しても draft のまま止まる。本ルールがその後の状態変更を規定する
 - `/ready-pr` （ready 化と reviewer の指定）: 本ルールの指示を受けた後の手順を持つ。誰に付けるかもあちら
+- `summarize_after_each_task.md` （作業後のサマリ）: ready 化はユーザーの仕事なので、作業の積み残しにも数えない。本ルールは実行しないこと、あちらは報告に並べないこと
