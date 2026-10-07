@@ -1,1 +1,0 @@
-../../.claude/rules/file-placement.md
