@@ -41,7 +41,7 @@ allowed-tools: Bash(git status:*) Bash(git diff:*) Bash(git add:*) Bash(git comm
 | 常に効かせたい振る舞いの規約 | `rules/*.md` |
 | 呼ばれたときに踏む複数手順 | `skills/<name>/SKILL.md` |
 | **「毎回必ず」が要件** | **`settings.json` の `hooks`**。ルールは読み飛ばされうるが、フックは必ず走る |
-| 知っていれば判断が変わる前提 | `CLAUDE.md` |
+| 知っていれば判断が変わる前提 | `AGENTS.md` |
 | **そのリポジトリだけの事実** | **`projects/<project>/memory/`** |
 
 **軸2: 公開してよいか。**

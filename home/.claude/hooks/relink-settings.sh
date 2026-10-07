@@ -18,9 +18,9 @@ S="$HOME/.claude/settings.json"
 [ -e "$S" ] || exit 0
 [ -L "$S" ] && exit 0   # リンクのままなら何もしない
 
-# 起点は CLAUDE.md。settings.json を起点にすると、まさに壊れているときに引けない。
+# 起点は AGENTS.md。settings.json を起点にすると、まさに壊れているときに引けない。
 # clauth はこちらを触らない
-link=$(readlink "$HOME/.claude/CLAUDE.md" 2>/dev/null) || exit 0
+link=$(readlink "$HOME/.claude/AGENTS.md" 2>/dev/null) || exit 0
 [ -n "$link" ] || exit 0
 repo=$(git -C "$(dirname "$link")" rev-parse --show-toplevel 2>/dev/null) || exit 0
 

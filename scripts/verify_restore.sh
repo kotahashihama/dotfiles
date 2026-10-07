@@ -63,8 +63,10 @@ expected_real=$( { . "$D/scripts/lib.sh"; printf '%s\n' "$PARTIAL_DIRS"; } | cut
 unexpected=$(find "$W/fakehome" -maxdepth 1 -type d ! -path "$W/fakehome" -exec basename {} \; | sort | comm -23 - <(printf '%s\n' "$expected_real" | sort -u))
 check "~ 直下に想定外の実体が無い"      "$(printf '%s' "$unexpected" | grep -c . | tr -d ' ')" "0"
 # 指示とスキルを Codex にも渡す（home/.claude/rules/agent_config.md）
-check "CLAUDE.md から AGENTS.md が読める"   "$(head -1 "$W/fakehome/.claude/CLAUDE.md" 2>/dev/null | grep -c .)" "1"
-check "Codex の AGENTS.md が同じものを指す" "$(cmp -s "$W/fakehome/.codex/AGENTS.md" "$W/fakehome/.claude/CLAUDE.md" && echo same)" "same"
+check "~/.claude/AGENTS.md が読める"       "$(head -1 "$W/fakehome/.claude/AGENTS.md" 2>/dev/null | grep -c .)" "1"
+check "~/.claude/CLAUDE.md を置かない"     "$([ -e "$W/fakehome/.claude/CLAUDE.md" ] || [ -L "$W/fakehome/.claude/CLAUDE.md" ] && echo あり || echo なし)" "なし"
+check "非公開の前提のルールが読める"       "$(head -1 "$W/fakehome/.claude/rules/user_context.md" 2>/dev/null | grep -c .)" "1"
+check "Codex の AGENTS.md が同じものを指す" "$(cmp -s "$W/fakehome/.codex/AGENTS.md" "$W/fakehome/.claude/AGENTS.md" && echo same)" "same"
 check "~/.agents/skills にスキルのリンクがある" "$(find "$W/fakehome/.agents/skills" -maxdepth 1 -type l | wc -l | tr -d ' ')" "$(ls -A "$W/fakehome/.claude/skills" | wc -l | tr -d ' ')"
 
 echo "── 3. シェルの起動 ──"

@@ -147,7 +147,7 @@ allowed-tools: Bash(gh pr view:*) Bash(gh pr diff:*) Bash(gh api:*) Bash(gh repo
 
 **値を持ち回る。** 「ここで受け取った値が、次はこの引数に入ります」と繋ぐと、かたまりが分断されません。
 
-**文法・言語機能は、どこまで開くかを言語ごとの習熟度で決める**（ `plain_language_explanation.md` と `CLAUDE.md` ）。
+**文法・言語機能は、どこまで開くかを言語ごとの習熟度で決める**（ `plain_language_explanation.md` と `user_context.md` ）。
 
 | 習熟度 | 開く範囲 |
 | --- | --- |
@@ -250,7 +250,7 @@ allowed-tools: Bash(gh pr view:*) Bash(gh pr diff:*) Bash(gh api:*) Bash(gh repo
 
 - `/walk-code` （一緒に辿るウォークスルー）: **兄弟。** 説明する内容は近いが、**あちらは辿り方そのものを渡す**（1区切りずつ止まり、次をどう突き止めたかを添える）。読む力をつけたいなら、はじめからあちら
 - `/explain-review` （レビューコメントの意図）: **同じ explain 系。** あちらは**指摘から学びを残す**のが目的。指摘の前提になっているコードを深く読むなら、あちらから本スキルへ渡ってくる
-- `plain_language_explanation.md` （噛み砕いた説明）: 土台。**どこまで文法を開くかはあちらが決める。** 言語ごとの習熟度は `CLAUDE.md`
+- `plain_language_explanation.md` （噛み砕いた説明）: 土台。**どこまで文法を開くかはあちらが決める。** 言語ごとの習熟度は `user_context.md`
 - `concise_first_then_detail.md` （簡潔に）: 図と表で畳む判断はあちらが持つ
 - `report_formatting.md` （報告に貼る識別子の書式）: **`file:line` で指す規定はあちらが持つ**。本スキルは、その上に**読む順の案内**を足す
 - `verify_before_asserting.md` （断定の前に裏を取る）: 逐行は断定の連続になる。**推測が混ざると気づかれない**

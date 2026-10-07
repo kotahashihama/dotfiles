@@ -41,6 +41,7 @@ gpg_decrypt() {
 # 例: ~/.claude にはセッションやキャッシュも入るので、丸ごとリンクすると巻き込む。
 # 両方が同じディレクトリへ要素を持ち寄る場合も、ここへ入れて衝突を避ける。
 PARTIAL_DIRS='.claude
+.claude/rules
 .claude/skills
 .config
 .codex

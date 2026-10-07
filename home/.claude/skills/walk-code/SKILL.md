@@ -67,7 +67,7 @@ allowed-tools: Bash(gh pr diff:*) Bash(git show:*) Bash(git log:*) Bash(git diff
 
 **値を持ち回る。** 「ここで受け取った UUID が、次はこの引数に入ります」と繋ぐと、区切りが分断されません。**ウォークスルーの価値はこの連続性**にあります。
 
-**文法・言語機能は、その場で2〜4行だけ開く**（ `plain_language_explanation.md` と `CLAUDE.md` の習熟度）。詰まったまま次へ進ませない。
+**文法・言語機能は、その場で2〜4行だけ開く**（ `plain_language_explanation.md` と `user_context.md` の習熟度）。詰まったまま次へ進ませない。
 
 #### 4は「どう突き止めたか」まで書く
 
@@ -157,7 +157,7 @@ allowed-tools: Bash(gh pr diff:*) Bash(git show:*) Bash(git log:*) Bash(git diff
 
 - `/explain-code` （実装の説明）: **兄弟。** 説明する内容は近いが、**あちらは一度に渡す**（俯瞰でも逐行でも）。辿る前に地図が欲しいなら先にあちら、「全部いって」と言われたらあちらの形へ切り替える
 - `/explain-review` （レビューコメントの意図）: **同じ解説の3本目。** あちらは**指摘から学びを残す**のが目的。指摘の前提を自分で辿りたくなったら本スキルへ渡ってくる
-- `plain_language_explanation.md` （噛み砕いた説明）: 文法をどこまで開くかはあちらが決める。言語ごとの習熟度は `CLAUDE.md`
+- `plain_language_explanation.md` （噛み砕いた説明）: 文法をどこまで開くかはあちらが決める。言語ごとの習熟度は `user_context.md`
 - `decide_or_ask.md` （自分で決めるか尋ねるか）: **区切りで尋ねる形**（ `AskUserQuestion` ）はあちらが定める
 - `report_formatting.md` （報告に貼る識別子の書式）: `file:line` で指す規定はあちらが持つ
 - `verify_before_asserting.md` （断定の前に裏を取る）: 辿る前に実物を読む。**推測で経路を繋がない**
