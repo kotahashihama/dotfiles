@@ -156,12 +156,12 @@ zsh の設定は `home/.config/zsh/` に 3 分割してある（`options` / `uti
 
 ## Claude Code の資産
 
-`~/.claude` は管理対象と管理外（セッション・キャッシュ）が同居するため、**子要素を個別にリンクする**。
+`~/.claude` は管理対象と管理外（セッション・キャッシュ）が同居するため、**子要素を個別にリンクする**。`rules/` も公開側と非公開側の両方に実体があるので、1 ファイルずつリンクする。`CLAUDE.md` は置かず、指示は `AGENTS.md` に書く。
 
 | 資産 | 置き場 |
 | --- | --- |
-| `CLAUDE.md` `rules/` `hooks/` `settings.json` `statusline-command.sh` `agents/` `output-styles/` | `home/.claude/` |
-| `CLAUDE.private.md`、非公開の固有名を含むスキル | `private/.claude/` |
+| `AGENTS.md` `rules/` `hooks/` `settings.json` `statusline-command.sh` `agents/` `output-styles/` | `home/.claude/` |
+| `rules/user_context.md`（非公開の前提）、非公開の固有名を含むスキル | `private/.claude/` |
 | `skills/` | **1 本ずつ置き場が違う**。編集前に `readlink -f` で実体を確かめる |
 | 自動メモリ（`projects/<repo>/memory/`） | `private/.claude-memory/` |
 | `deny-patterns.txt`（`pre-commit` の検出パターン） | `private/.claude/`。パターン自体が固有名なので公開側に置けない |
