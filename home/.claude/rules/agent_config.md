@@ -9,7 +9,7 @@ paths:
 
 # エージェントの設定は Claude Code に置き、ほかのエージェントへ渡す
 
-指示は `AGENTS.md` だけに書き、ルールとスキルの実体は Claude Code が読む場所に置いて、Codex などのほかのエージェントにも同じものを使わせてください。`CLAUDE.md` は置きません。スキルはシンボリックリンクで渡し、ルールは `AGENTS.md` の指示で読みに行かせます。
+指示は `AGENTS.md` だけに書き、`CLAUDE.md` は置きません。ルールとスキルの実体は Claude Code が読む場所に置き、Codex などのほかのエージェントにも同じものを使わせてください。スキルはシンボリックリンクで渡し、ルールは `AGENTS.md` の指示で読みに行かせます。
 これは全プロジェクト共通の規約です。
 
 **実体を2か所に持たない。** 写しを置くと片方だけ直されて食い違い、どちらが正しいか決められなくなります。
@@ -39,7 +39,7 @@ ln -s ../../.claude/skills/<名前> .agents/skills/<名前>
 
 **`CLAUDE.md` は、リンクも含めて置かない。** Claude Code は作業ディレクトリとその上の階層にある `AGENTS.md` と `.claude/AGENTS.md` を読みます。ただし同じ範囲に `CLAUDE.md` があると、`AGENTS.md` は読まれません。
 
-グローバルの指示は、この仕組みで読ませます。ユーザー単位の `AGENTS.md` の置き場は無いので、`~/.claude/AGENTS.md` を「ホームの下で開いたときの上の階層の `.claude/AGENTS.md` 」として読ませる。リポジトリに `CLAUDE.md` があっても両方が読まれるよう、`settings.json` で `cc-plugin-agents-md@builtin` の `instructionFiles` を `claude-md-and-agents-md` にします。ホームの外で開いたセッションには読まれません。
+グローバルの指示は、この仕組みで読ませます。ユーザー単位の `AGENTS.md` の置き場は無いので、ホームの下で開いたセッションから見て上の階層にあたる `~/.claude/AGENTS.md` を読ませる。リポジトリに `CLAUDE.md` があっても両方が読まれるよう、`settings.json` で `cc-plugin-agents-md@builtin` の `instructionFiles` を `claude-md-and-agents-md` にします。ホームの外で開いたセッションには読まれません。
 
 ## ほかのエージェントが読まないもの
 
