@@ -42,8 +42,8 @@ WRITE_IN_CMD = re.compile(
 POST_IN_CMD = re.compile(r"""(?:--body-file|-F\s+body=@)\s*['"]?([^\s'";|&<>]+\.md)\b""")
 REVIEW_IN_CMD = re.compile(r"yomiyasu_(?:lint|diff)\.py")
 MD_ARG = re.compile(r"""(?:^|[\s'"=])([^\s'";|&<>]+\.md)\b""")
-# 先頭で cd していれば、相対パスはそこから解決する
-CD_PREFIX = re.compile(r"""^\s*cd\s+['"]?([^\s'";|&]+)['"]?\s*&&""")
+# cd していれば、相対パスはそこから解決する。先頭に限らず、; や && の後ろの cd も拾う
+CD_ANY = re.compile(r"""(?:^|[;&|\n])\s*cd\s+['"]?([^\s'";|&]+)['"]?""")
 
 
 def is_review_skill(name):
@@ -85,10 +85,17 @@ def scan():
                         pending.append(os.path.realpath(p))
                 elif name == "Bash":
                     cmd = str(inp.get("command", ""))
-                    cd = CD_PREFIX.match(cmd)
-                    if cd:
-                        base = os.path.join(base, os.path.expanduser(cd.group(1)))
-                    resolve = lambda p: os.path.realpath(os.path.join(base, os.path.expanduser(p)))
+                    for cd in CD_ANY.finditer(cmd):
+                        to = cd.group(1)
+                        # 移動先が展開前の変数なら、どこへ移ったか分からない
+                        base = None if (base is None or any(c in to for c in "$`")) \
+                            else os.path.join(base, os.path.expanduser(to))
+
+                    def resolve(p, base=base):
+                        p = os.path.expanduser(p)
+                        if not os.path.isabs(p) and base is None:
+                            return None
+                        return os.path.realpath(p if os.path.isabs(p) else os.path.join(base, p))
                     if REVIEW_IN_CMD.search(cmd):
                         # 検査に渡した .md も点検済みにする。スクリプトの中で書いた
                         # ファイルは pending に入らないので、ここで覚えないと
@@ -105,7 +112,7 @@ def scan():
                             pending.append(p)
     seen, out = set(), []
     for p in pending:
-        if p in seen or p.startswith(SKIP_PREFIXES) or p.startswith(TEMP_PREFIXES):
+        if p is None or p in seen or p.startswith(SKIP_PREFIXES) or p.startswith(TEMP_PREFIXES):
             continue
         # 展開されないまま残った変数や、引用の中の文字列は実在のパスではない
         if any(c in p for c in "$`\\\n"):
