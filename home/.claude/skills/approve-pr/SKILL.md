@@ -7,7 +7,7 @@ allowed-tools: Bash(gh pr view:*) Bash(gh pr checks:*) Bash(gh api:*) Bash(gh re
 
 他の人の PR を approve してよい状態かを確かめ、**approve のコマンドを示すところまで**行います。
 
-**approve は人が打ちます。** フック（ `block-known-footguns.sh` の 5) ）が、Claude からの `gh pr review --approve` を常に止めています。本スキルはその守りを外さず、判断材料をそろえて渡すだけです。
+**approve は人が打ちます。** フック（ `block-known-footguns.sh` の5番目の検査）が、Claude からの `gh pr review --approve` を常に止めています。本スキルはその守りを外さず、判断材料をそろえて渡すだけです。
 
 `disable-model-invocation: true` なので、本スキルは人が `/approve-pr` を打ったときだけ起動します。
 
