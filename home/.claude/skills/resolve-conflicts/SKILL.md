@@ -15,7 +15,7 @@ allowed-tools: Bash(git status:*) Bash(git fetch:*) Bash(git merge:*) Bash(git d
    - 以降の手順では `origin/$TARGET_BRANCH` を merge 対象として扱う
 
 2. **作業前の確認**（並列実行可）
-   - `git status --short` で未コミット変更がないことを確認（あれば stash or commit を促す）
+   - `git status --short` で未コミット変更がないことを確認（あれば stash かコミットを促す）
    - 現在のブランチ名を確認
    - `git fetch origin $TARGET_BRANCH` で対象ブランチを最新化
 
@@ -26,7 +26,7 @@ allowed-tools: Bash(git status:*) Bash(git fetch:*) Bash(git merge:*) Bash(git d
 4. **コンフリクトの内容を理解してから解消**
    - 両側（HEAD / 取り込み側）の変更が **何を意図しているか**を読み取る
    - 単純に片方を残すのではなく、両者の意図を満たす解を選ぶ
-   - 機械的な決定を避けたいケース（ロジック競合・型変更が絡む・テストの期待値差分）は解消理由を頭に置く
+   - 機械的な決定を避けたいケース（ロジック競合・型変更が絡む・テストの期待値差分）は、解消した理由を控えておく
    - `_test.go` や mock 等の自動生成系で衝突する場合は手で merge せず再生成（ `task go:gen` 等）を優先
 
 5. **検査での確認**（ `verify_merge_with_checks.md` ）
@@ -58,5 +58,5 @@ allowed-tools: Bash(git status:*) Bash(git fetch:*) Bash(git merge:*) Bash(git d
 ## やってはいけないこと
 
 - コンフリクトマーカーを機械的に片側だけ残して解消すること（両側の意図を読んでから判断する）
-- `_test.go` / mock などの自動生成物を手で merge すること（再生成が正）
+- `_test.go` / mock などの自動生成物を手で merge すること（再生成するのが正しい）
 - 解消後の merge コミットを push すること（push はユーザーの判断に委ねる）
