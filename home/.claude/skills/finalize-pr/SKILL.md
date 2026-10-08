@@ -34,7 +34,7 @@ allowed-tools: Skill, Bash(git status:*) Bash(git branch:*) Bash(git diff:*) Bas
 
    **この3本は同時に呼んでも並列にならない。** `Skill` には**手順書を自分の文脈へ読み込ませる形**と、**サブエージェントで完結して結果だけ返す形**があり、点検3種は前者（ `allowed-tools` を持ち、ツールを打つのは呼び出し側）。3つ同時だと手順が混ざって取り違えるので、**1つ呼び、その手順を実行し、結果を得てから次へ進む。**
 
-   **並列化するのは各点検の中。** 依存の無い `Read` / `grep` を1メッセージへまとめて発行する。壁時計時間が縮むのはここ。
+   **並列化するのは各点検の中。** 依存の無い `Read` / `grep` を1メッセージへまとめて発行する。終わるまでの時間が縮むのはここ。
 
    `triage-why-comments` と `review-tests` は常に呼ぶ。`triage-why-comments` はコードコメントの評価を内部で `/review-comments` に任せ、インラインの `[fyi]` もあわせて整える。`review-conventions` はリポジトリ側のスキルなので、`.claude/skills/review-conventions/` があるときだけ呼ぶ。無ければ、規約の点検をしていないことを報告に書く。
 
