@@ -240,9 +240,6 @@ release-awssession-token() {
 # Terraform
 export GODEBUG=asyncpreemptoff=1
 
-# OpenClaw
-[[ -f "$HOME/.openclaw/completions/openclaw.zsh" ]] && source "$HOME/.openclaw/completions/openclaw.zsh"
-
 # uv / rye
 [[ -f "$HOME/.local/bin/env" ]] && . "$HOME/.local/bin/env"
 

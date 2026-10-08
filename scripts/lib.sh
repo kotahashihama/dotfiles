@@ -46,7 +46,6 @@ PARTIAL_DIRS='.claude
 .config
 .codex
 .cursor
-.openclaw
 Library
 Library/Application Support
 Library/Application Support/Cursor
