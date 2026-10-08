@@ -65,7 +65,7 @@ allowed-tools: Bash(gh pr view:*) Bash(gh pr edit:*) Bash(gh pr comment:*) Bash(
    - **量を絞る**（詳細は `references/body.md` の「量を絞る」）
    - **概要から詳細へ流す**（詳細は `references/body.md` の「概要から詳細へ流す」）
    - **読み手はその機能を知らないエンジニア**（詳細は `references/body.md` の「読み手はその機能を知らないエンジニア」）
-   - **Alert / `<details>` / 脚注も使う**（土台は `/format-github-post` ）。Alert は `IMPORTANT` と `WARNING` だけを、**本文に1〜2個**（生成者表示の Note は数えない）。**先に「読み飛ばすと事故るか」で選び**、超えたら畳み方を見直す
+   - **Alert / `<details>` / 脚注も使う**（土台は `/format-github-post` ）。Alert は `IMPORTANT` と `WARNING` だけを、**本文に1〜2個**（生成者表示の Note は数えない）。**先に「読み飛ばすと事故になるか」で選び**、超えたら畳み方を見直す
      - **`<details>` は使えるところでは使う。** 畳むのは根拠の実体だけで、判断に使うものは見せたまま。畳んだら結論を外に1行置く（判定は `/format-github-post` の「何を畳み、何を見せたままにするか」）
    - **表と Mermaid 図で畳む**（詳細は `references/body.md` の「表と Mermaid 図で畳む」）
    - **個人環境にしか無いものを前提に書かない。** グローバルスキル（ `~/.claude/skills/` ）やグローバルルール（ `~/.claude/rules/` ）は自分の環境にしか存在せず、**他のレビュアーには無い**。「 `/cp` で代替できる」のような説明は成立しないので、リポジトリにコミットされているもの（プロジェクトスキル・`.claude/rules`・`docs/` ）だけを根拠にする
