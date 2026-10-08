@@ -115,6 +115,39 @@ link_into_home() {
   LINKED=$((LINKED + 1))
 }
 
+# launchd の定義はリンクにせず、実体をコピーする。
+# リンクで置いた定義は、ログイン時に launchd が読み込まなかった（実体の定義だけが読み込まれた）。
+# 中身が同じなら触らない。違えば上書きし、既存の実体は退避する。
+copy_into_home() {
+  src=$1
+  dst=$2
+
+  if [ -f "$dst" ] && [ ! -L "$dst" ] && cmp -s "$src" "$dst"; then
+    UNCHANGED=$((UNCHANGED + 1))
+    [ -n "$DRY_RUN" ] && echo "  そのまま: $dst"
+    return 0
+  fi
+
+  if [ -n "$DRY_RUN" ]; then
+    echo "  コピー: $src -> $dst"
+    LINKED=$((LINKED + 1))
+    return 0
+  fi
+
+  if [ -L "$dst" ]; then
+    rm -f "$dst"
+  elif [ -e "$dst" ]; then
+    mkdir -p "$SALVAGE_DIR"
+    mv "$dst" "$SALVAGE_DIR/"
+    echo "  退避: $dst -> $SALVAGE_DIR/"
+    SALVAGED=$((SALVAGED + 1))
+  fi
+
+  mkdir -p "$(dirname "$dst")"
+  cp -p "$src" "$dst"
+  LINKED=$((LINKED + 1))
+}
+
 # 集計を1行で出す。
 report_links() {
   printf '   リンク %s 本 / そのまま %s 本 / 退避 %s 件\n' "$LINKED" "$UNCHANGED" "$SALVAGED"
@@ -143,7 +176,10 @@ link_layer() {
       children=$(ls -A "$layer_base/$rel" | sed "s|^|$rel/|")
       queue=$(printf '%s\n%s' "$children" "$queue" | sed '/^$/d')
     else
-      link_into_home "$layer_base/$rel" ~/"$rel"
+      case $rel in
+        Library/LaunchAgents/*) copy_into_home "$layer_base/$rel" ~/"$rel" ;;
+        *) link_into_home "$layer_base/$rel" ~/"$rel" ;;
+      esac
     fi
   done
 }

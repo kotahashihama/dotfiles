@@ -118,6 +118,8 @@ sesame() {
 
 対象は `scripts/lib.sh` の `PARTIAL_DIRS` で定義する。ここに無いディレクトリの配下を管理下へ置くときは、まず追加する。**深い階層を管理するなら、途中のディレクトリも全部並べる**（`Library` → `Library/Application Support` → …）。
 
+`~/Library/LaunchAgents` の定義だけは、リンクを張らずに実体をコピーする。リンクで置いた定義は、ログイン時に launchd が読み込まなかったため。リポジトリ側の定義を直したら、リストアを流し直すか、コピーして `launchctl bootstrap` で読み込み直す。
+
 `~/.claude` 配下は `home/.claude/` に置いたものが自動でリンクされるので、資産の種類が増えてもスクリプトの変更は要らない。
 
 | 資産 | 管理 |
