@@ -6,8 +6,8 @@ allowed-tools: Bash(git diff:*) Bash(git log:*) Bash(git show:*) Bash(git rev-pa
 
 単発版（ `/review-code` ）を **並列実行で高精度化** したものです。**判定表と出力形式は単発版の `references/` を使い、ここには複写しません。**
 
-- `~/.claude/skills/review-code/references/severity.md` — 重要度の判定と裏取り
-- `~/.claude/skills/review-code/references/output.md` — 出力フォーマット
+- `~/.claude/skills/review-code/references/severity.md`: 重要度の判定と裏取り
+- `~/.claude/skills/review-code/references/output.md`: 出力フォーマット
 
 **持っているのは Phase 構造と束の分け方だけです。**
 
@@ -36,7 +36,7 @@ allowed-tools: Bash(git diff:*) Bash(git log:*) Bash(git show:*) Bash(git rev-pa
 
 **対象が3ファイル以下なら並列化せず、単発版へ委譲する。** 起動コストが上回ります。
 
-**追加レビュアーの起動可否**を、ここで測ります。**いずれか一方でも満たせば「大きい差分」**とする（除外分は数えない）。
+**追加レビュアーの起動可否**を、ここで測ります。**いずれか一方でも満たせば「大きい差分」** とする（除外分は数えない）。
 
 | 指標 | しきい値 |
 | --- | --- |

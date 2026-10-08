@@ -34,7 +34,7 @@ gh api user -q .login
 | CI の状態 | `gh pr checks <PR> -R OWNER/REPO` | `fail` / `pending` の行を並べる |
 | 自分の指摘の残り | 自分が付けた `[must]` のスレッドのうち、未解決のもの（下記） | スレッドの URL を並べる |
 
-自分の最後のレビューの `commit_id`:
+自分の最後のレビューの `commit_id`
 
 ```bash
 gh api "repos/OWNER/REPO/pulls/<PR>/reviews" \
@@ -49,7 +49,7 @@ gh api "repos/OWNER/REPO/pulls/<PR>/reviews" \
 gh api "repos/OWNER/REPO/compare/<commit_id>...<headRefOid>" --jq '.commits[] | "\(.sha[0:9]) \(.commit.message | split("\n")[0])"'
 ```
 
-自分の `[must]` で未解決のスレッド:
+自分の `[must]` で未解決のスレッド
 
 ```bash
 gh api graphql -f query='query{repository(owner:"OWNER",name:"REPO"){pullRequest(number:<PR>){reviewThreads(first:100){nodes{isResolved comments(first:1){nodes{author{login} body url}}}}}}}' \

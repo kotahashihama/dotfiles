@@ -8,7 +8,7 @@ allowed-tools: Bash(gh pr view:*) Bash(gh pr edit:*) Bash(gh pr comment:*) Bash(
 
 ## 進め方
 
-1. **PR の特定**:
+1. **PR の特定**
    - `git branch --show-current` で現在のブランチを確認
    - `gh pr view --json number,title,body,baseRefName` で対応する PR を特定（該当 PR が無ければユーザーに確認）
    - **作成者を確かめる**（ `gh pr view <PR> --json author -q '.author.login'` ）。ユーザー本人でなければ中断して報告する（ `no_operating_on_others_prs.md` ）
@@ -31,7 +31,7 @@ allowed-tools: Bash(gh pr view:*) Bash(gh pr edit:*) Bash(gh pr comment:*) Bash(
 
    **この置き換えで回すときも、Step 6 の点検は飛ばさない。** スキルを起動できないので手順を記憶で回すことになり**この段が最初に抜ける**。実際に2本の PR を投稿してから点検へ通し、指摘が4件出て同じ PR へ2回投稿することになった。
 
-2. **差分の把握**（並列実行可）:
+2. **差分の把握**（並列実行可）
    - `git diff <base>...HEAD --stat` でファイル単位の規模感
    - `git diff <base>...HEAD` で全変更内容（大きい場合は要点だけ抜き出す）
    - **テンプレートは base のブランチから読む**（ `git show origin/<base>:<テンプレートのパス>` ）。存在しない場合はシンプルな「Summary」「Test plan」構成にフォールバック
@@ -43,7 +43,7 @@ allowed-tools: Bash(gh pr view:*) Bash(gh pr edit:*) Bash(gh pr comment:*) Bash(
      - コードを直したらコミット・push してから次へ進み、以降の差分の把握は push 後の head で行う
      - **`--skip-triage` を渡されたら飛ばす。** `/finalize-pr` が手順2で済ませてから渡す
 
-3. **本文・補足コメントの組み立て方針**:
+3. **本文・補足コメントの組み立て方針**
 
    > **このファイルと `references/` の3本（ `body.md` `testing.md` `multi-pr.md` ）が正本。** `/create-pr` からも参照される。
    > **あちらへ写さない。** 写すと片方だけ古くなる（実際に58行ずれた）。
@@ -77,7 +77,7 @@ allowed-tools: Bash(gh pr view:*) Bash(gh pr edit:*) Bash(gh pr comment:*) Bash(
    - **本文は軸、細部は別コメント**（詳細は `references/body.md` の「本文は軸、細部は別コメント」）
    - **Backlog 節への対応**（詳細は `references/multi-pr.md` の「Backlog 節への対応」）
    - **本文の末尾に生成者表示を置く**（ `github_note_generated_by_claude.md` ）。**付けるかどうかの判定と、文言と主語の使い分けはあちらが持つ**ので、ここには写さない（**自分たちが管理していないリポジトリでは付けない**）
-4. **タイトルの妥当性チェック**:
+4. **タイトルの妥当性チェック**
    - 現在の PR タイトルがベースブランチに対する差分の意図を正確に表現しているかを判断
    - スコープ拡張・方向転換・修正対象の変化などで乖離している場合はタイトルも更新対象に含める
    - 70文字以内、要点が動詞で始まる形（例: `feat: ...`, `refactor: ...` ）を維持
@@ -134,7 +134,7 @@ allowed-tools: Bash(gh pr view:*) Bash(gh pr edit:*) Bash(gh pr comment:*) Bash(
      - **形で一律に落とさない。** 正当な用法のほうが多い
    - 食い違いが見つかったら**本文を実態に合わせる**（差分の方を本文に合わせない）
 
-6. **更新**:
+6. **更新**
    - **投稿前に `/japanese-tech-writing` を当ててから `/yomiyasu` を通す**（ `no_ai_style_writing.md` の「文章の点検を通す場面と順序」）。Step 5の照合を終えた本文に当て、書き直しは取捨選択する。**このリポジトリ・プロジェクトの規約（行末の句点を落とす等）と矛盾する書き直しは採らない**。新規に書く補足コメント（手順7）とインラインの `[fyi]`（ `references/body.md` ）も同じ扱い
    - **投稿の直前にもう一度本文を取得し、Step 1 から増えていないか見る**。組み立てている間に追記されることがある
      - **比べる前に改行コードと末尾の空行を揃える。** 取得した本文は **CRLF で返る**ので、ローカルで組み立てた LF のファイルと素で比べると**毎回「差あり」になる**。警告として働かなくなり、本物の差分が混ざっても手が止まらない
@@ -145,7 +145,7 @@ allowed-tools: Bash(gh pr view:*) Bash(gh pr edit:*) Bash(gh pr comment:*) Bash(
      - **これは全文置換で、渡さなかった行は消える。** 自分が書いていない内容も組み立てへ含める
    - タイトルも更新する場合は `--title "..."` も併用（シェル展開されないクオートに注意）
 
-7. **補足情報用コメントの点検と更新**:
+7. **補足情報用コメントの点検と更新**
 
    PR 本文に入りきらない情報を別コメントに切り出している場合、**本文と同じ鮮度で保つ**。本文だけ直してコメントが古いまま残ると、読み手はどちらが正しいか判断できない。
 
