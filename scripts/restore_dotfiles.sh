@@ -51,9 +51,8 @@ if [ ! -x "$HOME/.local/bin/clauth" ] && command -v curl >/dev/null 2>&1; then
 fi
 
 # アカウントはブラウザ経由でしか登録できないので、案内だけ出す。
-# 常駐の登録もここでは行わない。偽の HOME で流すと本物の launchd を触ってしまう
 if [ -x "$HOME/.local/bin/clauth" ]; then
-  echo "ℹ️  clauth login <名前> でアカウントを登録し、launchctl bootstrap gui/\$(id -u) ~/Library/LaunchAgents/com.kotahashihama.clauth-daemon.plist で常駐を有効にしてください"
+  echo "ℹ️  clauth login <名前> でアカウントを登録してください"
 fi
 
 # Mermaid をブラウザへ描く MCP サーバー。Claude Code の TUI は図を描けないので、
