@@ -8,12 +8,12 @@ allowed-tools: Bash(gh api:*) Bash(gh pr view:*) Bash(gh pr checks:*) Bash(gh re
 
 投稿するかどうかはユーザーが決めます。渡した後、「そのまま代わりに投稿して」と言われることも、「**対応したものだけ**ハッシュを添えて返信して」と言われることもあるので、**どちらの指示にもそのまま応じられる形**で出す。
 
-bot コメントを扱う `/resolve-ai-reviews` と対になりますが、**GitHub への書き込みの有無が決定的に違います**。
+bot コメントを扱う `/resolve-ai-reviews` と対になりますが、**GitHub へ書き込むかどうかが違います**。
 
 | | `/resolve-ai-reviews` | このスキル |
 | --- | --- | --- |
 | 対象 | bot (`user.type == "Bot"`) | **人間 (`user.type == "User"`)** |
-| GitHub への返信 | ハッシュ or 理由を返信 | **しない** |
+| GitHub への返信 | ハッシュか理由を返信 | **しない** |
 | Resolve conversation | する | **しない** |
 | 対応結果の報告先 | GitHub + 会話 | **会話のみ（対応表 + 返信案）** |
 
