@@ -29,8 +29,8 @@ allowed-tools: Bash(gh pr view:*) Bash(gh api:*) Bash(git diff:*) Bash(git show:
 ### 1. 2つの置き場を集める
 
 - 対象の PR と base を特定し、作成者がユーザー本人かを確かめる（ `no_operating_on_others_prs.md` ）
-- **コードコメント**: `git diff <base>...HEAD` の `+` 行からコメントを拾う（行頭の `//` ・ `#` ・ JSDoc / doc コメント）。消したコメント（ `-` 行）も控える
-- **インラインの `[fyi]`**: `gh api repos/OWNER/REPO/pulls/<PR>/comments --paginate` から、自分が投稿した `[fyi]` を拾う。`path` ・ `line` （ `null` なら差分から外れている）・ `original_line` ・ `commit_id` も控える
+- **コードコメント**: `git diff <base>...HEAD` の `+` 行からコメントを拾う（行頭が `//` か `#` のもの、JSDoc と doc コメント）。消したコメント（ `-` 行）も控える
+- **インラインの `[fyi]`**: `gh api repos/OWNER/REPO/pulls/<PR>/comments --paginate` から、自分が投稿した `[fyi]` を拾う。`path` と `line` と `original_line` と `commit_id` も控える（ `line` が `null` なら差分から外れている）
 - 同じファイルの近い行にあるものを組にして並べる。**組にしないと、同じ理由の二重書きが見えない**
 
 ### 2. 評価を集める（要るか・どちらの WHY か）
@@ -92,7 +92,7 @@ allowed-tools: Bash(gh pr view:*) Bash(gh api:*) Bash(git diff:*) Bash(git show:
 | 何が起きるかが決まらない語 | 「落ちる」「飛ぶ」→ 何がどうなるか（ `explain_from_observables.md` ） |
 | 比喩・言い換えの反復・冗長 | `/japanese-tech-writing` に当てて直す |
 | 読み手に合わない中身 | コードコメントに経緯やレビューの言い回しが残っている、`[fyi]` に何を変えたか・なぜ要ったか・動作が変わるかが揃っていない（ `references/body.md` ） |
-| 表記 | 複数行のコードコメントの行末の句点、GitHub の文章の1文ごとの改行（ `code_comments.md` ・ `github_writing.md` ） |
+| 表記 | 複数行のコードコメントの行末の句点、GitHub の文章の1文ごとの改行（ `code_comments.md` や `github_writing.md` ） |
 
 **直すのは中身を良くするときだけ。** 言い回しの好みだけで書き換えると、差分とレビューの手間が増える。
 
@@ -120,7 +120,7 @@ allowed-tools: Bash(gh pr view:*) Bash(gh api:*) Bash(git diff:*) Bash(git show:
 
 ## やってはいけないこと
 
-- **判定の基準をここに書き足すこと**。コードコメントの評価は `/review-comments` 、WHY の区別は `code_comments.md` 、`[fyi]` の置き方は `references/body.md` が正本
+- **判定の基準をここに書き足すこと**。コードコメントの評価は `/review-comments`、WHY の区別は `code_comments.md`、`[fyi]` の置き方は `references/body.md` が正本
 - `/review-comments` を呼ばずに、コードコメントの要否を自分で決めること。評価と実行を分けた意味がなくなる
 - **コードコメントと `[fyi]` を別々に見ること**。組にしないと二重書きと抜けが見えない
 - **`+` 行だけを見ること**。処理を書き換えると、残った処理は `+` として出るのにその手前のコメントは `-` にしか出ない。並べないと消えたことが分からない
