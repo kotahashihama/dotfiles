@@ -3,7 +3,7 @@
 #
 # Line 1: 🐙 repo[/subpath] │ 🌿 branch [+N ~M] [│ 🌳 worktree] [│ 🎫 KEY-1 #2]
 #         (📂 full path instead, when outside a git repo)
-# Line 2: 🧠 progress bar used% │ 🤖 model · effort · output style
+# Line 2: 🧠 progress bar used% │ 🤖 model · effort · output style │ 🔖 vX.Y.Z
 # Line 3: 💰 5h X% (🔄 HH:mm) │ 7d X% (🔄 M/DD HH:mm)  (omitted when absent)
 
 input=$(cat)
@@ -41,13 +41,15 @@ used_pct=$(echo "$input" | jq -r '.context_window.used_percentage // empty')
 # 既定ではどこにも出ないもの。jq は1回にまとめ、cut で切り出す
 extra=$(echo "$input" | jq -r '[
   (.effort.level // ""), (.output_style.name // ""), (.worktree.name // ""),
-  (.pr.number // "" | tostring), (.pr.url // "")
+  (.pr.number // "" | tostring), (.pr.url // ""), (.version // "")
 ] | @tsv')
 effort=$(printf '%s' "$extra" | cut -f1)
 out_style=$(printf '%s' "$extra" | cut -f2)
 wt_name=$(printf '%s' "$extra" | cut -f3)
 pr_number=$(printf '%s' "$extra" | cut -f4)
 pr_url=$(printf '%s' "$extra" | cut -f5)
+# 起動中のセッションのバージョン。claude --version は手元に入っている最新を返すので使わない
+cc_version=$(printf '%s' "$extra" | cut -f6)
 
 # ---------------------------------------------------------------------------
 # Line 1 — Location
@@ -177,7 +179,10 @@ mode_part=""
 [ -n "$effort" ] && mode_part="${mode_part} ${GRAY}· ${effort}${RESET}"
 [ -n "$out_style" ] && mode_part="${mode_part} ${GRAY}· ${out_style}${RESET}"
 
-printf "%s\n" "🧠 ${bar_color}${bar}${RESET} ${used_int}% │ 🤖 ${WHITE}${model}${RESET}${mode_part}"
+version_part=""
+[ -n "$cc_version" ] && version_part=" │ 🔖 ${GRAY}v${cc_version}${RESET}"
+
+printf "%s\n" "🧠 ${bar_color}${bar}${RESET} ${used_int}% │ 🤖 ${WHITE}${model}${RESET}${mode_part}${version_part}"
 
 # ---------------------------------------------------------------------------
 # Line 4 — Rate limits (omit entirely if both are absent)
