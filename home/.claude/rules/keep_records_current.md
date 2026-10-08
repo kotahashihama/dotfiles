@@ -157,7 +157,7 @@ README や手順書は、これから環境を作る人が読みます。移行�
 - `ask_before_editing_claude_assets.md` （設定は尋ねてから）: 触る前に尋ねる側。本ルールは触った後の鮮度
 - `/update-pr-description` （PR 本文と補足コメントの更新）: PR 側の実行手段
 - `/update-backlog-comments` （課題管理ツールのコメントの点検と更新）: 課題側の実行手段。過不足・実態とのずれ・読みやすさを測る
-- `/list-prs` （PR 一覧）: 腐った参照をまとめて検出できる
+- `/list-prs` （PR 一覧）: 古くなった参照をまとめて検出できる
 - `verify_merge_with_checks.md` （マージは検査を通すまで終わっていない）: マージで差分が動いたら、本ルールの対象になる
 - `recheck_after_every_revision.md` （書き直すたびに全体を確かめ直す）: 本ルールは**実態とのズレ**、あちらは出どころとのズレ。触っていない箇所でも後者は起きる
 - `base_records_on_measurements.md` （記録は実測に基づける）: あちらは確かさ、本ルールは鮮度。どちらも記録が信用できる状態を保つ
