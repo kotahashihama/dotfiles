@@ -3,8 +3,9 @@
 #
 # Line 1: 🐙 repo[/subpath] │ 🌿 branch [+N ~M] [│ 🌳 worktree] [│ 🎫 KEY-1 #2]
 #         (📂 full path instead, when outside a git repo)
-# Line 2: 🧠 progress bar used% │ 🤖 model · effort · output style │ 🔖 vX.Y.Z
-# Line 3: 💰 5h X% (🔄 HH:mm) │ 7d X% (🔄 M/DD HH:mm)  (omitted when absent)
+# Line 2: 🤖 model · effort · output style │ 🔖 vX.Y.Z
+# Line 3: 🧠 progress bar used% │ 💰 5h X% (🔄 HH:mm) │ 7d X% (🔄 M/DD HH:mm)
+#         (残量のメーターを1行に並べる。使用量が無ければ 🧠 だけ)
 
 input=$(cat)
 
@@ -182,7 +183,9 @@ mode_part=""
 version_part=""
 [ -n "$cc_version" ] && version_part=" │ 🔖 ${GRAY}v${cc_version}${RESET}"
 
-printf "%s\n" "🧠 ${bar_color}${bar}${RESET} ${used_int}% │ 🤖 ${WHITE}${model}${RESET}${mode_part}${version_part}"
+printf "%s\n" "🤖 ${WHITE}${model}${RESET}${mode_part}${version_part}"
+
+context_part="🧠 ${bar_color}${bar}${RESET} ${used_int}%"
 
 # ---------------------------------------------------------------------------
 # Line 4 — Rate limits (omit entirely if both are absent)
@@ -192,6 +195,7 @@ five_resets=$(echo "$input" | jq -r '.rate_limits.five_hour.resets_at // empty')
 seven_pct=$(echo "$input" | jq -r '.rate_limits.seven_day.used_percentage // empty')
 seven_resets=$(echo "$input" | jq -r '.rate_limits.seven_day.resets_at // empty')
 
+rate_part=""
 if [ -n "$five_pct" ] || [ -n "$seven_pct" ]; then
   # Helper: pick color for a usage percentage value
   _rate_color() {
@@ -232,12 +236,18 @@ if [ -n "$five_pct" ] || [ -n "$seven_pct" ]; then
     fi
   fi
 
-  # Assemble line 4
   if [ -n "$five_part" ] && [ -n "$seven_part" ]; then
-    printf "%s\n" "💰 ${five_part} │ ${seven_part}"
+    rate_part="💰 ${five_part} │ ${seven_part}"
   elif [ -n "$five_part" ]; then
-    printf "%s\n" "💰 ${five_part}"
+    rate_part="💰 ${five_part}"
   else
-    printf "%s\n" "💰 ${seven_part}"
+    rate_part="💰 ${seven_part}"
   fi
+fi
+
+# 残量のメーター（コンテキストと使用量）を1行に並べる
+if [ -n "$rate_part" ]; then
+  printf "%s\n" "${context_part} │ ${rate_part}"
+else
+  printf "%s\n" "${context_part}"
 fi
