@@ -67,6 +67,9 @@ check "~/.claude/AGENTS.md が読める"       "$(head -1 "$W/fakehome/.claude/A
 check "~/.claude/CLAUDE.md を置かない"     "$([ -e "$W/fakehome/.claude/CLAUDE.md" ] || [ -L "$W/fakehome/.claude/CLAUDE.md" ] && echo あり || echo なし)" "なし"
 check "非公開の前提のルールが読める"       "$(head -1 "$W/fakehome/.claude/rules/user_context.md" 2>/dev/null | grep -c .)" "1"
 check "Codex の AGENTS.md が同じものを指す" "$(cmp -s "$W/fakehome/.codex/AGENTS.md" "$W/fakehome/.claude/AGENTS.md" && echo same)" "same"
+# launchd はリンクの定義をログイン時に読み込まないので、実体で置く（scripts/lib.sh の copy_into_home）
+check "LaunchAgents の定義がリンクでない" "$(find "$W/fakehome/Library/LaunchAgents" -maxdepth 1 -type l -name '*.plist' 2>/dev/null | wc -l | tr -d ' ')" "0"
+check "LaunchAgents の定義が実体で置かれる" "$(find "$W/fakehome/Library/LaunchAgents" -maxdepth 1 -type f -name '*.plist' 2>/dev/null | wc -l | tr -d ' ' | awk '{print ($1>0)?"あり":"なし"}')" "あり"
 check "~/.agents/skills にスキルのリンクがある" "$(find "$W/fakehome/.agents/skills" -maxdepth 1 -type l | wc -l | tr -d ' ')" "$(ls -A "$W/fakehome/.claude/skills" | wc -l | tr -d ' ')"
 
 echo "── 3. シェルの起動 ──"
