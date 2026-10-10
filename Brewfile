@@ -235,6 +235,7 @@ cask "google-chrome"
 # Client for the Google Drive storage service
 cask "google-drive"
 cask "graphiql"
+cask "grok-bot"
 # Tool to optimise images to a smaller size
 cask "imageoptim"
 # Terminal emulator as alternative to Apple's Terminal app
