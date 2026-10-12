@@ -750,7 +750,7 @@ METAPHOR_VERB_PATTERNS = [
     (r"静かに(壊れ|落ち|失敗|沈黙)", "英語直訳「静かに壊れる (silently fail)」"),
     (r"黙って(無視|捨て|スキップ|破棄)", "英語直訳「黙って無視される」"),
     (r"側に倒[すしせ]", "判断を方向で表現する「〜側に倒す」"),
-    (r"時間[をに]溶か[したす]", "比喩動詞「時間を溶かす」"),
+    (r"時間[をに]溶か[さしすせそ]", "比喩動詞「時間を溶かす」"),
     (r"(1つずつ|一つずつ)潰[していく]", "比喩動詞「潰す」"),
     (r"(実装|詳細|コード|設計|内部|仕組み|領域|本質)(に|まで|へ)踏み込[んむみま]", "比喩動詞「踏み込む」"),
     (r"動かしながら引き返[すし]", "比喩動詞「引き返す」"),
@@ -774,9 +774,9 @@ FILLER_PATTERNS = [
     (r"^ポイントは、", "前置フィラー「ポイントは、」"),
     (r"見落とされがち|面白いのはここ|まさにそこがポイント", "自己ラベル「見落とされがち」など"),
     (r"いかがでした(でしょうか|か)?[？?。]?$", "定型クロージング「いかがでしたでしょうか」"),
-    (r"ぜひ(参考|試し|活用)(に)?して(みて)?ください[！!。]?", "定型クロージング「ぜひ〜してみてください」"),
+    (r"ぜひ(?:参考にして|試して|活用して)(?:みて)?ください[！!。]?", "定型クロージング「ぜひ〜してみてください」"),
     (r"参考に(なれ|な)ば幸い|お役に立て(れ)?ば幸い|ぜひご(活用|参考に)ください|まずは小さく(始め|はじめ)(?:ましょう|てみましょう|てください|てみてください|てみませんか|て(?:みて)?はいかが(?:ですか|でしょうか)|る(?:ことが(?:大切|大事|重要)|のがおすすめ)です)[。！？!?]?$", "定型クロージング「参考になれば幸いです」など"),
-    (r"〜に他なりません", "過剰な自己ラベリング「〜に他なりません」"),
+    (r"に(?:他|ほか)なりません", "過剰な自己ラベリング「〜に他なりません」"),
     (r"^ご質問ありがとうございます", "チャット応答の名残「ご質問ありがとうございます」"),
     (r"見ていきましょう[。！!]?$|深掘りしていきます", "定型導入「それでは見ていきましょう」など"),
     (r"^(必要なら|ご希望があれば|よろしければ)、?(次に|続けて|この後(?!の))[^。！？!?]*(?:ます|ましょう)(?:か|よ|ね|よね)?(?:（[^。！？!?（）]*）)?[。！？!?]?$", "チャット応答の名残「必要なら次に〜します」"),
@@ -809,7 +809,7 @@ _PATTERN_LITERAL_HINTS = {
     r"静かに(壊れ|落ち|失敗|沈黙)": ("静かに",),
     r"黙って(無視|捨て|スキップ|破棄)": ("黙って",),
     r"側に倒[すしせ]": ("側に倒",),
-    r"時間[をに]溶か[したす]": ("溶か",),
+    r"時間[をに]溶か[さしすせそ]": ("溶か",),
     r"(1つずつ|一つずつ)潰[していく]": ("つずつ潰",),
     r"(実装|詳細|コード|設計|内部|仕組み|領域|本質)(に|まで|へ)踏み込[んむみま]": ("踏み込",),
     r"動かしながら引き返[すし]": ("動かしながら引き返",),
@@ -828,9 +828,9 @@ _PATTERN_LITERAL_HINTS = {
     r"^ポイントは、": ("ポイントは、",),
     r"見落とされがち|面白いのはここ|まさにそこがポイント": ("見落とされがち", "面白いのはここ", "まさにそこがポイント"),
     r"いかがでした(でしょうか|か)?[？?。]?$": ("いかがでした",),
-    r"ぜひ(参考|試し|活用)(に)?して(みて)?ください[！!。]?": ("ぜひ",),
+    r"ぜひ(?:参考にして|試して|活用して)(?:みて)?ください[！!。]?": ("ぜひ",),
     r"参考に(なれ|な)ば幸い|お役に立て(れ)?ば幸い|ぜひご(活用|参考に)ください|まずは小さく(始め|はじめ)(?:ましょう|てみましょう|てください|てみてください|てみませんか|て(?:みて)?はいかが(?:ですか|でしょうか)|る(?:ことが(?:大切|大事|重要)|のがおすすめ)です)[。！？!?]?$": ("ば幸い", "ぜひご", "まずは小さく"),
-    r"〜に他なりません": ("〜に他なりません",),
+    r"に(?:他|ほか)なりません": ("他なりません", "ほかなりません"),
     r"^ご質問ありがとうございます": ("ご質問ありがとうございます",),
     r"見ていきましょう[。！!]?$|深掘りしていきます": ("見ていきましょう", "深掘りしていきます"),
     r"^(必要なら|ご希望があれば|よろしければ)、?(次に|続けて|この後(?!の))[^。！？!?]*(?:ます|ましょう)(?:か|よ|ね|よね)?(?:（[^。！？!?（）]*）)?[。！？!?]?$": ("必要なら", "ご希望があれば", "よろしければ"),
@@ -1752,6 +1752,61 @@ def lint_text(text: str) -> Dict[str, Any]:
             "snippet": f"{p['found']} → {p['suggest']}" if p["suggest"] else p["found"]
         })
 
+    def _vocabulary_findings(plain_text, line_no, snippet):
+        """AI頻出語彙と比喩動詞。見出しの行にも当てる（文の頭と終わりを前提にした型は当てない）。"""
+        # スロップ語彙
+        if narrowed is None:
+            slop_hits = [word for word in SLOP_WORDS if word in plain_text]
+            slop_hits += [word for word, pattern in SLOP_WORD_PATTERNS if re.search(pattern, plain_text)]
+        else:
+            slop_hits = [word for word in slop_words if word in plain_text]
+            slop_hits += [word for word, pattern, required in slop_patterns
+                          if _may_match_literals(required, plain_text) and re.search(pattern, plain_text)]
+        for word in slop_hits:
+            findings.append({
+                "rule": "slop_vocabulary",
+                "line": line_no,
+                "severity": "warn",
+                "message": f"AI頻出語彙「{word}」が含まれています。文脈上必要のない比喩や大げさな装飾であれば、ふだん使う自然な表現に置き換えてください。ただし、文字どおりの意味や必要な文脈を担っている場合は残してかまいません。",
+                "snippet": snippet
+            })
+
+        # 比喩動詞パターン
+        kowareru_span = None
+        for pattern, desc, required in metaphor_patterns:
+            if not _may_match_literals(required, plain_text):
+                continue
+            if (pattern.pattern == r"(議論|意見|結論|方向性|価格|話題|検討)が[^。！？!?]*?収斂"
+                    and "収斂" not in plain_text):
+                continue
+            if desc == "英語直訳「静かに壊れる (silently fail)」" and kowareru_span:
+                # 「壊れる」と「静かに壊れる」が同一動詞に二重反応することを防止
+                for m in pattern.finditer(plain_text):
+                    span = (m.start(), m.end())
+                    if kowareru_span[0] <= span[0] and span[1] <= kowareru_span[1]:
+                        continue
+                    findings.append({
+                        "rule": "metaphor_verb",
+                        "line": line_no,
+                        "severity": "warn",
+                        "message": f"{desc}が検出されました。不自然な比喩動詞であれば、ふだん使う動詞や客観的な表現に書き直してください。ただし、文字どおりの動作や状態変化を表している場合は無理に言い換える必要はありません。",
+                        "snippet": snippet
+                    })
+                    break
+                continue
+
+            m = pattern.search(plain_text)
+            if m:
+                if desc == "比喩動詞「壊れる」":
+                    kowareru_span = (m.start(), m.end())
+                findings.append({
+                    "rule": "metaphor_verb",
+                    "line": line_no,
+                    "severity": "warn",
+                    "message": f"{desc}が検出されました。不自然な比喩動詞であれば、ふだん使う動詞や客観的な表現に書き直してください。ただし、文字どおりの動作や状態変化を表している場合は無理に言い換える必要はありません。",
+                    "snippet": snippet
+                })
+
     # 3. 語彙・構文パターン検査
     for row in analysis["lines"]:
         line_no, line = row["line"], row["raw"]
@@ -1819,6 +1874,7 @@ def lint_text(text: str) -> Dict[str, Any]:
                     "message": "見出しに補足カッコが含まれています。役割を確認し、同じ情報の繰り返しや不要な補足であれば整理してください。",
                     "snippet": stripped
                 })
+            _vocabulary_findings(plain_text, line_no, stripped)
             continue
         if row["kind"] == "table":
             previous_sentence = ""
@@ -1830,7 +1886,7 @@ def lint_text(text: str) -> Dict[str, Any]:
         # A real final prose colon must not be manufactured by removing a value.
         # Keep the tested legacy URI-prefix exemption, separately from GFM's
         # punctuation trimming. Only real code spans are removed for this test.
-        if re.search(r"[：:]$", stripped):
+        if re.search(r"[：:]$", stripped) and not re.fullmatch(r":{3,}", stripped):
             uri_prefix_text = line_visible_text(analysis, line_no, frozenset(("inline_code",))).strip()
             last = len(line.rstrip()) - 1
             if (not uri_prefix_text.startswith("http")
@@ -1843,58 +1899,7 @@ def lint_text(text: str) -> Dict[str, Any]:
                     "snippet": stripped
                 })
 
-        # スロップ語彙
-        if narrowed is None:
-            slop_hits = [word for word in SLOP_WORDS if word in plain_text]
-            slop_hits += [word for word, pattern in SLOP_WORD_PATTERNS if re.search(pattern, plain_text)]
-        else:
-            slop_hits = [word for word in slop_words if word in plain_text]
-            slop_hits += [word for word, pattern, required in slop_patterns
-                          if _may_match_literals(required, plain_text) and re.search(pattern, plain_text)]
-        for word in slop_hits:
-            findings.append({
-                "rule": "slop_vocabulary",
-                "line": line_no,
-                "severity": "warn",
-                "message": f"AI頻出語彙「{word}」が含まれています。文脈上必要のない比喩や大げさな装飾であれば、ふだん使う自然な表現に置き換えてください。ただし、文字どおりの意味や必要な文脈を担っている場合は残してかまいません。",
-                "snippet": line.strip()
-            })
-
-        # 比喩動詞パターン
-        kowareru_span = None
-        for pattern, desc, required in metaphor_patterns:
-            if not _may_match_literals(required, plain_text):
-                continue
-            if (pattern.pattern == r"(議論|意見|結論|方向性|価格|話題|検討)が[^。！？!?]*?収斂"
-                    and "収斂" not in plain_text):
-                continue
-            if desc == "英語直訳「静かに壊れる (silently fail)」" and kowareru_span:
-                # 「壊れる」と「静かに壊れる」が同一動詞に二重反応することを防止
-                for m in pattern.finditer(plain_text):
-                    span = (m.start(), m.end())
-                    if kowareru_span[0] <= span[0] and span[1] <= kowareru_span[1]:
-                        continue
-                    findings.append({
-                        "rule": "metaphor_verb",
-                        "line": line_no,
-                        "severity": "warn",
-                        "message": f"{desc}が検出されました。不自然な比喩動詞であれば、ふだん使う動詞や客観的な表現に書き直してください。ただし、文字どおりの動作や状態変化を表している場合は無理に言い換える必要はありません。",
-                        "snippet": line.strip()
-                    })
-                    break
-                continue
-
-            m = pattern.search(plain_text)
-            if m:
-                if desc == "比喩動詞「壊れる」":
-                    kowareru_span = (m.start(), m.end())
-                findings.append({
-                    "rule": "metaphor_verb",
-                    "line": line_no,
-                    "severity": "warn",
-                    "message": f"{desc}が検出されました。不自然な比喩動詞であれば、ふだん使う動詞や客観的な表現に書き直してください。ただし、文字どおりの動作や状態変化を表している場合は無理に言い換える必要はありません。",
-                    "snippet": line.strip()
-                })
+        _vocabulary_findings(plain_text, line_no, line.strip())
 
         # 英語直訳の語
         if narrowed is None:
