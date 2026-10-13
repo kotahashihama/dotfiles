@@ -329,7 +329,8 @@
       "source": {
         "source": "github",
         "repo": "worldcoin/agentkit-shopify-demo"
-      }
+      },
+      "autoUpdate": true
     },
     "agy-skills": {
       "source": {
@@ -342,7 +343,8 @@
       "source": {
         "source": "github",
         "repo": "gecm0/render-mermaid"
-      }
+      },
+      "autoUpdate": true
     },
     "claude-image-view": {
       "source": {
