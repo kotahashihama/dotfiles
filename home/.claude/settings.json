@@ -322,7 +322,8 @@
       "source": {
         "source": "github",
         "repo": "openai/codex-plugin-cc"
-      }
+      },
+      "autoUpdate": true
     },
     "worldcoin-agentkit": {
       "source": {
@@ -334,7 +335,8 @@
       "source": {
         "source": "github",
         "repo": "wildriver/agy-skills"
-      }
+      },
+      "autoUpdate": true
     },
     "claude-code-mermaid": {
       "source": {
@@ -346,31 +348,36 @@
       "source": {
         "source": "github",
         "repo": "jarrodwatts/claude-image-view"
-      }
+      },
+      "autoUpdate": true
     },
     "zycck-mods": {
       "source": {
         "source": "github",
         "repo": "zycck/claude-mods"
-      }
+      },
+      "autoUpdate": true
     },
     "oikon48": {
       "source": {
         "source": "github",
         "repo": "oikon48/prompt-rail"
-      }
+      },
+      "autoUpdate": true
     },
     "nogu66": {
       "source": {
         "source": "github",
         "repo": "nogu66/md-prompt"
-      }
+      },
+      "autoUpdate": true
     },
     "claude-qamods": {
       "source": {
         "source": "github",
         "repo": "aieo-product/claude_qamods"
-      }
+      },
+      "autoUpdate": true
     }
   },
   "outputStyle": "Explanatory",
