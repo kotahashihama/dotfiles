@@ -91,14 +91,9 @@ if [ -n "$toplevel" ]; then
   fi
 
   # worktree の中は本体とパスが似ている。別ツリーを編集する事故を防ぐため
-  # 末尾に 🌳 を出す。名前はブランチから読み取れるなら省く（同じ語が2度並ぶ）
+  # 末尾に 🌳 と worktree 名を出す
   wt_part=""
-  if [ -n "$wt_name" ]; then
-    case "$branch" in
-      *"$wt_name"*) wt_part=" │ 🌳" ;;
-      *) wt_part=" │ 🌳 ${CYAN}${wt_name}${RESET}" ;;
-    esac
-  fi
+  [ -n "$wt_name" ] && wt_part=" │ 🌳 ${CYAN}${wt_name}${RESET}"
 
   # 課題管理ツールのチケットはブランチ名に入れる運用なので、手元だけで読める
   ticket=$(printf '%s' "$branch" | grep -oE '[A-Z][A-Z0-9_]*-[0-9]+' | head -n 1)
