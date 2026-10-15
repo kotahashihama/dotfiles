@@ -106,7 +106,7 @@
 | 計画・壁打ち | `/plan-issue`・`/mattpocock-skills:grilling` |
 | コードや変更を噛み砕いて説明する | `/explain-code`・`/walk-code` （ユーザーの習熟度に合わせて開く）。pstack の `teach`・`how`・`why` は `poteto-mode` の中から呼ばれたときだけ使う |
 | コードレビュー（する・受ける） | `/review-*`・`/resolve-*`・`rules/responding_to_reviews.md`。コードの不吉な臭いの一覧は、`/review-code` が `/mattpocock-skills:code-review` から参照する |
-| PR を出す・仕上げる・CI・コンフリクト | `/ship-pr`・`/finalize-pr`・`/loop-ai-reviews`・`/resolve-conflicts`。pstack の `babysit`・`make-pr-easy-to-review`・`fix-ci`・`fix-merge-conflicts`・`get-pr-comments` は使わない |
+| PR を出す・仕上げる・CI・コンフリクト | `/ship-pr`・`/finalize-prs`・`/loop-ai-reviews`・`/resolve-conflicts`。pstack の `babysit`・`make-pr-easy-to-review`・`fix-ci`・`fix-merge-conflicts`・`get-pr-comments` は使わない |
 | 文章 | 日本語は `/japanese-tech-writing` → `/yomiyasu:yomiyasu` （ `rules/no_ai_style_writing.md` ）。pstack の `unslop`・`technical-writing` は英語の文章にだけ使う |
 | 完了前の検証 | `rules/verify_the_check_worked.md`・`rules/verify_before_asserting.md` |
 | ルールとスキルの書き方 | `/organize-rules`・`/learn-rules`。一般的な書き方は、`/organize-rules` が `/mattpocock-skills:writing-for-agents` から参照する |

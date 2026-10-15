@@ -1,5 +1,5 @@
 ---
-description: 他の人が出した PR をレビューし、総括コメントとインラインコメントをセットで GitHub へ投稿する。レビュー結果はまず会話に出し、ユーザーの GO を得てから投稿する。ユーザーが「この PR をレビューして」「レビューを頼まれた」「/review-pr」等を指示したときに使う。「深くレビューして」「徹底的にレビューして」「多観点で見て」と言われたら --deep を付けて、レビューの実施をサブエージェントの並列に差し替える。自分が出した PR の点検・仕上げは /finalize-pr の担当なので、このスキルは使わない。
+description: 他の人が出した PR をレビューし、総括コメントとインラインコメントをセットで GitHub へ投稿する。レビュー結果はまず会話に出し、ユーザーの GO を得てから投稿する。ユーザーが「この PR をレビューして」「レビューを頼まれた」「/review-pr」等を指示したときに使う。「深くレビューして」「徹底的にレビューして」「多観点で見て」と言われたら --deep を付けて、レビューの実施をサブエージェントの並列に差し替える。自分が出した PR の点検・仕上げは /finalize-prs の担当なので、このスキルは使わない。
 argument-hint: "[PR 番号 または URL（省略時は現在のブランチの PR）] [--deep] [--focus <重点的に見る観点>（--deep のときだけ）]"
 allowed-tools: Bash(gh api:*) Bash(gh pr view:*) Bash(gh pr diff:*) Bash(gh pr list:*) Bash(gh repo view:*) Bash(git fetch:*) Bash(git show:*) Bash(git log:*) Bash(git worktree:*) Bash(git rev-parse:*) Bash(go build:*) Bash(go test:*) Bash(task:*) Bash(npx:*) Read Grep Glob Write Agent AskUserQuestion Skill
 disable-model-invocation: true
@@ -20,7 +20,7 @@ disable-model-invocation: true
 ### 1. 対象 PR の特定と、レビューしてよいかの確認
 
 - 引数の PR 番号 / URL から `gh pr view <PR> --json number,title,author,state,isDraft,baseRefName,headRefName,body,changedFiles,url` を引く
-- **作成者が自分でないことを確かめる**。自分の PR なら `/finalize-pr` の領分なので、このスキルは使わない
+- **作成者が自分でないことを確かめる**。自分の PR なら `/finalize-prs` の領分なので、このスキルは使わない
 - `gh repo view --json nameWithOwner -q .nameWithOwner` で `OWNER/REPO` を取る
 - **draft でもレビューしてよい**。ただし本人が仕上げ途中の可能性があるので、報告時に draft である旨を添える
 
