@@ -341,7 +341,7 @@ PR レビュアーからもらった指摘の**文言・言い回し・理由づ
 - `/update-pr-description` の `references/body.md` （差分から理由が読めない行には `[fyi]` ）: 本ルールの「置き方: 自分の PR へインラインで付ける」は、コードから外した移ろう理由の置き場。あちらは検査に合わせた書き換え・名前の変更・無効化コメントの変更など、差分から理由が読めない変更全般を対象にする
 - `concise_first_then_detail.md` （簡潔に）: doc の What の「1〜2行」は本ルールと同じ基準
 - `explain_from_observables.md` （観測できるものから始める）: **「指すものが1つに決まるか」の判定軸はあちら**。本ルールはそれをコードコメントへ当てる
-- `review-comments` スキル: 書いた後の点検手順。本ルールは書くときの基準
+- `review-code-comments` スキル: 書いた後の点検手順。本ルールは書くときの基準
 - `/japanese-tech-writing` と `/yomiyasu:yomiyasu` （文章の点検）: 日本語のコメントも対象。書く基準は本ルール、文章としての点検はあちら（通す順序と場面は `no_ai_style_writing.md` の「文章の点検を通す場面と順序」）
 - `write_for_installed_versions.md` （入っているバージョンで書く）: あちらはコードをどのバージョンに合わせるか、本ルールはその事情をどこに書くか
 - `adopt_tools_with_official_defaults.md` （ツールは公式の既定値から）: 設定コメントに実測値を書かない根拠として本ルールを参照している
