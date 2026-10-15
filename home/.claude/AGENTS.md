@@ -101,10 +101,10 @@
 | 場面 | 使うもの |
 | --- | --- |
 | 計画・壁打ち | `/plan-issue`・`/mattpocock-skills:grilling` |
-| コードレビュー（する・受ける） | `/review-*`・`/resolve-*`・`rules/responding_to_reviews.md`。コードの不吉な臭いは `/review-code` から `/mattpocock-skills:code-review` を参照する |
+| コードレビュー（する・受ける） | `/review-*`・`/resolve-*`・`rules/responding_to_reviews.md`。コードの不吉な臭いの一覧は、`/review-code` が `/mattpocock-skills:code-review` から参照する |
 | 完了前の検証 | `rules/verify_the_check_worked.md`・`rules/verify_before_asserting.md` |
 | ブランチの仕上げ・worktree | `/finalize-pr`・`/ship-pr`・`rules/notify_related_repo_sessions.md` の worktree の節 |
-| ルールとスキルの書き方 | `/organize-rules`・`/learn-rules`。一般的な書き方は `/organize-rules` から `/mattpocock-skills:writing-for-agents` を参照する |
+| ルールとスキルの書き方 | `/organize-rules`・`/learn-rules`。一般的な書き方は、`/organize-rules` が `/mattpocock-skills:writing-for-agents` から参照する |
 | 不具合の原因の切り分け | `/mattpocock-skills:diagnosing-bugs` |
 | テストを先に書く実装 | `/mattpocock-skills:tdd` |
 
