@@ -1,7 +1,7 @@
 ---
 description: 今いるリポジトリを多角的に調べ、実際に役立つ技術改善だけを提案する。依存の更新だけでなく、CI の所要時間・記法の揺れ・検査されていない領域・規約と実態の乖離まで見て、一次情報（公式ブログ・GitHub Releases・RFC）と照らす。ユーザーが「技術提案して」「最近の動向を踏まえて何かある？」「/propose-tech-updates」等を指示したときに使う。
 argument-hint: "[観点: deps / ci / style / test（省略時は全部）]"
-allowed-tools: Bash(gh release list:*) Bash(gh api:*) Bash(gh issue list:*) Bash(gh pr list:*) Bash(gh repo view:*) Bash(gh run list:*) Bash(gh run view:*) Bash(cat:*) Bash(ls:*) Bash(grep:*) Bash(python3:*) Bash(pnpm:*) Bash(npm:*) Read Glob Grep WebFetch WebSearch Agent
+allowed-tools: Bash(gh release list:*) Bash(gh api:*) Bash(gh issue list:*) Bash(gh pr list:*) Bash(gh repo view:*) Bash(gh run list:*) Bash(gh run view:*) Bash(cat:*) Bash(ls:*) Bash(grep:*) Bash(python3:*) Bash(pnpm:*) Bash(npm:*) Bash(ax:*) Read Glob Grep WebFetch WebSearch Agent Skill mcp__context7__resolve-library-id mcp__context7__query-docs
 ---
 
 今いるリポジトリに**実際に役立つ改善だけ**を提案します。「新しいものの紹介」ではなく、**このコードベースのどこがどう変わるか**まで書けたものだけを出します。
@@ -56,7 +56,8 @@ ls apps packages 2>/dev/null              # モノレポなら構成
 | GitHub Releases | `gh release list --repo <owner>/<repo> --limit 10` |
 | リリースの本文 | `gh api repos/<owner>/<repo>/releases/tags/<tag> --jq .body` |
 | **Issue / Discussion / RFC** | **破壊的変更はリリースノートより先にここで議論される** |
-| 公式ブログ | `WebFetch` |
+| 公式ドキュメント・移行ガイド | `/context7-mcp` 。ライブラリ名から最新の文書を引く |
+| 公式ブログ・リリースのページ | `/ax` で開く。本文が描画を待つページは、 `verify_the_check_worked.md` の手順で Playwright から読む |
 | 補助 | `WebSearch`。気になった話題の裏を取る |
 
 **「メジャーが上がれば速くなる」と思い込まない。** 性能改善が入っているかは、リリースノートを `perf` / `faster` / `speed` で引いて確かめます。**謳われていないなら速くなりません。**
