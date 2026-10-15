@@ -29,6 +29,39 @@ print(" ".join(str(v) for v in d.values()))
 ' 2>/dev/null) || exit 0
 [ -n "$inputs" ] || exit 0
 
+# auto memory へ書いた好み（type: feedback）は、全リポジトリで効かせたい規約かもしれない。
+# 汎用の規約はルール、そのリポジトリだけの事実はメモリ（AGENTS.md）。書く場面では当て忘れるので、
+# 書いた直後に知らせる。メモリの実体は private/ で git status に出ないため、入力のパスで拾う。
+mem_state="${TMPDIR:-/tmp}/claude-tidy-${sid}.memseen"
+mem_msg=$(INPUTS="$inputs" STATE="$mem_state" python3 - <<'PY' 2>/dev/null
+import os, re
+inputs, state = os.environ["INPUTS"], os.environ["STATE"]
+seen = set(open(state).read().split("\n")) if os.path.exists(state) else set()
+paths = set(re.findall(r"[~/][^\s'\"`]*/memory/[^\s'\"`/]+\.md", inputs))
+hits = []
+for p in sorted(paths):
+    p = os.path.expanduser(p)
+    if os.path.basename(p) == "MEMORY.md" or p in seen or not os.path.isfile(p):
+        continue
+    head = open(p, encoding="utf-8", errors="ignore").read(800)
+    if re.search(r"^\s*type:\s*feedback\s*$", head, re.M):
+        hits.append(p)
+if hits:
+    with open(state, "a") as f:
+        f.write("\n".join(hits) + "\n")
+    names = ", ".join(os.path.basename(h) for h in hits)
+    print(f"auto memory へ好み・訂正（type: feedback）を書きました（{names}）。"
+          "**全リポジトリで効かせたい規約なら、メモリではなくルールへ置いてください**"
+          "（AGENTS.md の「汎用の規約は rules、そのリポジトリだけの事実は memory」）。"
+          "ルールへ移すなら AskUserQuestion で承認を得て、メモリからは消す（/organize-rules の「auto memory との境界」）。"
+          "そのリポジトリだけの事実なら、そのままでよい。")
+PY
+)
+if [ -n "$mem_msg" ]; then
+  MSG="$mem_msg" python3 -c 'import json,os;print(json.dumps({"hookSpecificOutput":{"hookEventName":"PostToolUse","additionalContext":os.environ["MSG"]}},ensure_ascii=False))'
+  exit 0
+fi
+
 link=$(readlink "$HOME/.claude/settings.json" 2>/dev/null) || exit 0
 [ -n "$link" ] || exit 0
 repo=$(git -C "$(dirname "$link")" rev-parse --show-toplevel 2>/dev/null) || exit 0
