@@ -2,13 +2,13 @@
 #
 # このターンに書いた Markdown を、文章の点検に通したかを見る Stop フック。
 #
-# 後から読まれる文章は /japanese-tech-writing → /yomiyasu に通す規約だが
+# 後から読まれる文章は /japanese-tech-writing → /yomiyasu:yomiyasu に通す規約だが
 # （no_ai_style_writing.md）、書き終えた区切りが来ない経路で抜けた。
 # スクラッチパッドで書いて gh api でそのままコミットした規約文書が、
 # 4本とも通さずに入っている。規約の文面を足しても同じ形で抜けるので、
 # 形で止める。
 #
-# 通したかは、書いた後に /yomiyasu を呼んだか、同梱の検査を走らせたかで見る。
+# 通したかは、書いた後に /yomiyasu:yomiyasu を呼んだか、同梱の検査を走らせたかで見る。
 # 中身まで直したかは見ない（それは点検の側の仕事）。
 #
 set -u
@@ -143,7 +143,7 @@ if len(files) > 6:
     lines.append("ほか %d件" % (len(files) - 6))
 lines += ["```",
           "",
-          "/japanese-tech-writing を当ててから /yomiyasu を通し、直してから返してください。",
+          "/japanese-tech-writing を当ててから /yomiyasu:yomiyasu を通し、直してから返してください。",
           "後から読まれる文章（README・docs/・ルール・スキル・PR 本文・コメント）は、短くても対象です。",
           "読まれない下書き（使い捨てのメモ・テスト用の入力）なら、その旨を1行書いて終えてください。",
           "  → no_ai_style_writing.md の「文章の点検を通す場面と順序」"]

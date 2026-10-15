@@ -108,7 +108,7 @@ allowed-tools: Bash(gh pr view:*) Bash(gh pr list:*) Bash(gh api:*) Bash(git gre
 
 ### 6. 直す
 
-**直した本文は `.md` に書き、`/japanese-tech-writing` と `/yomiyasu` を通してから投稿する**（ `no_ai_style_writing.md` ）。通していないと、投稿の直前でフックに止められる。
+**直した本文は `.md` に書き、`/japanese-tech-writing` と `/yomiyasu:yomiyasu` を通してから投稿する**（ `no_ai_style_writing.md` ）。通していないと、投稿の直前でフックに止められる。
 
 **更新できるものと、できないものがある。** 着手する前に、その場で使える操作を確かめる。
 
