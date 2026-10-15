@@ -1,7 +1,7 @@
 ---
 description: 自分が担当している open な PR を横断で走査し、仕上がっていないものを1本ずつ finalize-pr で仕上げる。draft / ready を問わず、未解決のレビュー・CI の失敗・ベースとの乖離を洗い出して片付ける。ユーザーが「全部の PR を仕上げて」「担当 PR を一通り点検して」「/finalize-prs」等を指示したときに使う。
 argument-hint: "[リポジトリ名（省略時は横断）]"
-allowed-tools: Skill, Bash(gh pr list:*) Bash(gh pr view:*) Bash(gh pr checks:*) Bash(gh run view:*) Bash(gh api:*) Bash(gh repo view:*) Bash(git status:*) Bash(git branch:*) Bash(git checkout:*) Bash(git fetch:*) Bash(git rev-list:*), Read
+allowed-tools: Skill, Bash(gh pr list:*) Bash(gh pr view:*) Bash(gh pr checks:*) Bash(gh run view:*) Bash(gh api:*) Bash(gh repo view:*) Bash(git worktree:*) Bash(git branch:*) Bash(git fetch:*) Bash(git rev-list:*), Read EnterWorktree ExitWorktree
 ---
 
 `list-prs` が**状態を見せる**のに対し、このスキルは**状態を直す**。走査して仕上がっていない PR を見つけ、1本ずつ `finalize-pr` に渡します。
@@ -10,19 +10,13 @@ allowed-tools: Skill, Bash(gh pr list:*) Bash(gh pr view:*) Bash(gh pr checks:*)
 
 ## 進め方
 
-### 1. 着手前の確認
+### 1. 対象と状況を集める
 
-**作業ツリーが汚れていたら中断する。** このスキルはブランチを移動するので、未コミットの変更があると持ち回ってしまう。`git status --porcelain` が空でなければ、その旨を報告して終了する。
+**`list-prs` の手順1〜2で集める。** 関連リポジトリの横断・並列の取得・引数での絞り込み・取る項目は、あちらが持つ。ここでは表を作らず、取った状況を次の判定に使う。
 
-**現在のブランチを控える。** 全部終わったら戻す。
+**他人の PR は対象外。** 仕上げるのは自分が出したものだけ（他人のは `review-pr` の領分）。
 
-### 2. 対象を集める
-
-- 引数にリポジトリ名があればそれだけ、無ければローカルにクローン済みの関連リポジトリを横断する
-- `gh pr list --author "@me" --state open` で自分の open な PR を取る
-- **他人の PR は対象外**。仕上げるのは自分が出したものだけ（他人のは `review-pr` の領分）
-
-### 3. 仕上がりを判定する
+### 2. 仕上がりを判定する
 
 **1本ずつ、次を機械的に確かめる。** 1つでも欠けていれば「未完」。
 
@@ -37,21 +31,24 @@ allowed-tools: Skill, Bash(gh pr list:*) Bash(gh pr view:*) Bash(gh pr checks:*)
 
 **`skipped` と `failure` を混同しない。** 条件で除外されただけのチェックは失敗ではない。
 
-### 4. 未完のものを1本ずつ仕上げる
+### 3. 未完のものを1本ずつ、自分用の worktree で仕上げる
 
-**並列にしない。** ブランチの移動を伴うので、同時に走らせると互いの作業ツリーを壊す。
+**共有の作業ツリーで `git checkout` しない。** 同じディレクトリで別のセッションが動いていると、その足元が変わる（ `notify_related_repo_sessions.md` ）。
 
-1. そのブランチへ `git checkout`
-2. `finalize-pr` を Skill ツールで呼ぶ
-3. 完了を待ってから次の PR へ
+1. `git worktree add -q .claude/worktrees/finalize-<PR 番号> <ブランチ>` で取り出す。**そのブランチを別の作業ツリーが開いていて失敗したら、その PR は飛ばす**（誰かが作業中）
+2. `EnterWorktree` の `path` でその worktree へ移り、`finalize-pr` を Skill ツールで呼ぶ
+3. 完了を待ち、`ExitWorktree` （ `keep` ）で戻ってから `git worktree remove` で消す。消えたことを `git worktree list` で確かめて次の PR へ
 
-**途中で失敗したら、そこで止めて報告する。** 残りを飛ばして続けると、どこまで終わったのか分からなくなる。
+**`EnterWorktree` で入れるのは、起動したリポジトリの worktree だけ。** ほかのリポジトリの PR は仕上げず、報告の表に「未着手（別リポジトリ）」と載せる。
 
-### 5. 後片付けと報告
+**並列にしない。** 1本ずつ終えてから次へ進む。
 
-- **控えたブランチへ戻す**
+**途中で失敗したら、そこで止めて報告する。** 残りを飛ばして続けると、どこまで終わったのか分からなくなる。worktree が残っていれば、それも報告に書く。
+
+### 4. 報告
+
 - 1つの表で、**走査した全 PR** を出す。仕上げたものだけでなく「元から完成していた」ものも並べる（**何を見たかが分かる**）
-- 列は PR / 判定（完成 / 仕上げた / 未完のまま）/ 何が欠けていたか / 対応したコミット
+- 列は PR / 判定（完成 / 仕上げた / 未完のまま / 未着手）/ 何が欠けていたか / 対応したコミット
 - **ready 化は絶対にしない**（ `no_auto_ready_pr.md` ）。仕上がった旨を報告して、実行はユーザーに委ねる
 
 ## 出力の目安
@@ -62,17 +59,17 @@ allowed-tools: Skill, Bash(gh pr list:*) Bash(gh pr view:*) Bash(gh pr checks:*)
 
 ## やってはいけないこと
 
-- **作業ツリーが汚れたまま走らせること**。ブランチ移動で変更を持ち回る
-- **並列に仕上げること**。checkout が競合する
+- **共有の作業ツリーで `git checkout` すること**。別のセッションの足元が変わる。自分用の worktree で仕上げる
+- **並列に仕上げること**。どこまで終わったのかが追えなくなる
 - `finalize-pr` の手順をこのスキル本文で再定義すること。**走査と順序だけを管理する**
 - 他人の PR を対象にすること
 - **draft を対象外にすること**。draft でも未完なら仕上げる
 - CI の失敗を、原因を見ずに「未完」と判定すること。**承認待ちはコード起因ではない**
 - 仕上がった PR を ready にすること
-- 終わったあとに元のブランチへ戻さないこと
+- 仕上げに使った worktree を残したまま終えること
 
 ## 関連
 
-- `list-prs` （一覧を出す）: **状態を見せる**のがあちら、**直す**のがこちら。判定の観点も違う
+- `list-prs` （一覧を出す）: **対象と状況の集め方はあちら**。状態を見せるのがあちら、直すのがこちらで、判定の観点も違う
 - `finalize-pr` （1本を仕上げる）: 実際の仕上げはすべて委譲する
 - `no_auto_ready_pr.md` （レビュー依頼は明示指示のみ）: 仕上げても ready 化・再依頼はしない
