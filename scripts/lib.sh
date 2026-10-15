@@ -55,17 +55,34 @@ Library/LaunchAgents'
 # 空白を含むパス（Library/Application Support）があるため、行単位で完全一致を見る。
 # for d in $PARTIAL_DIRS だと単語分割で壊れる。
 is_partial() {
-  printf '%s\n' "$PARTIAL_DIRS" | grep -Fxq -- "$1"
+  { printf '%s\n' "$PARTIAL_DIRS"; local_paths partial; } | grep -Fxq -- "$1"
 }
 
 # 置き場に入れるが、~ 直下へはリンクしないもの。
 # deny-patterns.txt はこのリポジトリの道具立てで、~ に置いても意味がない。
 # .claude-memory は ~ 直下ではなく ~/.claude/projects/<key>/memory へ張る。
 NO_LINK='.claude/deny-patterns.txt
+.claude/dotfiles-paths.txt
 .claude-memory'
 
 is_no_link() {
   printf '%s\n' "$NO_LINK" | grep -Fxq -- "$1"
+}
+
+# 社内の固有名を含む置き場は、公開側に書けないので private 側の一覧から足す。
+#   partial  <~ からの相対パス>   子だけリンクする（PARTIAL_DIRS に足す）
+#   copyback <~ からの相対パス>   中身をリンクせずコピーで置き、バックアップ前に写し戻す
+# リストアは lib.sh を読んだ後で private/ を展開するので、一覧は判定のたびに読む。
+LOCAL_PATHS_FILE="$DOTFILES_DIR/private/.claude/dotfiles-paths.txt"
+local_paths() {
+  [ -f "$LOCAL_PATHS_FILE" ] && sed -n "s/^$1 //p" "$LOCAL_PATHS_FILE"
+  return 0
+}
+
+is_copy_back() {
+  local_paths copyback | while IFS= read -r d; do
+    [ -n "$d" ] && case $1 in "$d"/*) echo yes ;; esac
+  done | grep -q yes
 }
 
 # 何本張ったかを数える。何も報告せずに終わると、効いたのか分からない。
@@ -113,6 +130,22 @@ link_into_home() {
   mkdir -p "$(dirname "$dst")"
   ln -sfn "$src" "$dst"
   LINKED=$((LINKED + 1))
+}
+
+# リポジトリより上の階層に置くルール（ <org>/.claude/rules ）は、~ 側の実体が正本。
+# Claude Code は作業ディレクトリより上の .claude/rules にあるリンクを辿らないので、実体で置く。
+# バックアップの前に ~ 側から private へ写し戻し、リストアで写して置く。
+# パスに社内の固有名が入るので、一覧は private 側の LOCAL_PATHS_FILE が持つ（下記）。
+
+collect_copied_back() {
+  local_paths copyback | while IFS= read -r rel; do
+    [ -n "$rel" ] && [ -d ~/"$rel" ] || continue
+    mkdir -p "$DOTFILES_DIR/private/$rel"
+    for f in ~/"$rel"/*; do
+      [ -f "$f" ] && [ ! -L "$f" ] || continue
+      cp -p "$f" "$DOTFILES_DIR/private/$rel/"
+    done
+  done
 }
 
 # launchd の定義はリンクにせず、実体をコピーする。
@@ -178,7 +211,9 @@ link_layer() {
     else
       case $rel in
         Library/LaunchAgents/*) copy_into_home "$layer_base/$rel" ~/"$rel" ;;
-        *) link_into_home "$layer_base/$rel" ~/"$rel" ;;
+        *)
+          if is_copy_back "$rel"; then copy_into_home "$layer_base/$rel" ~/"$rel"
+          else link_into_home "$layer_base/$rel" ~/"$rel"; fi ;;
       esac
     fi
   done
