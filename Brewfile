@@ -35,6 +35,8 @@ brew "oniguruma"
 brew "bat"
 # Parser generator
 brew "bison"
+# Secure and free password manager for all of your devices
+brew "bitwarden-cli"
 # Multi-shell multi-command argument completer
 brew "carapace"
 # Cross-platform make
