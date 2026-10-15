@@ -456,7 +456,7 @@ must が 2 件です
 - `concise_first_then_detail.md` （簡潔に、表と Mermaid の使い分け）: 「コメント本文の書き方」の土台。`/create-pr`・`/update-pr-description` も同じ土台に乗る
 - `github_note_generated_by_claude.md`: 生成者表示の書式
 - `github_writing.md`: GitHub へ書く日本語は1文ごとに改行し、行末の句点を落とす。総括・インラインの両方が対象
-- `/format-github-post` （投稿する文章の畳み方）: Alert / `<details>` / 脚注の使い分け。1コメントに置ける Alert は**本文に1〜2個**（生成者表示の `NOTE` は数えない）
+- `/format-post` （投稿する文章の畳み方）: Alert / `<details>` / 脚注の使い分け。1コメントに置ける Alert は**本文に1〜2個**（生成者表示の `NOTE` は数えない）
 - `focus_insights_on_judgment.md` （代行するほど、渡す責任が増える）: Step 7「報告に入れるもの」の土台。**ユーザー自身がレビューできる状態を保つ**ことを定める
 - `verify_before_asserting.md`: Step 5〜6の土台。**ユーザーの発言も裏取りの対象**という点は、PR 本文の主張にもそのまま当てはまる
 - `report_formatting.md` （報告に貼る識別子の書式）: 投稿後の報告に添える URL の土台。**PR とインライン1件ずつ**を出すことを定める
