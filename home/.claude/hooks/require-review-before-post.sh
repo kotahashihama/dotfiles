@@ -8,8 +8,8 @@
 # 遅い。投稿の前で止める。
 #
 # 通したかは、本文がこのターンに点検を通したファイルに含まれるかで見る。
-# ファイルを経ずに /yomiyasu へ本文を渡した場合は照合できないので、
-# このターンに /yomiyasu を呼んでいれば通す。
+# ファイルを経ずに /yomiyasu:yomiyasu へ本文を渡した場合は照合できないので、
+# このターンに /yomiyasu:yomiyasu を呼んでいれば通す。
 #
 set -u
 
@@ -43,7 +43,7 @@ CD_PREFIX = re.compile(r"""^\s*cd\s+['"]?([^\s'";|&]+)['"]?\s*&&""")
 
 
 def scan():
-    """このターン（最後に人が入力してから）に点検を通したファイルと、/yomiyasu を呼んだか"""
+    """このターン（最後に人が入力してから）に点検を通したファイルと、/yomiyasu:yomiyasu を呼んだか"""
     written, reviewed, skill = set(), set(), False
     try:
         f = io.open(str(d.get("transcript_path", "")), encoding="utf-8")
@@ -105,7 +105,7 @@ for p in reviewed:
 sys.stderr.write("\n".join([
     "**投稿する文章を、文章の点検に通していません**（%s）" % name,
     "",
-    "本文を .md に書き、/japanese-tech-writing を当ててから /yomiyasu を通し、",
+    "本文を .md に書き、/japanese-tech-writing を当ててから /yomiyasu:yomiyasu を通し、",
     "直した中身を渡して投稿し直してください。投稿は取り消せないので、前で止めています。",
     "  → no_ai_style_writing.md の「文章の点検を通す場面と順序」",
 ]))

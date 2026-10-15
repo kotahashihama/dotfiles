@@ -103,7 +103,7 @@ allowed-tools: Read Grep Glob WebFetch Bash(git grep:*) Bash(git log:*) Bash(git
 ## 関連
 
 - `/create-backlog-issue` （課題の起票）: 起票はあちら。本スキルは起票された課題を読んで着手前の計画を立てる
-- `/grilling` （計画の壁打ち）: 計画を立てた後、穴を突いて詰めたいときに使う
+- `/mattpocock-skills:grilling` （計画の壁打ち）: 計画を立てた後、穴を突いて詰めたいときに使う
 - `verify_before_asserting.md` （断定の前に裏を取る）: 手順2と3の根拠
 - `scope_changes_to_the_issue.md` （課題の範囲へ変更を閉じる）: 計画に入れる範囲の判定
 - `decide_or_ask.md` （自分で決めるか尋ねるか）: 手順6の判定
