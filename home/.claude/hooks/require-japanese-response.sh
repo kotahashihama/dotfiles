@@ -1,6 +1,8 @@
 #!/bin/bash
 #
 # 応答の地の文が英語になったら、日本語で書き直させる Stop フック。
+# 日本語の応答なら、表記（数値と単位・約物・インラインコードの前後・英単語の境目）も
+# check-japanese-spacing.py で見る。応答を集める手順が同じなので、1本にまとめている。
 #
 # 日本語で応答する規約は AGENTS.md と出力スタイルの両方にあるが、長い会話の途中で
 # 地の文が丸ごと英語になることがある。読めば気づける形ではなく、思い出せるのに破る形
@@ -98,14 +100,40 @@ for b in blocks:
         mid_latin += bl
 mid_english = mid_latin >= 200
 
+# 日本語の応答なら、表記も見る（数値と単位・約物・インラインコードの前後・英単語の境目）。
+# ファイルと GitHub への投稿には別のフックが掛かるが、会話への応答には掛かっていなかった。
+# 判定は check-japanese-spacing.py に1か所で持たせ、ここでは呼ぶだけにする
+spacing = []
 if not (final_english or mid_english):
-    raise SystemExit(0)
+    try:
+        import importlib.util
+        spec = importlib.util.spec_from_file_location(
+            "spacing", os.path.expanduser("~/.claude/hooks/check-japanese-spacing.py"))
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        for b in blocks:
+            spacing += [(cat, text) for _, cat, text in mod.check_text(b)]
+    except Exception:
+        spacing = []
+    if not spacing:
+        raise SystemExit(0)
 
 # 同じプロンプトで二度は止めない（鍵は Stop フック共通）
 mark = os.path.join(tempfile.gettempdir(), "claude-stopguard-" + pid)
 if os.path.exists(mark):
     raise SystemExit(0)
 open(mark, "w").close()
+
+if spacing:
+    shown = "\n".join(f"- {cat}: {text[:60]}" for cat, text in spacing[:8])
+    more = f"\nほか {len(spacing) - 8} 件" if len(spacing) > 8 else ""
+    sys.stderr.write(
+        "**応答の表記が規約から外れています**（ `no_space_between_number_and_unit.md` ）。\n\n"
+        f"{shown}{more}\n\n"
+        "該当する文だけを直して、直した文を出し直してください（応答全体を繰り返さなくてよい）。"
+        "数値と単位は詰め、独立した英単語と日本語のあいだ・インラインコードの前後は空けます。"
+    )
+    raise SystemExit(2)
 
 where = "応答の地の文" if final_english else "ツール呼び出しの合間に書いた途中経過の文"
 sys.stderr.write(
