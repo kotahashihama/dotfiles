@@ -89,7 +89,7 @@ allowed-tools: Read Grep Glob WebFetch Bash(git grep:*) Bash(git log:*) Bash(git
 4. 計画: 上の5列の表
 5. 未確認と判断が要る点
 
-課題へ計画を書き込むかは、ユーザーが決める。書き込むなら `[memo]` で、投稿前に点検を通す（ `no_ai_style_writing.md` ）。
+課題へ計画を書き込むかは、ユーザーが決める。書き込むなら `[memo]` で、投稿前に点検を通す（ `no_ai_style_writing.md` ）。未確認と判断が要る点は書き込まず、会話で伝える。課題に残すのは、調べて分かったことと計画だけにする。
 
 ## やってはいけないこと
 
