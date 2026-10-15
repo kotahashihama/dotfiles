@@ -101,22 +101,23 @@
 
 | 場面 | 使うもの |
 | --- | --- |
+| 設計・複数のファイルにまたがる変更・原因の分からない不具合・性能 | `/pstack:poteto-mode` を入口にする。やることが決まっていれば `/pstack:architect`・`/pstack:how`・`/pstack:why` へ直接入る |
+| テストを先に書く実装 | `/pstack:tdd` |
 | 計画・壁打ち | `/plan-issue`・`/mattpocock-skills:grilling` |
+| コードや変更を噛み砕いて説明する | `/explain-code`・`/walk-code` （ユーザーの習熟度に合わせて開く）。pstack の `teach`・`how`・`why` は `poteto-mode` の中から呼ばれたときだけ使う |
 | コードレビュー（する・受ける） | `/review-*`・`/resolve-*`・`rules/responding_to_reviews.md`。コードの不吉な臭いの一覧は、`/review-code` が `/mattpocock-skills:code-review` から参照する |
+| PR を出す・仕上げる・CI・コンフリクト | `/ship-pr`・`/finalize-pr`・`/loop-ai-reviews`・`/resolve-conflicts`。pstack の `babysit`・`make-pr-easy-to-review`・`fix-ci`・`fix-merge-conflicts`・`get-pr-comments` は使わない |
+| 文章 | 日本語は `/japanese-tech-writing` → `/yomiyasu:yomiyasu` （ `rules/no_ai_style_writing.md` ）。pstack の `unslop`・`technical-writing` は英語の文章にだけ使う |
 | 完了前の検証 | `rules/verify_the_check_worked.md`・`rules/verify_before_asserting.md` |
-| ブランチの仕上げ・worktree | `/finalize-pr`・`/ship-pr`・`rules/notify_related_repo_sessions.md` の worktree の節 |
 | ルールとスキルの書き方 | `/organize-rules`・`/learn-rules`。一般的な書き方は、`/organize-rules` が `/mattpocock-skills:writing-for-agents` から参照する |
-| 不具合の原因の切り分け | `/mattpocock-skills:diagnosing-bugs` |
-| テストを先に書く実装 | `/mattpocock-skills:tdd` |
 
-Superpowers（プラグイン）の同じ主題のスキル（ `systematic-debugging`・`test-driven-development` ほか）は使わない。
+pstack（ `poteto-mode` ）が求めることのうち、次は手元のルールを優先する。
 
-Superpowers が求める次の2つは行わない。どちらも「質問には一言目で答える」（ `rules/concise_first_then_detail.md` ）とぶつかる。
-
-- スキルを使うときに「Using [skill] to …」と宣言すること
-- 質問への答えや確認の質問より前に、スキルを呼ぶこと
-
-並列でサブエージェントを動かすスキル（ `dispatching-parallel-agents`・`subagent-driven-development` ）は使わない。自分の判断で呼ぶのは `surveyor` だけ（上記「サブエージェントは `surveyor` だけ自分の判断で呼ぶ」）。
+| pstack の求めること | 優先するルール |
+| --- | --- |
+| 返信を `unslop` に通す・返信の中で判断に使った原則を名前で挙げる | `rules/concise_first_then_detail.md` （一言目で答え、自己解説を混ぜない）。その場の応答は文章の点検に通さない |
+| 「どの案にするか」は尋ねずに試作して決める | `rules/decide_or_ask.md`。取り消せない操作とユーザーの領分は `AskUserQuestion` で尋ねる |
+| 並列でサブエージェントを動かすスキル（ `arena`・`swarm`・`architect` の並列探索・`interrogate`・`reflect`・`no-comments`・`thermo-nuclear-review` ） | ユーザーが指示したときだけ使う。自分の判断で呼ぶのは `surveyor` だけ（上記「サブエージェントは `surveyor` だけ自分の判断で呼ぶ」） |
 
 ## 迷ったとき
 
