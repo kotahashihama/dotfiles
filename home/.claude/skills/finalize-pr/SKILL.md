@@ -1,5 +1,5 @@
 ---
-description: PR を最終化する。ベースとの統合を確かめ、点検 (/triage-why-comments + /review-tests、リポジトリにあれば /review-conventions) を走らせ、必要なら修正して /cp し、必要なら /update-pr-description まで一括で行う。まとまった変更が一段落してレビューを迎える手前で使う。ユーザーが「/finalize-pr」「PR を仕上げて」「PR 出す直前の点検を」等を指示したときに使う。
+description: PR を最終化する。ベースとの統合を確かめ、点検 (/triage-why-comments + /review-tests、リポジトリにあれば /review-conventions) を走らせ、必要なら修正して /commit-push し、必要なら /update-pr-description まで一括で行う。まとまった変更が一段落してレビューを迎える手前で使う。ユーザーが「/finalize-pr」「PR を仕上げて」「PR 出す直前の点検を」等を指示したときに使う。
 argument-hint: "[PR 番号 または URL（省略時は現在のブランチの PR）]"
 allowed-tools: Skill, Bash(git status:*) Bash(git branch:*) Bash(git diff:*) Bash(gh pr view:*) Bash(gh repo view:*) Bash(git rev-parse:*) Bash(git rev-list:*) Bash(git fetch:*) Bash(git worktree:*) Bash(git merge:*) Bash(go build:*) Bash(go test:*) Bash(task:*), Read
 ---
@@ -45,8 +45,8 @@ allowed-tools: Skill, Bash(git status:*) Bash(git branch:*) Bash(git diff:*) Bas
    - `[imo]` / `[nits]` に相当する示唆は「直した結果が本当に良くなるか」で判断し、非対応なら理由をユーザーへ報告する
    - コメント点検由来と規約点検由来の指摘が同一箇所に重なった場合は1件にまとめて対応する
    - 対応後は影響範囲のテスト・lint・format を通す（プロジェクトの `Taskfile` 等で規定されているコマンドを使う）。**テスト一式は `run_in_background: true` で流し、待つ間に残りの修正を進める**
-4. **コミット & プッシュ**: `cp` を Skill ツールで呼ぶ
-   - `cp` 側の早期離脱判定に任せる (変更なしなら空コミットは作らない)
+4. **コミット & プッシュ**: `commit-push` を Skill ツールで呼ぶ
+   - `commit-push` 側の早期離脱判定に任せる (変更なしなら空コミットは作らない)
 5. **PR 説明の更新要否判断**: 以下のいずれかに当てはまれば `update-pr-description` を Skill ツールで呼ぶ
    - 3で本文に反映すべき挙動変化・トレードオフ・レビュー観点が増えた
    - タイトルが差分の核と乖離した
@@ -56,13 +56,13 @@ allowed-tools: Skill, Bash(git status:*) Bash(git branch:*) Bash(git diff:*) Bas
 
 ## 出力の目安
 
-- **統合クリーン → 点検 → 修正なし → cp が「変更なし」で終了 → PR 説明も現状維持**: 「ベース最新・点検クリーン、追加のコミット/PR 説明更新なし」で終了。3〜4行でよい
+- **統合クリーン → 点検 → 修正なし → commit-push が「変更なし」で終了 → PR 説明も現状維持**: 「ベース最新・点検クリーン、追加のコミット/PR 説明更新なし」で終了。3〜4行でよい
 - **修正が入った場合**: 対応した内容、非対応にした指摘とその理由、push したコミットハッシュ、PR 説明更新の有無を簡潔に報告
 
 ## やってはいけないこと
 
-- 個々のチェックや `cp` / `update-pr-description` の内容をこのスキル本文で再定義すること。各スキルの規約が正で、本スキルは順序のみ管理する
-- 点検の結果を待たずに `cp` を先に走らせること（点検 → 修正 → コミット の順を守る）
+- 個々のチェックや `commit-push` / `update-pr-description` の内容をこのスキル本文で再定義すること。各スキルの規約が正で、本スキルは順序のみ管理する
+- 点検の結果を待たずに `commit-push` を先に走らせること（点検 → 修正 → コミット の順を守る）
 - **点検の中の調査を1つずつ直列に発行すること**。依存の無い `Read` / `grep` は1メッセージにまとめる
 - **呼び出し側でリポジトリ種別を判定すること**。各スキルが内部で判定するので、ここでは分岐しない
 - 一部の点検結果だけを見て修正判断を先行させること。全部の結果が揃ってから3に進む
@@ -74,4 +74,4 @@ allowed-tools: Skill, Bash(git status:*) Bash(git branch:*) Bash(git diff:*) Bas
 ## 前提
 
 - ブランチが PR に紐づいていることを確認するのは各下位スキルの責務。本スキル側では追加確認をしない
-- `decide_or_ask` / `karma_commit_style` 等のグローバルルールは `cp` 側が既に見ているため、本スキルで重複して参照しない
+- `decide_or_ask` / `karma_commit_style` 等のグローバルルールは `commit-push` 側が既に見ているため、本スキルで重複して参照しない

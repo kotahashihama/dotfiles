@@ -58,7 +58,7 @@ Co-Authored-By: Claude Code <noreply@anthropic.com>
 
 **モデル名は書かない。** `Claude Opus 5` のように書くと、リリースのたびに古くなる。書き手はいずれも Claude Code なので、クライアント名に統一する（ `github_note_generated_by_claude.md` が GitHub 上の文章に対して定めているのと同じ理由）。
 
-**これはコミットを作るすべての経路に適用する。** `/cp` だけでなく、レビュー対応やコンフリクト解消の途中で作るコミットも対象。
+**これはコミットを作るすべての経路に適用する。** `/commit-push` だけでなく、レビュー対応やコンフリクト解消の途中で作るコミットも対象。
 
 ## type 一覧
 
