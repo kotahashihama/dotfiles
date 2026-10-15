@@ -2,7 +2,6 @@
 description: 今いるリポジトリを多角的に調べ、実際に役立つ技術改善だけを提案する。依存の更新だけでなく、CI の所要時間・記法の揺れ・検査されていない領域・規約と実態の乖離まで見て、一次情報（公式ブログ・GitHub Releases・RFC）と照らす。ユーザーが「技術提案して」「最近の動向を踏まえて何かある？」「/propose-tech-updates」等を指示したときに使う。
 argument-hint: "[観点: deps / ci / style / test（省略時は全部）]"
 allowed-tools: Bash(gh release list:*) Bash(gh api:*) Bash(gh issue list:*) Bash(gh pr list:*) Bash(gh repo view:*) Bash(gh run list:*) Bash(gh run view:*) Bash(cat:*) Bash(ls:*) Bash(grep:*) Bash(python3:*) Bash(pnpm:*) Bash(npm:*) Read Glob Grep WebFetch WebSearch Agent
-disable-model-invocation: true
 ---
 
 今いるリポジトリに**実際に役立つ改善だけ**を提案します。「新しいものの紹介」ではなく、**このコードベースのどこがどう変わるか**まで書けたものだけを出します。
