@@ -1,5 +1,5 @@
 ---
-description: 他の人が出した PR をレビューし、総括コメントとインラインコメントをセットで GitHub へ投稿する。レビュー結果はまず会話に出し、ユーザーの GO を得てから投稿する。ユーザーが「この PR をレビューして」「レビューを頼まれた」「/review-pr」等を指示したときに使う。「深くレビューして」「徹底的にレビューして」「多観点で見て」と言われたら --deep を付けて、レビューの実施をサブエージェントの並列に差し替える。自分が出した PR の点検・仕上げは /finalize-prs の担当なので、このスキルは使わない。
+description: 他の人が出した PR をレビューし、総括コメントとインラインコメントをセットで GitHub へ投稿する。レビュー結果はまず会話に出し、ユーザーの GO を得てから投稿する。ユーザーが /review-pr を打ったときだけ動く（AI からは呼べない）。--deep を付けると、レビューの実施をサブエージェントの並列に差し替える。自分が出した PR の点検・仕上げは /finalize-prs の担当なので、このスキルは使わない。
 argument-hint: "[PR 番号 または URL（省略時は現在のブランチの PR）] [--deep] [--focus <重点的に見る観点>（--deep のときだけ）]"
 allowed-tools: Bash(gh api:*) Bash(gh pr view:*) Bash(gh pr diff:*) Bash(gh pr list:*) Bash(gh repo view:*) Bash(git fetch:*) Bash(git show:*) Bash(git log:*) Bash(git worktree:*) Bash(git rev-parse:*) Bash(go build:*) Bash(go test:*) Bash(task:*) Bash(npx:*) Read Grep Glob Write Agent AskUserQuestion Skill
 disable-model-invocation: true
@@ -456,7 +456,7 @@ must が 2 件です
 - `concise_first_then_detail.md` （簡潔に、表と Mermaid の使い分け）: 「コメント本文の書き方」の土台。`/create-pr`・`/update-pr-description` も同じ土台に乗る
 - `github_note_generated_by_claude.md`: 生成者表示の書式
 - `github_writing.md`: GitHub へ書く日本語は1文ごとに改行し、行末の句点を落とす。総括・インラインの両方が対象
-- `/format-post` （投稿する文章の畳み方）: Alert / `<details>` / 脚注の使い分け。1コメントに置ける Alert は**本文に1〜2個**（生成者表示の `NOTE` は数えない）
+- `/format-post` （投稿する文章の畳み方）: Alert / `<details>` / 脚注の使い分け。Alert は**本文に1〜2個**、コメントや返信なら1個で足りる（生成者表示の `NOTE` は数えない）
 - `focus_insights_on_judgment.md` （代行するほど、渡す責任が増える）: Step 7「報告に入れるもの」の土台。**ユーザー自身がレビューできる状態を保つ**ことを定める
 - `verify_before_asserting.md`: Step 5〜6の土台。**ユーザーの発言も裏取りの対象**という点は、PR 本文の主張にもそのまま当てはまる
 - `report_formatting.md` （報告に貼る識別子の書式）: 投稿後の報告に添える URL の土台。**PR とインライン1件ずつ**を出すことを定める

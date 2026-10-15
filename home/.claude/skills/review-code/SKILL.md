@@ -137,7 +137,7 @@ allowed-tools: Bash(git diff:*) Bash(git log:*) Bash(git show:*) Bash(git rev-pa
 
 - `/review-code-comments` / `/review-tests`: 観点が狭い分を担当。**重ねて出さない**
 - `/review-pr` （他人の PR）: 対象と出力先が違う。あちらは投稿まで行う
-- `/finalize-prs` （PR の仕上げ）: 点検の入口。本スキルはそこから呼ばれうる
+- `/finalize-prs` （PR の仕上げ）: 点検の入口だが、本スキルは呼ばない。境界や複雑度まで見たいときは、本スキルを単独で呼ぶ
 - `verify_before_asserting.md` （断定の前に裏を取る）: 規約の引用も裏取りの対象
 - `verify_the_check_worked.md` （検査が成立していたかを疑う）: 走査が空振りしていないかを確かめる
 - `background_heavy_work.md` （重い作業の流し方）: `--deep` でサブエージェントを待つ間の使い方
