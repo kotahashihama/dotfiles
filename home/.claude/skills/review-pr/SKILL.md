@@ -2,6 +2,7 @@
 description: 他の人が出した PR をレビューし、総括コメントとインラインコメントをセットで GitHub へ投稿する。レビュー結果はまず会話に出し、ユーザーの GO を得てから投稿する。ユーザーが「この PR をレビューして」「レビューを頼まれた」「/review-pr」等を指示したときに使う。「深くレビューして」「徹底的にレビューして」「多観点で見て」と言われたら --deep を付けて、レビューの実施をサブエージェントの並列に差し替える。自分が出した PR の点検・仕上げは /finalize-pr の担当なので、このスキルは使わない。
 argument-hint: "[PR 番号 または URL（省略時は現在のブランチの PR）] [--deep] [--focus <重点的に見る観点>（--deep のときだけ）]"
 allowed-tools: Bash(gh api:*) Bash(gh pr view:*) Bash(gh pr diff:*) Bash(gh pr list:*) Bash(gh repo view:*) Bash(git fetch:*) Bash(git show:*) Bash(git log:*) Bash(git worktree:*) Bash(git rev-parse:*) Bash(go build:*) Bash(go test:*) Bash(task:*) Bash(npx:*) Read Grep Glob Write Agent AskUserQuestion Skill
+disable-model-invocation: true
 ---
 
 **他の人が書いた PR** をレビューし、**総括コメント + インラインコメント**を1つのレビューとして GitHub へ投稿します。
