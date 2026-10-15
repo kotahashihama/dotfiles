@@ -92,6 +92,8 @@ allowed-tools: Bash(git diff:*) Bash(git log:*) Bash(git show:*) Bash(git rev-pa
 
 **複雑度の指摘には「なぜ複雑になっているか」と「どう分割・整理するか」を必ず添える。** 「複雑です」だけでは行動が変わりません。
 
+抽象化の良し悪しを指摘するときは、`/mattpocock-skills:codebase-design` の語彙で書く。入口（呼ぶ側が知るべきこと）の大きさに比べて中身が薄いものを「浅いモジュール」、差し替えの効く位置を「継ぎ目（seam）」と呼び、どこへ寄せれば深くなるかまで添える。
+
 目安に当たらないコードの不吉な臭い（Feature Envy・Shotgun Surgery など）は、`/mattpocock-skills:code-review` の smell baseline の一覧を差分に照らして探す。リポジトリの規約が許していれば指摘しない。
 
 #### 規約違反
