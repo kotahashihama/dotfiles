@@ -1,7 +1,7 @@
 /**
  * 画面を操作しながら、静止画と動画を撮るための部品。シナリオのスクリプトから import して使う。
  *
- *   import { record, waitForStable } from '~/.claude/skills/capture-results/scripts/record.mjs'
+ *   import { record, waitForStable } from '~/.claude/skills/verify-on-local/scripts/record.mjs'
  *   await record('save-memo', { state: 'state/agent.json' }, async (page, shot) => {
  *     await page.goto(`${BASE}/settings`)
  *     await shot('before')
@@ -9,7 +9,7 @@
  *
  * 環境変数:
  *   BASE_URL  開く画面の起点（既定 http://localhost:3000）
- *   OUT_DIR   画像と動画の出力先（必須）
+ *   OUT_DIR   画像と動画の出力先（record で録画するときは必須）
  *   MASK      塗りつぶす語。「,」か「、」区切り。長い語から順に当てる
  *   BLOCK     遮断する通信の正規表現（既定は外部フォントと解析タグ）
  *   NO_CORS   1 なら撮影用のブラウザで CORS の検査を外す（別ポートから API を呼ぶとき）
@@ -31,8 +31,6 @@ const { chromium: pw } = require(join(homedir(), '.bun/install/global/node_modul
 export const BASE = process.env.BASE_URL || 'http://localhost:3000'
 export const OUT = process.env.OUT_DIR
 export const VIEWPORT = { width: 1440, height: 900 }
-if (!OUT) throw new Error('OUT_DIR を指定してください')
-mkdirSync(OUT, { recursive: true })
 
 // 外部のフォントと解析タグは確かめる内容に関係せず、返らないと読み込みが止まることがある
 const BLOCK = new RegExp(process.env.BLOCK || 'fonts\\.googleapis|fonts\\.gstatic|google-analytics|googletagmanager|doubleclick')
@@ -52,7 +50,8 @@ export async function launch(options = {}) {
 
 /**
  * 描画が落ち着くまで待つ。networkidle は通信が止まっただけで、
- * 再描画やアニメーションは終わっていないので、DOM の変化が止まるまで待つ
+ * 再描画・画像の読み込み・アニメーションは終わっていない。
+ * DOM の変化が止まり、画像が読み終わり、フォントが揃うまで待つ
  */
 export async function waitForStable(page, { quietMs = 700, timeoutMs = 20000 } = {}) {
   await page.waitForLoadState('networkidle').catch(() => {})
@@ -63,7 +62,16 @@ export async function waitForStable(page, { quietMs = 700, timeoutMs = 20000 } =
         let timer
         const observer = new MutationObserver(() => bump())
         const done = () => { observer.disconnect(); resolve() }
-        const bump = () => { clearTimeout(timer); timer = setTimeout(done, quietMs) }
+        const settle = async () => {
+          await Promise.all([
+            ...Array.from(document.images)
+              .filter(img => !img.complete)
+              .map(img => new Promise(r => { img.onload = img.onerror = r })),
+            document.fonts?.ready,
+          ])
+          done()
+        }
+        const bump = () => { clearTimeout(timer); timer = setTimeout(settle, quietMs) }
         observer.observe(document.body, { childList: true, subtree: true, attributes: true })
         bump()
         setTimeout(done, Math.max(0, deadline - Date.now()))
@@ -89,6 +97,9 @@ export async function leakedTerms(page) {
  * 撮るたびに塗りつぶしの漏れを数え、漏れがあれば失敗にして動画を消す
  */
 export async function record(name, { state, routes } = {}, fn) {
+  // 出力先は録画するときだけ要る。読み込んだだけで止めると、launch と waitForStable を借りる側まで止まる
+  if (!OUT) throw new Error('OUT_DIR を指定してください')
+  mkdirSync(OUT, { recursive: true })
   const browser = await launch()
   const ctx = await browser.newContext({ viewport: VIEWPORT, storageState: state, recordVideo: { dir: OUT, size: VIEWPORT } })
   if (routes) await routes(ctx)
