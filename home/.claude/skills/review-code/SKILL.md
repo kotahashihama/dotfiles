@@ -1,5 +1,5 @@
 ---
-description: 自分が書いた差分を、そのリポジトリの規約と設計の境界に照らしてレビューし、must / imo / nits の3段階で会話へ返す。GitHub へは投稿しない。ユーザーが「レビューして」「軽く見て」「セルフレビューして」「/review-code」等を指示したときに使う。他人の PR は /review-pr、多観点の並列レビューは /review-code-deeply、コメント粒度は /review-comments、テストの追随は /review-tests の担当。
+description: 自分が書いた差分を、そのリポジトリの規約と設計の境界に照らしてレビューし、must / imo / nits の3段階で会話へ返す。GitHub へは投稿しない。ユーザーが「レビューして」「軽く見て」「セルフレビューして」「/review-code」等を指示したときに使う。他人の PR は /review-pr、多観点の並列レビューは /review-code-deeply、コメント粒度は /review-code-comments、テストの追随は /review-tests の担当。
 argument-hint: "[diff 範囲] [重点的に見る観点] (diff 範囲の省略時は origin/HEAD...HEAD)"
 allowed-tools: Bash(git diff:*) Bash(git log:*) Bash(git show:*) Bash(git rev-parse:*) Bash(gh pr view:*) Bash(ls:*) Bash(grep:*) Read Grep Glob Skill
 ---
@@ -11,7 +11,7 @@ allowed-tools: Bash(git diff:*) Bash(git log:*) Bash(git show:*) Bash(git rev-pa
 | 見るもの | 担当 |
 | --- | --- |
 | **設計の境界・複雑度・規約違反・失敗シナリオ** | **本スキル** |
-| コメントの粒度 | `/review-comments` |
+| コメントの粒度 | `/review-code-comments` |
 | テストと Story の追随 | `/review-tests` |
 | 他人の PR（投稿まで） | `/review-pr` |
 | 多観点の並列レビュー | `/review-code-deeply` |
@@ -120,7 +120,7 @@ allowed-tools: Bash(git diff:*) Bash(git log:*) Bash(git show:*) Bash(git rev-pa
 - **規約を記憶で語ること**。該当ファイルを Read して引用する
 - **機械が弾くものを指摘すること**。formatter・linter・型検査の担当です
 - **境界の宣言が無いリポジトリで、責務違反を指摘すること**。宣言が無ければその観点は飛ばす
-- **`/review-comments` や `/review-tests` と同じ指摘を重ねること**。観点が被ったらあちらへ譲る
+- **`/review-code-comments` や `/review-tests` と同じ指摘を重ねること**。観点が被ったらあちらへ譲る
 - **二点ドットで差分を取ること**。ベースが先行していると逆向きの差分が混ざる
 - **複雑度の指摘に、分割・整理の方針を添えないこと**
 - **件数を稼ぐこと**。読んで行動が変わらない指摘は出さない
@@ -128,7 +128,7 @@ allowed-tools: Bash(git diff:*) Bash(git log:*) Bash(git show:*) Bash(git rev-pa
 ## 関連
 
 - `/review-code-deeply` （並列版）: **判定表と出力形式は本スキルの `references/` を使う**。あちらは Phase 構造と束の分け方だけを持つ
-- `/review-comments` / `/review-tests`: 観点が狭い分を担当。**重ねて出さない**
+- `/review-code-comments` / `/review-tests`: 観点が狭い分を担当。**重ねて出さない**
 - `/review-pr` （他人の PR）: 対象と出力先が違う。あちらは投稿まで行う
 - `/finalize-pr` （PR の仕上げ）: 点検の入口。本スキルはそこから呼ばれうる
 - `verify_before_asserting.md` （断定の前に裏を取る）: 規約の引用も裏取りの対象

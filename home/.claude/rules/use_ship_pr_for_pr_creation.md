@@ -23,7 +23,7 @@
 | 直接呼ばない | それを含む入口 |
 | --- | --- |
 | `/create-pr` | `/ship-pr` |
-| `/request-ai-reviews` / `/wait-ci` / `/resolve-ai-reviews` | `/loop-ai-reviews` |
+| `/request-ai-reviews` / `/wait-for-ci` / `/resolve-ai-reviews` | `/loop-ai-reviews` |
 
 **例外は、入口のスキル自身がその手順として呼ぶとき。** ラッパーが順序を管理している最中は、当然中を呼びます。
 

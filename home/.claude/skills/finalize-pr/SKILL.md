@@ -36,7 +36,7 @@ allowed-tools: Skill, Bash(git status:*) Bash(git branch:*) Bash(git diff:*) Bas
 
    **並列化するのは各点検の中。** 依存の無い `Read` / `grep` を1メッセージへまとめて発行する。終わるまでの時間が縮むのはここ。
 
-   `triage-why-comments` と `review-tests` は常に呼ぶ。`triage-why-comments` はコードコメントの評価を内部で `/review-comments` に任せ、インラインの `[fyi]` もあわせて整える。`review-conventions` はリポジトリ側のスキルなので、`.claude/skills/review-conventions/` があるときだけ呼ぶ。無ければ、規約の点検をしていないことを報告に書く。
+   `triage-why-comments` と `review-tests` は常に呼ぶ。`triage-why-comments` はコードコメントの評価を内部で `/review-code-comments` に任せ、インラインの `[fyi]` もあわせて整える。`review-conventions` はリポジトリ側のスキルなので、`.claude/skills/review-conventions/` があるときだけ呼ぶ。無ければ、規約の点検をしていないことを報告に書く。
 
    全部の結果が揃ってから3の修正判断に進む。
 
@@ -52,7 +52,7 @@ allowed-tools: Skill, Bash(git status:*) Bash(git branch:*) Bash(git diff:*) Bas
    - タイトルが差分の核と乖離した
    - 影響範囲・テスト内容の記述が現実と乖離した
    - いずれも該当しなければ呼ばない（同一内容の再送を避ける）
-   - **呼ぶときは `--skip-triage` を渡す。** コードコメントと `[fyi]` は手順2で整えてあり、渡さないと `/review-comments` が2回走る
+   - **呼ぶときは `--skip-triage` を渡す。** コードコメントと `[fyi]` は手順2で整えてあり、渡さないと `/review-code-comments` が2回走る
 
 ## 出力の目安
 
