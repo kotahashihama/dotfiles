@@ -44,3 +44,4 @@ brew install --cask <name>   # 入れる
 
 - `manage_repositories_with_ghq.md` （リポジトリは ghq の配置で作る）: 同じ形。置き場をツールに決めさせ、一覧から漏らさない
 - `write_for_installed_versions.md` （入っているバージョンで書く）: 入れた後に、何が入っているかを確かめる側
+- `install_plugins_with_auto_update.md` （外部のスキルはプラグインで入れる）: 同じ形で、Claude Code のプラグイン。あちらは自動更新まで定める
