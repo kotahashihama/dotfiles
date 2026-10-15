@@ -142,7 +142,7 @@
 - `responding_to_reviews.md` (レビュー対応の粒度) の要求は本ルールより優先
 - `verify_before_asserting.md` （断定の前に裏を取る）: **裏取りが要る問いでは、裏取りが先**。調べながら書くと、本ルールの「結論を先に」が未検証の見立てを結論の位置へ置く形になる
 - `summarize_after_each_task.md` (各作業後のサマリ) も本ルールに従って短く
-- `/format-github-post` （投稿する文章の畳み方）: 表と Mermaid の使い分けは本ルールが持つ。あちらは GitHub でしか使えない手段（Alert / `<details>` / 脚注）を足す
+- `/format-post` （投稿する文章の畳み方）: 表と Mermaid の使い分けは本ルールが持つ。あちらは GitHub でしか使えない手段（Alert / `<details>` / 脚注）を足す
 - `report_formatting.md` （報告に貼る識別子の書式）: 会話へ Mermaid を出すときのフェンスの書式はあちら。本ルールは使うかどうかを定める
 - `create-pr` / `update-pr-description` スキル: 本ルールを土台に、PR 固有の事情（GitHub のレンダリング挙動、テンプレの節構成、補足コメントへの切り出し）を上乗せする
 - `explain_from_observables.md` （観測できるものから始める）: 本ルールは量と順序、あちらは何を手がかりに書くか。結論を先に置いても、それが抽象語なら伝わらない
