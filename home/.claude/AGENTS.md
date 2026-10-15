@@ -94,19 +94,21 @@
 
 `commands/*.md` は skills に統合済み。既存ファイルは動き続けるが、**新規はすべて skills に置く**。
 
-## Superpowers との使い分け
+## プラグインのスキルとの使い分け
 
-Superpowers（プラグイン）のスキルと、手元のスキル・ルールが重なる場面は、手元を使う。手元のほうが、尋ね方（ `AskUserQuestion` ）・書き方・扱うリポジトリの事情を織り込んでいる。
+汎用の手法はプラグインへ委ね、手元のスキルとルールはユーザー固有の方針（尋ね方・書き方・扱うリポジトリの事情）だけを持つ。重なる場面は次のとおり振り分ける。
 
 | 場面 | 使うもの |
 | --- | --- |
 | 計画・壁打ち | `/plan-issue`・`/mattpocock-skills:grilling` |
-| コードレビュー（する・受ける） | `/review-*`・`/resolve-*`・`rules/responding_to_reviews.md` |
+| コードレビュー（する・受ける） | `/review-*`・`/resolve-*`・`rules/responding_to_reviews.md`。コードの不吉な臭いは `/review-code` から `/mattpocock-skills:code-review` を参照する |
 | 完了前の検証 | `rules/verify_the_check_worked.md`・`rules/verify_before_asserting.md` |
 | ブランチの仕上げ・worktree | `/finalize-pr`・`/ship-pr`・`rules/notify_related_repo_sessions.md` の worktree の節 |
-| スキルの書き方 | `/organize-rules`・`/learn-rules` |
-| 不具合の原因の切り分け | `/superpowers:systematic-debugging` |
-| テストを先に書く実装 | `/superpowers:test-driven-development` |
+| ルールとスキルの書き方 | `/organize-rules`・`/learn-rules`。一般的な書き方は `/organize-rules` から `/mattpocock-skills:writing-for-agents` を参照する |
+| 不具合の原因の切り分け | `/mattpocock-skills:diagnosing-bugs` |
+| テストを先に書く実装 | `/mattpocock-skills:tdd` |
+
+Superpowers（プラグイン）の同じ主題のスキル（ `systematic-debugging`・`test-driven-development` ほか）は使わない。
 
 Superpowers が求める次の2つは行わない。どちらも「質問には一言目で答える」（ `rules/concise_first_then_detail.md` ）とぶつかる。
 
