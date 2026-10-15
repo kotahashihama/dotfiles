@@ -44,7 +44,7 @@ allowed-tools: Bash(gh pr view:*) Bash(gh pr edit:*) Bash(gh pr comment:*) Bash(
      | 置き場 | 例 |
      | --- | --- |
      | リポジトリ直下・`docs/`・`.github/` | `.github/pull_request_template.md`（大文字の `PULL_REQUEST_TEMPLATE.md` もある） |
-     | 上の3か所の下の `PULL_REQUEST_TEMPLATE/` | 複数のテンプレート。どれを使うかは、PR の種類に合うものを選び、迷ったらユーザーへ尋ねる |
+     | 3か所それぞれの中の `PULL_REQUEST_TEMPLATE/` | 複数のテンプレート。どれを使うかは、PR の種類に合うものを選び、迷ったらユーザーへ尋ねる |
 
      **リポジトリに無ければ、owner の `.github` リポジトリの既定を見る**（ `gh api repos/<owner>/.github/contents/` で上と同じ名前を探す）。そこにも無いときだけ、シンプルな「Summary」「Test plan」構成にフォールバックする
      - **作業ツリーのものを Read しない。** 別のブランチのものを読むことになる。**base が `develop` のとき、`main` にしか入っていない節を読んでしまう**。リリースの流れが一方向だと、上流の変更が下流へ降りていないことがある
