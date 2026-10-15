@@ -2,6 +2,7 @@
 description: グローバルルールとスキルの書き方・置き場・整理を扱う。ルールを新設 / 編集 / 削除するとき、スキルへ引き上げるか迷うとき、資産をどこへ置くか決めるときに使う。命名・章立て・分割とマージ・auto memory との境界・守られないルールの直し方（5つの型とフックへの寄せ方）を持つ。**尋ねてから手を入れる本則と、触る前の予告は常駐のルールが持つ**ので、ここには無い。
 argument-hint: "引数なし"
 allowed-tools: Read Grep Glob Bash(ls:*) Bash(grep:*) Bash(wc:*)
+user-invocable: false
 ---
 
 `~/.claude/rules/` と `~/.claude/skills/` に置く資産の、書き方と整理の手順です。
