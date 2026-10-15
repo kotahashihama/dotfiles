@@ -168,7 +168,7 @@ git diff --output=<パス>   # 当て直せるように控える
 
 **ビルド・CI・lint の設定に触るなら、その前に `AskUserQuestion` で尋ねる**（ `ask_before_editing_claude_assets.md` ）。依存を上げる依頼は、設定への白紙委任ではありません。
 
-コミットとプッシュは `/cp` へ委譲する。**明示指示があるときだけ**（ `decide_or_ask.md` ）。
+コミットとプッシュは `/commit-push` へ委譲する。**明示指示があるときだけ**（ `decide_or_ask.md` ）。
 
 ### 6. 衝突とロックファイルは、待たずに自分で片付ける
 
@@ -296,6 +296,6 @@ pnpm install --frozen-lockfile     # 再生成後に通ることまで確かめ�
 
 - `/resolve-conflicts`: base の取り込みとコンフリクト解消。**ロックファイルは再生成で解く**点だけ本スキルが上書きする
 - `/wait-for-ci`: CI の完了待ち。古い run を掴む事故を避ける判定は向こうが持つ
-- `/cp`: 追随修正のコミットとプッシュ
+- `/commit-push`: 追随修正のコミットとプッシュ
 - `/ship-pr`: 切り出した別 PR を出すとき（ `use_ship_pr_for_pr_creation.md` ）
 - `/propose-tech-updates`: **こちらは PR が出た後**、あちらは**PR が無い段階で何をすべきか決める**。renovate が拾わないもの（CI の改善・記法の統一・検査の穴）はあちらの担当

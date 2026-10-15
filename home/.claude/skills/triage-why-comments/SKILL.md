@@ -74,7 +74,7 @@ allowed-tools: Bash(gh pr view:*) Bash(gh api:*) Bash(git diff:*) Bash(git show:
 ### 5. コードから一時的な WHY を外す
 
 - **消す前に、消す中身を控える。** 消した瞬間に思い出せなくなる（ `code_comments.md` の「削るときは、置くところまでを1つの作業にする」）
-- コードを直してコミット・push する（ `/cp` ）。`[fyi]` は push したコミットを指すので、**push の後で置く**
+- コードを直してコミット・push する（ `/commit-push` ）。`[fyi]` は push したコミットを指すので、**push の後で置く**
 - 置く `[fyi]` は、控えた中身を `references/body.md` の書き方（何を変えたか・なぜ要ったか・動作が変わるか）で書き直す。コードコメントの文面をそのまま貼らない
 
 ### 6. `[fyi]` から恒久的な WHY をコードへ移す
