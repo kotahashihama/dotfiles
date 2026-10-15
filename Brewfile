@@ -263,6 +263,8 @@ cask "notion"
 cask "obsidian"
 # Agent development environment running CLI agents in parallel git worktrees
 cask "orca"
+# AI note-taking for online meetings, phone calls, and in-person conversations
+cask "plaud"
 # Collaboration platform for API development
 cask "postman"
 # Flexible software sketchbook and a language for learning how to code
