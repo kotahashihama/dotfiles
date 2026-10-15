@@ -105,7 +105,7 @@ check "アーカイブが作られる"     "$([ -f "$W/priv.tar.gz.gpg" ] && ech
 check "AES-256 で暗号化"         "$(file -b "$W/priv.tar.gz.gpg" | grep -c 'AES with 256-bit')" "1"
 check "トップレベルは private"   "$(inarc | cut -d/ -f1 | sort -u | tr '\n' ' ' | sed 's/ $//')" "private"
 check "ソケットが除外される"     "$(inarc | grep -c 'ssh/agent/')" "0"
-check "秘匿値が含まれる"         "$(inarc | grep -c 'private/.secrets/env')" "1"
+check "秘匿値が含まれる"         "$(inarc | grep -c 'private/.secrets/env$')" "1"
 check "macOS 設定が含まれる"     "$(inarc | grep -c 'macos-defaults/.*plist' | awk '{print ($1>0)?"あり":"なし"}')" "あり"
 check "関連付けが含まれる"       "$(inarc | grep -c 'associations/duti.txt')" "1"
 check "テキスト置換が含まれる"   "$(inarc | grep -c 'keyboard/text-replacements.tsv')" "1"
