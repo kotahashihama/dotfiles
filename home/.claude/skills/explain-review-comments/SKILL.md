@@ -1,6 +1,6 @@
 ---
 description: PR に付いたレビューコメントを取得し、1件ずつ何を問題視しているかを噛み砕いて、変更案・影響・推奨と、次に自分で気づくための手がかりまで渡す。対応可否を判断できる状態にすることと、同じ指摘を繰り返さない知識が残ることの両方が目的。修正・返信・Resolve はしない。ユーザーが「レビューコメントを解説して」「何を言われているのか教えて」「/explain-review-comments」等を指示したときに使う。対応の実行は /resolve-human-reviews と /resolve-ai-reviews の担当。
-argument-hint: "[PR 番号 または URL（省略時は現在のブランチの PR）] [コメント ID または絞り込み]"
+argument-hint: "[PR 番号 または URL（省略時は現在のブランチの PR）] [--comment <コメント ID>] [--filter <絞り込み>]"
 allowed-tools: Bash(gh pr view:*) Bash(gh pr diff:*) Bash(gh api:*) Bash(gh repo view:*) Bash(git show:*) Bash(git log:*) Bash(git diff:*) Bash(git grep:*) Read Grep Glob
 ---
 
@@ -29,8 +29,8 @@ PR に付いたレビューコメントを取得し、**1件ずつ意図を噛�
 | --- | --- |
 | 省略 | **現在のブランチに紐づく PR** の未解決コメント全件 |
 | PR 番号 / URL | その PR の未解決コメント全件 |
-| ＋ コメント ID | **その1件だけ**に絞る |
-| ＋ 絞り込み | 「人間のだけ」「 `[must]` だけ」等 |
+| ＋ `--comment <コメント ID>` | **その1件だけ**に絞る |
+| ＋ `--filter <絞り込み>` | 「人間のだけ」「 `[must]` だけ」等 |
 
 **ユーザーがコメント本文を直接貼った場合は、取得を飛ばして**その1件を扱う（ルールがそのまま適用される場面）。
 

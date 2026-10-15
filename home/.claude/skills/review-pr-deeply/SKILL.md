@@ -1,6 +1,6 @@
 ---
 description: 他の人が出した PR を、サブエージェントを並列起動して多角的にレビューする。/review-pr の「レビューの実施」だけを差し替えるもので、対象の特定・規約の読み込み・裏取り・反証・投稿はすべて /review-pr が担う。ユーザーが「深くレビューして」「徹底的にレビューして」「多観点で見て」「/review-pr-deeply」等を指示したときに使う。単に「レビューして」「軽く見て」と言われたときは起動せず /review-pr に任せる。
-argument-hint: "[PR 番号 または URL（省略時は現在のブランチの PR）] [重点的に見る観点]"
+argument-hint: "[PR 番号 または URL（省略時は現在のブランチの PR）] [--focus <重点的に見る観点>]"
 allowed-tools: Bash(gh api:*) Bash(gh pr view:*) Bash(gh pr diff:*) Bash(gh pr list:*) Bash(gh repo view:*) Bash(git fetch:*) Bash(git show:*) Bash(git diff:*) Bash(git log:*) Bash(git rev-parse:*) Read Grep Glob Write Agent AskUserQuestion Skill
 ---
 
@@ -42,7 +42,7 @@ Step 3で辿った `docs/` 配下のファイルは、**サブエージェント
 | --- | --- |
 | **diff 範囲** | `<base>...<head>`。PR のベースと先端から作る |
 | **規約のパス** | Step 3で辿ったファイル |
-| **追加の重点観点** | 引数の指定。無ければ「なし」 |
+| **追加の重点観点** | `--focus` の指定。無ければ「なし」 |
 | **課題の主題** | `/review-pr` の Step 1「課題票を読み、PR の範囲と突き合わせる」で取り出した1文。課題票が無ければ「課題票なし」 |
 
 **コスト確認は委譲先が行います。** ただし本スキルが自然文から起動されたときは、**呼ぶ前にこちらで1度確認する**（軽く済ませる代替として `/review-pr` があることも示す）。

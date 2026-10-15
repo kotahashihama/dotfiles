@@ -1,6 +1,6 @@
 ---
 description: PR・実装・概念など、対象が何をしていてなぜそうなっているかを噛み砕いて説明する。既定は俯瞰で、図と表で構造を見せ、内部の呼び名を開き、要点は file:line で指す。求められれば逐行へ切り替え、抜粋を主役にして文法も開く。ユーザーが「解説して」「噛み砕いて」「これ何やってるの」「読み解いて」「/explain-code」等を指示したときに使う。一緒に辿るなら /walk-code、レビューコメントの意図は /explain-review-comments の担当。
-argument-hint: "[対象: PR 番号 / ファイル / 関数 / 概念] [観点 または粒度]"
+argument-hint: "[対象: PR 番号 / ファイル / 関数 / 概念] [--focus <観点 または粒度>]"
 allowed-tools: Bash(gh pr view:*) Bash(gh pr diff:*) Bash(gh api:*) Bash(gh repo view:*) Bash(git show:*) Bash(git log:*) Bash(git diff:*) Bash(git grep:*) Read Grep Glob
 ---
 
@@ -18,7 +18,7 @@ allowed-tools: Bash(gh pr view:*) Bash(gh pr diff:*) Bash(gh api:*) Bash(gh repo
 | ファイル / 関数 / 型 | `import_csv.go` / `BulkCreate` | Read / Grep で実コード |
 | 概念・仕組み | 「変更履歴の作られ方」 | 関係するコードを横断で探す |
 
-第2引数は**観点**（「テストの意図を中心に」）または**粒度**（「1行ずつ」「実装レベルで」）の指定として使う。
+`--focus` で**観点**（「テストの意図を中心に」）または**粒度**（「1行ずつ」「実装レベルで」）を指定できる。自然文で添えられた場合も同じに扱う。
 
 **扱わないものが2つある。** どちらも出口が違うので、そちらへ渡す。
 
