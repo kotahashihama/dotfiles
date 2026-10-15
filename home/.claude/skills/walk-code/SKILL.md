@@ -1,6 +1,6 @@
 ---
 description: コードリーディングの力を上げるためのウォークスルー。起点から目的地までを1区切りずつ一緒に辿り、各区切りで止まって、次の行き先とそれをどう突き止めたかを渡す。ユーザーが「一緒に追ってみたい」「この処理を辿って」「読む力をつけたい」「ウォークスルーして」「/walk-code」等を指示したときに使う。把握だけが目的なら /explain-code の担当。
-argument-hint: "[起点: 関数 / エンドポイント / 画面操作] [目的地 または 追う対象 (任意)]"
+argument-hint: "[起点: 関数 / エンドポイント / 画面操作] [目的地 または 追う対象]"
 allowed-tools: Bash(gh pr diff:*) Bash(git show:*) Bash(git log:*) Bash(git diff:*) Bash(git grep:*) Read Grep Glob
 ---
 

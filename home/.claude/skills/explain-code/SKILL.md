@@ -1,6 +1,6 @@
 ---
 description: PR・実装・概念など、対象が何をしていてなぜそうなっているかを噛み砕いて説明する。既定は俯瞰で、図と表で構造を見せ、内部の呼び名を開き、要点は file:line で指す。求められれば逐行へ切り替え、抜粋を主役にして文法も開く。ユーザーが「解説して」「噛み砕いて」「これ何やってるの」「読み解いて」「/explain-code」等を指示したときに使う。一緒に辿るなら /walk-code、レビューコメントの意図は /explain-review-comments の担当。
-argument-hint: "[対象: PR 番号 / ファイル / 関数 / 概念] [観点 または粒度 (任意)]"
+argument-hint: "[対象: PR 番号 / ファイル / 関数 / 概念] [観点 または粒度]"
 allowed-tools: Bash(gh pr view:*) Bash(gh pr diff:*) Bash(gh api:*) Bash(gh repo view:*) Bash(git show:*) Bash(git log:*) Bash(git diff:*) Bash(git grep:*) Read Grep Glob
 ---
 

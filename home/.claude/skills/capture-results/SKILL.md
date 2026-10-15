@@ -1,6 +1,6 @@
 ---
 description: PR で変えた画面を Playwright で操作して動作を確かめ、スクリーンショットと動画を撮って PR に貼る。確認項目を差分から作り、データの用意と後片付け、塗りつぶしの検算、結果の表の組み立てまでを担う。「動作確認して撮って貼って」「/capture-results #123 --env local」等と言われたときに使う。
-argument-hint: "#<PR 番号>... [--env <環境名>]"
+argument-hint: "<PR 番号 または URL>... [--env <環境名>（省略時は尋ねる）]"
 allowed-tools: Bash, Read, Write, Edit, Skill
 ---
 

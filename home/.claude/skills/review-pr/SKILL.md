@@ -1,6 +1,6 @@
 ---
 description: 他の人が出した PR をレビューし、総括コメントとインラインコメントをセットで GitHub へ投稿する。レビュー結果はまず会話に出し、ユーザーの GO を得てから投稿する。ユーザーが「この PR をレビューして」「レビューを頼まれた」「/review-pr」等を指示したときに使う。自分が出した PR の点検・仕上げは /finalize-pr の担当なので、このスキルは使わない。
-argument-hint: "[PR 番号 または URL] (省略時は現在のブランチから特定)"
+argument-hint: "[PR 番号 または URL（省略時は現在のブランチの PR）]"
 allowed-tools: Bash(gh api:*) Bash(gh pr view:*) Bash(gh pr diff:*) Bash(gh pr list:*) Bash(gh repo view:*) Bash(git fetch:*) Bash(git show:*) Bash(git log:*) Bash(git worktree:*) Bash(git rev-parse:*) Bash(go build:*) Bash(go test:*) Bash(task:*) Bash(npx:*) Read Grep Glob Write AskUserQuestion Skill
 ---
 
