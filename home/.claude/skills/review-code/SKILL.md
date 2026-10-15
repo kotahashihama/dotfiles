@@ -88,6 +88,8 @@ allowed-tools: Bash(git diff:*) Bash(git log:*) Bash(git show:*) Bash(git rev-pa
 
 **複雑度の指摘には「なぜ複雑になっているか」と「どう分割・整理するか」を必ず添える。** 「複雑です」だけでは行動が変わりません。
 
+目安に当たらないコードの不吉な臭い（Feature Envy・Shotgun Surgery など）は、`/mattpocock-skills:code-review` の smell baseline の一覧を当てる。リポジトリの規約が許していれば指摘しない。
+
 #### 規約違反
 
 手順2で読んだ規約に照らします。**引用は実ファイルの記述から採る。**
