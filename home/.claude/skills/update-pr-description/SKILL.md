@@ -53,7 +53,7 @@ allowed-tools: Bash(gh pr view:*) Bash(gh pr edit:*) Bash(gh pr comment:*) Bash(
    - **`/triage-why-comments` を呼び、コードコメントとインラインの `[fyi]` を整える**（書く・削る・直す・振り分ける）
      - **本文を組み立てる前に呼ぶ。** コードコメントを直すと差分が動くので、後に回すと Step 5 の照合をやり直すことになる
      - コードを直したらコミット・push してから次へ進み、以降の差分の把握は push 後の head で行う
-     - **`--skip-triage` を渡されたら飛ばす。** `/finalize-pr` が手順2で済ませてから渡す
+     - **`--skip-triage` を渡されたら飛ばす。** `/finalize-prs` が手順2で済ませてから渡す
 
 3. **本文・補足コメントの組み立て方針**
 

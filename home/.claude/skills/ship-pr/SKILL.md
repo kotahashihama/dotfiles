@@ -11,9 +11,9 @@ allowed-tools: Bash(gh pr view:*) Bash(git branch:*) Skill
 | **差分を多角的に見る深いレビュー** | **プロジェクト側のスキル**（あるリポジトリだけ） |
 | 点検・コミット・PR 作成 | `create-pr` |
 | AI レビューの起動 → 完了待ち → 指摘対応を N 周 | `loop-ai-reviews` |
-| 周回後の仕上げ（点検・PR 説明の更新） | **`loop-ai-reviews` が内部で `finalize-pr` を1回呼ぶ** |
+| 周回後の仕上げ（点検・PR 説明の更新） | **`loop-ai-reviews` が内部で `finalize-prs` を1回呼ぶ** |
 
-**`finalize-pr` をこのスキルから呼びません。** `loop-ai-reviews` が担っており、重ねると点検3種が二重に走ります。指摘ゼロで終わった周は差分が動いていないので、そもそも仕上げが要りません（ `create-pr` の時点で点検済み）。
+**`finalize-prs` をこのスキルから呼びません。** `loop-ai-reviews` が担っており、重ねると点検3種が二重に走ります。指摘ゼロで終わった周は差分が動いていないので、そもそも仕上げが要りません（ `create-pr` の時点で点検済み）。
 
 ## 進め方
 
@@ -62,7 +62,7 @@ allowed-tools: Bash(gh pr view:*) Bash(git branch:*) Skill
 
 ## やってはいけないこと
 
-- **`finalize-pr` を呼ぶこと**。`loop-ai-reviews` が担う
+- **`finalize-prs` を呼ぶこと**。`loop-ai-reviews` が担う
 - 各スキルの手順・判定基準をこの本文で再定義すること。**順序だけを管理する**
 - **深いレビューのスキル名をこの本文に書くこと**。プロジェクト側にしか無いものを名指しすると、**それが無いリポジトリで存在しないものを案内する**ことになる（ `ask_before_editing_claude_assets.md` ）
 - 深いレビューが無いリポジトリで、**無いことを報告すること**。黙って飛ばす
