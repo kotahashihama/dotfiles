@@ -94,6 +94,27 @@
 
 `commands/*.md` は skills に統合済み。既存ファイルは動き続けるが、**新規はすべて skills に置く**。
 
+## Superpowers との使い分け
+
+Superpowers（プラグイン）のスキルと、手元のスキル・ルールが重なる場面は、手元を使う。手元のほうが、尋ね方（ `AskUserQuestion` ）・書き方・扱うリポジトリの事情を織り込んでいる。
+
+| 場面 | 使うもの |
+| --- | --- |
+| 計画・壁打ち | `/plan-issue`・`/mattpocock-skills:grilling` |
+| コードレビュー（する・受ける） | `/review-*`・`/resolve-*`・`rules/responding_to_reviews.md` |
+| 完了前の検証 | `rules/verify_the_check_worked.md`・`rules/verify_before_asserting.md` |
+| ブランチの仕上げ・worktree | `/finalize-pr`・`/ship-pr`・`rules/notify_related_repo_sessions.md` の worktree の節 |
+| スキルの書き方 | `/organize-rules`・`/learn-rules` |
+| 不具合の原因の切り分け | `/superpowers:systematic-debugging` |
+| テストを先に書く実装 | `/superpowers:test-driven-development` |
+
+Superpowers が求める次の2つは行わない。どちらも「質問には一言目で答える」（ `rules/concise_first_then_detail.md` ）とぶつかる。
+
+- スキルを使うときに「Using [skill] to …」と宣言すること
+- 質問への答えや確認の質問より前に、スキルを呼ぶこと
+
+並列でサブエージェントを動かすスキル（ `dispatching-parallel-agents`・`subagent-driven-development` ）は使わない。自分の判断で呼ぶのは `surveyor` だけ（上記「サブエージェントは `surveyor` だけ自分の判断で呼ぶ」）。
+
 ## 迷ったとき
 
 - 断定の前に一次情報で裏を取る（ `rules/verify_before_asserting.md` ）
