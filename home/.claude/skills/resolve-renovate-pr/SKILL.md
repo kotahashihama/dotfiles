@@ -1,7 +1,7 @@
 ---
 description: renovate が作った依存アップデート PR を、マージできる状態まで持っていく。そもそも上げてよいかを先に判断し、CI の失敗をコード起因・承認待ち・一時的な不調に切り分けて、追随が要るものを直す。検討したことは PR にコメントで残す。マージと approve はしない。ユーザーが「renovate の PR を解決して」「依存アップデートを片付けて」「/resolve-renovate-pr」等を指示したときに使う。
 argument-hint: "[PR 番号 または URL（省略時は open な renovate の PR を一覧して選ぶ）]"
-allowed-tools: Skill, Bash(gh pr view:*) Bash(gh pr list:*) Bash(gh pr checks:*) Bash(gh pr comment:*) Bash(gh pr edit:*) Bash(gh api:*) Bash(gh run list:*) Bash(gh run view:*) Bash(gh run rerun:*) Bash(git fetch:*) Bash(git switch:*) Bash(git status:*) Bash(git diff:*) Bash(git log:*) Bash(git merge:*) Bash(git rev-list:*) Bash(pnpm:*) Bash(npm:*) Bash(yarn:*), Read Edit Write AskUserQuestion
+allowed-tools: Skill, Bash(gh pr view:*) Bash(gh pr list:*) Bash(gh pr checks:*) Bash(gh pr comment:*) Bash(gh pr edit:*) Bash(gh api:*) Bash(gh run list:*) Bash(gh run view:*) Bash(gh run rerun:*) Bash(git fetch:*) Bash(git switch:*) Bash(git status:*) Bash(git diff:*) Bash(git log:*) Bash(git merge:*) Bash(git rev-list:*) Bash(pnpm:*) Bash(npm:*) Bash(yarn:*) Bash(ax:*), Read Edit Write AskUserQuestion mcp__context7__resolve-library-id mcp__context7__query-docs
 ---
 
 renovate PR は**ライブラリ側が変わっただけ**の PR です。差分そのものはバージョン文字列とロックファイルしかなく、**直す対象はこちらのコード**になります。通常の PR とは逆で、差分をレビューするのではなく、**差分が引き起こす追随を探す**作業です。
@@ -41,7 +41,7 @@ gh pr list --author "app/renovate" --state open --json number,title,mergeStateSt
 | **上流が対応を表明しているか** | 本家リポジトリの issue。`not planned` で閉じているのか、着手中なのか |
 | **公式の回避策** | 互換パッケージ・移行ガイド・エイリアス指定。**「API が無い」と「使う手段が無い」は別** |
 
-**Web で調べ、検索結果の要約で止めない。** 要約は出典を落とすので、**リンク先の原文まで開く**（ `verify_before_asserting.md` ）。ユーザーが参考記事を渡してきたら、それも読む。
+**Web で調べ、検索結果の要約で止めない。** 要約は出典を落とすので、**リンク先の原文まで開く**（ `verify_before_asserting.md` ）。公式ドキュメントと移行ガイドは `/context7-mcp` で引き、リリースのページや記事は `/ax` で開く。ユーザーが参考記事を渡してきたら、それも読む。
 
 | 見送りに傾く兆候 | 上げられる目 |
 | --- | --- |

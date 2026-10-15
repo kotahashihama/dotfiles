@@ -1,7 +1,7 @@
 ---
 description: 課題管理ツールや GitHub の課題を読み、何を直せば閉じられるかを整理して、着手前の計画を立てる。受入基準と本文の記述を分け、一次情報で裏を取り、変更の置き場（どのリポジトリか、コードの外か）を決めて、取り消せるかと確かめ方まで添えた手順に落とす。実装はしない。ユーザーが「この課題やりたい」「概要整理して計画を立てて」「着手前に整理して」「/plan-issue」等を指示したときに使う。起票は /create-backlog-issue、不具合の原因調査はリポジトリ側の調査スキルの担当。
 argument-hint: "[課題キー または URL]"
-allowed-tools: Read Grep Glob WebFetch Bash(git grep:*) Bash(git log:*) Bash(git show:*) Bash(gh issue view:*) Bash(gh pr view:*) Bash(gh api:*) Bash(dig:*) Bash(curl -sI:*)
+allowed-tools: Skill Read Grep Glob WebFetch Bash(ax:*) mcp__context7__resolve-library-id mcp__context7__query-docs Bash(git grep:*) Bash(git log:*) Bash(git show:*) Bash(gh issue view:*) Bash(gh pr view:*) Bash(gh api:*) Bash(dig:*) Bash(curl -sI:*)
 ---
 
 課題を読んでから着手するまでの手順です。
@@ -48,7 +48,7 @@ allowed-tools: Read Grep Glob WebFetch Bash(git grep:*) Bash(git log:*) Bash(git
 | --- | --- |
 | 今いるリポジトリのコード | `git grep` で該当の処理を探し、`path:line` で控える |
 | 他のリポジトリ（FE・インフラ・スキーマ） | 手元のクローンを読む。worktree を共有しているなら HEAD は動かさない |
-| コードの外（外部サービスの管理画面・DNS・アカウント設定） | 公式手順を読み、IaC で管理されているかを `git grep` で確かめる。管理されていなければ手作業になる |
+| コードの外（外部サービスの管理画面・DNS・アカウント設定） | 公式手順を読み（ライブラリや SDK の仕様は `/context7-mcp` で、Web のページは `/ax` で引く）、IaC で管理されているかを `git grep` で確かめる。管理されていなければ手作業になる |
 
 **何が見つからなかったかも控える。** 「この設定はコードに無い」は計画の前提になる。0件を報告する前に、同じ探し方で必ず当たる語を1回引く（ `verify_the_check_worked.md` ）。
 
