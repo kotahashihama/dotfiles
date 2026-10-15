@@ -315,7 +315,10 @@
     "plan-progress@zycck-mods": true,
     "prompt-rail@oikon48": true,
     "md-prompt@nogu66": true,
-    "qa-guide@claude-qamods": true
+    "qa-guide@claude-qamods": true,
+    "playwright@claude-plugins-official": true,
+    "code-review@claude-plugins-official": true,
+    "frontend-design@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "openai-codex": {
