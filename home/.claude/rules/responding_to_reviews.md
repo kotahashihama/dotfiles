@@ -211,25 +211,7 @@ REST にエンドポイントが無いので GraphQL を使う（ `/reactions` �
 
 ### 付け方
 
-インラインのレビューコメントは、PR 番号ではなくコメント ID で指す。
-
-```bash
-gh api -X POST repos/OWNER/REPO/pulls/comments/<comment_id>/reactions -f content='+1'
-```
-
-対象によって経路が違う。**レビュー提出だけ REST に無い**（実測で `Not Found` ）。
-
-| 対象 | 経路 |
-| --- | --- |
-| インラインのレビューコメント | `pulls/comments/<id>/reactions` |
-| PR コメント欄 | `issues/comments/<id>/reactions` |
-| レビュー提出 | GraphQL の `addReaction`。`PullRequestReview` が `Reactable` を実装している |
-
-```bash
-gh api graphql -f query='mutation($id: ID!) { addReaction(input: {subjectId: $id, content: THUMBS_UP}) { reaction { content } } }' -F id="<review node id>"
-```
-
-返信の直後にまとめて付ける。返信を投稿したコメントを一度に処理する。1件ごとに付けると通知が細切れになる。
+コマンドと対象ごとの経路は `/resolve-human-reviews` の手順7と `/resolve-ai-reviews` が持つ。
 
 ### なぜ
 
