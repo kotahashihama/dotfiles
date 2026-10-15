@@ -12,7 +12,7 @@ bot コメントを扱う `/resolve-ai-reviews` と対になりますが、**Git
 
 | | `/resolve-ai-reviews` | このスキル |
 | --- | --- | --- |
-| 対象 | bot (`user.type == "Bot"`) | **人間 (`user.type == "User"`)** |
+| 対象 | AI レビュアーの bot（ `github-actions[bot]` など。絞り方は `/resolve-ai-reviews` の手順2） | **人間 (`user.type == "User"`)** |
 | GitHub への返信 | ハッシュか理由を返信 | **しない** |
 | Resolve conversation | する | **しない** |
 | 対応結果の報告先 | GitHub + 会話 | **会話のみ（対応表 + 返信案）** |
