@@ -2,7 +2,6 @@
 description: 会話で受けた訂正・好み・失敗を、グローバル資産（ルール / スキル / フック / メモリ）へ還元する。1回きりの指示か繰り返し効く規約かを先に判定し、置き場を見立てて AskUserQuestion で承認を受け、反映から棚卸し・コミットまでを一続きにする。ユーザーが「ルール化して」「これ覚えておいて」「/learn-rules」等を指示したとき、またはフックに促されたときに使う。
 argument-hint: "[資産化したい内容（省略時は直近の会話から拾う）]"
 allowed-tools: Bash(git status:*) Bash(git diff:*) Bash(git add:*) Bash(git commit:*) Bash(git push:*) Bash(git log:*) Bash(ls:*) Bash(grep:*) Bash(readlink:*) Bash(sh scripts/git-hooks/pre-commit) Read Edit Write Grep Glob AskUserQuestion
-user-invocable: false
 ---
 
 会話で受けたものを**次のセッションにも効く形**へ還元します。ここで拾わなければ、同じことをもう一度言わせることになります。
