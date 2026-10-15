@@ -1,6 +1,6 @@
 ---
 description: 自分が書いた差分を、そのリポジトリの規約と設計の境界に照らしてレビューし、must / imo / nits の3段階で会話へ返す。GitHub へは投稿しない。ユーザーが「レビューして」「軽く見て」「セルフレビューして」「/review-code」等を指示したときに使う。他人の PR は /review-pr、多観点の並列レビューは /review-code-deeply、コメント粒度は /review-code-comments、テストの追随は /review-tests の担当。
-argument-hint: "[diff 範囲（省略時は origin/HEAD...HEAD）] [重点的に見る観点]"
+argument-hint: "[diff 範囲（省略時は origin/HEAD...HEAD）] [--focus <重点的に見る観点>]"
 allowed-tools: Bash(git diff:*) Bash(git log:*) Bash(git show:*) Bash(git rev-parse:*) Bash(gh pr view:*) Bash(ls:*) Bash(grep:*) Read Grep Glob Skill
 ---
 
