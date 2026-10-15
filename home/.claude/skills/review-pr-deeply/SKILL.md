@@ -1,6 +1,6 @@
 ---
 description: 他の人が出した PR を、サブエージェントを並列起動して多角的にレビューする。/review-pr の「レビューの実施」だけを差し替えるもので、対象の特定・規約の読み込み・裏取り・反証・投稿はすべて /review-pr が担う。ユーザーが「深くレビューして」「徹底的にレビューして」「多観点で見て」「/review-pr-deeply」等を指示したときに使う。単に「レビューして」「軽く見て」と言われたときは起動せず /review-pr に任せる。
-argument-hint: "[PR 番号 または URL] [重点的に見る観点] (PR の省略時は現在のブランチから特定)"
+argument-hint: "[PR 番号 または URL（省略時は現在のブランチの PR）] [重点的に見る観点]"
 allowed-tools: Bash(gh api:*) Bash(gh pr view:*) Bash(gh pr diff:*) Bash(gh pr list:*) Bash(gh repo view:*) Bash(git fetch:*) Bash(git show:*) Bash(git diff:*) Bash(git log:*) Bash(git rev-parse:*) Read Grep Glob Write Agent AskUserQuestion Skill
 ---
 

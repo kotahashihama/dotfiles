@@ -1,6 +1,6 @@
 ---
 description: renovate が作った依存アップデート PR を、マージできる状態まで持っていく。そもそも上げてよいかを先に判断し、CI の失敗をコード起因・承認待ち・一時的な不調に切り分けて、追随が要るものを直す。検討したことは PR にコメントで残す。マージと approve はしない。ユーザーが「renovate の PR を解決して」「依存アップデートを片付けて」「/resolve-renovate-pr」等を指示したときに使う。
-argument-hint: "[PR 番号 または URL] (省略時は open な renovate PR を一覧して選ぶ)"
+argument-hint: "[PR 番号 または URL（省略時は open な renovate の PR を一覧して選ぶ）]"
 allowed-tools: Skill, Bash(gh pr view:*) Bash(gh pr list:*) Bash(gh pr checks:*) Bash(gh pr comment:*) Bash(gh pr edit:*) Bash(gh api:*) Bash(gh run list:*) Bash(gh run view:*) Bash(gh run rerun:*) Bash(git fetch:*) Bash(git switch:*) Bash(git status:*) Bash(git diff:*) Bash(git log:*) Bash(git merge:*) Bash(git rev-list:*) Bash(pnpm:*) Bash(npm:*) Bash(yarn:*), Read Edit Write AskUserQuestion
 ---
 

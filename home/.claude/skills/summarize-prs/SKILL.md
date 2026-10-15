@@ -1,6 +1,6 @@
 ---
 description: 複数の PR で何が直りどう直したかを、PR 単位に分けず1本の報告文へ畳む。読み手は開発の外にいる人なので、非エンジニア向けの語彙へ開き、症状・原因と対応・確認範囲の順に文章として書く。ユーザーが「完了報告を書いて」「何を直したかまとめて」「関係者へ渡す文面を作って」「/summarize-prs」等を指示したときに使う。投稿はしない。実装の中身を噛み砕くのは /explain-code、PR 本文そのものの更新は /update-pr-description の担当。
-argument-hint: "[PR番号] [PR番号] ... [--for <読み手>]"
+argument-hint: "<PR 番号 または URL>... [--for <読み手>]"
 allowed-tools: Bash(gh pr view:*) Bash(gh pr diff:*) Read Grep Glob AskUserQuestion
 ---
 

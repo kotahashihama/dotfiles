@@ -1,6 +1,6 @@
 ---
 description: 自分が担当している open な PR を横断で走査し、仕上がっていないものを1本ずつ finalize-pr で仕上げる。draft / ready を問わず、未解決のレビュー・CI の失敗・ベースとの乖離を洗い出して片付ける。ユーザーが「全部の PR を仕上げて」「担当 PR を一通り点検して」「/finalize-prs」等を指示したときに使う。
-argument-hint: "[リポジトリ名 (省略時は横断)]"
+argument-hint: "[リポジトリ名（省略時は横断）]"
 allowed-tools: Skill, Bash(gh pr list:*) Bash(gh pr view:*) Bash(gh pr checks:*) Bash(gh run view:*) Bash(gh api:*) Bash(gh repo view:*) Bash(git status:*) Bash(git branch:*) Bash(git checkout:*) Bash(git fetch:*) Bash(git rev-list:*), Read
 ---
 

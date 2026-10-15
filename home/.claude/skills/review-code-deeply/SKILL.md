@@ -1,6 +1,6 @@
 ---
 description: 自分が書いた差分を、サブエージェントを並列起動して多観点でレビューし、must / imo / nits の3段階で会話へ返す。束ごとのレビュアーと、層をまたぐフロー整合性レビュアーを同時に走らせる。大きい差分では追加レビュアーを併走させる。ユーザーが「深くレビューして」「徹底的にレビューして」「多観点で見て」「レイヤー別に見て」等を指示したときに使う。単に「レビューして」「軽く見て」と言われたときは起動せず単発版に任せる。他人の PR は /review-pr-deeply の担当。
-argument-hint: "[diff 範囲] [重点的に見る観点] (diff 範囲の省略時は origin/HEAD...HEAD)"
+argument-hint: "[diff 範囲（省略時は origin/HEAD...HEAD）] [重点的に見る観点]"
 allowed-tools: Bash(git diff:*) Bash(git log:*) Bash(git show:*) Bash(git rev-parse:*) Bash(gh pr view:*) Bash(ls:*) Bash(grep:*) Read Grep Glob Agent AskUserQuestion Skill
 ---
 

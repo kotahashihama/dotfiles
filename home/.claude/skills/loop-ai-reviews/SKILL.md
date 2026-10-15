@@ -1,6 +1,6 @@
 ---
 description: AI レビューの起動 → 完了待ち → 指摘への対応までを1周として実行する。引数で回数を渡せば、その回数を上限に繰り返す (省略時は1周)。ワークフローが失敗した周は成功にカウントせず再リクエストし、指摘ゼロになった時点で残りの周は消化しない。ユーザーが「AI レビュー回して」「AI レビューを N 周回して」「/loop-ai-reviews」等を指示したときに使う。
-argument-hint: "[PR 番号 または URL] (省略時は現在のブランチから特定) [--rounds N (省略時1、上限5)]"
+argument-hint: "[PR 番号 または URL（省略時は現在のブランチの PR）] [--rounds N（省略時は1、上限5）]"
 allowed-tools: Skill, Bash(gh pr view:*) Bash(gh repo view:*) Bash(gh api:*) Bash(gh run list:*) Bash(git branch:*) Bash(sleep:*) Bash(while:*)
 ---
 
