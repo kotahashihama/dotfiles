@@ -59,7 +59,7 @@ check "メモリが ~ 直下に張られない"     "$([ -e "$W/fakehome/.claude
 # 実体で残ってよいのは PARTIAL_DIRS のトップレベル（子を個別にリンクするため）と、
 # Desktop・gpg が作る .gnupg・npm が作る .npm・uv が作る .cache と .local だけ。固定リストにすると
 # PARTIAL_DIRS を増やすたびに偽の失敗が出る。
-expected_real=$( { . "$D/scripts/lib.sh"; printf '%s\n' "$PARTIAL_DIRS"; } | cut -d/ -f1 | sort -u; printf 'Desktop\n.gnupg\n.secrets\n.npm\n.cache\n.local\n.agents\n' )
+expected_real=$( { . "$D/scripts/lib.sh"; printf '%s\n' "$PARTIAL_DIRS"; local_paths partial; } | cut -d/ -f1 | sort -u; printf 'Desktop\n.gnupg\n.secrets\n.npm\n.cache\n.local\n.agents\n' )
 unexpected=$(find "$W/fakehome" -maxdepth 1 -type d ! -path "$W/fakehome" -exec basename {} \; | sort | comm -23 - <(printf '%s\n' "$expected_real" | sort -u))
 check "~ 直下に想定外の実体が無い"      "$(printf '%s' "$unexpected" | grep -c . | tr -d ' ')" "0"
 # 指示とスキルを Codex にも渡す（home/.claude/rules/agent_config.md）
@@ -70,6 +70,11 @@ check "Codex の AGENTS.md が同じものを指す" "$(cmp -s "$W/fakehome/.cod
 # launchd はリンクの定義をログイン時に読み込まないので、実体で置く（scripts/lib.sh の copy_into_home）
 check "LaunchAgents の定義がリンクでない" "$(find "$W/fakehome/Library/LaunchAgents" -maxdepth 1 -type l -name '*.plist' 2>/dev/null | wc -l | tr -d ' ')" "0"
 check "LaunchAgents の定義が実体で置かれる" "$(find "$W/fakehome/Library/LaunchAgents" -maxdepth 1 -type f -name '*.plist' 2>/dev/null | wc -l | tr -d ' ' | awk '{print ($1>0)?"あり":"なし"}')" "あり"
+# 上の階層のルールはリンクを辿られないので、実体で置く（private/.claude/dotfiles-paths.txt の copyback）
+UPPER_RULES=$(sed -n 's/^copyback //p' "$D/private/.claude/dotfiles-paths.txt" 2>/dev/null | head -1)
+check "上の階層のルールがリンクでない"   "$(find "$W/fakehome/$UPPER_RULES" -maxdepth 1 -type l 2>/dev/null | wc -l | tr -d ' ')" "0"
+check "上の階層のルールが実体で置かれる" "$(find "$W/fakehome/$UPPER_RULES" -maxdepth 1 -type f -name '*.md' 2>/dev/null | wc -l | tr -d ' ')" "$(find "$D/private/$UPPER_RULES" -maxdepth 1 -type f -name '*.md' | wc -l | tr -d ' ')"
+check "~/Documents は丸ごとリンクされない" "$([ -L "$W/fakehome/Documents" ] && echo リンク || echo 実体)" "実体"
 check "~/.agents/skills にスキルのリンクがある" "$(find "$W/fakehome/.agents/skills" -maxdepth 1 -type l | wc -l | tr -d ' ')" "$(ls -A "$W/fakehome/.claude/skills" | wc -l | tr -d ' ')"
 
 echo "── 3. シェルの起動 ──"

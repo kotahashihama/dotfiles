@@ -21,6 +21,9 @@ sh "$(dirname "$0")/backup_osx.sh"
 sh "$(dirname "$0")/backup_associations.sh"
 sh "$(dirname "$0")/backup_keyboard.sh"
 
+# ~ 側が正本のものを private へ写し戻してから固める
+collect_copied_back
+
 # パスフレーズはこちらで生成する。人が決めると弱くなり、二重入力も要る。
 # 検証用に PRIVATE_PASSPHRASE を渡した場合はそれを使う。
 GENERATED=0
