@@ -1,7 +1,7 @@
 ---
-description: 他の人が出した PR をレビューし、総括コメントとインラインコメントをセットで GitHub へ投稿する。レビュー結果はまず会話に出し、ユーザーの GO を得てから投稿する。ユーザーが「この PR をレビューして」「レビューを頼まれた」「/review-pr」等を指示したときに使う。自分が出した PR の点検・仕上げは /finalize-pr の担当なので、このスキルは使わない。
-argument-hint: "[PR 番号 または URL（省略時は現在のブランチの PR）]"
-allowed-tools: Bash(gh api:*) Bash(gh pr view:*) Bash(gh pr diff:*) Bash(gh pr list:*) Bash(gh repo view:*) Bash(git fetch:*) Bash(git show:*) Bash(git log:*) Bash(git worktree:*) Bash(git rev-parse:*) Bash(go build:*) Bash(go test:*) Bash(task:*) Bash(npx:*) Read Grep Glob Write AskUserQuestion Skill
+description: 他の人が出した PR をレビューし、総括コメントとインラインコメントをセットで GitHub へ投稿する。レビュー結果はまず会話に出し、ユーザーの GO を得てから投稿する。ユーザーが「この PR をレビューして」「レビューを頼まれた」「/review-pr」等を指示したときに使う。「深くレビューして」「徹底的にレビューして」「多観点で見て」と言われたら --deep を付けて、レビューの実施をサブエージェントの並列に差し替える。自分が出した PR の点検・仕上げは /finalize-pr の担当なので、このスキルは使わない。
+argument-hint: "[PR 番号 または URL（省略時は現在のブランチの PR）] [--deep] [--focus <重点的に見る観点>（--deep のときだけ）]"
+allowed-tools: Bash(gh api:*) Bash(gh pr view:*) Bash(gh pr diff:*) Bash(gh pr list:*) Bash(gh repo view:*) Bash(git fetch:*) Bash(git show:*) Bash(git log:*) Bash(git worktree:*) Bash(git rev-parse:*) Bash(go build:*) Bash(go test:*) Bash(task:*) Bash(npx:*) Read Grep Glob Write Agent AskUserQuestion Skill
 ---
 
 **他の人が書いた PR** をレビューし、**総括コメント + インラインコメント**を1つのレビューとして GitHub へ投稿します。
@@ -144,6 +144,8 @@ iaio が 1 件です
 **横断的な規約は、領域を問わず読む。** テストの書き方・命名・アーキテクチャの原則は `paths` で絞られないことがあり、**領域別のドキュメントが「上書きする標準ルール」として参照している側**にある。領域別だけ読むと、上書きされていない本則を見落とす。
 
 ### 4. レビューの実施
+
+**`--deep` が付いていたら、この Step だけ `references/deep.md` に従う。** ほかの Step はこのファイルのとおり進める。
 
 **そのリポジトリのレビュースキルがあれば必ず委譲する**（ `/review-code`、`/review-code-deeply` 等。**`.claude/skills/` と `.claude/commands/` の両方を見る**）。レイヤー構成と観点を知っているのはそちらなので、ここで自前の観点を組み直さない。
 
@@ -448,8 +450,7 @@ must が 2 件です
 
 - `/resolve-human-reviews` （受ける側）: 指摘の**受け手**の手順。本スキルは出し手
 - `responding_to_reviews.md` （対応した指摘へ 👍）: **受け手側**の規定。出し手側は上記「再レビュー」が定める
-- `/review-pr-deeply` （並列版）: **Step 4だけを差し替える**。サブエージェントを並列起動して多観点で見るが、その他の手順は本スキルに従う
-- `/review-code`・`/review-code-deeply` 等のプロジェクトスキル: レビューの**中身**。本スキルは対象特定・裏取り・整形・投稿を担う
+- `/review-code` （ `--deep` を含む）とプロジェクト側のレビュースキル: レビューの**中身**。本スキルは対象特定・裏取り・整形・投稿を担う
 - `responding_to_reviews.md`: 人間のコメントへ勝手に返信しないことを定める。**本スキルが扱うのは新規レビューの投稿**であり、既存コメントへの返信ではない
 - `concise_first_then_detail.md` （簡潔に、表と Mermaid の使い分け）: 「コメント本文の書き方」の土台。`/create-pr`・`/update-pr-description` も同じ土台に乗る
 - `github_note_generated_by_claude.md`: 生成者表示の書式
