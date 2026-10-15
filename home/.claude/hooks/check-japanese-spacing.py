@@ -130,6 +130,21 @@ def check_text(text, code=False):
         # 句読点の直前の空白まで消えてしまう
         if re.search(r' [、。]', masked):
             hits.append((n, '句読点の直前', line.strip()))
+        # 独立した英単語と日本語のあいだは空ける（ `Temporal で` `TZ に` ）。
+        # 混ざった語（ `JR東日本` ）と見分けるのは直後の文字で、混ざった語は
+        # 漢字かカタカナへ続き、独立した語は助詞などのひらがなへ続く。
+        # 数字に続く単位（ `1.06msで` ）は数量なので、直前が数字なら外す。
+        # インラインコードは英字を含まない記号で伏せる（X だと英単語に見える）
+        w = re.sub(r'https?://\S+', '\0', re.sub(r'`[^`]*`', '\0', line))
+        for mm in re.finditer(r'(?<![0-9A-Za-z._/#@:$-])[A-Za-z][A-Za-z0-9.+#-]*', w):
+            word, b, a = mm.group(0).rstrip('.'), w[:mm.start()], w[mm.start() + len(mm.group(0).rstrip('.')):]
+            # 混ざった語は、漢字かカタカナと地続きの側で判定する（ `JR東日本` `ノードID` ）。
+            # 大文字1文字は置き字（ `AではなくB` ）として外す
+            if re.match(r'[一-龥々ァ-ヶ]', a) or re.search(r'[一-龥々ァ-ヶ]$', b) or re.fullmatch(r'[A-Z]', word):
+                continue
+            if re.match(r'[ぁ-ん]', a) or re.search(r'[ぁ-ん]$', b):
+                hits.append((n, '英単語と日本語', b[-4:] + word + a[:4]))
+                break
     return hits
 
 
