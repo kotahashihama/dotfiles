@@ -38,7 +38,7 @@
 | --- | --- |
 | 1 | `/japanese-tech-writing` を当てて自分で直す |
 | 2 | 読み物なら `/cognitive-rhythm-writing` を当てて緩急を直す（下記） |
-| 3 | `/yomiyasu:yomiyasu` で AI が書いたと分かる言い回しを直す（書き直した前後を同梱の `yomiyasu_diff.py` で突き合わせる） |
+| 3 | `/yomiyasu:yomiyasu` で AI が書いたと分かる言い回しを直す（書き直した前後を同梱の `yomiyasu_check.py run` で突き合わせる） |
 
 **1から順に当てます。** 段落と論証を先に直してから、言い回しを直します。言い回しを先に整えても、あとで段落を組み替えるとやり直しになります。
 

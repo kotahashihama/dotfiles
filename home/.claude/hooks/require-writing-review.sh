@@ -40,7 +40,7 @@ WRITE_IN_CMD = re.compile(
 # .md を投稿する形。スクリプトの中で書いて投稿する経路を拾うためで、
 # このターンで点検を通した後のファイルを投稿するのは数えない
 POST_IN_CMD = re.compile(r"""(?:--body-file|-F\s+body=@)\s*['"]?([^\s'";|&<>]+\.md)\b""")
-REVIEW_IN_CMD = re.compile(r"yomiyasu_(?:lint|diff)\.py")
+REVIEW_IN_CMD = re.compile(r"yomiyasu_(?:lint|diff|check)\.py")
 MD_ARG = re.compile(r"""(?:^|[\s'"=])([^\s'";|&<>]+\.md)\b""")
 # cd していれば、相対パスはそこから解決する。先頭に限らず、; や && の後ろの cd も拾う
 CD_ANY = re.compile(r"""(?:^|[;&|\n])\s*cd\s+['"]?([^\s'";|&]+)['"]?""")

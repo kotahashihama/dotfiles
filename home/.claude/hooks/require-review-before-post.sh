@@ -36,7 +36,7 @@ rows = [r.strip() for r in text.splitlines() if len(r.strip()) >= 8 and not r.st
 if not rows:
     raise SystemExit(0)
 
-REVIEW_IN_CMD = re.compile(r"yomiyasu_(?:lint|diff)\.py")
+REVIEW_IN_CMD = re.compile(r"yomiyasu_(?:lint|diff|check)\.py")
 MD_ARG = re.compile(r"""(?:^|[\s'"=])([^\s'";|&<>]+\.md)\b""")
 WRITE_IN_CMD = re.compile(r"""(?:>\|?|\btee(?:\s+-a)?)\s*['"]?([^\s'";|&<>]+\.md)\b""")
 CD_PREFIX = re.compile(r"""^\s*cd\s+['"]?([^\s'";|&]+)['"]?\s*&&""")
