@@ -65,6 +65,8 @@ allowed-tools: Bash(git status:*) Bash(git diff:*) Bash(git add:*) Bash(git comm
 | **置き場所が悪い**（読まれない所にある） | ルールへ引き上げる / 実行時に開く手順へ落とす |
 | **要らない**（既定に取り込まれた・実行できない） | 消す |
 
+直す前に、文章で頼むのをやめて構造で止められないかを、pstack の `principle-encode-lessons-in-structure` で見る。止める段の探し方は `/organize-rules` の「6つ目」。
+
 **「次から気をつける」で閉じない。** 同じ逸脱が繰り返されるルールは、内容ではなく形に問題があります（ `rule_conventions.md` ）。
 
 ### 4. 承認を受ける
