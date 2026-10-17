@@ -115,6 +115,8 @@ allowed-tools: Bash(git diff:*) Bash(git log:*) Bash(git show:*) Bash(git rev-pa
 
 目安に当たらないコードの不吉な臭い（Feature Envy・Shotgun Surgery など）は、`/mattpocock-skills:code-review` の smell baseline の一覧を差分に照らして探す。リポジトリの規約が許していれば指摘しない。
 
+読みやすさ・削れるもの・テストの当て方は、pstack の原則を当てて見る。`principle-minimize-reader-load` （辿る層と抱える状態の数）、`principle-subtract-before-you-add` （足す前に消せるものがないか）、`principle-test-behavior-not-implementation` （振る舞いを壊すと落ち、内部を変えても通るか）。
+
 #### 規約違反
 
 手順2で読んだ規約に照らします。**引用は実ファイルの記述から採る。**

@@ -18,6 +18,8 @@ allowed-tools: Skill Read Grep Glob WebFetch Bash(ax:*) mcp__context7__resolve-l
 
 ## 進め方
 
+読み始める前に、pstack の `sharpen` に従って、熟練者ならこの課題をどう進めるか、本当に求められているのは何かを1度考える。
+
 ### 1. 課題を全部読む
 
 本文だけで止めない。コメントが件名・期限・担当の変更履歴だけでも読む。期限や優先度が上がった経緯は、そこにしか残っていないことがある。
