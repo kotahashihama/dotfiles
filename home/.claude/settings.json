@@ -324,7 +324,7 @@
     "typescript-lsp@claude-plugins-official": true,
     "gopls-lsp@claude-plugins-official": true,
     "rust-analyzer-lsp@claude-plugins-official": true,
-    "pstack@pstack-claude": true
+    "pstack@cursor-plugins": true
   },
   "extraKnownMarketplaces": {
     "openai-codex": {
@@ -404,10 +404,10 @@
       },
       "autoUpdate": true
     },
-    "pstack-claude": {
+    "cursor-plugins": {
       "source": {
         "source": "github",
-        "repo": "michael-denyer/pstack-claude"
+        "repo": "cursor/plugins"
       },
       "autoUpdate": true
     }
