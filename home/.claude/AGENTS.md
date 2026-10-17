@@ -97,16 +97,16 @@
 
 ## プラグインのスキルとの使い分け
 
-汎用の手法はプラグインへ委ね、手元のスキルとルールはユーザー固有の方針（尋ね方・書き方・扱うリポジトリの事情）だけを持つ。重なる場面は次のとおり振り分ける。
+汎用の手順は pstack と mattpocock-skills に積極的に委ねる。手元のスキルを書く・直すときは、同じ手順を両プラグインが持っていないかを先に見て、持っていればそのスキルを呼ぶ。手元のスキルとルールに残すのは、ユーザー固有の方針（尋ね方・書き方・扱うリポジトリの事情）だけ。重なる場面は次のとおり振り分ける。
 
 | 場面 | 使うもの |
 | --- | --- |
 | 設計・複数のファイルにまたがる変更・原因の分からない不具合・性能 | `/pstack:poteto-mode` を入口にする。やることが決まっていれば `/pstack:architect`・`/pstack:how`・`/pstack:why` へ直接入る |
 | テストを先に書く実装 | `/pstack:tdd` |
 | 計画・壁打ち | `/plan-issue`・`/mattpocock-skills:grilling` |
-| コードや変更を噛み砕いて説明する | `/explain-code`・`/walk-code` （ユーザーの習熟度に合わせて開く）。pstack の `teach`・`how`・`why` は `poteto-mode` の中から呼ばれたときだけ使う |
+| コードや変更を噛み砕いて説明する | `/explain-code`・`/walk-code` （ユーザーの習熟度に合わせて開く）。仕組みや経緯を調べる段は `/pstack:how`・`/pstack:why` を単独で使ってよい |
 | コードレビュー（する・受ける） | `/review-*`・`/resolve-*`・`rules/responding_to_reviews.md`。コードの不吉な臭いの一覧は `/mattpocock-skills:code-review` から、抽象化の深さの語彙は `/mattpocock-skills:codebase-design` から、`/review-code` が参照する |
-| PR を出す・仕上げる・CI・コンフリクト | `/ship-pr`・`/finalize-prs`・`/loop-ai-reviews`・`/resolve-conflicts`。pstack の `babysit`・`make-pr-easy-to-review`・`fix-ci`・`fix-merge-conflicts`・`get-pr-comments` は使わない |
+| PR を出す・仕上げる・CI・コンフリクト | `/ship-pr`・`/finalize-prs`・`/loop-ai-reviews`・`/resolve-conflicts` |
 | 文章 | 日本語は `/japanese-tech-writing` → `/yomiyasu:yomiyasu` （ `rules/no_ai_style_writing.md` ）。pstack の `unslop`・`technical-writing` は英語の文章にだけ使う |
 | 完了前の検証 | `rules/verify_the_check_worked.md`・`rules/verify_before_asserting.md` |
 | ルールとスキルの書き方 | `/organize-rules`・`/learn-rules`。一般的な書き方は `/mattpocock-skills:writing-for-agents` から、繰り返す誤りを構造で止める順序は `/pstack:correct` から、`/organize-rules` が参照する |
@@ -119,7 +119,7 @@ pstack（ `poteto-mode` ）が求めることのうち、次は手元のルー�
 | 返信を英語の口語で書く（ `teach` などの「plain spoken English」） | 上記「ユーザーについて」の日本語の応答。スキルの手順は従い、返す文章だけを日本語にする |
 | 返信を `unslop` に通す・返信の中で判断に使った原則を名前で挙げる | `rules/concise_first_then_detail.md` （一言目で答え、自己解説を混ぜない）。その場の応答は文章の点検に通さない |
 | 「どの案にするか」は尋ねずに試作して決める | `rules/decide_or_ask.md`。取り消せない操作とユーザーの領分は `AskUserQuestion` で尋ねる |
-| 並列でサブエージェントを動かすスキル（ `arena`・`swarm`・`architect` の並列探索・`interrogate`・`reflect`・`no-comments`・`thermo-nuclear-review` ） | ユーザーが指示したときだけ使う。自分の判断で呼ぶのは `surveyor` だけ（上記「サブエージェントは `surveyor` だけ自分の判断で呼ぶ」） |
+| 並列でサブエージェントを動かすスキル（ `arena`・`swarm`・`architect` の並列探索・`interrogate`・`reflect`・`no-comments` ） | ユーザーが指示したときだけ使う。自分の判断で呼ぶのは `surveyor` だけ（上記「サブエージェントは `surveyor` だけ自分の判断で呼ぶ」） |
 
 ## 迷ったとき
 
