@@ -169,3 +169,4 @@ grep -rl '<語>' home/.claude/skills/ private/.claude/skills/     # 実体を直
 - `background_heavy_work.md` （重い作業の流し方）: 結果を回収することはあちら。回収した結果が成立しているかは本ルール
 - `verify_merge_with_checks.md` （マージは検査を通すまで終わっていない）: 本ルールの適用場面の1つ
 - `summarize_after_each_task.md` （各作業後のサマリ）: 壊した分を戻すのは本ルール、作業全般で残した状態を片付けてから「終わった」と書くのはあちら
+- pstack の `principle-prove-it-works` （実物で確かめる）: 確かめ方が失敗したら、対象より先に観測の仕方を疑う。本ルールはその具体的な踏み方を持つ

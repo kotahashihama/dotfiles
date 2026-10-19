@@ -55,3 +55,4 @@
 - `split_and_stack_prs.md` （分けて積む）: 入れると決めたものが大きいなら分ける
 - `karma_commit_style.md` （PR に番号を付けるか）: 別 PR にしたものを課題へ紐づける判定はあちら
 - `decide_or_ask.md` （確認が要らないなら止まらない）: 外したものを報告するのは停止ではない
+- pstack の `principle-laziness-protocol` （最小の差分にとどめる）: 問題を解く最小の変更へ寄せる考え方。本ルールは、課題との関係で入れるかどうかを決める

@@ -152,6 +152,8 @@ iaio が 1 件です
 
 **委譲しても Step 3は省かない。** 規約の原文を自分で読んでいないと、返ってきた指摘を検証できない。
 
+読みやすさ・削れるもの・テストの当て方は、`/review-code` の「4つの観点で見る」と同じく pstack の原則を当てる（ `principle-minimize-reader-load`・`principle-subtract-before-you-add`・`principle-test-behavior-not-implementation` ）。
+
 **差分の行だけで判定しない。** 変更が乗る流れを、差分の外も含めて入口から出口まで辿る。手順は `/review-code` の手順3「変更が乗る流れを、入口から出口まで辿る」が持つ。他人の PR では、課題票の再現手順がその流れになる。base と head を別々の worktree に取り出し、両方で同じ流れを動かして差を見る（Step 5の「ビルド・テスト」と同じ取り出し方）。PR の説明が挙げる「直る理由」も、そのとき確かめる。
 
 ### 5. 断定する前に裏を取る

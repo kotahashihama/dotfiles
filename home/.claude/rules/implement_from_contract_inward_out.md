@@ -109,3 +109,4 @@ API がまだ無くても、契約さえあれば作り始められます。
 - `verify_before_asserting.md` （断定の前に裏を取る）: 「相手側はもう対応済み」を推測で埋めない
 - `write_for_installed_versions.md` （入っているバージョンで書く）: 本ルールは作る順序、あちらは何を使って書くか
 - `decide_when_spec_is_silent.md` （仕様が無いところは既存の倒し方に合わせる）: リポジトリを跨ぐ値の形は本ルールの担当。あちらの範囲は、擦り合わせる相手がいない実装の細部に限る
+- `/pstack:architect`・pstack の `principle-foundational-thinking` （型と境目を先に描く）: 中身を書く前に型・関数の形・データ構造を決める。本ルールはそれを、契約と層の順に具体化したもの
