@@ -65,3 +65,4 @@ squash が絡まなくても起きます。force push だけで同じ症状が�
 - `/update-pr-description` （PR 本文の組み立て）: 分けた後、説明の書き方を揃えるのはあちら。本ルールは分ける判断とマージ順を扱う
 - `/rebase-stack` （スタックへ伝播する）: 実行手段
 - `scope_changes_to_the_issue.md` （課題の範囲へ変更を閉じる）: 分ける前に、その変更を入れるかどうかはあちらが決める
+- pstack の `principle-sequence-verifiable-units` （確かめられる単位に切って積む）: 分け方と積み方の考え方。本ルールは下段の履歴が変わったときの作り直し

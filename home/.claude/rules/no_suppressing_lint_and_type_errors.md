@@ -82,3 +82,4 @@ error TS2322: Type '{ ...300 個のプロパティ... }' is not assignable to ty
 - `decide_or_ask.md` （自分で決めるか尋ねるか）: **尋ねる形は `AskUserQuestion`**。本ルールはその適用場面の1つ
 - `verify_before_asserting.md` （断定の前に裏を取る）: 「直せない」も断定にあたる。**エラーの全文を読むまでは裏を取っていない**
 - `write_for_installed_versions.md` （入っているバージョンで書く）: 手段4の根拠。型定義はバージョンで変わる
+- pstack の `principle-fix-root-causes` （症状ではなく原因を直す）: 検査を黙らせずに原因を直す、という同じ向き

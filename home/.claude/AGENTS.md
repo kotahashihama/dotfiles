@@ -105,7 +105,7 @@
 
 | 場面 | 使うもの |
 | --- | --- |
-| 設計・複数のファイルにまたがる変更・原因の分からない不具合・性能 | `/pstack:poteto-mode` を入口にする。やることが決まっていれば `/pstack:architect`・`/pstack:how`・`/pstack:why` へ直接入る |
+| 設計・複数のファイルにまたがる変更・原因の分からない不具合・性能 | `/pstack:poteto-mode` を入口にする。やることが決まっていれば `/pstack:architect`・`/pstack:how`・`/pstack:why` へ直接入る。原因の分からない不具合は `/mattpocock-skills:diagnosing-bugs` の進め方で絞り、直すときは pstack の `principle-fix-root-causes` （症状ではなく最初に誤った箇所を直す）に従う。同じ前提の修正が続けて失敗したら `principle-attack-the-premise` で前提を疑う |
 | テストを先に書く実装 | `/pstack:tdd` |
 | 計画・壁打ち | `/plan-issue`・`/mattpocock-skills:grilling` |
 | コードや変更を噛み砕いて説明する | `/explain-code`・`/walk-code` （ユーザーの習熟度に合わせて開く）。仕組みや経緯を調べる段は `/pstack:how`・`/pstack:why` を単独で使ってよい |
