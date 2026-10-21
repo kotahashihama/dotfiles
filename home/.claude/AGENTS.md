@@ -101,7 +101,7 @@
 
 汎用の手順は pstack と mattpocock-skills に積極的に委ねる。手元のスキルを書く・直すときは、同じ手順を両プラグインが持っていないかを先に見て、持っていればそのスキルを呼ぶ。手元のスキルとルールに残すのは、ユーザー固有の方針（尋ね方・書き方・扱うリポジトリの事情）だけ。重なる場面は次のとおり振り分ける。
 
-**Skill ツールが拒否するスキルは、SKILL.md を Read して従う。** pstack は `setup-pstack` 以外、mattpocock-skills も一部が `disable-model-invocation: true` で、AI からは呼べない。置き場は `~/.claude/plugins/cache/<マーケットプレイス>/<プラグイン>/<版>/` の下。pstack は、最初に同じ場所の `docs/harness/claude-code.md` を1回読む（ Cursor の名前を Claude Code の名前へ読み替える表がある）。手元のスキルが「pstack の `how` に従う」と書いているのも、この読み方を指す。
+**Skill ツールが拒否するスキルは、SKILL.md を Read して従う。** pstack は `setup-pstack` 以外、mattpocock-skills も一部が `disable-model-invocation: true` で、AI からは呼べない。置き場は `~/.claude/plugins/cache/<マーケットプレイス>/<プラグイン>/<版>/` の下。pstack は、最初に同じ場所の `docs/harness/claude-code.md` を1回読む（Cursor の名前を Claude Code の名前へ読み替える表がある）。手元のスキルが「pstack の `how` に従う」と書いているのも、この読み方を指す。
 
 | 場面 | 使うもの |
 | --- | --- |
@@ -124,6 +124,14 @@ pstack（ `poteto-mode` ）が求めることのうち、次は手元のルー�
 | 返信を `unslop` に通す・返信の中で判断に使った原則を名前で挙げる | `rules/concise_first_then_detail.md` （一言目で答え、自己解説を混ぜない）。その場の応答は文章の点検に通さない |
 | 「どの案にするか」は尋ねずに試作して決める | `rules/decide_or_ask.md`。取り消せない操作とユーザーの領分は `AskUserQuestion` で尋ねる |
 | 並列でサブエージェントを動かすスキル（ `arena`・`swarm`・`architect` の並列探索・`interrogate`・`reflect`・`no-comments` ） | ユーザーが指示したときだけ使う。自分の判断で呼ぶのは `surveyor` だけ（上記「サブエージェントは `surveyor` だけ自分の判断で呼ぶ」） |
+
+## 会話が要約されるとき
+
+要約には次を必ず残す。要約のあとは、ここが抜けた状態から作業を続けることになる。
+
+- 触ったファイルと、未コミット・未 push の状態
+- ほかのセッションから受けて、まだ終わっていない依頼（相手の名前と中身）
+- ユーザーに尋ねて答えを待っているもの、ユーザーから受けてまだ終わっていない指示
 
 ## 迷ったとき
 
