@@ -39,7 +39,7 @@ allowed-tools: Bash(gh pr view:*) Bash(gh pr list:*) Bash(gh api:*) Bash(git gre
 
 ### 2. 過不足を見る
 
-**判定は「閉じる条件に入るか」。** 課題に紐づく成果物を列挙し、**閉じる条件の外にあるものへ経緯が残っているか**を見る（判定は `karma_commit_style.md` の「PR に番号を付けるか」）。
+**判定は「閉じる条件に入るか」。** 課題に紐づく成果物を列挙し、**閉じる条件の外にあるものへ経緯が残っているか**を見る（判定は `~/.claude/references/karma_commit_style.md` の「PR に番号を付けるか」）。
 
 | | 経緯のコメント |
 | --- | --- |
@@ -157,6 +157,6 @@ allowed-tools: Bash(gh pr view:*) Bash(gh pr list:*) Bash(gh api:*) Bash(git gre
 - `/format-post` （投稿する文章の書き方）: **量・流れ・畳み方の正本**。本スキルは課題管理ツール固有の事情だけを持つ
 - `keep_records_current.md` （変えたら説明も直す）: **編集するか別コメントで足すかの判定**はあちら
 - `verify_before_asserting.md` （断定の前に裏を取る）: 実態との照合で使う。**他人が起票した課題を書き換えない**のもあちら
-- `karma_commit_style.md` （PR に番号を付けるか）: **経緯のコメントが要るかの判定**はあちら
+- `~/.claude/references/karma_commit_style.md` （PR に番号を付けるか）: **経緯のコメントが要るかの判定**はあちら
 - `github_note_generated_by_claude.md` （生成者表示）: **文言と、Alert が使えない投稿先での形**を持つ
 - `github_writing.md` （投稿する文章の記号）: **`[fyi]` と `[memo]` の使い分け**

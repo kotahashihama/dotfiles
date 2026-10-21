@@ -45,7 +45,7 @@ allowed-tools: Bash(gh pr view:*) Bash(gh pr edit:*) Bash(gh pr comment:*) Bash(
 
      | 置き場 | 例 |
      | --- | --- |
-     | リポジトリ直下・`docs/`・`.github/` | `.github/pull_request_template.md`（大文字の `PULL_REQUEST_TEMPLATE.md` もある） |
+     | リポジトリ直下・`docs/`・`.github/` | `.github/pull_request_template.md` （大文字の `PULL_REQUEST_TEMPLATE.md` もある） |
      | 3か所それぞれの中の `PULL_REQUEST_TEMPLATE/` | 複数のテンプレート。どれを使うかは、PR の種類に合うものを選び、迷ったらユーザーへ尋ねる |
 
      **リポジトリに無ければ、owner の `.github` リポジトリの既定を見る**（ `gh api repos/<owner>/.github/contents/` で上と同じ名前を探す）。そこにも無いときだけ、シンプルな「Summary」「Test plan」構成にフォールバックする
@@ -95,7 +95,7 @@ allowed-tools: Bash(gh pr view:*) Bash(gh pr edit:*) Bash(gh pr comment:*) Bash(
    - 現在の PR タイトルがベースブランチに対する差分の意図を正確に表現しているかを判断
    - スコープ拡張・方向転換・修正対象の変化などで乖離している場合はタイトルも更新対象に含める
    - 70文字以内、要点が動詞で始まる形（例: `feat: ...`, `refactor: ...` ）を維持
-   - **チケット番号を付けるかは `karma_commit_style.md` の「PR に番号を付けるか」に従う**。**ここに写さない**（判定を2箇所に持つと片方だけ古くなる）
+   - **チケット番号を付けるかは `~/.claude/references/karma_commit_style.md` の「PR に番号を付けるか」に従う**。**ここに写さない**（判定を2箇所に持つと片方だけ古くなる）
 
      **Backlog 節と突き合わせる**。**Backlog が「なし」なのにタイトルが番号を名乗る形が最も出やすく**、課題側の「Pull Request」属性から辿った人が期待と違うものを見る
      **その課題の調査中に見つけた別件なら、番号を付けたうえで本文へ「この課題を閉じる PR ではありません」を1行残す**

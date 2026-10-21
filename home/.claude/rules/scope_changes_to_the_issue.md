@@ -53,6 +53,6 @@
 - `ask_before_editing_claude_assets.md` （設定は尋ねてから）: 依頼の範囲から波及するものを勝手に入れないという同じ形。あちらは設定ファイル、本ルールは変更全般
 - `explain_from_observables.md` （観測できるものから始める）: あちらは入れると決めた付随の変更をどう書くか、本ルールは**そもそも入れるかどうか**
 - `split_and_stack_prs.md` （分けて積む）: 入れると決めたものが大きいなら分ける
-- `karma_commit_style.md` （PR に番号を付けるか）: 別 PR にしたものを課題へ紐づける判定はあちら
+- `~/.claude/references/karma_commit_style.md` （PR に番号を付けるか）: 別 PR にしたものを課題へ紐づける判定はあちら
 - `decide_or_ask.md` （確認が要らないなら止まらない）: 外したものを報告するのは停止ではない
 - pstack の `principle-laziness-protocol` （最小の差分にとどめる）: 問題を解く最小の変更へ寄せる考え方。本ルールは、課題との関係で入れるかどうかを決める
