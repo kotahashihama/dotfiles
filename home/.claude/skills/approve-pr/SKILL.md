@@ -43,7 +43,7 @@ gh api "repos/OWNER/REPO/pulls/<PR>/reviews" \
 
 レビューが1件も無ければ、「この PR はまだレビューしていない」と並べる。HEAD との比較はできない。
 
-動いていたら、差分のコミットを出す。
+動いていたら差分のコミットを出す。
 
 ```bash
 gh api "repos/OWNER/REPO/compare/<commit_id>...<headRefOid>" --jq '.commits[] | "\(.sha[0:9]) \(.commit.message | split("\n")[0])"'
@@ -85,5 +85,5 @@ approve するなら:
 
 ## 関連
 
-- `/review-pr` （レビューの投稿）: 指摘を書いて投稿するのはあちら。approve の見立てもあちらが会話で渡す。本スキルは、人が approve すると決めた後の確認だけを持つ
+- `/review-pr` （レビューの投稿）: 指摘を書いて投稿するのはあちら。approve の見立てもあちらが会話で渡す。本スキルは人が approve すると決めた後の確認だけを持つ
 - `no_operating_on_others_prs.md` （他人の PR は触らない）: approve はレビューする側の行為で、作成者の領分には入らない。本スキルもコメント・本文には触れない
