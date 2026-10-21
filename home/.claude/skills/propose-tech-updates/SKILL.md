@@ -58,8 +58,8 @@ ls apps packages 2>/dev/null              # モノレポなら構成
 | GitHub Releases | `gh release list --repo <owner>/<repo> --limit 10` |
 | リリースの本文 | `gh api repos/<owner>/<repo>/releases/tags/<tag> --jq .body` |
 | **Issue / Discussion / RFC** | **破壊的変更はリリースノートより先にここで議論される** |
-| 公式ドキュメント・移行ガイド | `/context7-mcp` 。ライブラリ名から最新の文書を引く |
-| 公式ブログ・リリースのページ | `/ax` で開く。本文が描画を待つページは、 `verify_the_check_worked.md` の手順で Playwright から読む |
+| 公式ドキュメント・移行ガイド | `/context7-mcp`。ライブラリ名から最新の文書を引く |
+| 公式ブログ・リリースのページ | `/ax` で開く。本文が描画を待つページは、`verify_the_check_worked.md` の手順で Playwright から読む |
 | 補助 | `WebSearch`。気になった話題の裏を取る |
 
 **「メジャーが上がれば速くなる」と思い込まない。** 性能改善が入っているかは、リリースノートを `perf` / `faster` / `speed` で引いて確かめます。**謳われていないなら速くなりません。**
