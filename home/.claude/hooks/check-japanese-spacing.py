@@ -102,6 +102,9 @@ def check_text(text, code=False):
         t = re.sub(r'\s+/\s+', '/', t)
         t = re.sub(r'\s*\|\s*', '|', t)
         t = NAMED.sub('X', t)
+        # URL は前後を空けて置く。詰めると、隣の全角の約物から先まで URL に
+        # 読まれる（GitHub の自動リンクもターミナルも、空白か行末までを1つと見る）
+        t = re.sub(r'\s*https?://[\x21-\x7e]+\s*', 'X', t)
         # 見るのは約物の「後ろ」だけ。前側はリスト記号や強調の閉じで空白が
         # 入るのが普通で、規約の例（ ` 「変更履歴」 hoge` `、 hoge` ）も後ろ側
         if re.search(YAKUMONO + r' ', t):
