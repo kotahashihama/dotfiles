@@ -124,9 +124,11 @@
 
 | 投稿先 | 書き方 |
 | --- | --- |
-| GitHub・Markdown の課題管理ツール | `[文字](URL)` |
+| GitHub・Markdown の課題管理ツール・リポジトリの `.md` （README・`docs/` ） | `[文字](URL)` |
 | GitHub で PR・issue・コミットを指す | `owner/repo#123` や SHA を裸で書く（自動でリンクとタイトルが付く。`github_writing.md` ） |
 | Markdown が使えない投稿先・会話への報告 | 裸の URL を行末に置く。文の中に置くなら前後に空白を置く（下記） |
+
+URL だけを1行に置く形が決まっている箇所は、Markdown の投稿先でも裸のまま書く。ワークフローや IDE が URL の文字列を拾うか、読み手がその行を探して開くためです。PR 本文の Backlog 節（ワークフローが URL を検知して課題と結びつける。`/create-pr` ）、課題の `[fyi]` の末尾の `対応 PR: <URL>` の行（ `~/.claude/references/karma_commit_style.md` ）、コードコメントの URL（ `code_comments.md` ）が当たります。
 
 課題管理ツールが Markdown かどうかは、投稿先ごとに確かめる（ `github_note_generated_by_claude.md` の「Alert が使えない投稿先では、引用だけ残す」）。
 
