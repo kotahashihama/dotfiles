@@ -401,6 +401,21 @@ auto memory（ `~/.claude/projects/<project>/memory/` ）は**自分が書く学
 
 ルール名（ `rule_conventions.md`、スネークケース）とは別の体系。ルールは**何の規約か**、スキルは**何をするか**を名前にする。
 
+## スキルの形
+
+Anthropic の [Skill authoring best practices](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices) から、手元で数えて確かめられる基準だけを置く。量の絞り方と分け方の考え方は `/mattpocock-skills:writing-for-agents` が持つ。
+
+| 見るもの | 基準 |
+| --- | --- |
+| SKILL.md の本文 | 500行未満。近づいたら、場面が限られる節を `references/` へ移し、SKILL.md には見出しと参照の1行を残す |
+| 参照の深さ | SKILL.md から1段まで。参照ファイルから別の参照ファイルへ辿らせると、2段目は `head` などで一部しか読まれないことがある。サブエージェントへ渡す指示のファイルは、渡した先が全文を読むので対象外 |
+| 100行を超える参照ファイル | 冒頭に `## 目次` を置き、見出しを並べる。一部しか読まれなくても、ほかに何があるかが分かる |
+| `description` | 何をするかと、いつ使うかの両方を書く。上限は1,024文字 |
+| 時点で変わる情報 | 「〜月までは旧 API」のように日付で手順を分けない。古い手順を残すなら、別の節へ畳む |
+| 同梱するスクリプト | 実行させるのか、読ませるのかを書き分ける |
+
+**節を足したら、行数を `wc -l` で数え直す。** 500行は足していくうちに越えるので、足した側が気づくしかありません。
+
 ## 新設したら、リンクを張って読めることを確かめる
 
 **`home/.claude/skills/` へ置いただけでは呼べません。** `~/.claude/skills/` は**スキルを1本ずつシンボリックリンクで並べたディレクトリ**なので、新しい1本は張られていません。
@@ -466,40 +481,4 @@ ln -s "$D/home/.claude/skills/<name>" "$HOME/.claude/skills/<name>"
 
 **`home/` 配下は公開リポジトリなので、社内固有名を書けません。** 何を書いてよいかは `no_internal_names_in_public_assets.md` が規定します。
 
-**`home/` 側を編集したら、渡す前に固有名を走査する。** `pre-commit` は**ステージ後にしか走らない**ので、コミット担当へ渡す時点では未検査です。
-
-```bash
-python3 - <<'EOF'
-import re, pathlib, os
-
-# ~/.claude/AGENTS.md はリンクなので、実体から親を遡れば dotfiles の外からでも見つかる。
-# settings.json を起点にしない。clauth が切り替えのたびに実ファイルへ置き換える
-root = pathlib.Path(os.path.realpath(os.path.expanduser("~/.claude/AGENTS.md")))
-deny = next(p / "private/.claude/deny-patterns.txt" for p in root.parents
-            if (p / "private/.claude/deny-patterns.txt").exists())
-pats = [l.strip() for l in deny.read_text(encoding="utf-8").splitlines()
-        if l.strip() and not l.startswith("#")]
-
-for f in ["<編集したファイル>"]:
-    t = pathlib.Path(os.path.expanduser(f)).read_text(encoding="utf-8")
-    for p in pats:
-        for m in re.finditer(p, t, re.I):
-            print(f"NG {f} : {m.group(0)}")
-EOF
-```
-
-**相対パスで書かない。** この走査を掛けるのは**他リポジトリで作業しているセッション**なので、dotfiles の作業ツリーにいません。
-
-**0件が返ったら、非公開側のファイルへ同じ走査を掛ける。** 当たらなければ探し方が壊れています（ `verify_the_check_worked.md` ）。
-
-**最も混じるのは例です**（ `no_internal_names_in_public_assets.md` ）。指摘を受けた本文をそのまま例にすると差分が主張を示すので実例が早いのですが、**固有名も一緒に乗ります**。実例を使うこと自体は正しく、**そのあと落とす段が抜ける**。
-
-**それから、dotfiles のセッションが起動していないか `ListAgents` で確認する。**
-
-- 起動していれば `SendMessage` で**何をどう編集したか**を伝えてコミットを促す（ `notify_related_repo_sessions.md` ）。向こうは編集したことを知らない
-- 起動していなければ**ユーザーへ1行**添える。「dotfiles に未コミットの変更が N 件」で足りる
-- **自分で dotfiles をコミットしない**（ `decide_or_ask.md` ）。作業中のリポジトリと別の履歴を勝手に作らない
-
-**編集のたびに毎回連絡しない。** 一連の作業が一段落した時点でまとめて1回。細切れに送ると、向こうがコミット単位を切れなくなります。
-
-**通達へ返信しても、永続化は終わりません。** 別のセッションから知らせを受けて編集したとき、**返信先がコミット担当とは限りません**。返信で完結した気になりやすいので、**返信先に関わらず dotfiles のセッションへ送る**。
+**`home/` 側を編集したら、渡す前に固有名を走査し、dotfiles のセッションへ連絡する。** 走査のコマンドと連絡のしかたは `references/after-editing-public.md` にある。
