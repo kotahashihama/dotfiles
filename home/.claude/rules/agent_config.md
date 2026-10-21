@@ -37,9 +37,9 @@ paths:
 ln -s ../../.claude/skills/<名前> .agents/skills/<名前>
 ```
 
-**`CLAUDE.md` は、リンクも含めて置かない。** Claude Code は作業ディレクトリとその上の階層にある `AGENTS.md` と `.claude/AGENTS.md` を読みます。ただし同じ範囲に `CLAUDE.md` があると、`AGENTS.md` は読まれません。
+**`CLAUDE.md` はリンクも含めて置かない。** Claude Code は作業ディレクトリとその上の階層にある `AGENTS.md` と `.claude/AGENTS.md` を読みます。ただし同じ範囲に `CLAUDE.md` があると、`AGENTS.md` は読まれません。
 
-グローバルの指示は、この仕組みで読ませます。ユーザー単位の `AGENTS.md` の置き場は無いので、ホームの下で開いたセッションから見て上の階層にあたる `~/.claude/AGENTS.md` を読ませる。リポジトリに `CLAUDE.md` があっても両方が読まれるよう、`settings.json` で `cc-plugin-agents-md@builtin` の `instructionFiles` を `claude-md-and-agents-md` にします。ホームの外で開いたセッションには読まれません。
+グローバルの指示はこの仕組みで読ませます。ユーザー単位の `AGENTS.md` の置き場は無いので、ホームの下で開いたセッションから見て上の階層にあたる `~/.claude/AGENTS.md` を読ませる。リポジトリに `CLAUDE.md` があっても両方が読まれるよう、`settings.json` で `cc-plugin-agents-md@builtin` の `instructionFiles` を `claude-md-and-agents-md` にします。ホームの外で開いたセッションには読まれません。
 
 ## ほかのエージェントが読まないもの
 
@@ -49,7 +49,7 @@ ln -s ../../.claude/skills/<名前> .agents/skills/<名前>
 | `paths` での読み込み | 効く | 効かない | 同上。作業に関わるルールを自分で開いてもらう |
 | `@path` での読み込み | 効く | 記載が無い | `@` に「読んでから従う」の文を添える |
 
-**Codex の「Rules」は、同じ名前の別の機能です。** `~/.codex/rules/` と `<repo>/.codex/rules/` に置く Starlark の `.rules` ファイルで、Codex がサンドボックスの外で実行してよいコマンドを決めます。振る舞いの規約を書く場所ではないので、Markdown のルールやそのリンクを `.codex/rules/` に置かない。
+**Codex の「Rules」は同じ名前の別の機能です。** `~/.codex/rules/` と `<repo>/.codex/rules/` に置く Starlark の `.rules` ファイルで、Codex がサンドボックスの外で実行してよいコマンドを決めます。振る舞いの規約を書く場所ではないので、Markdown のルールやそのリンクを `.codex/rules/` に置かない。
 
 **ルールはリンクを張らず、読みに行かせる。** Codex は Markdown のルールのフォルダを読む仕組みを持たないので、`.agents/rules/` にリンクを張っても何も読まれません。`AGENTS.md` に「作業に関わるルールを開いて従う」と書き、Codex に自分で開かせます。
 
@@ -59,15 +59,15 @@ Markdown のルールを Codex でも `paths` 付きで読めるようにする�
 
 **書き方はエージェントに依らない形を基本にする。** 「〜のときは〜する」のように、振る舞いと判断の基準を書きます。特定のツールの操作の手順に寄せると、そのツールが無いエージェントには読めません。
 
-**ただし、Claude Code での効き目を落とさない。** 実体は Claude Code が基準です。`@` をやめて普通のパスにすると、Claude Code は中身を読み込まなくなります。`AskUserQuestion` のようなツール名も、Claude Code では呼び出しの手掛かりになるので残す。
+**ただし Claude Code での効き目を落とさない。** 実体は Claude Code が基準です。`@` をやめて普通のパスにすると、Claude Code は中身を読み込まなくなります。`AskUserQuestion` のようなツール名も、Claude Code では呼び出しの手掛かりになるので残す。
 
 **`@` のパスは、`@` を書いたファイルの位置から書く。** Claude Code はルールや本体の中の `@` を、そのファイルがある位置から解決します。`.claude/rules/` 直下のルールからリポジトリ直下の `docs/` を指すなら `@../../docs/...` です。`@docs/...` と書くと `.claude/rules/docs/...` を指し、エラーも出ずに空振りします。読み込まれたかは文面では分からないので、指す先のファイルにほかに無い語を置き、`claude -p` にその語をコンテキストから答えさせて確かめる。
 
-**通じないところは、1か所の対応表で補う。** Claude Code にしか無い名前（ツール・`/名前` のスキル呼び出し・サブエージェント・フック）は、`AGENTS.md` の「Claude Code 以外のエージェントへ」の節に、意味と「無いときの代わり」を並べます。ルールやスキルに1本ずつ説明を足すと、同じ説明が散って片方だけ古くなります。新しい名前を使い始めたら、その表に1行足す。
+**通じないところは1か所の対応表で補う。** Claude Code にしか無い名前（ツール・`/名前` のスキル呼び出し・サブエージェント・フック）は、`AGENTS.md` の「Claude Code 以外のエージェントへ」の節に、意味と「無いときの代わり」を並べます。ルールやスキルに1本ずつ説明を足すと、同じ説明が散って片方だけ古くなります。新しい名前を使い始めたら、その表に1行足す。
 
 ## スキルを足したら、リンクも足す
 
-スキルを新しく作ったら、同じ作業の中で `.agents/skills/` にリンクを足します。グローバルのスキルは、dotfiles の `scripts/link_agents_skills.sh` が `~/.claude/skills/` の全部へリンクを張ります。
+スキルを新しく作ったら、同じ作業の中で `.agents/skills/` にリンクを足します。グローバルのスキルは dotfiles の `scripts/link_agents_skills.sh` が `~/.claude/skills/` の全部へリンクを張ります。
 
 消したときも同じです。実体の無いリンクを残すと、Codex が読めないスキルを一覧に出します。
 
