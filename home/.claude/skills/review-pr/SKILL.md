@@ -263,6 +263,8 @@ git log --no-merges --name-only --format="" <前回のHEAD>..origin/<head> ^orig
 
 **対応を確認したコメントには `+1` を付ける。** 相手が**対応しない・説明だけで返した場合も同じ**。返信を読んで判断が済んだ、という合図なので、対応の有無では分けない。
 
+**👍 は GO を待たずに付ける。** GO が要るのはレビューの投稿（Step 7）だけで、自分が出した指摘への返信に付ける 👍 は、そのレビューを書く行為の続きとして扱う。他人の PR でレビューを書くことは `no_operating_on_others_prs.md` の例外に入っているので、尋ねる対象にならない。
+
 ```bash
 gh api -X POST "repos/OWNER/REPO/pulls/comments/<comment_id>/reactions" -f content='+1'
 ```
