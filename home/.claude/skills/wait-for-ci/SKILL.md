@@ -29,6 +29,25 @@ run が1件も無ければ空文字でよい。**ワークフローを起動す�
 
 `issue_comment` 起点を feature ブランチで絞ると**永久に引っかかりません**。`--event` で絞るのが確実です。
 
+### `issue_comment` 起点は、対象 PR の run だけを待つ
+
+**`issue_comment` は、リポジトリのどの PR へのコメントでも起動します。** slash command 以外のコメントで起動した run は、すぐ `skipped` で終わります。「直前の run ID と違う、最新の完了した run」を探すと、ほかの PR のコメントで走った `skipped` の run を掴み、待てたつもりで抜けます。
+
+実際に、slash command を投稿した直後にほかの PR へコメントが付き、その `skipped` の run を自分の PR の結果として読みました。自分の PR の run はまだ実行中でした。
+
+`gh run list` の JSON には PR 番号が出ないので、`displayTitle` （ `issue_comment` の run では PR のタイトル）で絞ります。
+
+```bash
+title=$(gh pr view <PR> --json title -q .title)
+gh run list --workflow "<name>" --event issue_comment --limit 20 \
+  --json databaseId,status,conclusion,displayTitle |
+  jq --arg t "$title" --argjson p "$prev" '[.[] | select(.displayTitle == $t and .databaseId > $p)][0]'
+```
+
+`gh` の `-q` は `--arg` を受け取らないので、`jq` に渡します。起動前の run ID（ `$prev` ）より大きいものに絞るので、同じ PR の前の周の run も外れます。
+
+**見つけたら、その run ID で待つ。** 以降は `gh run view <id> --json status,conclusion` で、その run だけを見ます。
+
 ### 時刻でのカットオフは使わない
 
 「起動時刻より後の run」を条件にすると、時計のずれや `createdAt` の粒度で対象を取り逃がし、**永久に待ちます**。ID の比較で判定します。
@@ -55,6 +74,8 @@ while true; do
   sleep 20
 done
 ```
+
+**`issue_comment` 起点では、このループの `row` を上の「対象 PR の run だけを待つ」の絞り込みに置き換える。** `--limit 1` の最新の run は、ほかの PR のものであることがある。
 
 **待っている間、メインループは他の作業に手を出さない。** 完了通知で再開します。
 
