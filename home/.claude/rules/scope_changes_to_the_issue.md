@@ -56,3 +56,4 @@
 - `~/.claude/references/karma_commit_style.md` （PR に番号を付けるか）: 別 PR にしたものを課題へ紐づける判定はあちら
 - `decide_or_ask.md` （確認が要らないなら止まらない）: 外したものを報告するのは停止ではない
 - pstack の `principle-laziness-protocol` （最小の差分にとどめる）: 問題を解く最小の変更へ寄せる考え方。本ルールは課題との関係で入れるかどうかを決める
+- `solve_with_minimal_change.md` （最小の変更で解決する）: 本ルールは課題と関係の無い変更を入れないこと、あちらは課題を解く変更そのものの大きさと、広い案を発展案として分けること

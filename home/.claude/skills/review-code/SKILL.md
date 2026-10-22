@@ -164,3 +164,4 @@ allowed-tools: Bash(git diff:*) Bash(git log:*) Bash(git show:*) Bash(git rev-pa
 - `verify_before_asserting.md` （断定の前に裏を取る）: 規約の引用も裏取りの対象
 - `verify_the_check_worked.md` （検査が成立していたかを疑う）: 走査が空振りしていないかを確かめる
 - `background_heavy_work.md` （重い作業の流し方）: `--deep` でサブエージェントを待つ間の使い方
+- `solve_with_minimal_change.md` （最小の変更で解決する）: 要らない汎用化・防御・抽象化のように変更を広げる改善は、imo にせず発展案として分ける
