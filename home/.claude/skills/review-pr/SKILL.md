@@ -299,6 +299,8 @@ gh api -X POST "repos/OWNER/REPO/issues/comments/<comment_id>/reactions" -f cont
 
 **承認するのはユーザー本人。** こちらは判断材料と見立てを渡すところまでで、**ボタンを押さない**。
 
+**must を投稿したら、自分の approve を取り下げる。** 有効な approve が残っていると、must があるのにマージできる状態に見えるためです。取り下げは must の投稿の GO に含め、こちらで打ちます（ユーザーの指示）。付け直すのはユーザー本人です。コマンドは `references/posting.md` の「must を投稿したら approve を取り下げる」。
+
 ### ユーザーへ伝える見立て
 
 反証（Step 6）を通した結果から、次のどれかを**報告の先頭1行**で言い切る。

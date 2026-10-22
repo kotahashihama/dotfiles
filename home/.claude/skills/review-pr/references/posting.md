@@ -4,7 +4,7 @@
 
 ## 目次
 
-- 8. 総括コメント + インラインコメントを1レビューで投稿
+- 8. 総括コメント + インラインコメントを1レビューで投稿（must を投稿したら approve を取り下げる）
 - コメント本文の書き方
 - 長くなったら畳む
 - 投稿し直すとき
@@ -82,6 +82,18 @@ gh api repos/OWNER/REPO/pulls/<PR>/reviews -X POST --input payload.json \
   - 総括に本文を置くのは、**PR 本文・タイトルへの指摘と、差分に入っていないファイルへの指摘**だけ。総括へ回すと、そのファイルの差分を読んでいる人の目に入らない
 - **同じ主題が複数箇所にまたがるときは、主となる1箇所に本文を置き、残りは短く参照させる**
 - **総括と各インラインのすべてに生成者表示の Note ブロックを付ける**（ `github_note_generated_by_claude.md` ）。Files changed タブではインラインが総括と離れて表示されるため、総括側だけでは書き手が伝わらない。**付けるかどうかの判定はあちら**で、自分たちが管理していないリポジトリでは付けない
+
+### must を投稿したら approve を取り下げる
+
+投稿したレビューに `[must]` が1件でもあり、自分の approve が有効なら、投稿のあとで取り下げる。
+
+```bash
+gh api "repos/OWNER/REPO/pulls/<PR>/reviews" --jq '.[] | select(.user.login=="<自分>" and .state=="APPROVED") | .id'
+gh api -X PUT "repos/OWNER/REPO/pulls/<PR>/reviews/<review_id>/dismissals" \
+  -f message='must の指摘が残っているため取り下げます' -f event=DISMISS
+```
+
+返り値の `state` が `DISMISSED` になり、`gh pr view <PR> --json reviewDecision` が `APPROVED` でなくなったことを確かめる。理由の文は PR に表示されるので、この1行だけにする。
 
 ## コメント本文の書き方
 
