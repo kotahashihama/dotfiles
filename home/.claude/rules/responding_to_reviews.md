@@ -162,3 +162,4 @@ bot コメントとは扱いが違います。`/resolve-ai-reviews` は返信と
 - `keep_records_current.md` （変えたら説明も直す）: 投稿した後に前提が消えたときの直し方はあちら。本ルールは投稿してよい場面かを決める
 - `report_formatting.md` （報告の書式）: 返信しない段階では、会話の対応表だけが報告手段になる
 - `/resolve-ai-reviews` / `/resolve-human-reviews`: 実行手段。本ルールが土台で、スキルは対象の絞り込み方を持つ
+- `solve_with_minimal_change.md` （最小の変更で解決する）: 変更案を並べるとき、推奨は問題が解ける最小の案にし、広い案は発展案として分ける

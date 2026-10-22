@@ -104,6 +104,8 @@ gh api "repos/OWNER/REPO/pulls/<PR>/reviews" --jq '.[] | select(.user.login=="<�
 
 意見に当たるのは、今のままで目的は果たしているうえで、より良い手（書き方・方針・設計・テストの当て方）を勧めるものです。目的を果たしていないもの（直したと言った箇所がまだずれる）は意見ではなく `[must]` （ `review-code/references/severity.md` の冒頭）。
 
+ただし、目の前の問題に要らない汎用化・防御・抽象化のように変更を広げる案は `[iaio]` にせず、発展案として分ける（ `solve_with_minimal_change.md` ）。PR の範囲の外のリファクタ案なら投稿してよい `[fyi]` の1種類目に、それ以外は Step 7の報告の発展案の節に置く。
+
 | prefix | 書き手 |
 | --- | --- |
 | `[imo]` | 人間のレビュアーの意見 |
@@ -483,3 +485,4 @@ must が 2 件です
 - `focus_insights_on_judgment.md` （代行するほど、渡す責任が増える）: Step 7「報告に入れるもの」の土台。**ユーザー自身がレビューできる状態を保つ**ことを定める
 - `verify_before_asserting.md`: Step 5〜6の土台。**ユーザーの発言も裏取りの対象**という点は、PR 本文の主張にもそのまま当てはまる
 - `report_formatting.md` （報告に貼る識別子の書式）: 投稿後の報告に添える URL の土台。**PR とインライン1件ずつ**を出すことを定める
+- `solve_with_minimal_change.md` （最小の変更で解決する）: 要らない汎用化・防御・抽象化のように変更を広げる改善は、imo にせず発展案として分ける
