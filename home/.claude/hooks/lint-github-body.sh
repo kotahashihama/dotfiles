@@ -36,7 +36,7 @@ if re.search(r"(?:^|[^\w./-])gh\s[^|;&]*(?:--help\b|\s-h\b)", cmd):
 
 # 本文を投稿しないサブコマンドは対象外
 if re.search(r"\bgh\s+(pr|issue)\s+(list|view|checks|status|diff|ready|close|merge)\b", cmd) \
-        and not re.search(r"--body", cmd):
+        and not re.search(r"--body|--comment\b", cmd):
     sys.exit(0)
 
 
@@ -51,11 +51,13 @@ def bodies(cmd):
         head = cmd[:m.start()]
         if not re.search(r"\bgh\s+(pr|issue|api)\b", head):
             continue
-        if not re.search(r"(--body\b|--body-file\b|\s-b\b|\s-F\b|body=)", head):
+        if not re.search(r"(--body\b|--body-file\b|--comment\b|\s-b\b|\s-F\b|body=)", head):
             continue
         found.append(m.group(2))
-    # 2) --body / -b / -f body= に続く引用符つきの値
-    for m in re.finditer(r"(?:--body|-b|(?:-f|--field|--raw-field)\s+body)[= ]\s*"
+    # 2) --body / -b / -f body= に続く引用符つきの値。gh pr close・issue close の
+    #    --comment も閉じるときのコメントとして投稿される。短い -c は bash -c と
+    #    見分けられないので拾わない
+    for m in re.finditer(r"(?:--body|--comment|-b|(?:-f|--field|--raw-field)\s+body)[= ]\s*"
                          r"([\x27\"])(.*?)\1", cmd, re.S):
         v = m.group(2)
         if "<<" not in v:
