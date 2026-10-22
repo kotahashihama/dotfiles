@@ -211,3 +211,4 @@ git push --force-with-lease
 - `background_heavy_work.md` （重い作業の流し方）: 待ち時間も止まらないための手段。出してから回収する検査の、回収のしかたはあちら
 - `/update-pr-description` （PR 本文と補足コメントの更新）・`/verify-on-local` （動作確認）: 撮るかどうかと貼り方は `/update-pr-description` の `references/testing.md` 、どう撮るか・撮れないときの扱いは `/verify-on-local` の `references/capture.md` が正本。本ルールは PR を出す順序だけを定める
 - pstack の `principle-never-block-on-the-human` （取り消せる作業で止まらない）: 「確認が要らないなら止まらない」と同じ向き。取り消せない操作とユーザーの領分は、本ルールのとおり尋ねる
+- `no_heavy_queries_on_production.md` （本番の DB に重いクエリを出さない）: 本番への負荷も取り消せない側。重いクエリを渡すなら、重いことを前置きして、流すかどうかをユーザーに決めてもらう
