@@ -41,7 +41,7 @@ gh api "repos/OWNER/REPO/pulls/<PR>/reviews" --jq '.[] | select(.user.login=="<�
 | 順 | やること |
 | --- | --- |
 | 1 | **課題を特定する。** PR のタイトル・本文の課題キーと URL から引き、課題管理ツール側の PR 欄も見る。PR タイトルのキーと課題管理ツールのキーは表記が違うことがある（よく触るリポジトリの対応は非公開側のルールが持つ。入口は `user_context.md` ） |
-| 2 | 症状・再現手順・本来の挙動・受入基準を読む |
+| 2 | 症状・再現手順・本来の挙動・受入基準を読む。**課題のコメントも全部読む。** 範囲や方針の決定（「表示も直す」「洗い出してひと通り直す」）は、本文ではなくコメントで出ることがある |
 | 3 | **課題の主題を1文で言う。** 件名と症状から、報告者が困っていたことを取り出す |
 | 4 | **本来の挙動と受入基準を1項目ずつ並べ、PR の差分で満たされるかを見る** |
 | 5 | 満たされない項目の重要度を、主題に入るかで決める。判定は `review-code/references/severity.md` の「差分の外は、課題の主題に関わるときだけ must」。主題の外なら、マージを止めずに `[iaio]` で伝える |
@@ -253,6 +253,8 @@ git log --no-merges --name-only --format="" <前回のHEAD>..origin/<head> ^orig
 
 **相手の「対応しました」を信じて数えない。** 実物を見る。
 
+**返信は3か所から拾う。** インラインの返信（ `in_reply_to_id` ）、PR のコメント欄（ `issues/<PR>/comments` ）、レビュー本文。ファイルをまたぐ `[fyi]` はコメント欄に置くので、インラインだけ見ると返信を落とす。PR と課題の両方のコメントを読み、前回からの流れを踏まえて見直す。
+
 | 確かめること | やり方 |
 | --- | --- |
 | コードが実際に変わったか | 返信のコミットハッシュではなく、**現在の HEAD の中身**を読む |
@@ -266,7 +268,8 @@ git log --no-merges --name-only --format="" <前回のHEAD>..origin/<head> ^orig
 **👍 は GO を待たずに付ける。** GO が要るのはレビューの投稿（Step 7）だけで、自分が出した指摘への返信に付ける 👍 は、そのレビューを書く行為の続きとして扱う。他人の PR でレビューを書くことは `no_operating_on_others_prs.md` の例外に入っているので、尋ねる対象にならない。
 
 ```bash
-gh api -X POST "repos/OWNER/REPO/pulls/comments/<comment_id>/reactions" -f content='+1'
+gh api -X POST "repos/OWNER/REPO/pulls/comments/<comment_id>/reactions" -f content='+1'   # インライン
+gh api -X POST "repos/OWNER/REPO/issues/comments/<comment_id>/reactions" -f content='+1'  # PR のコメント欄
 ```
 
 - 対象は**自分が出した指摘への返信**だけ。他のレビュアーへの返信には付けない
