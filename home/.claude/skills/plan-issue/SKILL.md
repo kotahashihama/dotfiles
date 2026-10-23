@@ -58,6 +58,8 @@ allowed-tools: Skill Read Grep Glob WebFetch Bash(ax:*) mcp__context7__resolve-l
 
 権限が無くて見られないもの（外部サービスの管理画面・本番の設定値）は、推測で埋めずに「未確認」として計画に残す。誰に見てもらえば埋まるかを添える。
 
+確かめてもらう相手が決まり、聞くことが複数あるなら、`/mattpocock-skills:to-questionnaire` に従って相手へ渡す質問票の下書きを作る。置き場はスクラッチパッドにする。
+
 ### 5. 計画を組む
 
 ステップごとに次の列を埋める。
@@ -77,6 +79,12 @@ allowed-tools: Skill Read Grep Glob WebFetch Bash(ax:*) mcp__context7__resolve-l
 - 影響が出る時間帯があるなら、作業の時間帯も書く
 - 他のリポジトリを跨ぐなら、マージ順を書く
 
+設計を含む計画は、組む前に pstack の原則を当てる。
+
+- 既存の設計へ要件を足すなら `principle-redesign-from-first-principles` に従い、継ぎ足しの形と、要件を最初から知っていた場合の形を比べる
+- 前例の無い設計判断を1案で決めているなら `principle-exhaust-the-design-space` に従い、比べる案を2〜3並べる。試作で比べるなら `/mattpocock-skills:prototype` を使い、どれにするかを尋ねる形は `decide_or_ask.md` に従う
+- 大きな移行や複数の PR に分かれる変更なら、`figure-it-out` の Phase A（完了の条件を偽にできる形で書く・範囲を量る・厳しさを決める）で枠を決めてから表を組む
+
 #### 不具合の課題は、暫定対応が要るかを先に決める
 
 不具合では、今起きている被害を止めることと原因を取り除くことで、急ぐ度合いと取り消せるかが違う。計画の前に、恒久対応が入るまで被害が続くかを見る。
@@ -87,6 +95,8 @@ allowed-tools: Skill Read Grep Glob WebFetch Bash(ax:*) mcp__context7__resolve-l
 | 恒久対応がすぐ出せる、または被害が今は出ていない | 分けず、暫定対応が要らない理由を1行書く |
 
 暫定対応には、何が残るか（止めた機能・手作業で直したデータ）と、いつ外すかを同じ行に書く。フラグやデータの手直しは、恒久対応が入ったあとに戻し忘れやすい。
+
+原因が分かっていない不具合は、`/mattpocock-skills:diagnosing-bugs` の最初のフェーズに従い、速く安定して合否が出る再現の手段を作るステップを計画の先頭に置く。再現できないまま直し方の表を組まない。
 
 ### 6. 判断が要る点を尋ねる
 

@@ -117,6 +117,8 @@ allowed-tools: Bash(git diff:*) Bash(git log:*) Bash(git show:*) Bash(git rev-pa
 
 読みやすさ・削れるもの・テストの当て方は、pstack の原則を当てて見る。`principle-minimize-reader-load` （辿る層と抱える状態の数）、`principle-subtract-before-you-add` （足す前に消せるものがないか）、`principle-test-behavior-not-implementation` （振る舞いを壊すと落ち、内部を変えても通るか）。
 
+設計の形は差分が当たる場面ごとに pstack の原則を当てて見る。型や関数の形を変えたなら `principle-type-system-discipline` （取りえない状態を型で表せてしまわないか）、検証やエラー処理を足したなら `principle-boundary-discipline` （境界に集まっているか、内側へ散っていないか）、状態を持つ処理や分岐を増やしたなら `principle-model-the-domain` （真偽値の組を状態の一覧にできないか）、内部の API を新しくしたなら `principle-migrate-callers-then-delete-legacy-apis` （呼び出し側を移し、旧 API を同じ変更で消しているか）。TypeScript の差分には `typescript-best-practices` も当てる。目の前の問題を解くのに要らない作り直しは must にしない（ `solve_with_minimal_change.md` ）。
+
 #### 規約違反
 
 手順2で読んだ規約に照らします。**引用は実ファイルの記述から採る。**
