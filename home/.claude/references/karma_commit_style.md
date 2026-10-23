@@ -26,7 +26,7 @@
 
 末尾に `対応 PR: <URL>` を明示行として置く。本文中に言及があっても、末尾に独立した行が無いと、経緯コメントの中のどれが対応 PR か探すことになる。
 
-PR の側からも、そのコメントへ辿れるようにする。コメントを残したら、その URL を PR 本文の Backlog 節で課題 URL の下へ1行足す（ `- 見つけた経緯: https://<space>.backlog.com/view/<PROJ-123>#comment-<id>` ）。上の `対応 PR:` と対になり、課題と PR のどちらから開いても経緯のコメントへ着く。
+PR の側からも、そのコメントへ辿れるようにする。コメントを残したら、その URL を PR 本文の Backlog 節で課題 URL の下へ素のまま1行足す（ `- https://<space>.backlog.com/view/<PROJ-123>#comment-<id>` ）。経緯のコメントに限らず、課題に残した関連コメントは同じ形で並べる（ `/update-pr-description` の `references/multi-pr.md` ）。上の `対応 PR:` と対になり、課題と PR のどちらから開いても経緯のコメントへ着く。
 
 手順は `/create-pr` と `/update-pr-description` が持つ。
 
