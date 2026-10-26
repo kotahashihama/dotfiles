@@ -2,7 +2,7 @@
 #
 # AskUserQuestion の選択肢に推奨が示されているかを検査する PreToolUse フック。
 #
-# decide_or_ask.md は「推す案を先頭に置き、label に（推奨）を付ける」と
+# decide_or_ask.md は「推す順に上から並べ、先頭の label に（推奨）を付ける」と
 # 規定しているが、文章だけでは実行時に効かない。形だけで判定できるので
 # フックへ寄せる（rule_conventions.md の「文章を直しても止まらないなら、フックへ寄せる」）。
 #
@@ -49,7 +49,7 @@ if not bad:
 
 reason = ("選択肢に推奨が示されていません。付けてから尋ねてください。\n\n"
           + "\n".join("- 「%s」の選択肢の label に「推奨」がありません" % h for h in bad)
-          + "\n\n推す案を先頭へ置き、label の末尾へ「（推奨）」を付ける。"
+          + "\n\n推す順に上から並べ、先頭の label の末尾へ「（推奨）」を付ける。"
           + "\n推奨を出さないと、判断コストをユーザーへ全部渡すことになる。"
           + "\n事実を尋ねる問いなら推奨は付けず、metadata.source に「fact:<header>」を入れる。"
           + "\n  → decide_or_ask.md")
