@@ -107,12 +107,16 @@ export async function record(name, { state, routes } = {}, fn) {
   if (terms.length) {
     await ctx.addInitScript(names => {
       const re = new RegExp(names.map(n => n.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|'), 'g')
+      const fixNode = n => {
+        if (re.test(n.nodeValue)) n.nodeValue = n.nodeValue.replace(re, m => '■'.repeat(m.length))
+        re.lastIndex = 0
+      }
+      // 中身だけが書き換わったテキストノードは、MutationObserver の target がそのノード自身になる。
+      // TreeWalker は起点を返さないので、テキストノードはそのまま直す
       const fix = root => {
+        if (root.nodeType === Node.TEXT_NODE) return fixNode(root)
         const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT)
-        for (let n = w.nextNode(); n; n = w.nextNode()) {
-          if (re.test(n.nodeValue)) n.nodeValue = n.nodeValue.replace(re, m => '■'.repeat(m.length))
-          re.lastIndex = 0
-        }
+        for (let n = w.nextNode(); n; n = w.nextNode()) fixNode(n)
       }
       new MutationObserver(ms => ms.forEach(m => fix(m.target))).observe(document, { subtree: true, childList: true, characterData: true })
       document.addEventListener('DOMContentLoaded', () => fix(document.body))
