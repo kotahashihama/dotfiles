@@ -33,7 +33,7 @@ run が1件も無ければ空文字でよい。**ワークフローを起動す�
 
 **`issue_comment` は、リポジトリのどの PR へのコメントでも起動します。** slash command 以外のコメントで起動した run は、すぐ `skipped` で終わります。「直前の run ID と違う、最新の完了した run」を探すと、ほかの PR のコメントで走った `skipped` の run を掴み、待てたつもりで抜けます。
 
-実際に、slash command を投稿した直後にほかの PR へコメントが付き、その `skipped` の run を自分の PR の結果として読みました。自分の PR の run はまだ実行中でした。
+実際に、slash command を投稿した直後にほかの PR へコメントが付き、その `skipped` の run を自分の PR の結果として読みました。自分の PR の run はまだ実行中でした。この節を足した後も、下の「2. バックグラウンドで待つ」のループのコードが最新の run を見たままだったので、そのコードを使い回して同じ取り違えをもう一度しています。
 
 `gh run list` の JSON には PR 番号が出ないので、`displayTitle` （ `issue_comment` の run では PR のタイトル）で絞ります。
 
@@ -41,7 +41,7 @@ run が1件も無ければ空文字でよい。**ワークフローを起動す�
 title=$(gh pr view <PR> --json title -q .title)
 gh run list --workflow "<name>" --event issue_comment --limit 20 \
   --json databaseId,status,conclusion,displayTitle |
-  jq --arg t "$title" --argjson p "$prev" '[.[] | select(.displayTitle == $t and .databaseId > $p)][0]'
+  jq --arg t "$title" --argjson p "${prev:-0}" '[.[] | select(.displayTitle == $t and .databaseId > $p)][0]'
 ```
 
 `gh` の `-q` は `--arg` を受け取らないので、`jq` に渡します。起動前の run ID（ `$prev` ）より大きいものに絞るので、同じ PR の前の周の run も外れます。
@@ -66,16 +66,20 @@ gh run list --workflow "<name>" --event issue_comment --limit 20 \
 
 ```bash
 prev=<起動前の run ID>
+title=$(gh pr view <PR> --json title -q .title)   # issue_comment 起点のとき。push などで PR に絞らないなら title=""
 while true; do
-  row=$(gh run list --workflow "<name>" --event <event> --limit 1 \
-    --json databaseId,status,conclusion -q '.[0] | "\(.databaseId) \(.status) \(.conclusion // "-")"')
-  id=$(echo "$row" | cut -d' ' -f1); st=$(echo "$row" | cut -d' ' -f2)
-  if [ "$id" != "$prev" ] && [ "$st" = "completed" ]; then echo "$row"; break; fi
+  row=$(gh run list --workflow "<name>" --event <event> --limit 20 \
+    --json databaseId,status,conclusion,displayTitle |
+    jq -r --arg t "$title" --argjson p "${prev:-0}" \
+      '[.[] | select(.databaseId > $p) | select($t == "" or .displayTitle == $t)][0] // empty
+       | "\(.databaseId) \(.status) \(.conclusion // "-")"')
+  st=$(echo "$row" | cut -d' ' -f2)
+  if [ -n "$row" ] && [ "$st" = "completed" ]; then echo "$row"; break; fi
   sleep 20
 done
 ```
 
-**`issue_comment` 起点では、このループの `row` を上の「対象 PR の run だけを待つ」の絞り込みに置き換える。** `--limit 1` の最新の run は、ほかの PR のものであることがある。
+**`issue_comment` 起点では `title` を空にしない。** 空にすると、上の「対象 PR の run だけを待つ」の絞り込みが外れ、ほかの PR の run を掴みます。
 
 **待っている間、メインループは他の作業に手を出さない。** 完了通知で再開します。
 
