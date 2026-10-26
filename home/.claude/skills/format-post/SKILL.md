@@ -69,7 +69,7 @@ user-invocable: false
 | 課題の本文 | ` ```mermaid ` のコードブロック | 本文では描かれ、後から図を直しやすい |
 | 課題へのコメント | Mermaid を PNG にして添付し、`![image][<ファイル名>]` で埋める | コメントでは描かれず、ソースのまま出る |
 
-- PNG は `npx -y -p @mermaid-js/mermaid-cli mmdc -i x.mmd -o x.png -s 2 -b white` で描く。描いたら投稿の前に開いて、崩れていないかを見る
+- PNG は `bunx -p @mermaid-js/mermaid-cli@latest mmdc -i x.mmd -o x.png -s 2 -b white` で描く。`@latest` を外すと、bunx は以前に取ってきた古いバージョンを使い続け、バージョンによっては図が崩れる。描いたら投稿の前に開いて、崩れていないかを見る
 - 添付は API の `POST /api/v2/space/attachment` へ上げて返った ID を、コメントの `attachmentId` に渡す。MCP のツールにはアップロードが無い
 - 図を直すときに使う `.mmd` は手元に残す。コメントには PNG しか残らないので、捨てると図を描き直すことになる
 - **コメントの添付はコメントの編集では差し替えられない。** 図を直すなら、まだ読まれていないコメントは消して投稿し直し、読まれたコメントには新しいコメントで足す（ `keep_records_current.md` ）
