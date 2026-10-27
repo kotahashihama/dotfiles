@@ -1,0 +1,44 @@
+#!/bin/sh
+#
+# コミットメッセージに、公開したくない文字列が混ざっていないかを検査する。
+#
+# pre-commit はステージしたファイルしか見ないので、メッセージは素通りする。
+# このリポジトリは公開されており、メッセージも履歴として誰でも読める。
+#
+set -u
+
+REPO_ROOT=$(git rev-parse --show-toplevel)
+PATTERNS="$REPO_ROOT/private/.claude/deny-patterns.txt"
+
+# git が付ける説明のコメント行は、コミットに入らないので除く
+msg=$(grep -v '^#' "$1")
+fail=0
+
+creds='sk-ant-api[0-9]{2}-[A-Za-z0-9_-]{30}|sk-proj-[A-Za-z0-9_-]{30}|ghp_[A-Za-z0-9]{36}|github_pat_[A-Za-z0-9_]{30}|AKIA[0-9A-Z]{16}|xox[bpsa]-[0-9]{10}|BEGIN [A-Z ]*PRIVATE KEY-----'
+if printf '%s\n' "$msg" | grep -qaE "$creds"; then
+  echo "✗ コミットメッセージに認証情報らしき文字列があります" >&2
+  fail=1
+fi
+
+if [ -f "$PATTERNS" ]; then
+  joined=$(grep -vE '^[[:space:]]*(#|$)' "$PATTERNS" | paste -sd'|' -)
+  if [ -n "$joined" ]; then
+    hits=$(printf '%s\n' "$msg" | grep -oaiE "$joined" | sort -u | tr '\n' ' ')
+    if [ -n "$hits" ]; then
+      echo "✗ コミットメッセージに非公開の固有名があります ($hits)" >&2
+      fail=1
+    fi
+  fi
+else
+  echo "⚠️  $PATTERNS がありません。固有名の検査を飛ばします" >&2
+fi
+
+if [ "$fail" -ne 0 ]; then
+  cat >&2 <<'MSG'
+
+このリポジトリは公開されています。メッセージを伏せた言い方に直して、再度コミットしてください。
+MSG
+  exit 1
+fi
+
+exit 0

@@ -72,7 +72,7 @@ tar czf - private | gpg --symmetric --cipher-algo AES256 > private_dotfiles.tar.
 
 ## 公開側への混入を止める
 
-`scripts/git-hooks/pre-commit` が、ステージした公開側のファイルを検査してコミットを止める。`core.hooksPath` はリストア時に設定される。
+`scripts/git-hooks/pre-commit` が、ステージした公開側のファイルを検査してコミットを止める。メッセージは `scripts/git-hooks/commit-msg` が同じパターンで検査する。`core.hooksPath` はリストア時に設定される。
 
 | 検査 | パターンの置き場 | 理由 |
 | --- | --- | --- |

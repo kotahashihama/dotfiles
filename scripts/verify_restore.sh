@@ -33,7 +33,7 @@ inarc()  { PRIVATE_PASSPHRASE=$PP sh -c ". $D/scripts/lib.sh; gpg_decrypt $W/pri
 SKILLS=$(( $(ls -A "$D/home/.claude/skills" | wc -l) + $(ls -A "$D/private/.claude/skills" 2>/dev/null | wc -l) ))
 
 echo "── 1. スクリプトの構文 ──"
-for f in "$D"/scripts/*.sh "$D"/scripts/git-hooks/pre-commit; do
+for f in "$D"/scripts/*.sh "$D"/scripts/git-hooks/pre-commit "$D"/scripts/git-hooks/commit-msg; do
   if sh -n "$f" 2>/dev/null; then ok "$(basename "$f")"; else ng "$(basename "$f")" "構文エラー"; fi
 done
 
@@ -135,6 +135,16 @@ printf 'AKIA%s\n' '1234567890ABCDEF' > home/.claude/rules/__v1.md
 check "認証情報でブロック" "$(hook home/.claude/rules/__v1.md)" "1"
 printf '# 普通の内容\n' > home/.claude/rules/__v3.md
 check "正常なものは通す"   "$(hook home/.claude/rules/__v3.md)" "0"
+
+echo "── 8-b. commit-msg フック ──"
+# 固有名はパターンの1行目を使う。リテラルで書くと、このファイル自身が公開側に固有名を持つ
+name=$(grep -vE '^[[:space:]]*(#|$)' "$D/private/.claude/deny-patterns.txt" 2>/dev/null | head -1)
+printf 'feat: x\n\n%s\n' "$name" >| "$W/msg1"
+sh scripts/git-hooks/commit-msg "$W/msg1" >/dev/null 2>&1
+check "固有名を含むメッセージでブロック" "$?" "1"
+printf 'feat: 普通のメッセージ\n# %s はコメント行\n' "$name" >| "$W/msg2"
+sh scripts/git-hooks/commit-msg "$W/msg2" >/dev/null 2>&1
+check "コメント行だけなら通す" "$?" "0"
 
 echo "── 9. 整合性 ──"
 check "秘匿値の雛形が実体と一致" "$(diff <(grep -oE '^export [A-Z_]+' "$D/private/.secrets/env" | sort) <(grep -oE '^export [A-Z_]+' "$D/scripts/secrets.env.example" | sort) >/dev/null && echo 一致 || echo 不一致)" "一致"
