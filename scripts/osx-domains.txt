@@ -34,6 +34,5 @@ com.apple.screencapture
 com.googlecode.iterm2
 com.raycast.macos
 com.lwouis.alt-tab-macos
-dev.warp.Warp-Stable
 company.thebrowser.Browser
 com.apple.Terminal

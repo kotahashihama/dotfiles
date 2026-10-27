@@ -302,7 +302,6 @@ cask "visual-studio-code"
 # Access etextbooks
 cask "vitalsource-bookshelf"
 # Rust-based terminal
-cask "warp"
 # Terminal emulator
 cask "wave"
 # Video communication and virtual meeting platform

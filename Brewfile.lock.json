@@ -2229,12 +2229,6 @@
           "full_name": "vitalsource-bookshelf"
         }
       },
-      "warp": {
-        "version": "0.2024.02.20.08.01.stable_02",
-        "options": {
-          "full_name": "warp"
-        }
-      },
       "webex": {
         "version": "44.2.0.28714",
         "options": {
