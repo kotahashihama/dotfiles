@@ -317,7 +317,8 @@
     "typescript-lsp@claude-plugins-official": true,
     "gopls-lsp@claude-plugins-official": true,
     "rust-analyzer-lsp@claude-plugins-official": true,
-    "pstack@cursor-plugins": true
+    "pstack@cursor-plugins": true,
+    "typesafe@typesafe-ai": true
   },
   "extraKnownMarketplaces": {
     "openai-codex": {
@@ -401,6 +402,13 @@
       "source": {
         "source": "github",
         "repo": "cursor/plugins"
+      },
+      "autoUpdate": true
+    },
+    "typesafe-ai": {
+      "source": {
+        "source": "github",
+        "repo": "typesafe-ai/skills"
       },
       "autoUpdate": true
     }
