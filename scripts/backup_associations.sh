@@ -12,7 +12,10 @@ set -e
 DEST="$DOTFILES_DIR/private/.associations"
 EXTS='md markdown json ts tsx js jsx mjs cjs go rb py php tf tfvars sh zsh bash
 yml yaml toml ini conf txt csv tsv log xml html css scss sql env gitignore
-plist patch diff lock'
+plist patch diff lock tmpl tpl hcl terraform-version mod sum jsonc prisma jmx
+cnf temp sample example dockerignore trivyignore gitkeep gitmodules prettierrc
+prettierignore npmrc node-version envrc cursorrules dev dev1 dev3 prod production
+development test qa proxy'
 
 command -v duti >/dev/null 2>&1 || { echo "duti がありません。brew install duti してください" >&2; exit 1; }
 

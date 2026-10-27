@@ -187,7 +187,7 @@ zsh の設定は `home/.config/zsh/` に 3 分割してある（`options` / `uti
 | --- | --- |
 | システム設定 | Finder・Dock・Spaces・トラックパッド・キーボードショートカット・メニューバー等 |
 | **アプリ設定** | iTerm2・Raycast・AltTab・Arc・Terminal（合わせて 21 ドメイン） |
-| 関連付け | 拡張子ごとの既定アプリ 38 件 |
+| 関連付け | 拡張子ごとの既定アプリ 70 件 |
 | 一覧 | App Store・VS Code / Cursor の拡張・グローバル npm・mise |
 | 自動起動 | 自分で入れた LaunchAgents |
 
