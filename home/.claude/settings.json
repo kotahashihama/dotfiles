@@ -342,7 +342,8 @@
     "gopls-lsp@claude-plugins-official": true,
     "rust-analyzer-lsp@claude-plugins-official": true,
     "pstack@cursor-plugins": true,
-    "typesafe@typesafe-ai": true
+    "typesafe@typesafe-ai": true,
+    "1password@1password": true
   },
   "extraKnownMarketplaces": {
     "openai-codex": {
@@ -433,6 +434,13 @@
       "source": {
         "source": "github",
         "repo": "typesafe-ai/skills"
+      },
+      "autoUpdate": true
+    },
+    "1password": {
+      "source": {
+        "source": "github",
+        "repo": "1Password/1password-claude-plugin"
       },
       "autoUpdate": true
     }
