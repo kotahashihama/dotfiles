@@ -11,6 +11,8 @@
 # ファイルを経ずに /yomiyasu:yomiyasu へ本文を渡した場合は照合できないので、
 # このターンに /yomiyasu:yomiyasu を呼んでいれば通す。
 #
+# Backlog の投稿では、その前に本文の PR 番号がリンクになっているかも見る。
+#
 set -u
 
 payload=$(cat)
@@ -35,6 +37,29 @@ text = "\n".join(str(inp[k]) for k in TEXT_KEYS if isinstance(inp.get(k), str) a
 rows = [r.strip() for r in text.splitlines() if len(r.strip()) >= 8 and not r.strip().startswith(">")]
 if not rows:
     raise SystemExit(0)
+
+# 課題管理ツールの本文では、PR を `[repo#123](URL)` のリンクで書く（no_space_between_number_and_unit.md）。
+# MCP の投稿には gh の本文の検査（lint-github-body.sh）が走らず、裸の #123 が2度素通りした。
+# 「対応 PR: <URL>」の行とコードブロックの中は、裸で書く決まりか原文なので数えない。
+if "backlog" in name:
+    bare, fence = [], False
+    for r in text.splitlines():
+        s = r.strip()
+        if s.startswith("```"):
+            fence = not fence
+            continue
+        if fence or s.startswith("対応 PR:"):
+            continue
+        bare += re.findall(r"(?<![\w/\[#])#\d{3,5}\b", r)
+    if bare:
+        sys.stderr.write("\n".join([
+            "**PR 番号がリンクになっていません**（%s）: %s" % (name, " ".join(sorted(set(bare)))),
+            "",
+            "課題管理ツールの本文では `[repo#123](https://github.com/<owner>/<repo>/pull/123)` の形にしてください。",
+            "2回目より後に出てくる番号も同じです。「対応 PR: <URL>」の行はそのままでよい。",
+            "  → no_space_between_number_and_unit.md の「URL は、Markdown ならリンクにして文に埋める」",
+        ]))
+        raise SystemExit(2)
 
 REVIEW_IN_CMD = re.compile(r"yomiyasu_(?:lint|diff|check)\.py")
 MD_ARG = re.compile(r"""(?:^|[\s'"=])([^\s'";|&<>]+\.md)\b""")
