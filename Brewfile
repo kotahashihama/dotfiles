@@ -77,6 +77,8 @@ brew "ghq"
 brew "git"
 # Syntax-highlighting pager for git and diff output
 brew "git-delta"
+# Quickly rewrite git repository history
+brew "git-filter-repo"
 # Task is a task runner/build tool that aims to be simpler and easier to use
 brew "go-task"
 # Like cURL, but for gRPC
