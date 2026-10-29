@@ -10,7 +10,7 @@ zstyle ':completion:*:descriptions' format '[%d]'
 zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 
 # git のブランチは新しい順に並んでいるので、辞書順に並べ替えない
-zstyle ':completion:*:git-checkout:*' sort false
+zstyle ':completion:*:git-(checkout|switch):*' sort false
 
 # fzf-tab は FZF_DEFAULT_OPTS を読まない。他の fzf 呼び出しと見た目を揃える
 zstyle ':fzf-tab:*' fzf-flags --prompt='❯ ' --height=50%

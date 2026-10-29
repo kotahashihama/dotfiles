@@ -141,7 +141,7 @@ function fzf-git-branch() {
     --preview 'git log --oneline --decorate -15 --color=always {}' \
     --preview-window 'right,60%')
   if [ -n "$selected_branch" ]; then
-    git checkout "$selected_branch"
+    git switch "$selected_branch"
   fi
 }
 zle -N fzf-git-branch
