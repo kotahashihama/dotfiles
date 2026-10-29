@@ -341,7 +341,7 @@
     "prompt-rail@oikon48": true,
     "md-prompt@nogu66": true,
     "qa-guide@claude-qamods": true,
-    "playwright@claude-plugins-official": true,
+    "playwright@claude-plugins-official": false,
     "code-review@claude-plugins-official": true,
     "frontend-design@claude-plugins-official": true,
     "yomiyasu@yomiyasu": true,
