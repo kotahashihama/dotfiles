@@ -341,7 +341,7 @@
     "prompt-rail@oikon48": true,
     "md-prompt@nogu66": true,
     "qa-guide@claude-qamods": true,
-    "playwright@claude-plugins-official": false,
+    "playwright@claude-plugins-official": true,
     "code-review@claude-plugins-official": true,
     "frontend-design@claude-plugins-official": true,
     "yomiyasu@yomiyasu": true,
@@ -351,7 +351,8 @@
     "rust-analyzer-lsp@claude-plugins-official": true,
     "pstack@cursor-plugins": true,
     "typesafe@typesafe-ai": true,
-    "1password@1password": true
+    "1password@1password": true,
+    "context7@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "openai-codex": {
