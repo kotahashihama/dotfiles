@@ -1,0 +1,490 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Claude-only: refuse when invoked from a non-Claude (DeepSeek/MiMo/GLM) session.
+case "${ANTHROPIC_BASE_URL:-}" in
+  *deepseek*)    echo "relay: refused — Claude-only skill, but ANTHROPIC_BASE_URL points at DeepSeek." >&2; exit 2 ;;
+  *xiaomimimo*)  echo "relay: refused — Claude-only skill, but ANTHROPIC_BASE_URL points at MiMo." >&2; exit 2 ;;
+  *z.ai*)        echo "relay: refused — Claude-only skill, but ANTHROPIC_BASE_URL points at z.ai (GLM)." >&2; exit 2 ;;
+esac
+
+# Anti-recursion: every peer relay spawns inherits RELAY_PEER=<peer>. Refuse a
+# nested relay call from inside one. This is transport-agnostic, so it catches a
+# Codex peer too — which the ANTHROPIC_BASE_URL check above cannot, since a Codex
+# peer carries no peer base URL. A dispatched peer must never call relay.
+if [ -n "${RELAY_PEER:-}" ]; then
+  echo "relay: refused — nested call from inside a '$RELAY_PEER' peer subprocess (anti-recursion)." >&2
+  exit 2
+fi
+
+# relay — relay protocol v5: call a peer agent
+#
+# Usage:
+#   relay call  --name <slug> [--effort <level>] [--body-only] [--] "<body>"
+#   relay --help | --version
+#
+# call: generate req → invoke peer → print response content (body via arg or stdin)
+# IDs: YYYYMMDD-HHMMSS-PID-{name}.
+
+VERSION=5
+
+# This script's install dir (resolves through the skill symlink). The peer
+# registry — single source of truth for model-family facts — sits next to it.
+SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd)
+PEERS="$SCRIPT_DIR/../peers.json"
+
+die() { echo "relay: $*" >&2; exit 1; }
+
+need_arg() { [ "$1" -ge 2 ] || die "$2 requires a value"; }
+
+check_slug() {
+  case "$2" in
+    *[!a-z0-9-]*) die "$1 must be a slug [a-z0-9-]+" ;;
+  esac
+}
+
+# Resolve a stable root directory: git root or absolute cwd
+resolve_root() {
+  git rev-parse --show-toplevel 2>/dev/null || pwd -P
+}
+
+ROOT=$(resolve_root)
+RELAY_DIR="$ROOT/.relay"
+
+ensure_relay_dir() {
+  mkdir -p "$RELAY_DIR"
+  local gitignore="$ROOT/.gitignore"
+  grep -qxF '.relay/' "$gitignore" 2>/dev/null || echo '.relay/' >> "$gitignore"
+}
+
+# Read body from stdin when no argument body was provided
+read_stdin_body() {
+  if [ ! -t 0 ]; then
+    cat
+  fi
+}
+
+# Write content to a file atomically (temp + mv)
+atomic_write() {
+  local target="$1"
+  local tmpfile
+  tmpfile=$(mktemp "${target}.tmp.XXXXXX")
+  cat > "$tmpfile"
+  mv "$tmpfile" "$target"
+}
+
+# Strip YAML frontmatter (first --- ... --- block) from stdin
+strip_frontmatter() {
+  awk '/^---$/ && !p { n++; next } n >= 2 { p=1 } p'
+}
+
+# Extract the last `codex` assistant block from a Codex CLI log.
+# Codex separates message stream entries with bare role-marker lines
+# (`user`, `codex`, `exec`, `thinking`, `tool`, `tokens used`). Returns
+# the contents of the final block whose role was `codex`. Best-effort —
+# Codex log format is not a stable protocol; intended for failure-only
+# salvage.
+last_codex_block() {
+  awk '
+    function finish_block() {
+      if (role == "codex" && block != "") last = block
+      block = ""
+    }
+    /^(user|codex|exec|thinking|tool|tokens used)$/ {
+      finish_block()
+      role = $0
+      next
+    }
+    role == "codex" {
+      block = block $0 ORS
+    }
+    END {
+      finish_block()
+      sub(/\n$/, "", last)
+      if (last != "") print last
+    }
+  ' "$1"
+}
+
+# Failure-only recovery: synthesize a valid .res.md from the last codex
+# assistant block when the peer exited without writing the response file.
+# Returns 0 if a non-empty block was recovered and written, 1 otherwise.
+recover_codex_response() {
+  local log_path="$1" res_path="$2" id="$3" from="$4" to="$5" peer_exit="$6"
+  local body status
+  body=$(last_codex_block "$log_path") || return 1
+  [ -n "$body" ] || return 1
+  status=done
+  [ "$peer_exit" -eq 0 ] || status=error
+  {
+    printf -- '---\n'
+    printf 'relay: %s\n' "$VERSION"
+    printf 're: %s\n' "$id"
+    printf 'from: %s\n' "$to"
+    printf 'to: %s\n' "$from"
+    printf 'status: %s\n' "$status"
+    printf 'verify: skip\n'
+    printf -- '---\n\n'
+    printf '%s\n' "$body"
+  } | atomic_write "$res_path"
+}
+
+# Auto-detect caller and peer from the skill directory this script lives in.
+# Caller is always Claude under the current one-direction protocol; the default
+# peer is Codex. Use --to deepseek, --to mimo, --to glm, --to grok-build, or --to grok-composer to route elsewhere.
+# Returns "from to" (e.g. "claude codex") or empty string if unknown.
+detect_peers() {
+  local script_dir
+  script_dir=$(cd "$(dirname "$0")/.." && pwd)
+  case "$script_dir" in
+    */.claude/skills/* | */claude/skills/*) echo "claude codex" ;;
+    *)
+      # Fallback: only Claude Code is a supported caller.
+      if [ "${CLAUDECODE:-}" = "1" ]; then
+        echo "claude codex"
+      else
+        echo ""
+      fi
+      ;;
+  esac
+}
+
+cmd_req() {
+  local from="" to="" name="" effort="" body=""
+
+  while [ $# -gt 0 ]; do
+    case "$1" in
+      --from)    need_arg $# "$1"; from="$2"; shift 2 ;;
+      --to)      need_arg $# "$1"; to="$2"; shift 2 ;;
+      --name)    need_arg $# "$1"; name="$2"; shift 2 ;;
+      --effort)  need_arg $# "$1"; effort="$2"; shift 2 ;;
+      --)        shift; body="$*"; break ;;
+      -*)        die "req: unknown flag: $1" ;;
+      *)         body="$*"; break ;;
+    esac
+  done
+
+  if [ -z "$body" ]; then
+    body=$(read_stdin_body)
+  fi
+
+  [ -n "$from" ] || die "req: --from required"
+  [ -n "$to" ]   || die "req: --to required"
+  [ -n "$name" ] || die "req: --name required"
+  [ -n "$body" ] || die "req: body required (argument or stdin)"
+
+  check_slug "req: --name" "$name"
+
+  ensure_relay_dir
+
+  # Build effort line (codex consumes it via request frontmatter, grok-build via its
+  # --effort CLI flag; deepseek and mimo have no effort knob and ignore it).
+  # effort is non-empty only for effort-bearing peers (cmd_call blanks it otherwise).
+  local effort_line=""
+  if [ -n "$effort" ]; then
+    effort_line=$'\n'"effort: $effort"
+  fi
+
+  local id filepath
+  id="$(date +%Y%m%d-%H%M%S)-$$-$name"
+  filepath="$RELAY_DIR/$id.req.md"
+
+  cat <<EOF | atomic_write "$filepath"
+---
+relay: $VERSION
+id: $id
+from: $from
+to: $to$effort_line
+---
+
+$body
+
+---
+Reply: $RELAY_DIR/$id.res.md
+IMPORTANT: Write your full response to this exact file path. Do not print the response to stdout — stdout may be discarded.
+Format:
+  ---
+  relay: $VERSION
+  re: $id
+  from: $to
+  to: $from
+  status: done | error
+  verify: pass | fail | skip
+  ---
+  {your response}
+EOF
+
+  echo "$filepath"
+}
+
+cmd_call() {
+  local name="" effort="medium" body="" from="" to=""
+  local body_only=false
+
+  while [ $# -gt 0 ]; do
+    case "$1" in
+      --name)      need_arg $# "$1"; name="$2"; shift 2 ;;
+      --effort)    need_arg $# "$1"; effort="$2"; shift 2 ;;
+      --from)      need_arg $# "$1"; from="$2"; shift 2 ;;
+      --to)        need_arg $# "$1"; to="$2"; shift 2 ;;
+      --body-only) body_only=true; shift ;;
+      --)          shift; body="$*"; break ;;
+      -*)          die "call: unknown flag: $1" ;;
+      *)           body="$*"; break ;;
+    esac
+  done
+
+  if [ -z "$body" ]; then
+    body=$(read_stdin_body)
+  fi
+  [ -n "$body" ] || die "call: body required (argument or stdin)"
+
+  # Auto-detect caller and peer from install path
+  if [ -z "$from" ] || [ -z "$to" ]; then
+    local peers
+    peers=$(detect_peers)
+    if [ -n "$peers" ]; then
+      from="${from:-${peers%% *}}"
+      to="${to:-${peers##* }}"
+    else
+      [ -n "$from" ] || die "call: --from required (could not auto-detect)"
+      [ -n "$to" ]   || die "call: --to required (could not auto-detect)"
+    fi
+  fi
+
+  # Load this peer's row from the registry — the single source of truth for all
+  # model-family facts (transport, endpoint, key var, model id, effort, extras).
+  command -v jq >/dev/null 2>&1 || die "call: jq not found in PATH (needed to read $PEERS)"
+  [ -f "$PEERS" ] || die "call: peer registry not found: $PEERS"
+  local peer_json transport
+  peer_json=$(jq -e --arg p "$to" '.[$p]' "$PEERS" 2>/dev/null) \
+    || die "call: unknown peer '$to' (known: $(jq -r 'keys|join(", ")' "$PEERS" 2>/dev/null))"
+  transport=$(jq -r '.transport' <<<"$peer_json")
+
+  # Effort applies only to peers that declare effort_values (codex, grok-build). Validate it
+  # for those; blank it for every other peer so it is neither emitted into the
+  # request frontmatter nor passed to the peer (keeps cmd_req registry-driven too).
+  if jq -e 'has("effort_values")' <<<"$peer_json" >/dev/null; then
+    jq -e --arg e "$effort" '.effort_values | index($e)' <<<"$peer_json" >/dev/null \
+      || die "call: --effort must be one of $(jq -r '.effort_values|join(", ")' <<<"$peer_json") for $to"
+  else
+    effort=""
+  fi
+
+  # Build req. cmd_req surfaces effort in frontmatter for codex; the
+  # claude-env peers (deepseek and glm pinned to max via the registry extra_env,
+  # mimo with no effort knob) ignore it.
+  local req_args=(--from "$from" --to "$to" --effort "$effort")
+  [ -n "$name" ] || die "call: --name required"
+  check_slug "call: --name" "$name"
+  req_args+=(--name "$name")
+
+  local req_path
+  req_path=$(cmd_req "${req_args[@]}" "$body")
+  echo "relay: request  → $req_path" >&2
+  local res_path="${req_path%.req.md}.res.md"
+  local log_path="${req_path%.req.md}.log"
+
+  # Preflight: peer binary + required API key. claude-env peers piggyback on the
+  # claude CLI with an env envelope routing to their Anthropic-compatible
+  # endpoint; codex and grok use their own CLI (grok carries its own cached auth,
+  # so no key_env). The transport comes from the registry.
+  local peer_bin key_env="" auth_token=""
+  if [ "$transport" = "codex" ]; then
+    peer_bin="codex"
+  elif [ "$transport" = "grok" ]; then
+    peer_bin="grok"
+  elif [ "$transport" = "claude-env" ]; then
+    peer_bin="claude"
+    key_env=$(jq -r '.key_env' <<<"$peer_json")
+    auth_token="${!key_env:-}"
+    [ -n "$auth_token" ] || die "call: $key_env not set (required for --to $to)"
+  else
+    die "call: unknown transport '$transport' for peer '$to' in $PEERS"
+  fi
+  command -v "$peer_bin" >/dev/null 2>&1 || die "call: '$peer_bin' not found in PATH"
+
+  # Build peer prompt. Surface the response-file obligation in the entry
+  # prompt so the peer sees it before reading the (possibly large) body,
+  # and require explicit verification before finishing.
+  local peer_prompt
+  peer_prompt=$(cat <<EOF
+Read and execute this relay request: $req_path
+
+Mandatory relay output:
+- Write the complete reply, including the requested relay frontmatter, to: $res_path
+- Use a file-write or shell tool to create that file; do not rely on final-message/stdout output.
+- Before finishing, verify that the file exists and is non-empty.
+EOF
+)
+
+  # Strip relay's own dir from the PATH handed to the peer, so a peer that
+  # ignores the anti-recursion instruction cannot resolve a bare `relay`.
+  # (RELAY_PEER below is the authoritative guard; this is defense in depth.)
+  # Colon-anchored so only an exact PATH component is dropped — a sibling entry
+  # like "$SCRIPT_DIR-backup" is left intact.
+  local sanitized_path=":$PATH:"
+  sanitized_path="${sanitized_path//:$SCRIPT_DIR:/:}"
+  # Also scrub prism's script dir so a peer can't resolve `prism-launch`: a dispatched
+  # peer must never trigger relay OR prism. RELAY_PEER blocks a nested relay call;
+  # dropping prism/scripts blocks prism-launch from even starting. Other skill dirs
+  # (gpt-pro-relay, etc.) stay — peers may use those.
+  local prism_dir="${SCRIPT_DIR%relay/scripts}prism/scripts"
+  sanitized_path="${sanitized_path//:$prism_dir:/:}"
+  sanitized_path="${sanitized_path#:}"
+  sanitized_path="${sanitized_path%:}"
+
+  # Build peer invocation from the registry row — three transports, not N peers.
+  # codex and grok each use their own CLI; claude-env wraps `claude -p` in an
+  # Anthropic-compatible envelope whose endpoint/key/model/extras all come from the
+  # registry. The six model vars all take the same model id (harness-required) —
+  # incl. ANTHROPIC_SMALL_FAST_MODEL, else background calls fall back to a hardcoded
+  # Haiku id that DeepSeek/MiMo/GLM gateways bill as their cheap flash/lite tier.
+  local -a peer_cmd
+  local model
+  model=$(jq -r '.model' <<<"$peer_json")
+  if [ "$transport" = "codex" ]; then
+    peer_cmd=(env "PATH=$sanitized_path" "RELAY_PEER=$to"
+      codex exec --model "$model"
+      -c "model_reasoning_effort=\"$effort\""
+      --skip-git-repo-check --full-auto --color never
+      --disable plugins
+      --add-dir "$RELAY_DIR"
+      "$peer_prompt")
+  elif [ "$transport" = "grok" ]; then
+    # grok's own CLI in headless mode; the peer writes its .res.md like any other.
+    # bypassPermissions = unattended auto-approve; --no-subagents blocks subagent
+    # spawning (defense in depth atop the RELAY_PEER guard — note: --disallowed-tools
+    # Agent instead breaks agent-build, since disabling background conflicts with
+    # run_terminal_cmd's default). --effort is appended only for peers that declare
+    # effort_values (grok-build, not grok-composer).
+    # GROK_CLAUDE_*_ENABLED=false: disable the full Claude-compat suite explicitly
+    # here (not only via .zshenv) so a dispatched peer stays isolated even from a
+    # reset/cron/non-zsh shell that never sourced .zshenv — no Claude skills, global
+    # CLAUDE.md, rules, ~/.claude.json MCP servers, or settings.json hooks. grok uses
+    # its own ~/.grok/{skills,AGENTS.md}. (Claude *plugin* hooks under ~/.claude/
+    # plugins are a separate mechanism, not gated by these toggles.)
+    peer_cmd=(env "PATH=$sanitized_path" "RELAY_PEER=$to"
+      "GROK_CLAUDE_SKILLS_ENABLED=false" "GROK_CLAUDE_AGENTS_ENABLED=false"
+      "GROK_CLAUDE_RULES_ENABLED=false" "GROK_CLAUDE_MCPS_ENABLED=false"
+      "GROK_CLAUDE_HOOKS_ENABLED=false"
+      grok -p "$peer_prompt" -m "$model"
+      --output-format plain --permission-mode bypassPermissions
+      --no-auto-update --no-subagents)
+    [ -n "$effort" ] && peer_cmd+=(--effort "$effort")
+  else
+    local base
+    base=$(jq -r '.base' <<<"$peer_json")
+    # Per-peer extras (e.g. deepseek's max effort) — registry data.
+    # Fail closed if a stanza tries to override a safety/identity var: extras are
+    # applied last, so an unguarded PATH/RELAY_PEER/auth/model key would win and
+    # silently defeat the anti-recursion guard, PATH scrub, or endpoint binding.
+    local -a extra_env=()
+    local k v
+    while IFS=$'\t' read -r k v; do
+      [ -n "$k" ] || continue
+      case "$k" in
+        PATH|RELAY_PEER|ANTHROPIC_BASE_URL|ANTHROPIC_AUTH_TOKEN|ANTHROPIC_MODEL|ANTHROPIC_DEFAULT_OPUS_MODEL|ANTHROPIC_DEFAULT_SONNET_MODEL|ANTHROPIC_DEFAULT_HAIKU_MODEL|ANTHROPIC_SMALL_FAST_MODEL|CLAUDE_CODE_SUBAGENT_MODEL)
+          die "call: peer '$to' extra_env may not override reserved env var '$k' (registry safety guard)" ;;
+      esac
+      extra_env+=("$k=$v")
+    done < <(jq -r '.extra_env // {} | to_entries[] | "\(.key)\t\(.value)"' <<<"$peer_json")
+    peer_cmd=(env -u CLAUDECODE -u TMUX "PATH=$sanitized_path" "RELAY_PEER=$to"
+      COLORTERM=truecolor
+      "ANTHROPIC_BASE_URL=$base"
+      "ANTHROPIC_AUTH_TOKEN=$auth_token"
+      "ANTHROPIC_MODEL=$model"
+      "ANTHROPIC_DEFAULT_OPUS_MODEL=$model"
+      "ANTHROPIC_DEFAULT_SONNET_MODEL=$model"
+      "ANTHROPIC_DEFAULT_HAIKU_MODEL=$model"
+      "ANTHROPIC_SMALL_FAST_MODEL=$model"
+      "CLAUDE_CODE_SUBAGENT_MODEL=$model")
+    if [ "${#extra_env[@]}" -gt 0 ]; then peer_cmd+=("${extra_env[@]}"); fi
+    # claude-env peers always run headless (claude -p). Deny two unrelated hazard
+    # classes up front:
+    #   1. Multimodal Reads — deepseek-v4-pro / mimo-v2.5-pro / glm-5.2 are text-only
+    #      (mimo image support lives in mimo-v2.5/-omni, not -pro; deepseek V4 input
+    #      type is text/string; glm-5.2 input modality is text), so an image/PDF Read
+    #      errors (DeepSeek) or is silently dropped (MiMo/GLM). A model-capability limit.
+    #   2. Interactive consent gates — ExitPlanMode and AskUserQuestion block
+    #      waiting for a human to approve a plan / answer a question; in a headless
+    #      run there is none, so they deadlock until the timeout (verified: both
+    #      return a pending "Exit plan mode?" / "Answer questions?" gate).
+    #      EnterPlanMode itself runs fine but only leads into that dead end. This is
+    #      an execution-mode limit, independent of which model is behind the harness
+    #      — so it is NOT mirrored in the interactive ds/mm/glm launchers, where a
+    #      human is present and plan mode is useful.
+    # --disallowedTools is variadic (<tools...>): a non-flag token right after it is
+    # swallowed as another tool name, so keep --dangerously-skip-permissions AFTER
+    # it — that dashed token ends the list, leaving the prompt as the lone positional.
+    local peer_deny='Read(*.png),Read(*.jpg),Read(*.jpeg),Read(*.gif),Read(*.bmp),Read(*.svg),Read(*.webp),Read(*.pdf),EnterPlanMode,ExitPlanMode,AskUserQuestion'
+    peer_cmd+=(claude -p --disallowedTools "$peer_deny" --dangerously-skip-permissions "$peer_prompt")
+  fi
+
+  # Invoke peer and capture exit status (don't let set -e abort before checking response)
+  local peer_exit=0
+  "${peer_cmd[@]}" >/dev/null 2>"$log_path" || peer_exit=$?
+
+  # Failure-only recovery: if the peer (Codex) finished without writing
+  # the response file, salvage the last assistant block from the log.
+  # Gated on the codex transport (its log format), not the peer name.
+  if [ ! -f "$res_path" ] && [ "$transport" = "codex" ]; then
+    local id="${req_path##*/}"
+    id="${id%.req.md}"
+    if recover_codex_response "$log_path" "$res_path" "$id" "$from" "$to" "$peer_exit"; then
+      echo "relay: recovered response from codex log → $res_path" >&2
+    fi
+  fi
+
+  # Read and output response (check file even if peer exited non-zero)
+  if [ -f "$res_path" ]; then
+    echo "relay: response → $res_path" >&2
+    if [ "$peer_exit" -ne 0 ]; then
+      echo "relay: warning: peer exited $peer_exit but response file exists (see $log_path)" >&2
+    fi
+    if $body_only; then
+      strip_frontmatter < "$res_path"
+    else
+      cat "$res_path"
+    fi
+  else
+    echo "relay: peer log  → $log_path" >&2
+    die "call: response file not found — peer exited $peer_exit: $res_path"
+  fi
+}
+
+cmd_help() {
+  cat <<'USAGE'
+relay — relay protocol v5: call a peer agent
+
+Usage:
+  relay call  --name <slug> [--effort <level>] [--body-only] [--] "<body>"
+  relay --help | --version
+
+Subcommands:
+  call   Invoke peer agent, print response
+
+Call options:
+  --name <slug>      Call identifier
+  --effort <level>   Reasoning effort: codex (medium/xhigh), grok-build (medium/high).
+                     Ignored for deepseek (always max), mimo, glm, and grok-composer (no knob).
+  --body-only        Strip frontmatter from response output
+  --from <peer>      Override caller detection (normally claude)
+  --to <peer>        Override peer detection (codex, deepseek, mimo, glm, grok-build, grok-composer; default codex)
+USAGE
+}
+
+# Main
+[ $# -ge 1 ] || { cmd_help; exit 1; }
+
+case "$1" in
+  --help|-h)    cmd_help; exit 0 ;;
+  --version|-V) echo "relay v$VERSION"; exit 0 ;;
+esac
+
+subcmd="$1"; shift
+
+case "$subcmd" in
+  call) cmd_call "$@" ;;
+  *)    die "unknown subcommand: $subcmd (use 'call')" ;;
+esac

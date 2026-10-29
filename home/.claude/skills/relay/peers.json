@@ -1,0 +1,44 @@
+{
+  "codex": {
+    "transport": "codex",
+    "model": "gpt-5.5",
+    "effort_values": ["medium", "xhigh"],
+    "default_effort": "medium",
+    "template": "codex"
+  },
+  "deepseek": {
+    "transport": "claude-env",
+    "base": "https://api.deepseek.com/anthropic",
+    "key_env": "DEEPSEEK_API_KEY",
+    "model": "deepseek-v4-pro",
+    "extra_env": { "CLAUDE_CODE_EFFORT_LEVEL": "max" },
+    "template": "costar"
+  },
+  "mimo": {
+    "transport": "claude-env",
+    "base": "https://api.xiaomimimo.com/anthropic",
+    "key_env": "MIMO_API_KEY",
+    "model": "mimo-v2.5-pro[1m]",
+    "template": "costar"
+  },
+  "glm": {
+    "transport": "claude-env",
+    "base": "https://api.z.ai/api/anthropic",
+    "key_env": "GLM_API_KEY",
+    "model": "glm-5.2",
+    "extra_env": { "CLAUDE_CODE_EFFORT_LEVEL": "max" },
+    "template": "costar"
+  },
+  "grok-build": {
+    "transport": "grok",
+    "model": "grok-build",
+    "effort_values": ["medium", "high"],
+    "default_effort": "medium",
+    "template": "costar"
+  },
+  "grok-composer": {
+    "transport": "grok",
+    "model": "grok-composer-2.5-fast",
+    "template": "costar"
+  }
+}

@@ -1,0 +1,141 @@
+#!/usr/bin/env python3
+"""1Password の Vault を点検し、直すべきアイテムの名前を報告に書く。
+
+見るのは Watchtower と同じ観点（使い回し・弱い・漏洩・2段階認証の未設定・http）と、
+website 欄が空のログイン。パスワードはこのプロセスの中でだけ扱い、報告にはアイテムの名前と件数だけを書く。
+
+漏洩の照会は Have I Been Pwned の range API を使う。外へ出るのは SHA-1 の先頭5文字だけ（k-匿名性）。
+2段階認証が使えるサイトの一覧は 2fa.directory から取る。
+
+使い方: vault-audit [--vault Personal] [--out ~/.local/state/vault-audit/report.md] [--notify]
+"""
+import argparse
+import collections
+import datetime
+import hashlib
+import json
+import os
+import re
+import subprocess
+import sys
+import urllib.request
+
+UA = {"User-Agent": "vault-audit"}
+
+
+def fetch_json(url):
+    with urllib.request.urlopen(urllib.request.Request(url, headers=UA), timeout=30) as r:
+        return json.load(r)
+
+
+def pwned_suffixes(prefix):
+    req = urllib.request.Request(
+        f"https://api.pwnedpasswords.com/range/{prefix}", headers={**UA, "Add-Padding": "true"}
+    )
+    with urllib.request.urlopen(req, timeout=30) as r:
+        out = {}
+        for line in r.read().decode().splitlines():
+            suf, cnt = line.split(":")
+            if int(cnt) > 0:
+                out[suf] = int(cnt)
+        return out
+
+
+def host_of(href):
+    h = re.sub(r"^[a-z]+://", "", (href or "").strip().lower()).split("/")[0].split(":")[0]
+    return re.sub(r"^www\.", "", h)
+
+
+def load_items(vault):
+    listed = subprocess.run(
+        ["op", "item", "list", "--vault", vault, "--format", "json"], capture_output=True, text=True, check=True
+    ).stdout
+    got = subprocess.run(
+        ["op", "item", "get", "-", "--reveal", "--format", "json"], input=listed, capture_output=True, text=True, check=True
+    ).stdout
+    # 1件ずつの JSON が連なって返る
+    dec, i, items = json.JSONDecoder(), 0, []
+    while i < len(got):
+        while i < len(got) and got[i].isspace():
+            i += 1
+        if i >= len(got):
+            break
+        obj, i = dec.raw_decode(got, i)
+        items.append(obj)
+    return items
+
+
+def is_weak(pw):
+    classes = sum(bool(re.search(p, pw)) for p in (r"[a-z]", r"[A-Z]", r"\d", r"[^A-Za-z0-9]"))
+    return len(pw) < 12 or classes < 3
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--vault", default="Personal")
+    ap.add_argument("--out", default=os.path.expanduser("~/.local/state/vault-audit/report.md"))
+    ap.add_argument("--notify", action="store_true")
+    a = ap.parse_args()
+
+    items = load_items(a.vault)
+    totp_sites = set()
+    try:
+        for _, entry in fetch_json("https://api.2fa.directory/v3/totp.json"):
+            totp_sites.add(entry["domain"].lower())
+            totp_sites.update(d.lower() for d in entry.get("additional-domains", []))
+    except Exception as e:  # 一覧が取れなくても、ほかの観点は出す
+        print(f"2fa.directory を読めませんでした: {e}", file=sys.stderr)
+
+    by_pw = collections.defaultdict(list)
+    weak, no_2fa, http, no_url = [], [], [], []
+    for it in items:
+        title = it.get("title", "")
+        fields = it.get("fields", [])
+        pw = next((f.get("value") for f in fields if f.get("purpose") == "PASSWORD" and f.get("value")), None)
+        has_otp = any(f.get("type") == "OTP" for f in fields)
+        hosts = [host_of(u.get("href")) for u in it.get("urls", []) if u.get("href")]
+        if pw:
+            by_pw[hashlib.sha1(pw.encode()).hexdigest().upper()].append(title)
+            if is_weak(pw):
+                weak.append(title)
+        if it.get("category") == "LOGIN":
+            if not hosts:
+                no_url.append(title)
+            if any((u.get("href") or "").lower().startswith("http://") for u in it.get("urls", [])):
+                http.append(title)
+            if pw and not has_otp and any(h in totp_sites or ".".join(h.split(".")[-2:]) in totp_sites for h in hosts):
+                no_2fa.append(title)
+
+    reused = [sorted(ts) for ts in by_pw.values() if len(ts) > 1]
+    pwned = []
+    for prefix in sorted({h[:5] for h in by_pw}):
+        sufs = pwned_suffixes(prefix)
+        for h, ts in by_pw.items():
+            if h.startswith(prefix) and h[5:] in sufs:
+                pwned.extend(ts)
+
+    today = datetime.date.today().isoformat()
+    sec = [
+        ("漏洩したパスワード（すぐ替える）", sorted(pwned)),
+        ("使い回し（組ごと）", [" / ".join(g) for g in sorted(reused)]),
+        ("弱いパスワード（12文字未満か、文字の種類が3つ未満）", sorted(weak)),
+        ("2段階認証が使えるのに未設定", sorted(no_2fa)),
+        ("http のサイト", sorted(http)),
+        ("website 欄が空のログイン", sorted(no_url)),
+    ]
+    lines = [f"# Vault の点検（{a.vault}・{today}）", "", f"対象 {len(items)}件", ""]
+    lines += ["| 観点 | 件数 |", "| --- | --- |"] + [f"| {n} | {len(v)} |" for n, v in sec] + [""]
+    for n, v in sec:
+        lines += [f"## {n}", ""] + ([f"- {t}" for t in v] or ["なし"]) + [""]
+    os.makedirs(os.path.dirname(a.out), mode=0o700, exist_ok=True)
+    with open(a.out, "w") as f:
+        f.write("\n".join(lines))
+    os.chmod(a.out, 0o600)
+    summary = "・".join(f"{n.split('（')[0]} {len(v)}" for n, v in sec[:4])
+    print(f"{a.out} に書きました: {summary}")
+    if a.notify:
+        subprocess.run(["terminal-notifier", "-title", "Vault の点検", "-message", summary, "-open", f"file://{a.out}"])
+
+
+if __name__ == "__main__":
+    main()
