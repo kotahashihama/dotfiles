@@ -18,7 +18,9 @@ unsetopt HUP                 # シェル終了時にジョブを殺さない
 unsetopt CHECK_JOBS          # 終了時にジョブの確認をしない
 
 # 履歴
-HISTFILE="$HOME/.zsh_history"
+# 保存は別のファイルに書いてから差し替えるので、リンクのまま渡すとリンクが実体に置き換わる
+# リンクを解決した先を渡す
+HISTFILE="${${:-$HOME/.zsh_history}:A}"
 HISTSIZE=10000
 SAVEHIST=10000
 setopt BANG_HIST
