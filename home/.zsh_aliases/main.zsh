@@ -6,7 +6,6 @@ alias galias='v ~/.zsh_aliases/tool/git.zsh'
 alias prjalias='v ~/.zsh_aliases_private/project.zsh'
 alias prvalias='v ~/.zsh_aliases_private/crypto.zsh'
 alias smhalias='v ~/.zsh_aliases_private/smart_home.zsh'
-alias secrets='v ~/.secrets/env.tpl'
 alias vimrc='v ~/.vimrc'
 alias gvimrc='v ~/.gvimrc'
 alias gitconfig='v ~/.gitconfig'
@@ -20,17 +19,6 @@ alias o.='o .'
 alias rm='rm -rf'
 alias -g @g='| grep'
 alias -g @l='| less'
-
-# 秘匿値の展開。値は 1Password が持ち、~/.secrets/env.tpl の op:// 参照から ~/.secrets/env を作り直す
-secrets-sync() {
-  local tmp
-  tmp=$(umask 077; mktemp ~/.secrets/env.XXXXXX) || return 1
-  if op inject -f -i ~/.secrets/env.tpl -o "$tmp" >/dev/null; then
-    mv -f "$tmp" ~/.secrets/env && source ~/.secrets/env && echo '~/.secrets/env を 1Password から作り直しました'
-  else
-    rm -f "$tmp"; return 1
-  fi
-}
 
 mkd() {
   mkdir -p "$@" && cd "$@"

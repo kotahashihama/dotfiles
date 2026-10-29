@@ -83,8 +83,8 @@ alias cldrc='claude remote-control'
 
 # Anthropic Computer Use
 alias computeruse='echo "最後に表示される案内文がどうであれ、http://localhost:8050 でホストされることに注意してください。" \
-    && docker run \
-    -e ANTHROPIC_API_KEY=$ANTHROPIC_API_KEY \
+    && with-secrets docker run \
+    -e ANTHROPIC_API_KEY \
     -v $HOME/.anthropic:/home/computeruse/.anthropic \
     -p 5900:5900 \
     -p 8501:8501 \
