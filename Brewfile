@@ -315,6 +315,8 @@ cask "wechat"
 cask "wezterm@nightly"
 # Native desktop client for WhatsApp
 cask "whatsapp"
+# (Devin Desktop) Agentic IDE with AI agent command center
+cask "windsurf"
 # Drag and drop utility
 cask "yoink"
 # Gecko based web browser
