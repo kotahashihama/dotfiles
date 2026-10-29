@@ -60,8 +60,6 @@ alias grh='gr --hard'
 alias grhh='grh HEAD\^'
 alias grt='g restore'
 alias grts='grt --staged'
-# 追跡しているファイルを、リポジトリ全体で HEAD の状態へ戻す（インデックスと作業ツリーの両方）
-alias grcof='grt --source=HEAD --staged --worktree :/'
 alias grb='g rebase'
 alias grbmain='gplmain && grb main'
 alias grbmas='gplmas && grb master'
