@@ -7,7 +7,6 @@ alias prjalias='v ~/.zsh_aliases_private/project.zsh'
 alias prvalias='v ~/.zsh_aliases_private/crypto.zsh'
 alias smhalias='v ~/.zsh_aliases_private/smart_home.zsh'
 alias vimrc='v ~/.vimrc'
-alias gvimrc='v ~/.gvimrc'
 alias gitconfig='v ~/.gitconfig'
 
 # ディレクトリ・ファイル
