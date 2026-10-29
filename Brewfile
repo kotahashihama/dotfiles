@@ -1,5 +1,6 @@
 tap "bufbuild/buf"
 tap "d-kuro/tap"
+tap "domt4/autoupdate"
 tap "ethereum/ethereum"
 tap "go-task/tap"
 tap "heroku/brew"

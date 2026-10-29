@@ -6,6 +6,9 @@ set -e
 SALVAGE_DIR=~/dotfiles-salvaged-$(date +%Y%m%d%H%M%S)
 
 brew bundle
+# 公式でないタップは信頼しないと読み込まれない。信頼は ~/.homebrew/trust.json に残り、dotfiles では運ばない
+brew trust --tap domt4/autoupdate
+brew autoupdate status 2>/dev/null | grep -q "is installed and running" || brew autoupdate start 00:00 --upgrade --cleanup
 
 # 暗号化アーカイブを復号して private/ に配置する
 if [ -f "$PRIVATE_ARCHIVE" ]; then
