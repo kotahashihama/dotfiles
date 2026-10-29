@@ -57,7 +57,7 @@ allowed-tools: Bash(zsh:*) Bash(grep:*) Bash(sed:*) Bash(awk:*) Bash(sort:*) Bas
 
 ### secrets — 秘匿値
 
-`/audit-secrets` に委譲する。ここでは `scripts/secrets.env.example` と `~/.secrets/env` の**変数名が一致しているか**だけを見る。ずれていると、新規マシンで何を埋めればよいか分からなくなる。
+`/audit-secrets` に委譲する。ここでは、設定ファイルが参照している変数名が 1Password の Environment 「dotfiles」に**すべてあるか**だけを見る（名前は `mcp__plugin_1password_1password__list_variables` で引く）。足りないと、`with-secrets` 経由で起動しても値が空になる。
 
 ## 役目を終えたものを見分ける
 

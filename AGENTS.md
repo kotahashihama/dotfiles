@@ -34,7 +34,7 @@ macOS の設定ファイル一式。`~` 側は実体を持たず、このリポ�
 
 `home/` と `scripts/` に置いたものは全世界から読める。**追加・移動の前に置き場を決める**（ `.claude/rules/file-placement.md` ）。
 
-秘匿値は `~/.secrets/env` （実体は `private/.secrets/env` ）に置き、設定ファイルには参照だけを残す。**暗号化アーカイブで運ぶので手作業の復元は要らない。**
+API キーなどの秘匿値は 1Password の Environment 「dotfiles」に置き、使うコマンドを `with-secrets` 経由で起動する。設定ファイルには変数名の参照だけを残す。サービスアカウントのトークンはマシンごとにキーチェーンへ入れる（リストアのスクリプトが手順を出す）。
 
 公開側への混入は `scripts/git-hooks/pre-commit` が止める。新しい社内固有名は `private/.claude/deny-patterns.txt` へ足す。
 

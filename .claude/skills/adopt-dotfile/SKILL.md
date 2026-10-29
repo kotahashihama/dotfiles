@@ -22,7 +22,7 @@ allowed-tools: Bash(ls:*) Bash(find:*) Bash(du:*) Bash(readlink:*) Bash(grep:*) 
 
 3. **置き場を決める**: `docs/placement.md` の判断表に従う。**迷ったら private に倒す**
 
-4. **秘匿値を切り出す**: 取り込む前に中身を走査し、実値があれば `~/.secrets/env` へ移して参照に置き換える。`scripts/secrets.env.example` にも名前を足す。手順は `/audit-secrets`
+4. **秘匿値を切り出す**: 取り込む前に中身を走査し、実値があれば 1Password の Environment 「dotfiles」へ移して（アプリで足す）参照に置き換え、使うコマンドを `with-secrets` 経由にする。手順は `/audit-secrets`
 
 5. **親ディレクトリが混在型なら `PARTIAL_DIRS` に足す**: `~/.claude` のように管理対象と管理外が同居するディレクトリは、丸ごとリンクすると管理外を巻き込む。`scripts/lib.sh` の `PARTIAL_DIRS` に親を追加してから取り込む
 

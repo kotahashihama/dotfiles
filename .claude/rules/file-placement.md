@@ -16,8 +16,7 @@ paths:
 
 - ファイルを追加・移動する前に、`docs/placement.md` の判断表でどちらの置き場かを決める
 - 迷ったら **private に倒す**。後から public へ上げるのは容易、逆は取り返しがつかない
-- 秘匿値は設定ファイルへ直書きせず `~/.secrets/env`（実体は `private/.secrets/env`）へ置き、参照だけを残す
-- 秘匿値の変数を増やしたら `scripts/secrets.env.example` にも名前を足す
+- API キーなどの秘匿値は設定ファイルへ直書きせず、 1Password の Environment 「dotfiles」へ置く。使うコマンドは `with-secrets` 経由で起動し、設定ファイルには変数名の参照だけを残す（ `docs/placement.md` の「秘匿値の切り出し方」）
 - `~` へ取り込むときは `./scripts/adopt_dotfile.sh {public|private} <path>` を使う。手で `mv` + `ln` しない
 - **両側に同名のディレクトリを持つなら `scripts/lib.sh` の `PARTIAL_DIRS` へ登録する**。登録しないと、リストア時に片側が丸ごとリンクされ、**もう片側が消える**
 

@@ -11,7 +11,7 @@ brew bundle
 if [ -f "$PRIVATE_ARCHIVE" ]; then
   gpg_decrypt "$PRIVATE_ARCHIVE" | tar xzf - -C "$DOTFILES_DIR"
   chmod 700 "$DOTFILES_DIR/private/.secrets" 2>/dev/null || true
-  chmod 600 "$DOTFILES_DIR/private/.secrets/env" 2>/dev/null || true
+  chmod 600 "$DOTFILES_DIR"/private/.secrets/* 2>/dev/null || true
   rm -f "$PRIVATE_ARCHIVE"
 else
   echo "⚠️  $PRIVATE_ARCHIVE が見つかりません。publicのみリンクします"
@@ -78,13 +78,10 @@ if git -C "$DOTFILES_DIR" rev-parse --git-dir >/dev/null 2>&1; then
   git -C "$DOTFILES_DIR" config core.hooksPath scripts/git-hooks
 fi
 
-# アーカイブが無い場合は秘匿値も来ないため、雛形を用意する
-if [ ! -f ~/.secrets/env ]; then
-  mkdir -p "$DOTFILES_DIR/private/.secrets" && chmod 700 "$DOTFILES_DIR/private/.secrets"
-  cp "$DOTFILES_DIR/scripts/secrets.env.example" "$DOTFILES_DIR/private/.secrets/env"
-  chmod 600 "$DOTFILES_DIR/private/.secrets/env"
-  link_into_home "$DOTFILES_DIR/private/.secrets" ~/.secrets
-  echo "⚠️  ~/.secrets/env は雛形です。パスワードマネージャから値を入れてください"
+# API キーは 1Password の Environment から with-secrets で渡す。トークンはマシンごとにキーチェーンへ入れる
+if ! security find-generic-password -s dotfiles-op-service-account >/dev/null 2>&1; then
+  echo "⚠️  with-secrets のトークンがキーチェーンにありません。1Password のアプリを開いてから次を流してください"
+  echo "    security add-generic-password -a \"\$USER\" -s dotfiles-op-service-account -w \"\$(op item get 'dotfiles サービスアカウント' --vault Personal --fields label=password --reveal)\""
 fi
 
 if [ -d "$SALVAGE_DIR" ]; then

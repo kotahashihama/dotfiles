@@ -50,8 +50,8 @@ check "~/.claude/skills 件数"           "$(ls -A "$W/fakehome/.claude/skills" 
 # shellcheck disable=SC2088  # 表示用の文字列。実パスは別途展開している
 check "~/.codex 子要素リンク"           "$(lnk .codex/config.toml)"   "private/.codex/config.toml"
 check "deny-patterns は非リンク"        "$([ -e "$W/fakehome/.claude/deny-patterns.txt" ] && echo あり || echo なし)" "なし"
-check "秘匿値がアーカイブから復元"      "$([ -f "$W/fakehome/.secrets/env" ] && echo あり || echo なし)" "あり"
-check "秘匿値の権限"                    "$(ls -l "$W/fakehome/.secrets/env" 2>/dev/null | cut -c1-10)" "-rw-------"
+check "秘匿値がアーカイブから復元"      "$([ -f "$W/fakehome/.secrets/gcp-worklog.json" ] && echo あり || echo なし)" "あり"
+check "秘匿値の権限"                    "$(ls -l "$W/fakehome/.secrets/gcp-worklog.json" 2>/dev/null | cut -c1-10)" "-rw-------"
 check "リポジトリ実体 (home)"           "$(cat "$W/repo/home/.zshrc" >/dev/null 2>&1 && echo 無傷 || echo 破損)" "無傷"
 check "リポジトリ実体 (private)"        "$(cat "$W/repo/private/.zsh_aliases_private/project.zsh" >/dev/null 2>&1 && echo 無傷 || echo 破損)" "無傷"
 check "メモリが projects 配下へ復元"    "$(ls -A "$W/fakehome/.claude/projects" 2>/dev/null | wc -l | tr -d ' ' | awk '{print ($1>0)?"あり":"なし"}')" "あり"
@@ -102,7 +102,7 @@ check "終了コード"              "$(restore)" "0"
 check "警告が出る"              "$(grep -c '見つかりません' "$W/out.log")" "1"
 check "publicはリンクされる" "$(lnk .zshrc)" "home/.zshrc"
 check "private 由来は張られない" "$([ -e "$W/fakehome/.aws" ] && echo あり || echo なし)" "なし"
-check "秘匿値の雛形が置かれる"  "$([ -f "$W/fakehome/.secrets/env" ] && echo あり || echo なし)" "あり"
+check "平文の秘匿値の雛形は置かれない" "$([ -e "$W/fakehome/.secrets/env" ] && echo あり || echo なし)" "なし"
 
 echo "── 7. バックアップの中身 ──"
 setup; backup
@@ -110,7 +110,7 @@ check "アーカイブが作られる"     "$([ -f "$W/priv.tar.gz.gpg" ] && ech
 check "AES-256 で暗号化"         "$(file -b "$W/priv.tar.gz.gpg" | grep -c 'AES with 256-bit')" "1"
 check "トップレベルは private"   "$(inarc | cut -d/ -f1 | sort -u | tr '\n' ' ' | sed 's/ $//')" "private"
 check "ソケットが除外される"     "$(inarc | grep -c 'ssh/agent/')" "0"
-check "秘匿値が含まれる"         "$(inarc | grep -c 'private/.secrets/env$')" "1"
+check "秘匿値が含まれる"         "$(inarc | grep -c 'private/.secrets/gcp-worklog.json$')" "1"
 check "macOS 設定が含まれる"     "$(inarc | grep -c 'macos-defaults/.*plist' | awk '{print ($1>0)?"あり":"なし"}')" "あり"
 check "関連付けが含まれる"       "$(inarc | grep -c 'associations/duti.txt')" "1"
 check "テキスト置換が含まれる"   "$(inarc | grep -c 'keyboard/text-replacements.tsv')" "1"
@@ -147,7 +147,6 @@ sh scripts/git-hooks/commit-msg "$W/msg2" >/dev/null 2>&1
 check "コメント行だけなら通す" "$?" "0"
 
 echo "── 9. 整合性 ──"
-check "秘匿値の雛形が実体と一致" "$(diff <(grep -oE '^export [A-Z_]+' "$D/private/.secrets/env" | sort) <(grep -oE '^export [A-Z_]+' "$D/scripts/secrets.env.example" | sort) >/dev/null && echo 一致 || echo 不一致)" "一致"
 # 分割対象（PARTIAL_DIRS）は両側に同名で存在してよい。中の別々のものを持つため
 check "public/private で名前衝突なし" "$(comm -12 <(ls -A "$D/home" | sort) <(ls -A "$D/private" | sort) | grep -vxF "$( . "$D/scripts/lib.sh" >/dev/null 2>&1; printf '%s\n' "$PARTIAL_DIRS" | cut -d/ -f1 | sort -u )" | wc -l | tr -d ' ')" "0"
 check "追跡ファイルに private なし" "$(git -C "$D" ls-files | grep -c '^private/')" "0"

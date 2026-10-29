@@ -5,10 +5,9 @@ Brewfile.old
 # 非公開層。private_dotfiles.zip で持ち回す
 /private/
 
-# 秘匿値の実体（雛形の scripts/secrets.env.example のみ追跡する）
+# 秘匿値の実体を誤って置いたときの網
 secrets.env
 *.env
-!scripts/secrets.env.example
 
 # リストア時の退避先
 /dotfiles-salvaged-*
