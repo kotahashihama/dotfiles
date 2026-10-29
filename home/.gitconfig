@@ -5,6 +5,8 @@
 	email = kotahashihama@gmail.com
 [push]
 	default = current
+	autoSetupRemote = true
+	useForceIfIncludes = true
 [pull]
 	ff = only
 	rebase = false
@@ -14,6 +16,8 @@
 	autocrlf = false
 	editor = vim
 	pager = delta
+	fsmonitor = true
+	untrackedCache = true
 [interactive]
 	diffFilter = delta --color-only
 [delta]
@@ -37,3 +41,22 @@
 	autostash = true
 	abbreviateCommands = true
 	autosquash = true
+	updateRefs = true
+[fetch]
+	prune = true
+[rerere]
+	enabled = true
+	autoupdate = true
+[diff]
+	algorithm = histogram
+	colorMoved = plain
+[branch]
+	sort = -committerdate
+[column]
+	ui = auto
+[help]
+	autocorrect = prompt
+[commit]
+	verbose = true
+[include]
+	path = ~/.config/git/maintenance
