@@ -137,7 +137,7 @@ bindkey '^t' fzf-worktree
 
 # git branch (Ctrl + E)
 function fzf-git-branch() {
-  local selected_branch=$(git branch | sed "s/*//g" | sed "s/ //g" | fzf --prompt "❯ " \
+  local selected_branch=$(git branch --format='%(refname:short)' | fzf --prompt "❯ " \
     --preview 'git log --oneline --decorate -15 --color=always {}' \
     --preview-window 'right,60%')
   if [ -n "$selected_branch" ]; then
@@ -147,25 +147,28 @@ function fzf-git-branch() {
 zle -N fzf-git-branch
 bindkey '^e' fzf-git-branch
 
+# GitHub に private のリポジトリを作り、ghq の置き場へ SSH で取ってくる
 function create-project() {
-  REPO_NAME=$1
-
-  gh repo create $REPO_NAME --private --confirm
-  ghq get git@github.com:kotahashihama/$REPO_NAME.git
+  local owner=$(gh api user -q .login) || return
+  gh repo create "$1" --private && ghq get -p "$owner/$1"
 }
 
+# GitHub のリポジトリと、手元の作業ツリーを消す
 function delete-project() {
-  REPO_NAME=$1
+  local owner=$(gh api user -q .login) || return
+  # 名前の部分一致で探すと、名前を含む別のリポジトリまで消える
+  local dir=$(ghq list --full-path --exact "$owner/$1")
 
-  echo -n "本当にリポジトリを削除してよろしいですか？ (Y/n) "
-  read -r CONFIRM
+  print -n "本当にリポジトリを削除してよろしいですか？ (Y/n) "
+  local confirm
+  read -r confirm
 
-  if [ "$CONFIRM" = "Y" ] || [ "$CONFIRM" = "y" ] || [ "$CONFIRM" = "" ]; then
-    gh repo delete $REPO_NAME --yes
-    ghq list --full-path | grep $REPO_NAME | xargs rm -rf
-    echo "Repository deleted successfully"
+  if [[ -z $confirm || $confirm == [Yy] ]]; then
+    gh repo delete "$owner/$1" --yes || return
+    [[ -n $dir ]] && command rm -rf -- "$dir"
+    print "Repository deleted successfully"
   else
-    echo "Deletion cancelled"
+    print "Deletion cancelled"
   fi
 }
 
@@ -187,61 +190,14 @@ eval "$(atuin init zsh --disable-up-arrow)"
 export CARAPACE_BRIDGES='zsh,fish,bash'
 source <(carapace _carapace zsh)
 
-# pnpm
-# クォート内の ~ は展開されないため $HOME を使う
-export PNPM_HOME="$HOME/Library/pnpm"
-export PATH="$PNPM_HOME:$PATH"
-
-# bun
-export BUN_INSTALL="$HOME/.bun"
-export PATH="$BUN_INSTALL/bin:$PATH"
-
-# Dart
-export PATH="$PATH":"$HOME/.pub-cache/bin"
-
-# Windsurf
-export PATH="/Users/kotahashihama/.codeium/windsurf/bin:$PATH"
-
 # Kiro
 [[ "$TERM_PROGRAM" == "kiro" ]] && . "$(kiro --locate-shell-integration-path zsh)"
 
 # エイリアス
 . ~/.zsh_aliases/main.zsh
 
-# シェルオプション
-setopt interactive_comments
-setopt correct
-unsetopt correct_all
-setopt noautomenu
-setopt histverify
-setopt extended_history
-setopt magic_equal_subst
-
-#
-# AWS
-#
-set-awssession-token() {
-  profile_name=$1
-  code=$2
-
-  mfa_device=$(cat ~/.aws/config | grep -A 4 $profile_name | grep mfa-device | cut -f 3 -d " ")
-  session_token=$(aws sts get-session-token --serial-number $mfa_device --token-code $code --profile $profile_name)
-  export AWS_ACCESS_KEY_ID=$(echo $session_token | jq -r .Credentials.AccessKeyId)
-  export AWS_SECRET_ACCESS_KEY=$(echo $session_token | jq -r .Credentials.SecretAccessKey)
-  export AWS_SESSION_TOKEN=$(echo $session_token | jq -r .Credentials.SessionToken)
-}
-
-release-awssession-token() {
-  export -n AWS_ACCESS_KEY_ID
-  export -n AWS_SECRET_ACCESS_KEY
-  export -n AWS_SESSION_TOKEN
-}
-
 # Terraform
 export GODEBUG=asyncpreemptoff=1
-
-# uv / rye
-[[ -f "$HOME/.local/bin/env" ]] && . "$HOME/.local/bin/env"
 
 # clauth
 # 補完ファイルは #compdef 形式なので、source だけでは登録されない（compdef で結ぶ）。
@@ -251,5 +207,19 @@ if [[ -f "$HOME/.clauth/completions/clauth.zsh" ]]; then
   compdef _clauth clauth
 fi
 
-# Claude Code は起動スクリプト経由で起動する（autoMode の信頼先を --settings で渡すため。~/.claude/bin/claude）
-export PATH="$HOME/.claude/bin:$PATH"
+#
+# PATH
+#
+# 上に書いたものほど先に探す。-U で重複を落とすので、入れ子のシェルでも同じ並びになる
+export PNPM_HOME="$HOME/Library/pnpm"
+export BUN_INSTALL="$HOME/.bun"
+typeset -U path
+path=(
+  # Claude Code は起動スクリプト経由で起動する（autoMode の信頼先を --settings で渡すため。~/.claude/bin/claude）
+  "$HOME/.claude/bin"
+  "$HOME/.local/bin"
+  /Applications/Devin.app/Contents/Resources/app/bin
+  "$BUN_INSTALL/bin"
+  "$PNPM_HOME"
+  $path
+)

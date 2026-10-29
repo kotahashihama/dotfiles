@@ -45,13 +45,14 @@ setopt CDABLE_VARS
 setopt MULTIOS
 setopt PROMPT_SUBST          # プロンプト内で変数と \$(...) を展開する。Powerlevel10k が要求する
 setopt EXTENDED_GLOB
+setopt MAGIC_EQUAL_SUBST     # --opt=~/path の = の後ろも展開する
 unsetopt CLOBBER             # > で既存ファイルを上書きしない。上書きは >| で行う
 
 # 補完
 setopt COMPLETE_IN_WORD      # 単語の途中からでも補完する
 setopt ALWAYS_TO_END         # 補完後にカーソルを末尾へ
 setopt PATH_DIRS             # スラッシュを含むコマンド名もパス探索する
-setopt AUTO_MENU
+unsetopt AUTO_MENU           # Tab の2回目で候補を順に選ばない。候補の選択は fzf-tab が受け持つ
 setopt AUTO_LIST
 setopt AUTO_PARAM_SLASH
 unsetopt MENU_COMPLETE       # 先頭候補を自動選択しない
@@ -61,3 +62,4 @@ unsetopt CASE_GLOB           # グロブを大文字小文字を区別せず照�
 # その他
 setopt BEEP
 setopt CORRECT               # コマンド名の打ち間違いを指摘する
+unsetopt CORRECT_ALL         # 引数までは指摘しない

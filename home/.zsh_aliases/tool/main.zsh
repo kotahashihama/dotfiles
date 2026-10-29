@@ -39,14 +39,14 @@ alias vs.='vs .'
 alias cs='cursor'
 alias cs.='cs .'
 
-# Windsurf
-alias ws='windsurf'
+# Devin（旧 Windsurf）
+alias ws='devin-desktop'
 alias ws.='ws .'
 
 # Docker
 alias d='docker'
 alias dc='docker-compose'
-alias dce='dc exec $1'
+alias dce='dc exec'
 alias dcu='dc up -d'
 alias dcun='dc build --no-cache && dcu'
 alias dcd='dc down -v'
