@@ -78,7 +78,7 @@ check "~/Documents は丸ごとリンクされない" "$([ -L "$W/fakehome/Docum
 check "~/.agents/skills にスキルのリンクがある" "$(find "$W/fakehome/.agents/skills" -maxdepth 1 -type l | wc -l | tr -d ' ')" "$(ls -A "$W/fakehome/.claude/skills" | wc -l | tr -d ' ')"
 
 echo "── 3. シェルの起動 ──"
-check "エイリアスが引ける" "$(HOME="$W/fakehome" zsh -ic 'source ~/.zsh_aliases/main.zsh; for a in cldw ssml gst dcu; do alias $a >/dev/null 2>&1 || echo NG; done; (( $+functions[cld] )) || echo NG' 2>/dev/null | grep -c NG)" "0"
+check "エイリアスが引ける" "$(HOME="$W/fakehome" zsh -ic 'source ~/.zsh_aliases/main.zsh; for a in cldw kacof gst dcu; do alias $a >/dev/null 2>&1 || echo NG; done; (( $+functions[cld] )) || echo NG' 2>/dev/null | grep -c NG)" "0"
 check "秘匿値が空でも起動" "$(HOME="$W/fakehome" zsh -ic 'echo OK' 2>/dev/null | grep -c OK)" "1"
 
 echo "── 4. 冪等性（2回目のリストア） ──"
