@@ -92,6 +92,13 @@ fi
 
 report_links
 
+# git の定期整理を launchd に登録する。対象の一覧は非公開の ~/.config/git/maintenance にあり、
+# ~/.gitconfig から include で読む。一覧が無いうちに登録すると、リポジトリのパスが公開側の ~/.gitconfig に書かれる
+if [ -z "$DRY_RUN" ] && [ -d "$DOTFILES_DIR/.git" ] && [ -f ~/.config/git/maintenance ]; then
+  git -C "$DOTFILES_DIR" maintenance start \
+    || echo "⚠️  git maintenance start に失敗しました。dotfiles のリポジトリで手で流してください"
+fi
+
 # Codex にも同じスキルを渡す。~/.claude/skills/ の各スキルへ ~/.agents/skills/ からリンクを張る
 if [ -z "$DRY_RUN" ]; then
   bash "$DOTFILES_DIR/scripts/link_agents_skills.sh" \
