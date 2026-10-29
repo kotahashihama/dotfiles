@@ -1,0 +1,6 @@
+#!/bin/sh
+#
+# bee（Backlog の CLI）を、1Password の Environment の BACKLOG_SPACE・BACKLOG_API_KEY で動かす
+# bee auth login はキーを設定ファイルに残すので使わない
+#
+exec "$(dirname "$0")/with-secrets" "$HOME/.bun/bin/bee" "$@"

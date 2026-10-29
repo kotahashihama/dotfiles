@@ -12,8 +12,16 @@
   },
   "permissions": {
     "allow": [
-      "mcp__backlog__get_*",
-      "mcp__backlog__count_issues",
+      "Bash(bee issue view:*)",
+      "Bash(bee issue list:*)",
+      "Bash(bee issue count:*)",
+      "Bash(bee issue attachments:*)",
+      "Bash(bee project view:*)",
+      "Bash(bee project list:*)",
+      "Bash(bee document view:*)",
+      "Bash(bee document tree:*)",
+      "Bash(bee wiki view:*)",
+      "Bash(~/.claude/scripts/backlog-download-attachment.py:*)",
       "mcp__plugin_figma_figma__get_*",
       "mcp__plugin_figma_figma__list_*",
       "mcp__plugin_figma_figma__search_design_system",
@@ -21,9 +29,9 @@
       "Bash(~/.claude/scripts/db-select.py:*)"
     ],
     "deny": [
-      "mcp__backlog__add_project",
-      "mcp__backlog__update_project",
-      "mcp__backlog__delete_project"
+      "Bash(bee project create:*)",
+      "Bash(bee project edit:*)",
+      "Bash(bee project delete:*)"
     ],
     "defaultMode": "auto"
   },
@@ -98,7 +106,7 @@
         ]
       },
       {
-        "matcher": "mcp__.*",
+        "matcher": "mcp__.*|Bash",
         "hooks": [
           {
             "type": "command",
