@@ -13,7 +13,6 @@ alias pathc='pwd | pbcopy && echo 現在のパスがクリップボードにコ�
 alias ..2='../..'
 alias ..3='../../..'
 alias o.='o .'
-alias rm='rm -rf'
 alias -g @g='| grep'
 alias -g @l='| less'
 

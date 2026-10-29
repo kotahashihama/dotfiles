@@ -51,7 +51,7 @@ check "~/.codex 子要素リンク"           "$(lnk .codex/config.toml)"   "pri
 check "deny-patterns は非リンク"        "$([ -e "$W/fakehome/.claude/deny-patterns.txt" ] && echo あり || echo なし)" "なし"
 check "平文の秘匿値の置き場を作らない"  "$([ -e "$W/fakehome/.secrets" ] && echo あり || echo なし)" "なし"
 check "リポジトリ実体 (home)"           "$(cat "$W/repo/home/.zshrc" >/dev/null 2>&1 && echo 無傷 || echo 破損)" "無傷"
-check "リポジトリ実体 (private)"        "$(cat "$W/repo/private/.zsh_aliases_private/project.zsh" >/dev/null 2>&1 && echo 無傷 || echo 破損)" "無傷"
+check "リポジトリ実体 (private)"        "$(cat "$W/repo/private/.zsh_aliases_private/main.zsh" >/dev/null 2>&1 && echo 無傷 || echo 破損)" "無傷"
 check "メモリが projects 配下へ復元"    "$(ls -A "$W/fakehome/.claude/projects" 2>/dev/null | wc -l | tr -d ' ' | awk '{print ($1>0)?"あり":"なし"}')" "あり"
 check "メモリが ~ 直下に張られない"     "$([ -e "$W/fakehome/.claude-memory" ] && echo あり || echo なし)" "なし"
 # 実体で残ってよいのは PARTIAL_DIRS のトップレベル（子を個別にリンクするため）と、

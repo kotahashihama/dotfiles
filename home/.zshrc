@@ -196,8 +196,6 @@ source <(carapace _carapace zsh)
 # エイリアス
 . ~/.zsh_aliases/main.zsh
 
-# Terraform
-export GODEBUG=asyncpreemptoff=1
 
 # clauth
 # 補完ファイルは #compdef 形式なので、source だけでは登録されない（compdef で結ぶ）。
