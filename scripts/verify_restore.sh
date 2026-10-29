@@ -44,14 +44,12 @@ check ".zshrc のリンク先"               "$(lnk .zshrc)"               "home
 check ".zsh_aliases のリンク先"         "$(lnk .zsh_aliases)"         "home/.zsh_aliases"
 check ".zsh_aliases_private のリンク先" "$(lnk .zsh_aliases_private)" "private/.zsh_aliases_private"
 check ".aws のリンク先"                 "$(lnk .aws)"                 "private/.aws"
-check ".secrets のリンク先"             "$(lnk .secrets)"             "private/.secrets"
 # shellcheck disable=SC2088  # 表示用の文字列。実パスは別途展開している
 check "~/.claude/skills 件数"           "$(ls -A "$W/fakehome/.claude/skills" 2>/dev/null | wc -l | tr -d ' ')" "$SKILLS"
 # shellcheck disable=SC2088  # 表示用の文字列。実パスは別途展開している
 check "~/.codex 子要素リンク"           "$(lnk .codex/config.toml)"   "private/.codex/config.toml"
 check "deny-patterns は非リンク"        "$([ -e "$W/fakehome/.claude/deny-patterns.txt" ] && echo あり || echo なし)" "なし"
-check "秘匿値がアーカイブから復元"      "$([ -f "$W/fakehome/.secrets/gcp-worklog.json" ] && echo あり || echo なし)" "あり"
-check "秘匿値の権限"                    "$(ls -l "$W/fakehome/.secrets/gcp-worklog.json" 2>/dev/null | cut -c1-10)" "-rw-------"
+check "平文の秘匿値の置き場を作らない"  "$([ -e "$W/fakehome/.secrets" ] && echo あり || echo なし)" "なし"
 check "リポジトリ実体 (home)"           "$(cat "$W/repo/home/.zshrc" >/dev/null 2>&1 && echo 無傷 || echo 破損)" "無傷"
 check "リポジトリ実体 (private)"        "$(cat "$W/repo/private/.zsh_aliases_private/project.zsh" >/dev/null 2>&1 && echo 無傷 || echo 破損)" "無傷"
 check "メモリが projects 配下へ復元"    "$(ls -A "$W/fakehome/.claude/projects" 2>/dev/null | wc -l | tr -d ' ' | awk '{print ($1>0)?"あり":"なし"}')" "あり"
@@ -59,7 +57,7 @@ check "メモリが ~ 直下に張られない"     "$([ -e "$W/fakehome/.claude
 # 実体で残ってよいのは PARTIAL_DIRS のトップレベル（子を個別にリンクするため）と、
 # Desktop・gpg が作る .gnupg・npm が作る .npm・uv が作る .cache と .local だけ。固定リストにすると
 # PARTIAL_DIRS を増やすたびに偽の失敗が出る。
-expected_real=$( { . "$D/scripts/lib.sh"; printf '%s\n' "$PARTIAL_DIRS"; local_paths partial; } | cut -d/ -f1 | sort -u; printf 'Desktop\n.gnupg\n.secrets\n.npm\n.cache\n.local\n.agents\n' )
+expected_real=$( { . "$D/scripts/lib.sh"; printf '%s\n' "$PARTIAL_DIRS"; local_paths partial; } | cut -d/ -f1 | sort -u; printf 'Desktop\n.gnupg\n.npm\n.cache\n.local\n.agents\n' )
 unexpected=$(find "$W/fakehome" -maxdepth 1 -type d ! -path "$W/fakehome" -exec basename {} \; | sort | comm -23 - <(printf '%s\n' "$expected_real" | sort -u))
 check "~ 直下に想定外の実体が無い"      "$(printf '%s' "$unexpected" | grep -c . | tr -d ' ')" "0"
 # 指示とスキルを Codex にも渡す（home/.claude/rules/agent_config.md）
@@ -102,7 +100,7 @@ check "終了コード"              "$(restore)" "0"
 check "警告が出る"              "$(grep -c '見つかりません' "$W/out.log")" "1"
 check "publicはリンクされる" "$(lnk .zshrc)" "home/.zshrc"
 check "private 由来は張られない" "$([ -e "$W/fakehome/.aws" ] && echo あり || echo なし)" "なし"
-check "平文の秘匿値の雛形は置かれない" "$([ -e "$W/fakehome/.secrets/env" ] && echo あり || echo なし)" "なし"
+check "平文の秘匿値の置き場を作らない" "$([ -e "$W/fakehome/.secrets" ] && echo あり || echo なし)" "なし"
 
 echo "── 7. バックアップの中身 ──"
 setup; backup
@@ -110,7 +108,7 @@ check "アーカイブが作られる"     "$([ -f "$W/priv.tar.gz.gpg" ] && ech
 check "AES-256 で暗号化"         "$(file -b "$W/priv.tar.gz.gpg" | grep -c 'AES with 256-bit')" "1"
 check "トップレベルは private"   "$(inarc | cut -d/ -f1 | sort -u | tr '\n' ' ' | sed 's/ $//')" "private"
 check "ソケットが除外される"     "$(inarc | grep -c 'ssh/agent/')" "0"
-check "秘匿値が含まれる"         "$(inarc | grep -c 'private/.secrets/gcp-worklog.json$')" "1"
+check "平文の秘匿値が含まれない"   "$(inarc | grep -c 'private/.secrets/')" "0"
 check "macOS 設定が含まれる"     "$(inarc | grep -c 'macos-defaults/.*plist' | awk '{print ($1>0)?"あり":"なし"}')" "あり"
 check "関連付けが含まれる"       "$(inarc | grep -c 'associations/duti.txt')" "1"
 check "テキスト置換が含まれる"   "$(inarc | grep -c 'keyboard/text-replacements.tsv')" "1"

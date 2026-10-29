@@ -10,8 +10,6 @@ brew bundle
 # 暗号化アーカイブを復号して private/ に配置する
 if [ -f "$PRIVATE_ARCHIVE" ]; then
   gpg_decrypt "$PRIVATE_ARCHIVE" | tar xzf - -C "$DOTFILES_DIR"
-  chmod 700 "$DOTFILES_DIR/private/.secrets" 2>/dev/null || true
-  chmod 600 "$DOTFILES_DIR"/private/.secrets/* 2>/dev/null || true
   rm -f "$PRIVATE_ARCHIVE"
 else
   echo "⚠️  $PRIVATE_ARCHIVE が見つかりません。publicのみリンクします"
