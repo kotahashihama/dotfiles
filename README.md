@@ -204,6 +204,7 @@ zsh の設定は `home/.config/zsh/` に 3 分割してある（`options` / `uti
 
 - gh の認証（`gh auth login`）
 - `with-secrets` のトークンをキーチェーンへ入れる（リストアの最後に出るコマンドを流す）
+- `takumi-guard-sync` を流す（npm・bun・pip・uv・Go・Bundler が Takumi Guard を通して取るようにする）
 
 AltTab と Raycast の設定は `defaults` で運ぶので、手で入れ直す必要はない（アプリ本体は `Brewfile` から入る）。
 

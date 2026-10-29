@@ -82,6 +82,7 @@ fi
 if ! security find-generic-password -s dotfiles-op-service-account >/dev/null 2>&1; then
   echo "⚠️  with-secrets のトークンがキーチェーンにありません。1Password のアプリを開いてから次を流してください"
   echo "    security add-generic-password -a \"\$USER\" -s dotfiles-op-service-account -w \"\$(op item get 'dotfiles サービスアカウント' --vault Personal --fields label=password --reveal)\""
+  echo "    入れたら takumi-guard-sync を流し、パッケージ管理に Takumi Guard のトークンを書き出してください"
 fi
 
 if [ -d "$SALVAGE_DIR" ]; then

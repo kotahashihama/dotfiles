@@ -1,0 +1,83 @@
+#!/usr/bin/env python3
+"""Takumi Guard のトークンを、各パッケージ管理のユーザー単位の設定へ書き出す。
+
+使い方: takumi-guard-sync
+  トークンは 1Password の Environment の TAKUMI_GUARD_API_KEY を with-secrets から受け取る。
+  新しいマシンを用意したときと、トークンを替えたときに流す。
+
+設定はどれもインストールのたびにファイルからトークンを読み、実行時に値を渡す口が無い
+（Go は ~/.netrc の書式が決まっている）。そのためファイルへ書き、本人だけが読める権限にする。
+値はコマンドの引数に載せない（ps に出るため）。
+"""
+import os
+import re
+import subprocess
+import sys
+
+NAME = "TAKUMI_GUARD_API_KEY"
+HOME = os.path.expanduser("~")
+
+token = os.environ.get(NAME)
+if not token and not os.environ.get("WITH_SECRETS_REEXEC"):
+    os.environ["WITH_SECRETS_REEXEC"] = "1"
+    wrapper = os.path.join(HOME, ".claude/bin/with-secrets")
+    os.execv(wrapper, [wrapper, sys.executable, *sys.argv])
+if not token:
+    sys.exit(f"takumi-guard-sync: {NAME} が 1Password の Environment にありません")
+
+# pip・uv・Bundler は URL の利用者情報としてトークンを渡す（ユーザー名は使われない）
+userinfo = "token:" + token
+
+
+def write(path, text):
+    path = os.path.join(HOME, path)
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
+    with os.fdopen(fd, "w", encoding="utf-8") as f:
+        f.write(text)
+    os.chmod(path, 0o600)
+    print(f"書いた: ~/{os.path.relpath(path, HOME)}")
+
+
+def replace_lines(path, keep, new_lines):
+    """keep(line) が偽の行を落とし、new_lines を足す。ほかの設定は残す。"""
+    full = os.path.join(HOME, path)
+    old = open(full, encoding="utf-8").read().splitlines() if os.path.exists(full) else []
+    write(path, "\n".join([l for l in old if keep(l)] + new_lines) + "\n")
+
+
+# npm・pnpm（~/.npmrc を読む）
+replace_lines(
+    ".npmrc",
+    lambda l: not re.match(r"\s*(registry\s*=|//npm\.flatt\.tech/:)", l),
+    ["registry=https://npm.flatt.tech/", f"//npm.flatt.tech/:_authToken={token}"],
+)
+
+# bun
+write(".bunfig.toml", f'[install]\nregistry = {{ url = "https://npm.flatt.tech/", token = "{token}" }}\n')
+
+# pip
+write(".config/pip/pip.conf", f"[global]\nindex-url = https://{userinfo}@pypi.flatt.tech/simple/\n")
+
+# uv（pip.conf を読まない）
+write(".config/uv/uv.toml", f'[[index]]\nurl = "https://{userinfo}@pypi.flatt.tech/simple/"\ndefault = true\n')
+
+# Go。direct を付けないので、非公開のモジュールは GOPRIVATE で Guard を通さずに取る
+# GOPRIVATE は組織名を含むので、このファイルには書かず Environment から受け取る
+go_env = ["GOPROXY=https://golang.flatt.tech"]
+if os.environ.get("GOPRIVATE"):
+    go_env.append(f"GOPRIVATE={os.environ['GOPRIVATE']}")
+subprocess.run(["go", "env", "-w", *go_env], check=True)
+print("書いた: go env の GOPROXY・GOPRIVATE")
+replace_lines(
+    ".netrc",
+    lambda l: not l.startswith("machine golang.flatt.tech "),
+    [f"machine golang.flatt.tech login token password {token}"],
+)
+
+# Bundler（gem install は Bundler の設定を読まないので、Guard を通らない）
+replace_lines(
+    ".bundle/config",
+    lambda l: not l.startswith("BUNDLE_MIRROR__HTTPS://RUBYGEMS__ORG/:"),
+    [f'BUNDLE_MIRROR__HTTPS://RUBYGEMS__ORG/: "https://{userinfo}@rubygems.flatt.tech/"'],
+)
