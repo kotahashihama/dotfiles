@@ -48,12 +48,15 @@ allowed-tools: Bash(zsh:*) Bash(grep:*) Bash(sed:*) Bash(awk:*) Bash(sort:*) Bas
 - `brew bundle check` で Brewfile の記載どおり入っているか
 - **逆方向も見る**: 入っているのに Brewfile に無いものは、次のマシンで消える
 - エイリアスが参照するツールが Brewfile にあるかを突き合わせる
+- **Homebrew の外で入れたアプリと CLI を探す**: `/Applications` のアプリと、PATH にある実体のコマンドのうち、cask か formula があるものは `brew install --cask --adopt` で取り込み、Brewfile へ足す。取り込めない実体（ `--adopt` が既存のファイルで止まる）は、退避してから入れ直す
+- 非推奨・無効の cask と formula（ `brew info --json=v2 --installed` の `deprecated` / `disabled` ）を拾う。無効のものは新しいマシンに入らない
 
 ### links — シンボリックリンク
 
 - `~` のリンクが**切れていないか**（リンク先が存在するか）
 - 管理対象なのに `~` が**実体のまま**になっていないか
 - `home/` と `private/` で**同名が衝突**していないか
+- **管理する範囲を見直す**: 手で書いた設定はリンクにして管理し、キャッシュ・状態・ログ・認証情報は管理から外す。`~` と `~/.config` の下で、管理していない設定を拾って取り込む。逆に、管理しているもののうちアプリが書き出す状態を外す。`~/.config` は中身ごとにリンクするので、外すものは `~` 側の実体に戻す
 
 ### secrets — 秘匿値
 
