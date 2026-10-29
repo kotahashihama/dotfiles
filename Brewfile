@@ -54,6 +54,8 @@ brew "eza"
 brew "fd"
 # Command-line fuzzy finder written in Go
 brew "fzf"
+# Extremely fast Python package installer and resolver, written in Rust
+brew "uv"
 # Image format providing lossless and lossy compression for web images
 brew "webp"
 # Graphics library to dynamically manipulate images
@@ -120,8 +122,6 @@ brew "ni"
 brew "oh-my-posh"
 # AI coding agent, built for the terminal
 brew "opencode"
-# Object-relational database system
-brew "postgresql@14"
 # Framework for managing multi-language pre-commit hooks
 brew "pre-commit"
 # Go support for Google's protocol buffers
@@ -196,8 +196,6 @@ cask "bitwarden"
 cask "blender"
 # OpenAI's official ChatGPT desktop app
 cask "chatgpt"
-# OpenAI's official browser with ChatGPT built in
-cask "chatgpt-atlas"
 # Anthropic's official Claude AI desktop app
 cask "claude"
 # Terminal-based AI coding assistant
@@ -298,21 +296,15 @@ cask "telegram"
 cask "termius"
 # Web browser
 cask "thebrowsercompany-dia"
-# Configurator of compatible keyboards in real time
-cask "vial"
 # Open-source code editor
 cask "visual-studio-code"
 # Access etextbooks
 cask "vitalsource-bookshelf"
 # Rust-based terminal
-# Terminal emulator
-cask "wave"
 # Video communication and virtual meeting platform
 cask "webex"
 # Free messaging and calling application
 cask "wechat"
-# GPU-accelerated cross-platform terminal emulator and multiplexer
-cask "wezterm@nightly"
 # Native desktop client for WhatsApp
 cask "whatsapp"
 # Drag and drop utility
