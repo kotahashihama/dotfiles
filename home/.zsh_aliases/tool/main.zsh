@@ -40,12 +40,12 @@ alias cs='cursor'
 alias cs.='cs .'
 
 # Devin（旧 Windsurf）
-alias ws='devin-desktop'
-alias ws.='ws .'
+alias dvn='devin-desktop'
+alias dvn.='dvn .'
 
 # Docker
 alias d='docker'
-alias dc='docker-compose'
+alias dc='docker compose'
 alias dce='dc exec'
 alias dcu='dc up -d'
 alias dcun='dc build --no-cache && dcu'
@@ -55,7 +55,8 @@ alias dii='d image inspect'
 alias dci='d container inspect'
 alias dvi='d volume inspect'
 alias dni='d network inspect'
-alias dbls='dc down --rmi all --volumes'
+# コンテナに加えて、イメージとボリュームまで消す
+alias dcda='dc down --rmi all --volumes'
 
 # Terraform
 alias tf='terraform'
