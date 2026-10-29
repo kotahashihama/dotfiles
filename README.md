@@ -152,7 +152,8 @@ dotfiles では運ばない。**新マシンで消えるので、移行前に確
 `^q` `^g` `^t` `^e` は右側にプレビューが出る。`cd` は zoxide が置き換えており、**よく行く場所は
 部分名で飛べる**。明示的なパス指定は従来どおり。
 
-zsh の設定は `home/.config/zsh/` に 3 分割してある（`options` / `utility` / `keybindings`）。
+`.zshrc` は読み込む順序だけを持ち、中身は `home/.config/zsh/` に役割ごとに分けてある（`options` / `completion` / `keybindings` / `tools` / `widgets` / `functions` / `path`）。
+エイリアスは `home/.zsh_aliases/` に種類ごとに分け、`main.zsh` から読む。
 プラグインは `home/.config/sheldon/plugins.toml`。
 
 ## Claude Code の資産

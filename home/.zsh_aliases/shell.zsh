@@ -1,10 +1,9 @@
 #
-# Prezto の utility から引き継いだもの
+# シェルの基本
 #
-# 84 個あったうち、実際に効くものだけを残した。落としたのは
-# 使っていないツール向け（ebuild / bower / rake / heroku / ftp / gist / ack）、
-# macOS 以外のプラットフォーム向け（cygstart / termux / xclip）、
-# eza へ置き換えた ls 系。
+# 前半は Prezto の utility から引き継いだもの。84 個あったうち、実際に効くものだけを残した。
+# 落としたのは使っていないツール向け（ebuild / bower / rake / heroku / ftp / gist / ack）、
+# macOS 以外のプラットフォーム向け（cygstart / termux / xclip）、eza へ置き換えた ls 系。
 
 # 打ち間違いの指摘（CORRECT）を、引数がパスになるコマンドでは黙らせる
 alias cp='nocorrect cp'
@@ -52,3 +51,28 @@ alias diffu='diff --unified'
 alias df='df -kh'
 alias du='du -kh'
 alias http-serve='python3 -m http.server'
+
+# 設定ファイルの編集
+alias zshrc='v ~/.zshrc'
+alias mainalias='v ~/.zsh_aliases/main.zsh'
+alias toolalias='v ~/.zsh_aliases/tool/main.zsh'
+alias galias='v ~/.zsh_aliases/tool/git.zsh'
+alias cryptoalias='v ~/.zsh_aliases_private/crypto.zsh'
+alias smhalias='v ~/.zsh_aliases_private/smart_home.zsh'
+alias vimrc='v ~/.vimrc'
+alias gitconfig='v ~/.gitconfig'
+
+# ディレクトリ・ファイル
+alias pathc='pwd | pbcopy && echo 現在のパスがクリップボードにコピーされました'
+alias ..2='../..'
+alias ..3='../../..'
+alias o.='o .'
+alias -g @g='| grep'
+alias -g @l='| less'
+
+mkd() {
+  mkdir -p "$@" && cd "$@"
+}
+
+# 再起動
+alias relg='exec $SHELL -l'

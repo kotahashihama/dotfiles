@@ -43,53 +43,8 @@ alias cs.='cs .'
 alias dvn='devin-desktop'
 alias dvn.='dvn .'
 
-# Docker
-alias d='docker'
-alias dc='docker compose'
-alias dce='dc exec'
-alias dcu='dc up -d'
-alias dcun='dc build --no-cache && dcu'
-alias dcd='dc down -v'
-alias dcl='dc logs'
-alias dii='d image inspect'
-alias dci='d container inspect'
-alias dvi='d volume inspect'
-alias dni='d network inspect'
-# コンテナに加えて、イメージとボリュームまで消す
-alias dcda='dc down --rmi all --volumes'
-
 # Terraform
 alias tf='terraform'
 alias tfi='tf init'
 alias tfp='tf plan'
 alias tfa='tf apply'
-
-# Git
-. ~/.zsh_aliases/tool/git.zsh
-
-# Claude Code
-# 追加設定は関数で渡す。エイリアスにフラグを直接書くと、ファイルが無い環境で
-# 起動そのものが失敗する。
-cld() {
-  local extra=~/.claude/settings.private.json
-  if [ -f "$extra" ]; then
-    claude --settings "$extra" "$@"
-  else
-    claude "$@"
-  fi
-}
-alias cldr='cld -r'
-alias cldw='cld --worktree'
-alias cldrc='claude remote-control'
-
-# Anthropic Computer Use
-alias computeruse='echo "最後に表示される案内文がどうであれ、http://localhost:8050 でホストされることに注意してください。" \
-    && with-secrets docker run \
-    -e ANTHROPIC_API_KEY \
-    -v $HOME/.anthropic:/home/computeruse/.anthropic \
-    -p 5900:5900 \
-    -p 8501:8501 \
-    -p 6080:6080 \
-    -p 8050:8080 \
-    -it ghcr.io/anthropics/anthropic-quickstarts:computer-use-demo-latest'
-

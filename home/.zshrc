@@ -8,9 +8,10 @@ eval "$(oh-my-posh init zsh --config ~/.config/oh-my-posh/config.omp.json)"
 # zsh の設定
 #
 # Prezto を外したので、効いていたオプション・エイリアス・キーバインドを明示的に持つ
-for f in options utility; do
-  [[ -r ~/.config/zsh/$f.zsh ]] && . ~/.config/zsh/$f.zsh
-done
+. ~/.config/zsh/options.zsh
+
+# エイリアス。プラグインより前に読み、Prezto のころと同じ位置にする
+. ~/.zsh_aliases/main.zsh
 
 # プラグイン。宣言は ~/.config/sheldon/plugins.toml
 #
@@ -36,188 +37,14 @@ eval "$(sheldon --profile post source 2>/dev/null)"
 # キーバインドはプラグインの後。ウィジェットが定義されてからでないと結び付かない
 [[ -r ~/.config/zsh/keybindings.zsh ]] && . ~/.config/zsh/keybindings.zsh
 
-# Homebrew
-eval "$(/opt/homebrew/bin/brew shellenv)"
+# ツールの初期化
+. ~/.config/zsh/tools.zsh
 
-# direnv
-eval "$(direnv hook zsh)"
+# fzf を使うキー操作。ツールのキー操作（atuin の ^r など）とは別のキーに結ぶ
+. ~/.config/zsh/widgets.zsh
 
-# Docker
-source <(docker completion zsh)
+# 自分で書いた関数
+. ~/.config/zsh/functions.zsh
 
-#
-# fzf
-#
-
-# history (Ctrl + X Ctrl + R)
-# ^r は atuin が使う。fzf 版は補助として残す
-function fzf-history-selection() {
-  BUFFER=$(history -n 1 | tail -r | awk '!a[$0]++' | fzf --prompt "❯ ")
-  CURSOR=$#BUFFER
-  zle reset-prompt
-}
-zle -N fzf-history-selection
-bindkey '^X^R' fzf-history-selection
-
-# cdr (Ctrl + Q)
-if [[ -n $(echo ${^fpath}/chpwd_recent_dirs(N)) && -n $(echo ${^fpath}/cdr(N)) ]]; then
-  autoload -Uz chpwd_recent_dirs cdr add-zsh-hook
-  add-zsh-hook chpwd chpwd_recent_dirs
-  zstyle ':completion:*' recent-dirs-insert both
-  zstyle ':chpwd:*' recent-dirs-default true
-  zstyle ':chpwd:*' recent-dirs-max 1000
-  zstyle ':chpwd:*' recent-dirs-file "$HOME/.cache/chpwd-recent-dirs"
-fi
-
-function fzf-cdr() {
-  # cdr -l は ~/... 形式で返す。表示はそのまま、プレビューには展開後を渡す
-  local selected=$(cdr -l | sed 's/^[0-9]* *//' \
-    | awk -v h="$HOME" '{ p = $0; sub(/^~/, h, p); print $0 "\t" p }' \
-    | fzf --prompt "❯ " --query "$LBUFFER" \
-      --delimiter '\t' --with-nth 1 \
-      --preview 'ls -lAh -- {2}' \
-      --preview-window 'right,50%')
-  local selected_dir=$(printf '%s' "$selected" | cut -f1)
-  if [ -n "$selected_dir" ]; then
-    BUFFER="cd ${selected_dir}"
-    zle accept-line
-  fi
-}
-zle -N fzf-cdr
-bindkey '^q' fzf-cdr
-
-# ghq (Ctrl + G)
-function fzf-src() {
-  # 候補は ghq list（github.com/owner/repo）で出す。-p はどれも同じ接頭辞が
-  # 付くぶん幅を食い、絞り込みのノイズにもなる
-  local selected=$(ghq list | fzf --prompt "❯ " --query "$LBUFFER" \
-    --preview 'cd "$(ghq root)" && git -C {} log --oneline --decorate -15 --color=always' \
-    --preview-window 'right,60%')
-  if [ -n "$selected" ]; then
-    BUFFER="cd $(ghq root)/${selected}"
-    zle accept-line
-  fi
-}
-zle -N fzf-src
-bindkey '^g' fzf-src
-
-# gwq worktree (Ctrl + T)
-function fzf-worktree() {
-  # リポジトリ内にいればそこの worktree を、外なら gwq が管理する分を出す。
-  # --global は basedir しか見ないので、git 側で作った worktree が漏れる
-  local json=$(gwq list --json 2>/dev/null)
-  case "$json" in
-    \[*) ;;
-    *) json=$(gwq list --global --json 2>/dev/null) ;;
-  esac
-  # どちらでも取れなければ JSON ではなくメッセージが返っている
-  case "$json" in
-    \[*) ;;
-    *) zle -M "worktree がありません（gwq add -b <branch> で作る）"; return ;;
-  esac
-
-  # 表示はブランチと ~ 短縮したパス。置き場の形が gwq と git で違うため、
-  # パスの一部を切り出す形だと意味を成さない
-  local gitroot=$(git rev-parse --show-toplevel 2>/dev/null)
-  local selected=$(printf '%s' "$json" \
-    | jq -r --arg h "$HOME" --arg r "${gitroot:-/dev/null}" '
-        .[] | select(.is_main | not)
-        | "\(.branch)\t\(.path | sub("^" + $r + "/"; "") | sub("^" + $h; "~"))\t\(.path)"' \
-    | fzf --prompt "❯ " --query "$LBUFFER" \
-      --delimiter '\t' --with-nth 1,2 \
-      --preview 'git -C {3} log --oneline --decorate -15 --color=always' \
-      --preview-window 'right,60%')
-  if [ -n "$selected" ]; then
-    BUFFER="cd $(printf '%s' "$selected" | cut -f3)"
-    zle accept-line
-  fi
-}
-zle -N fzf-worktree
-bindkey '^t' fzf-worktree
-
-# git branch (Ctrl + E)
-function fzf-git-branch() {
-  local selected_branch=$(git branch --format='%(refname:short)' | fzf --prompt "❯ " \
-    --preview 'git log --oneline --decorate -15 --color=always {}' \
-    --preview-window 'right,60%')
-  if [ -n "$selected_branch" ]; then
-    git switch "$selected_branch"
-  fi
-}
-zle -N fzf-git-branch
-bindkey '^e' fzf-git-branch
-
-# GitHub に private のリポジトリを作り、ghq の置き場へ SSH で取ってくる
-function create-project() {
-  local owner=$(gh api user -q .login) || return
-  gh repo create "$1" --private && ghq get -p "$owner/$1"
-}
-
-# GitHub のリポジトリと、手元の作業ツリーを消す
-function delete-project() {
-  local owner=$(gh api user -q .login) || return
-  # 名前の部分一致で探すと、名前を含む別のリポジトリまで消える
-  local dir=$(ghq list --full-path --exact "$owner/$1")
-
-  print -n "本当にリポジトリを削除してよろしいですか？ (Y/n) "
-  local confirm
-  read -r confirm
-
-  if [[ -z $confirm || $confirm == [Yy] ]]; then
-    gh repo delete "$owner/$1" --yes || return
-    [[ -n $dir ]] && command rm -rf -- "$dir"
-    print "Repository deleted successfully"
-  else
-    print "Deletion cancelled"
-  fi
-}
-
-# mise
-eval "$(/opt/homebrew/bin/mise activate zsh)"
-
-# zoxide
-# cd を置き換える。よく行く場所は部分一致で飛べるようになり、
-# 明示的なパス指定は今までどおり動く。^q の cdr は履歴順なので役割が違う
-eval "$(zoxide init zsh --cmd cd)"
-
-# atuin
-# 履歴を SQLite で持ち、ディレクトリ・終了コード・日時で絞り込める。^r を置き換える。
-# 上矢印は今までどおり部分一致検索に使いたいので atuin へは渡さない
-eval "$(atuin init zsh --disable-up-arrow)"
-
-# carapace
-# 多くの CLI の補完をまとめて供給する。zsh-completions と併存できる
-export CARAPACE_BRIDGES='zsh,fish,bash'
-source <(carapace _carapace zsh)
-
-# Kiro
-[[ "$TERM_PROGRAM" == "kiro" ]] && . "$(kiro --locate-shell-integration-path zsh)"
-
-# エイリアス
-. ~/.zsh_aliases/main.zsh
-
-
-# clauth
-# 補完ファイルは #compdef 形式なので、source だけでは登録されない（compdef で結ぶ）。
-# fpath へ置く手は compinit -C のキャッシュに入るまで効かないので採らない
-if [[ -f "$HOME/.clauth/completions/clauth.zsh" ]]; then
-  source "$HOME/.clauth/completions/clauth.zsh"
-  compdef _clauth clauth
-fi
-
-#
-# PATH
-#
-# 上に書いたものほど先に探す。-U で重複を落とすので、入れ子のシェルでも同じ並びになる
-export PNPM_HOME="$HOME/Library/pnpm"
-export BUN_INSTALL="$HOME/.bun"
-typeset -U path
-path=(
-  # Claude Code は起動スクリプト経由で起動する（autoMode の信頼先を --settings で渡すため。~/.claude/bin/claude）
-  "$HOME/.claude/bin"
-  "$HOME/.local/bin"
-  /Applications/Devin.app/Contents/Resources/app/bin
-  "$BUN_INSTALL/bin"
-  "$PNPM_HOME"
-  $path
-)
+# PATH は最後に組む。ツールの初期化が足した分より前に、自分の置き場を並べるため
+. ~/.config/zsh/path.zsh

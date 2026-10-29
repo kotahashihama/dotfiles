@@ -1,51 +1,8 @@
-# 設定ファイルの編集
-alias zshrc='v ~/.zshrc'
-alias mainalias='v ~/.zsh_aliases/main.zsh'
-alias toolalias='v ~/.zsh_aliases/tool/main.zsh'
-alias galias='v ~/.zsh_aliases/tool/git.zsh'
-alias cryptoalias='v ~/.zsh_aliases_private/crypto.zsh'
-alias smhalias='v ~/.zsh_aliases_private/smart_home.zsh'
-alias vimrc='v ~/.vimrc'
-alias gitconfig='v ~/.gitconfig'
-
-# ディレクトリ・ファイル
-alias pathc='pwd | pbcopy && echo 現在のパスがクリップボードにコピーされました'
-alias ..2='../..'
-alias ..3='../../..'
-alias o.='o .'
-alias -g @g='| grep'
-alias -g @l='| less'
-
-mkd() {
-  mkdir -p "$@" && cd "$@"
-}
-
-# 再起動
-alias relg='exec $SHELL -l'
-
-#
-# 言語・フレームワーク
-#
-
-# Go
-alias gofmt='go fmt'
-alias govet='go vet'
-
-# Ruby
-alias rb='ruby'
-
-# Python
-alias py='python'
-
-# Nuxt.js
-alias nuxt='./node_modules/.bin/nuxt'
-
-#
-# カテゴリ
-#
-
-# 開発ツール
-. ~/.zsh_aliases/tool/main.zsh
+# エイリアスの入口。種類ごとのファイルを読む
+for f in shell lang tool/main tool/docker tool/git tool/claude; do
+  . ~/.zsh_aliases/$f.zsh
+done
+unset f
 
 # 非公開分
 [ -f ~/.zsh_aliases_private/main.zsh ] && . ~/.zsh_aliases_private/main.zsh
