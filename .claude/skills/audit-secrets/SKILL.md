@@ -18,7 +18,7 @@ allowed-tools: Bash(git status:*) Bash(git diff:*) Bash(git log:*) Bash(git grep
 
    併せて `[A-Za-z0-9_-]{25,}` の長いリテラルを拾い、変数参照か実値かを 1 件ずつ判定する
 
-3. **検出したら値と参照を切り分ける**: `$SESAME_API_KEY` のような参照は問題ない。実値なら `~/.secrets/env` へ移し、参照に置き換え、`scripts/secrets.env.example` に名前を足す
+3. **検出したら値と参照を切り分ける**: `$SWITCHBOT_API_KEY` のような参照は問題ない。実値なら `~/.secrets/env` へ移し、参照に置き換え、`scripts/secrets.env.example` に名前を足す
 
 4. **履歴の走査**: 全ブランチの全 blob を舐める。パターン一致だけでなく、`.aws` / `.ssh` / `.config` 等のパスが履歴に現れていないかも見る
 

@@ -87,15 +87,15 @@ tar czf - private | gpg --symmetric --cipher-algo AES256 > private_dotfiles.tar.
 
 ```sh
 # 悪い例: 値が設定ファイルに残る
-alias ssml='curl -d "{\"api_key\": \"<API キー>\"}" ...'
+alias sblon='curl -H "Authorization: <API キー>" ...'
 
 # 良い例: 値は ~/.secrets/env、ここは参照だけ
-sesame() {
-  curl -d "{\"api_key\": \"$SESAME_API_KEY\"}" ...
+switchbot() {
+  curl -H "Authorization: $SWITCHBOT_API_KEY" ...
 }
 ```
 
-**エイリアスではなく関数にする**のが要点。エイリアスの本体は定義時に展開されるため、`alias ssml` の出力にキーが載る。関数なら実行時に読むので載らない。
+**エイリアスではなく関数にする**のが要点。エイリアスの本体は定義時に展開されるため、`alias sblon` の出力にキーが載る。関数なら実行時に読むので載らない。
 
 変数を増やしたら `scripts/secrets.env.example` にも名前を足す。**アーカイブが手元に無い状況で何を埋めればよいか**が、ここだけを見て分かる状態を保つ。
 
