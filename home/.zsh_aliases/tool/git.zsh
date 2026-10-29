@@ -1,4 +1,6 @@
 alias g='git'
+
+# 取得
 alias gf='g fetch'
 alias gpl='g pull'
 # 手元の main などを、切り替えずにリモートへ追いつかせる。そのブランチにいるときは gpl を使う
@@ -6,12 +8,16 @@ alias gfplmain='gf origin main:main'
 alias gfplmas='gf origin master:master'
 alias gfplrel='gf origin release:release'
 alias gfpldev='gf origin develop:develop'
+
+# 状態・差分・履歴
 alias gst='g status -sb'
-alias gsh='g stash'
-alias gshl='gsh list'
-alias gsha='gsh apply'
-alias gshd='gsh drop'
-alias gsu='git submodule update --init --recursive'
+alias gdf='g diff'
+alias gdfs='g diff --staged'
+alias gl='g log'
+alias glo='gl --oneline'
+alias grl='g reflog'
+
+# ステージ・コミット
 alias ga='g add'
 alias gaa='ga -A'
 alias gc='g commit'
@@ -22,21 +28,31 @@ alias gcam='gca -m'
 alias gcan='gca --no-edit'
 alias gcz='g cz'
 alias gacz='gaa && gcz'
-alias gfc='g commit --allow-empty -m "first commit"'
+alias gfc='gc --allow-empty -m "first commit"'
+alias gtm='gaa && gcm "temp" -n'
+alias gtmps='gtm ; gps'
+
+# 退避
+alias gsh='g stash'
+alias gshl='gsh list'
+alias gsha='gsh apply'
+alias gshd='gsh drop'
+
+# push
 alias gps='g push'
 alias gpsf='gps --force-with-lease'
 alias gpsh='gps origin HEAD'
 alias gpshn='gpsh --no-verify'
 alias gpshf='gpsh --force-with-lease'
 alias gpshfn='gpshf --no-verify'
-alias gpsstg='g push --force-with-lease origin HEAD:staging'
-alias gdf='g diff'
-alias gdfs='g diff --staged'
+alias gpsstg='gps --force-with-lease origin HEAD:staging'
+
+# ブランチ
+# ブランチの切り替えは switch、ファイルの復元は restore（checkout から分かれた）
 alias gbr='g branch'
-alias gbrc='git branch --show-current'
+alias gbrc='gbr --show-current'
 alias gbrm='gbr -m'
 alias gbrp='gbr --format="%(refname:short)" | fzf | pbcopy && echo クリップボードにコピーされました'
-# ブランチの切り替えは switch、ファイルの復元は restore（checkout から分かれた）
 alias gsw='g switch'
 alias gsw-='gsw -'
 alias gswc='gsw -c'
@@ -44,23 +60,8 @@ alias gswmain='gsw main'
 alias gswmas='gsw master'
 alias gswrel='gsw release'
 alias gswdev='gsw develop'
-alias gcp='g cherry-pick'
-alias gcpc='gcp --continue'
-alias gcpa='gcp --abort'
-alias gl='g log'
-alias glo='gl --oneline'
-alias grl='g reflog'
-alias gtm='gaa && gcm "temp" -n'
-alias gtmps='gtm ; gps'
-alias gr='g reset'
-alias grs='gr --soft'
-alias grsh='grs HEAD\^'
-alias grh='gr --hard'
-alias grhh='grh HEAD\^'
-alias grt='g restore'
-alias grt.='grt .'
-alias grts='grt --staged'
-alias grts.='grts .'
+
+# 統合
 alias grb='g rebase'
 alias grbmain='gf origin && grb origin/main'
 alias grbmas='gf origin && grb origin/master'
@@ -72,15 +73,34 @@ alias grba='grb --abort'
 alias gm='g merge'
 alias gmc='gm --continue'
 alias gma='gm --abort'
+alias gcp='g cherry-pick'
+alias gcpc='gcp --continue'
+alias gcpa='gcp --abort'
+
+# 取り消し
+alias gr='g reset'
+alias grs='gr --soft'
+alias grsh='grs HEAD\^'
+alias grh='gr --hard'
+alias grhh='grh HEAD\^'
+alias grt='g restore'
+alias grt.='grt .'
+alias grts='grt --staged'
+alias grts.='grts .'
+
+# リモート
 alias grm='g remote'
 alias grmv='grm -v'
 alias grmao='grm add origin'
 alias grmsu='grm set-url'
 alias grmsuo='grmsu origin'
 alias grmrn='grm rename'
-alias gwr='git worktree add'
-alias gwrf='git worktree remove'
-alias gwls='git worktree list'
+
+# worktree・submodule
+alias gwta='g worktree add'
+alias gwtrm='g worktree remove'
+alias gwtls='g worktree list'
+alias gsu='g submodule update --init --recursive'
 
 # GitHub CLI
 alias grp='gh repo view -w'
