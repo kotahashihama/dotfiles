@@ -36,7 +36,7 @@ If a bare `relay` ever returns "command not found" (a sandboxed/non-zsh/reset-en
 
 | Peer | When to pick | How to invoke |
 |---|---|---|
-| **Codex** (default) | Code review, security review, refactoring, agentic coding. GPT-5.5 lineage. Two effort tiers (`medium`/`xhigh`). | `relay call --name ...` (no `--to` needed) |
+| **Codex** (default) | Code review, security review, refactoring, agentic coding. GPT-6.1-Sol (the local Codex default; `gpt-5.5` is not available on a ChatGPT-account login). Two effort tiers (`medium`/`xhigh`). | `relay call --name ...` (no `--to` needed) |
 | **DeepSeek** | Independent model family for true cross-vendor diversity, frontier reasoning, multi-step analysis. Open-weight V4-Pro (1.6T MoE). Always runs at `max` (DeepThink). Text-only (no image input via relay). | `relay call --to deepseek --name ...` |
 | **MiMo** | Another independent open-weight lineage (Xiaomi MiMo-V2.5-Pro, 1.02T MoE / 42B active, 1M context). Use for a third cross-vendor perspective. No effort knob. Text-only (no image input via relay). | `relay call --to mimo --name ...` |
 | **GLM** | A fourth independent lineage (Zhipu/z.ai GLM-5.2), reached through z.ai's Anthropic-compatible endpoint. Use for another cross-vendor perspective. Pinned to `max` reasoning via the registry (like DeepSeek); ignores `--effort`. Text-only (no image input via relay). | `relay call --to glm --name ...` |

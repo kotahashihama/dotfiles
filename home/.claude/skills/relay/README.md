@@ -107,7 +107,7 @@ Ensure `~/.local/bin` is on your PATH. The peer model and invocation method come
 
 | Peer | Lineage | When to pick | Effort |
 |---|---|---|---|
-| **Codex** (default) | GPT-5.5 | Code review, security review, refactoring, agentic coding | `medium` / `xhigh` |
+| **Codex** (default) | GPT-6.1-Sol | Code review, security review, refactoring, agentic coding | `medium` / `xhigh` |
 | **DeepSeek** | DeepSeek V4-Pro (open-weight) | Independent cross-vendor diversity, frontier reasoning, multi-step analysis. Always runs at `max` (DeepThink). Text-only. | — |
 | **MiMo** | Xiaomi MiMo-V2.5-Pro (open-weight) | A third independent lineage for cross-vendor perspective. Text-only. | — |
 | **Grok Build** | xAI `grok-build` | xAI's agentic coding model — a fourth independent lineage | `medium` / `high` |
@@ -252,7 +252,7 @@ Prism reads `peers.json` from the relay skill directory next to it, so install r
 
 - `.relay/` is gitignored — the script handles this automatically.
 - **Claude-only.** If `ANTHROPIC_BASE_URL` points at a non-Anthropic endpoint (e.g. a DeepSeek/MiMo session), the skill refuses — a non-Claude session can't orchestrate other models. The script enforces this at the shell layer before the registry loads.
-- **Codex** runs `--full-auto` (`workspace-write` sandbox) and `--skip-git-repo-check`.
+- **Codex** runs `--sandbox workspace-write` and `--skip-git-repo-check`.
 - A dispatched peer can't recurse into Relay (the `RELAY_PEER` guard blocks it).
 - Clean up: `rm -rf .relay`.
 

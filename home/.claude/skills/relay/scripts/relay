@@ -347,7 +347,7 @@ EOF
     peer_cmd=(env "PATH=$sanitized_path" "RELAY_PEER=$to"
       codex exec --model "$model"
       -c "model_reasoning_effort=\"$effort\""
-      --skip-git-repo-check --full-auto --color never
+      --skip-git-repo-check --sandbox workspace-write --color never
       --disable plugins
       --add-dir "$RELAY_DIR"
       "$peer_prompt")

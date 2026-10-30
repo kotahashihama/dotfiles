@@ -1,1 +1,3 @@
-../skills/relay/scripts/relay
+#!/bin/sh
+# 取り込み元のスクリプトは自分の置き場所から peers.json を探すので、リンクではなく実体を呼ぶ
+exec "$HOME/.claude/skills/relay/scripts/relay" "$@"

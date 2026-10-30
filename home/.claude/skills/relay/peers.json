@@ -1,7 +1,7 @@
 {
   "codex": {
     "transport": "codex",
-    "model": "gpt-5.5",
+    "model": "gpt-6.1-sol",
     "effort_values": ["medium", "xhigh"],
     "default_effort": "medium",
     "template": "codex"
