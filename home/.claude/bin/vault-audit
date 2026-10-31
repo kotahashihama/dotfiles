@@ -7,7 +7,8 @@ website 欄が空のログイン。パスワードはこのプロセスの中で
 漏洩の照会は Have I Been Pwned の range API を使う。外へ出るのは SHA-1 の先頭5文字だけ（k-匿名性）。
 2段階認証が使えるサイトの一覧は 2fa.directory から取る。
 
-使い方: vault-audit [--vault Personal] [--out ~/.local/state/vault-audit/report.md] [--notify]
+使い方: vault-audit [--vault Personal ...|--vault all] [--out ~/.local/state/vault-audit/report.md] [--notify]
+--vault は何度でも渡せる。all ならアカウントの全 Vault を見て、報告を Vault ごとの節に分ける。
 """
 import argparse
 import collections
@@ -50,6 +51,8 @@ def load_items(vault):
     listed = subprocess.run(
         ["op", "item", "list", "--vault", vault, "--format", "json"], capture_output=True, text=True, check=True
     ).stdout
+    if not json.loads(listed):  # 空の Vault を渡すと op item get - が失敗する
+        return []
     got = subprocess.run(
         ["op", "item", "get", "-", "--reveal", "--format", "json"], input=listed, capture_output=True, text=True, check=True
     ).stdout
@@ -70,22 +73,8 @@ def is_weak(pw):
     return len(pw) < 12 or classes < 3
 
 
-def main():
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--vault", default="Personal")
-    ap.add_argument("--out", default=os.path.expanduser("~/.local/state/vault-audit/report.md"))
-    ap.add_argument("--notify", action="store_true")
-    a = ap.parse_args()
-
-    items = load_items(a.vault)
-    totp_sites = set()
-    try:
-        for _, entry in fetch_json("https://api.2fa.directory/v3/totp.json"):
-            totp_sites.add(entry["domain"].lower())
-            totp_sites.update(d.lower() for d in entry.get("additional-domains", []))
-    except Exception as e:  # 一覧が取れなくても、ほかの観点は出す
-        print(f"2fa.directory を読めませんでした: {e}", file=sys.stderr)
-
+def audit(vault, totp_sites):
+    items = load_items(vault)
     by_pw = collections.defaultdict(list)
     weak, no_2fa, http, no_url = [], [], [], []
     for it in items:
@@ -113,8 +102,6 @@ def main():
         for h, ts in by_pw.items():
             if h.startswith(prefix) and h[5:] in sufs:
                 pwned.extend(ts)
-
-    today = datetime.date.today().isoformat()
     sec = [
         ("漏洩したパスワード（すぐ替える）", sorted(pwned)),
         ("使い回し（組ごと）", [" / ".join(g) for g in sorted(reused)]),
@@ -123,15 +110,47 @@ def main():
         ("http のサイト", sorted(http)),
         ("website 欄が空のログイン", sorted(no_url)),
     ]
-    lines = [f"# Vault の点検（{a.vault}・{today}）", "", f"対象 {len(items)}件", ""]
-    lines += ["| 観点 | 件数 |", "| --- | --- |"] + [f"| {n} | {len(v)} |" for n, v in sec] + [""]
-    for n, v in sec:
-        lines += [f"## {n}", ""] + ([f"- {t}" for t in v] or ["なし"]) + [""]
+    return len(items), sec
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--vault", action="append")
+    ap.add_argument("--out", default=os.path.expanduser("~/.local/state/vault-audit/report.md"))
+    ap.add_argument("--notify", action="store_true")
+    a = ap.parse_args()
+    vaults = a.vault or ["Personal"]
+    if vaults == ["all"]:
+        listed = subprocess.run(["op", "vault", "list", "--format", "json"], capture_output=True, text=True, check=True).stdout
+        vaults = [v["name"] for v in json.loads(listed)]
+
+    totp_sites = set()
+    try:
+        for _, entry in fetch_json("https://api.2fa.directory/v3/totp.json"):
+            totp_sites.add(entry["domain"].lower())
+            totp_sites.update(d.lower() for d in entry.get("additional-domains", []))
+    except Exception as e:  # 一覧が取れなくても、ほかの観点は出す
+        print(f"2fa.directory を読めませんでした: {e}", file=sys.stderr)
+
+    today = datetime.date.today().isoformat()
+    results = [(v, *audit(v, totp_sites)) for v in vaults]
+    names = [n for n, _ in results[0][2]]
+    lines = [f"# Vault の点検（{'・'.join(vaults)}・{today}）", ""]
+    lines += ["| 観点 | " + " | ".join(v for v, _, _ in results) + " |", "| --- |" + " --- |" * len(results)]
+    lines += [f"| 対象 | " + " | ".join(f"{n}件" for _, n, _ in results) + " |"]
+    for k, name in enumerate(names):
+        lines += [f"| {name} | " + " | ".join(str(len(sec[k][1])) for _, _, sec in results) + " |"]
+    lines += [""]
+    for v, _, sec in results:
+        if len(results) > 1:
+            lines += [f"# {v}", ""]
+        for n, items in sec:
+            lines += [f"## {n}", ""] + ([f"- {t}" for t in items] or ["なし"]) + [""]
     os.makedirs(os.path.dirname(a.out), mode=0o700, exist_ok=True)
     with open(a.out, "w") as f:
         f.write("\n".join(lines))
     os.chmod(a.out, 0o600)
-    summary = "・".join(f"{n.split('（')[0]} {len(v)}" for n, v in sec[:4])
+    summary = "・".join(f"{name.split('（')[0]} {sum(len(sec[k][1]) for _, _, sec in results)}" for k, name in enumerate(names[:4]))
     print(f"{a.out} に書きました: {summary}")
     if a.notify:
         subprocess.run(["terminal-notifier", "-title", "Vault の点検", "-message", summary, "-open", f"file://{a.out}"])
