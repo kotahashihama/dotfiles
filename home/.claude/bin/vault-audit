@@ -47,15 +47,28 @@ def host_of(href):
     return re.sub(r"^www\.", "", h)
 
 
+class OpError(Exception):
+    pass
+
+
+def op(*args, stdin=None):
+    r = subprocess.run(["op", *args], input=stdin, capture_output=True, text=True)
+    if r.returncode != 0:
+        # 承認が約60秒で切れると authorization timeout になる。traceback だけでは見分けられない
+        raise OpError(f"op {' '.join(args[:2])} が失敗しました: {r.stderr.strip()}")
+    return r.stdout
+
+
+def notify(message, url=None):
+    cmd = ["terminal-notifier", "-title", "Vault の点検", "-message", message]
+    subprocess.run(cmd + (["-open", url] if url else []))
+
+
 def load_items(vault):
-    listed = subprocess.run(
-        ["op", "item", "list", "--vault", vault, "--format", "json"], capture_output=True, text=True, check=True
-    ).stdout
+    listed = op("item", "list", "--vault", vault, "--format", "json")
     if not json.loads(listed):  # 空の Vault を渡すと op item get - が失敗する
         return []
-    got = subprocess.run(
-        ["op", "item", "get", "-", "--reveal", "--format", "json"], input=listed, capture_output=True, text=True, check=True
-    ).stdout
+    got = op("item", "get", "-", "--reveal", "--format", "json", stdin=listed)
     # 1件ずつの JSON が連なって返る
     dec, i, items = json.JSONDecoder(), 0, []
     while i < len(got):
@@ -121,8 +134,7 @@ def main():
     a = ap.parse_args()
     vaults = a.vault or ["Personal"]
     if vaults == ["all"]:
-        listed = subprocess.run(["op", "vault", "list", "--format", "json"], capture_output=True, text=True, check=True).stdout
-        vaults = [v["name"] for v in json.loads(listed)]
+        vaults = [v["name"] for v in json.loads(op("vault", "list", "--format", "json"))]
 
     totp_sites = set()
     try:
@@ -153,8 +165,14 @@ def main():
     summary = "・".join(f"{name.split('（')[0]} {sum(len(sec[k][1]) for _, _, sec in results)}" for k, name in enumerate(names[:4]))
     print(f"{a.out} に書きました: {summary}")
     if a.notify:
-        subprocess.run(["terminal-notifier", "-title", "Vault の点検", "-message", summary, "-open", f"file://{a.out}"])
+        notify(summary, f"file://{a.out}")
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except OpError as e:
+        print(e, file=sys.stderr)
+        if "--notify" in sys.argv:  # 失敗しても報告は前回のまま残るので、知らせないと気づけない
+            notify("点検できませんでした。1Password の許可が間に合わなかった可能性があります")
+        sys.exit(1)
