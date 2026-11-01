@@ -39,3 +39,8 @@ if [[ -f "$HOME/.clauth/completions/clauth.zsh" ]]; then
   source "$HOME/.clauth/completions/clauth.zsh"
   compdef _clauth clauth
 fi
+
+# Vault の点検
+# launchd から起動した op は 1Password の承認を受けられないので、手元のシェルで流すよう促す。
+# 報告が30日より古いか無ければ1行出す
+() { (( $# )) } ~/.local/state/vault-audit/report.md(N.md-30) || print 'Vault の点検から30日経っています: vault-audit --vault all'
