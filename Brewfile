@@ -286,6 +286,8 @@ cask "spacewalker"
 cask "spotify"
 # Video game digital distribution service
 cask "steam"
+# Minimal GUI for AI code agents
+cask "t3-code"
 # Native GUI tool for relational databases
 cask "tableplus"
 # Mesh VPN based on WireGuard
