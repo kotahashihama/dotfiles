@@ -352,7 +352,8 @@
     "pstack@cursor-plugins": true,
     "typesafe@typesafe-ai": true,
     "1password@1password": true,
-    "context7@claude-plugins-official": true
+    "context7@claude-plugins-official": true,
+    "security-audit@cloudflare-security-audit": true
   },
   "extraKnownMarketplaces": {
     "openai-codex": {
@@ -453,6 +454,26 @@
       },
       "autoUpdate": true
     }
+    },
+    "cloudflare-security-audit": {
+      "source": {
+        "source": "settings",
+        "name": "cloudflare-security-audit",
+        "plugins": [
+          {
+            "name": "security-audit",
+            "source": {
+              "source": "github",
+              "repo": "cloudflare/security-audit-skill"
+            },
+            "description": "Multi-phase security audits with independently verified findings"
+          }
+        ],
+        "owner": {
+          "name": "Cloudflare"
+        }
+      },
+      "autoUpdate": true
   },
   "outputStyle": "Explanatory",
   "language": "japanese",
