@@ -1,9 +1,11 @@
 ---
 description: 他の人の PR を approve する前の確認を行い、approve のコマンドを示す。approve そのものは人が打つ。人だけが /approve-pr で起動する。
-argument-hint: "[PR 番号 または URL（省略時は現在のブランチの PR）]"
+argument-hint: "[PR 番号 または URL｜--pr <PR 番号 または URL>]（省略時は現在のブランチの PR）"
 disable-model-invocation: true
 allowed-tools: Bash(gh pr view:*) Bash(gh pr checks:*) Bash(gh api:*) Bash(gh repo view:*)
 ---
+
+引数は名前付き（ `--pr <PR 番号 または URL>` ）でも渡せる。位置で渡したときと同じに扱い、名前付きは順不同で渡してよい。
 
 他の人の PR を approve してよい状態かを確かめ、**approve のコマンドを示すところまで**行います。
 

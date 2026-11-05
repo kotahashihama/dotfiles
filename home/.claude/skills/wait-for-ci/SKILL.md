@@ -1,9 +1,11 @@
 ---
 description: 【他スキルから呼ばれる部品】GitHub Actions のワークフロー完了をバックグラウンドで待つ。「起動したか」と「終わったか」を両方の条件で判定し、古い run を掴んで即座に抜ける事故を防ぐ。PR に push した後や slash command でワークフローを起動した後、完了を待ちたいときに使う。
-argument-hint: "[ワークフロー名 または PR 番号] [--event イベント名]"
+argument-hint: "[ワークフロー名｜--workflow <ワークフロー名>｜PR 番号｜--pr <PR 番号>] [--event <イベント名>]"
 user-invocable: false
 allowed-tools: Bash(gh run list:*) Bash(gh run view:*) Bash(gh pr checks:*) Bash(gh pr view:*) Bash(git branch:*) Bash(sleep:*) Bash(while:*) Bash(until:*)
 ---
+
+引数は名前付き（ `--workflow <ワークフロー名>` か `--pr <PR 番号>` ）でも渡せる。位置で渡したときと同じに扱い、名前付きは順不同で渡してよい。
 
 GitHub Actions の完了を待ちます。**待てているつもりで待てていない**のがこのタスクの唯一かつ最大の失敗モードで、それを潰すのがこのスキルの目的です。
 

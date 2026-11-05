@@ -1,8 +1,10 @@
 ---
 description: renovate が作った依存アップデート PR を、マージできる状態まで持っていく。そもそも上げてよいかを先に判断し、CI の失敗をコード起因・承認待ち・一時的な不調に切り分けて、追随が要るものを直す。検討したことは PR にコメントで残す。マージと approve はしない。ユーザーが「renovate の PR を解決して」「依存アップデートを片付けて」「/resolve-renovate-pr」等を指示したときに使う。
-argument-hint: "[PR 番号 または URL（省略時は open な renovate の PR を一覧して選ぶ）]"
+argument-hint: "[PR 番号 または URL｜--pr <PR 番号 または URL>]（省略時は open な renovate の PR を一覧して選ぶ）"
 allowed-tools: Skill, Bash(gh pr view:*) Bash(gh pr list:*) Bash(gh pr checks:*) Bash(gh pr comment:*) Bash(gh pr edit:*) Bash(gh api:*) Bash(gh run list:*) Bash(gh run view:*) Bash(gh run rerun:*) Bash(git fetch:*) Bash(git switch:*) Bash(git status:*) Bash(git diff:*) Bash(git log:*) Bash(git merge:*) Bash(git rev-list:*) Bash(pnpm:*) Bash(npm:*) Bash(yarn:*) Bash(ax:*), Read Edit Write AskUserQuestion mcp__context7__resolve-library-id mcp__context7__query-docs
 ---
+
+引数は名前付き（ `--pr <PR 番号 または URL>` ）でも渡せる。位置で渡したときと同じに扱い、名前付きは順不同で渡してよい。
 
 renovate PR は**ライブラリ側が変わっただけ**の PR です。差分そのものはバージョン文字列とロックファイルしかなく、**直す対象はこちらのコード**になります。通常の PR とは逆で、差分をレビューするのではなく、**差分が引き起こす追随を探す**作業です。
 

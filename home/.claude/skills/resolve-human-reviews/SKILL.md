@@ -1,8 +1,10 @@
 ---
 description: PR に付いた人間のレビューコメントに対応する。コード変更が要るものを一通り直して push し、GitHub 上での返信・Resolve conversation はせず、対応表と返信案を会話で渡す。ユーザーが「人間レビューに対応して」「もらったコメントを直して」「/resolve-human-reviews」等を指示したときに使う。
-argument-hint: "[PR 番号 または URL（省略時は現在のブランチの PR）]"
+argument-hint: "[PR 番号 または URL｜--pr <PR 番号 または URL>]（省略時は現在のブランチの PR）"
 allowed-tools: Bash(gh api:*) Bash(gh pr view:*) Bash(gh pr checks:*) Bash(gh repo view:*) Bash(git status:*) Bash(git diff:*) Bash(git log:*) Bash(git add:*) Bash(git commit:*) Bash(git push:*) Bash(git branch:*) Bash(git checkout:*) Bash(git rev-parse:*) Bash(npx:*) Bash(task:*) Read Edit Write AskUserQuestion Skill
 ---
+
+引数は名前付き（ `--pr <PR 番号 または URL>` ）でも渡せる。位置で渡したときと同じに扱い、名前付きは順不同で渡してよい。
 
 人間のレビュアーから付いたコメントのうち、**コード変更が要るものを一通り直して push** します。GitHub 上には何も書き込まず、**対応表**と**返信案**を会話で渡すところまでが責務です。
 

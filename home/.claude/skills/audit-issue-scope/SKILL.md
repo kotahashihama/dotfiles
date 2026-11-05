@@ -1,8 +1,10 @@
 ---
 description: 親課題の範囲（子課題の本文とコメント、関わる PR の差分・タイトル・本文・コメント）を横断して、互いの食い違いとベストでない箇所を洗い出す。並び・約束・数・記述と実装のずれを機械的に照らし、直すのは既存のスキルへ任せる。ユーザーが「この課題の範囲を一通り確認して」「チケットと PR に矛盾が無いか見て」「/audit-issue-scope」等を指示したときに使う。担当 PR の一覧と状態は /list-prs、着手前の課題の整理は /plan-issue の担当。
-argument-hint: "<親課題の URL かキー>"
+argument-hint: "<課題キー または URL>｜--issue <課題キー または URL>（親課題）"
 allowed-tools: Bash(gh pr view:*) Bash(gh pr list:*) Bash(gh pr checks:*) Bash(gh api:*) Bash(gh search prs:*) Bash(git grep:*) Bash(git log:*) Bash(git show:*) Bash(git cat-file:*) Bash(git fetch:*)
 ---
+
+引数は名前付き（ `--issue <課題キー または URL>` ）でも渡せる。位置で渡したときと同じに扱い、名前付きは順不同で渡してよい。
 
 1つの親課題を子課題と複数の PR に分けて進めると、同じ事実が課題の本文・課題のコメント・PR のタイトルと本文・補足コメントに散らばります。どれかを直すと、残りに古い記述が残ります。このスキルは**親課題の範囲をまとめて照らし、食い違いと、もっと良くできる箇所を洗い出す入口**です。
 

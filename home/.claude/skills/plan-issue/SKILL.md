@@ -1,8 +1,10 @@
 ---
 description: 課題管理ツールや GitHub の課題を読み、何を直せば閉じられるかを整理して、着手前の計画を立てる。受入基準と本文の記述を分け、一次情報で裏を取り、どこを変えるか（どのリポジトリか、コードの外か）を決めて、取り消せるかと確かめ方まで添えた手順に落とす。実装はしない。ユーザーが「この課題やりたい」「概要整理して計画を立てて」「着手前に整理して」「/plan-issue」等を指示したときに使う。起票は /create-backlog-issue、不具合の原因調査はリポジトリ側の調査スキルの担当。
-argument-hint: "[課題キー または URL]"
+argument-hint: "[課題キー または URL｜--issue <課題キー または URL>]"
 allowed-tools: Skill Read Grep Glob WebFetch Bash(ax:*) mcp__context7__resolve-library-id mcp__context7__query-docs Bash(git grep:*) Bash(git log:*) Bash(git show:*) Bash(gh issue view:*) Bash(gh pr view:*) Bash(gh api:*) Bash(dig:*) Bash(curl -sI:*)
 ---
+
+引数は名前付き（ `--issue <課題キー または URL>` ）でも渡せる。位置で渡したときと同じに扱い、名前付きは順不同で渡してよい。
 
 課題を読んでから着手するまでの手順です。
 

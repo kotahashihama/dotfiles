@@ -1,8 +1,10 @@
 ---
 description: 現在のブランチに紐づく既存の GitHub PR について、ベースブランチに対する最終差分の観点で本文を書き直して更新する。PR 本文だけでなく、自分が投稿した補足情報用のコメント (契約・データモデル・調査結果など) も最新差分と整合しているか点検して更新する。コミット中の経緯 (レビュー対応・途中リファクタ) は書かず、最終状態のスナップショットとして整える。ユーザーが「PR 説明を更新して」「PR description 書き直して」と指示したときに使う。
-argument-hint: "[PR 番号 または URL（省略時は現在のブランチの PR）] [--screenshot] [--video] [--skip-triage]"
+argument-hint: "[PR 番号 または URL｜--pr <PR 番号 または URL>]（省略時は現在のブランチの PR）[--screenshot] [--video] [--skip-triage]"
 allowed-tools: Bash(gh pr view:*) Bash(gh pr edit:*) Bash(gh pr comment:*) Bash(gh pr list:*) Bash(gh api:*) Bash(git status:*) Bash(git diff:*) Bash(git log:*) Bash(git branch:*) Bash(git show:*) Bash(git ls-tree:*) Read
 ---
+
+引数は名前付き（ `--pr <PR 番号 または URL>` ）でも渡せる。位置で渡したときと同じに扱い、名前付きは順不同で渡してよい。
 
 現在のブランチに紐づく PR の説明を、ベースブランチに対する差分観点で書き直して更新してください。**PR 本文に加えて、自分が投稿した補足情報用のコメントも更新対象**です。
 

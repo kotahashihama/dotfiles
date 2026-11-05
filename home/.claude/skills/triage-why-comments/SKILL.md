@@ -1,8 +1,10 @@
 ---
 description: PR の差分にあるコードコメントと、自分が付けたインラインの [fyi] を並べて、WHY の棲み分けを整える。コードコメントの評価は /review-code-comments に任せ、その結果と [fyi] の要否をもとに、要るのに無ければ書き、要らなければ削り、もっと伝わる表現があれば直し、一時的な WHY は [fyi]、恒久的な WHY はコードコメントへ振り分ける。差分が動いて古くなった [fyi] も直す。単独で「コメントを整理して」「WHY の置き場を見て」「/triage-why-comments」等と指示されたときも、/update-pr-description の途中でも使う。/review-code-comments が評価、このスキルが実行を受け持つ。
-argument-hint: "[PR 番号 または URL（省略時は現在のブランチの PR）]"
+argument-hint: "[PR 番号 または URL｜--pr <PR 番号 または URL>]（省略時は現在のブランチの PR）"
 allowed-tools: Bash(gh pr view:*) Bash(gh api:*) Bash(git diff:*) Bash(git show:*) Bash(git log:*) Bash(git grep:*) Read Edit
 ---
+
+引数は名前付き（ `--pr <PR 番号 または URL>` ）でも渡せる。位置で渡したときと同じに扱い、名前付きは順不同で渡してよい。
 
 **コードコメントの評価は `/review-code-comments` がする。このスキルはその結果を受けて直す。** `/review-code-comments` は名前のとおり評価だけを返し、書き換えません。こちらは評価を持たず、書く・削る・直す・移すを実行します。
 

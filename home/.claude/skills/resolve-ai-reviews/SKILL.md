@@ -1,8 +1,10 @@
 ---
-argument-hint: "[PR 番号 または URL（省略時は現在のブランチの PR）]"
+argument-hint: "[PR 番号 または URL｜--pr <PR 番号 または URL>]（省略時は現在のブランチの PR）"
 description: PR に付いた GitHub Actions (AI) のレビューコメントに対応する。まずセッション文脈 (これまでのユーザー指示・実装判断・PR body 明記事項) と照合し、文脈と抵触する指摘は独断で対応せずユーザーに判断を尋ねる。文脈整合が取れた対応内容だけをコミット&プッシュし、各コメントにコミットハッシュ (または非対応理由) ＋末尾 Note アノテーションで返信したうえで、返信済みスレッドを Resolve conversation で解決済みにする。ユーザーが「AI レビューに対応して」「PR のレビューコメントを直して」「/resolve-ai-reviews」等を指示したときに使う。
 allowed-tools: Bash(gh api:*) Bash(gh pr view:*) Bash(gh pr edit:*) Bash(gh pr checks:*) Bash(git status:*) Bash(git diff:*) Bash(git log:*) Bash(git add:*) Bash(git commit:*) Bash(git push:*) Bash(git branch:*) Bash(git rev-parse:*) Bash(task:*) Bash(go:*) Read Edit Write MultiEdit AskUserQuestion
 ---
+
+引数は名前付き（ `--pr <PR 番号 または URL>` ）でも渡せる。位置で渡したときと同じに扱い、名前付きは順不同で渡してよい。
 
 現在のブランチに紐づく PR の GitHub Actions（AI）レビューコメントを取得し、**セッション文脈 (これまでのユーザー指示・実装判断・PR body の明記事項) と照合したうえで**、対応が必要なものを修正・コミット・プッシュし、各コメントに**コミットハッシュのみ**で返信してください。セッション文脈と乖離する指摘は独断で対応せず、セッション文脈と bot 指摘を対比した形でユーザーに判断を尋ねます。
 

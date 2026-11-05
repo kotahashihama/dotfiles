@@ -1,8 +1,10 @@
 ---
 description: 自分が書いた差分を、そのリポジトリの規約と設計の境界に照らしてレビューし、must / imo / nits の3段階で会話へ返す。GitHub へは投稿しない。ユーザーが「レビューして」「軽く見て」「セルフレビューして」「/review-code」等を指示したときに使う。「深くレビューして」「徹底的にレビューして」「多観点で見て」「レイヤー別に見て」と言われたら --deep を付けて、サブエージェントを並列起動して多観点で見る。他人の PR は /review-pr、コメント粒度は /review-code-comments、テストの追随は /review-tests の担当。
-argument-hint: "[diff 範囲（省略時は origin/HEAD...HEAD）] [--deep] [--focus <重点的に見る観点>]"
+argument-hint: "[対象｜--target <ファイル・ディレクトリ・差分の範囲>]（省略時は origin/HEAD...HEAD）[--deep] [--focus <重点的に見る観点>]"
 allowed-tools: Bash(git diff:*) Bash(git log:*) Bash(git show:*) Bash(git rev-parse:*) Bash(gh pr view:*) Bash(ls:*) Bash(grep:*) Read Grep Glob Agent AskUserQuestion Skill
 ---
+
+引数は名前付き（ `--target <ファイル・ディレクトリ・差分の範囲>` ）でも渡せる。位置で渡したときと同じに扱い、名前付きは順不同で渡してよい。
 
 自分の差分を **must / imo / nits** の3段階で指摘します。**会話へ返すだけで、GitHub へは投稿しません。**
 

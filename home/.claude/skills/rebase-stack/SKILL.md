@@ -1,9 +1,11 @@
 ---
 description: スタックした PR (下段の上に上段を積む構成) を、下段の変更に追随させて上段へ rebase 伝播し、各段を検証して push する。下段がマージされた・衝突した・リモートが消えた等の分岐を判定しながら段を上がる。ユーザーが「スタックを積み直して」「rebase を伝播して」「/rebase-stack」等を指示したときに使う。
-argument-hint: "[スタックの並び（省略時はブランチの依存から推定）]"
+argument-hint: "[スタックの並び｜--stack <下段から上段へのブランチ…>]（省略時はブランチの依存から推定）"
 allowed-tools: Bash(git status:*) Bash(git branch:*) Bash(git log:*) Bash(git rev-list:*) Bash(git rev-parse:*) Bash(git checkout:*) Bash(git switch:*) Bash(git rebase:*) Bash(git push:*) Bash(git fetch:*) Bash(git diff:*) Bash(gh pr list:*) Bash(gh pr view:*)
 disable-model-invocation: true
 ---
+
+引数は名前付き（ `--stack <下段から上段へのブランチ…>` ）でも渡せる。位置で渡したときと同じに扱い、名前付きは順不同で渡してよい。
 
 スタックの各段を下から順に rebase して push します。**単なる繰り返しではなく、段ごとに分岐の判定が要る**のがこの作業の本体です。
 

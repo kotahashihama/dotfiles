@@ -1,8 +1,10 @@
 ---
 description: 自分の PR を仕上げる。PR を1つ指定すればその1本を、指定しなければ担当している open な PR を横断で走査し、仕上がっていないものを1本ずつ仕上げる。1本の仕上げでは、ベースとの統合を確かめ、点検 (/triage-why-comments + /review-tests、リポジトリにあれば /review-conventions) を走らせ、必要なら修正して /commit-push し、必要なら /update-pr-description まで一括で行う。ユーザーが「PR を仕上げて」「PR 出す直前の点検を」「全部の PR を仕上げて」「担当 PR を一通り点検して」「/finalize-prs」等を指示したとき、またはほかのスキルが PR を指定して呼ぶときに使う。
-argument-hint: "[PR 番号 または URL（1本だけ仕上げる）｜リポジトリ名（そのリポジトリを横断）｜省略（担当 PR を横断）]"
+argument-hint: "[PR 番号 または URL｜--pr <PR 番号 または URL>｜リポジトリ名｜--repo <リポジトリ名>]（PR なら1本、リポジトリならそのリポジトリを横断。省略時は担当 PR を横断）"
 allowed-tools: Skill, Bash(git status:*) Bash(git branch:*) Bash(git diff:*) Bash(gh pr list:*) Bash(gh pr view:*) Bash(gh pr checks:*) Bash(gh run view:*) Bash(gh api:*) Bash(gh repo view:*) Bash(git rev-parse:*) Bash(git rev-list:*) Bash(git fetch:*) Bash(git worktree:*) Bash(git merge:*) Bash(go build:*) Bash(go test:*) Bash(task:*), Read EnterWorktree ExitWorktree
 ---
+
+引数は名前付き（ `--pr <PR 番号 または URL>` か `--repo <リポジトリ名>` ）でも渡せる。位置で渡したときと同じに扱い、名前付きは順不同で渡してよい。
 
 自分の PR を仕上げるオーケストレーターです。個々のチェック・コミット・PR 説明の更新は既存のスキルに任せ、本スキルは順序と、対応が要るかの判断だけを持ちます。
 
