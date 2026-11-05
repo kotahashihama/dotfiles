@@ -350,7 +350,9 @@
     "typesafe@typesafe-ai": true,
     "1password@1password": true,
     "context7@claude-plugins-official": true,
-    "security-audit@cloudflare-security-audit": true
+    "security-audit@cloudflare-security-audit": true,
+    "terraform@claude-plugins-official": true,
+    "security-guidance@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "openai-codex": {
