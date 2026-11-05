@@ -353,7 +353,8 @@
     "security-audit@cloudflare-security-audit": true,
     "terraform@claude-plugins-official": true,
     "security-guidance@claude-plugins-official": true,
-    "linejs-cli@evex-linejs": true
+    "linejs-cli@evex-linejs": true,
+    "notion@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "openai-codex": {
