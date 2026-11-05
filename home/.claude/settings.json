@@ -352,7 +352,8 @@
     "context7@claude-plugins-official": true,
     "security-audit@cloudflare-security-audit": true,
     "terraform@claude-plugins-official": true,
-    "security-guidance@claude-plugins-official": true
+    "security-guidance@claude-plugins-official": true,
+    "linejs-cli@evex-linejs": true
   },
   "extraKnownMarketplaces": {
     "openai-codex": {
@@ -455,6 +456,27 @@
         ],
         "owner": {
           "name": "Cloudflare"
+        }
+      },
+      "autoUpdate": true
+    },
+    "evex-linejs": {
+      "source": {
+        "source": "settings",
+        "name": "evex-linejs",
+        "plugins": [
+          {
+            "name": "linejs-cli",
+            "source": {
+              "source": "git-subdir",
+              "url": "evex-dev/linejs",
+              "path": "agent-plugins/linejs-cli"
+            },
+            "description": "Operate LINE Messenger from the terminal with the LINEJS CLI"
+          }
+        ],
+        "owner": {
+          "name": "evex-dev"
         }
       },
       "autoUpdate": true
