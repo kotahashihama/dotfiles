@@ -1,8 +1,8 @@
 #!/bin/sh
 #
-# SwitchBot の CLI を、1Password の Environment の SWITCHBOT_API_KEY・SWITCHBOT_SECRET で動かす
+# SwitchBot の CLI を、1Password の Environment の SWITCHBOT_TOKEN・SWITCHBOT_CLIENT_SECRET で動かす
 # MCP サーバーとして起動するときも、これを通す（ switchbot mcp serve ）
 # switchbot config set-token はトークンを設定ファイルに残すので使わない
 #
 exec "$(dirname "$0")/with-secrets" sh -c \
-  'SWITCHBOT_TOKEN=$SWITCHBOT_API_KEY exec "$HOME/.bun/bin/switchbot" "$@"' switchbot "$@"
+  'SWITCHBOT_SECRET=$SWITCHBOT_CLIENT_SECRET exec "$HOME/.bun/bin/switchbot" "$@"' switchbot "$@"
