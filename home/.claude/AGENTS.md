@@ -109,7 +109,7 @@
 | テストを先に書く実装 | `/pstack:tdd` |
 | 計画・壁打ち | `/plan-issue`・`/mattpocock-skills:grilling` |
 | コードや変更を噛み砕いて説明する | `/explain-code`・`/walk-code` （ユーザーの習熟度に合わせて開く）。仕組みや経緯を調べる段は `/pstack:how`・`/pstack:why` を単独で使ってよい |
-| コードレビュー（する・受ける） | `/review-*`・`/resolve-*`・`rules/responding_to_reviews.md`。コードの不吉な臭いの一覧は `/mattpocock-skills:code-review` から、抽象化の深さの語彙は `/mattpocock-skills:codebase-design` から、`/review-code` が参照する |
+| コードレビュー（する・受ける） | `/review-*`・`/resolve-*`・`rules/responding_to_reviews.md`。コードの不吉な臭いの一覧は `/mattpocock-skills:code-review` から、抽象化の深さの語彙は `/mattpocock-skills:codebase-design` から、セキュリティの判定の基準は `security-audit:security-audit` から、`/review-code` が参照する。コードベース全体のセキュリティ監査は `security-audit:security-audit` を単独で呼ぶ |
 | PR を出す・仕上げる・CI・コンフリクト | `/ship-pr`・`/finalize-prs`・`/loop-ai-reviews`・`/resolve-conflicts` |
 | 文章 | 日本語は `/japanese-tech-writing` → `/yomiyasu:yomiyasu` （ `rules/no_ai_style_writing.md` ）。pstack の `unslop`・`technical-writing` は英語の文章にだけ使う |
 | 完了前の検証 | `rules/verify_the_check_worked.md`・`rules/verify_before_asserting.md` |

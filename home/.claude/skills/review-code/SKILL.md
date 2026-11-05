@@ -12,7 +12,7 @@ allowed-tools: Bash(git diff:*) Bash(git log:*) Bash(git show:*) Bash(git rev-pa
 
 | 見るもの | 担当 |
 | --- | --- |
-| **設計の境界・複雑度・規約違反・失敗シナリオ** | **本スキル** |
+| **設計の境界・複雑度・規約違反・失敗シナリオ・セキュリティ** | **本スキル** |
 | コメントの粒度 | `/review-code-comments` |
 | テストと Story の追随 | `/review-tests` |
 | 他人の PR（投稿まで） | `/review-pr` |
@@ -84,7 +84,7 @@ allowed-tools: Bash(git diff:*) Bash(git log:*) Bash(git show:*) Bash(git rev-pa
 
 動かせないなら、原因や直し方を断定せずに「この経路は動かして確かめていない」と書き、重要度を1段下げる（ `references/severity.md` ）。
 
-### 4. 4つの観点で見る
+### 4. 5つの観点で見る
 
 #### 責務・境界の違反
 
@@ -129,6 +129,20 @@ allowed-tools: Bash(git diff:*) Bash(git log:*) Bash(git show:*) Bash(git rev-pa
 
 **「この入力・状態でこう壊れる」を、実コード上で追えるものだけ**出します。
 
+#### セキュリティ
+
+**認証・権限・入力値・外部への送信が差分にあるときだけ**見ます。当たらなければこの観点は飛ばす。
+
+当たったら `security-audit:security-audit` を Skill ツールで読み込み、ガイダンスモードで使います。6つのフェーズは走らせず、監査のファイルも作りません。当てるのはそのスキルの判定の基準のうち次の3つだけです。
+
+| 当てるもの | スキルの節 | レビューでの使い方 |
+| --- | --- | --- |
+| 指摘してよい条件 | 「Require a boundary and result」 | 信頼の低い側・受け付ける入力や操作・守るはずの制御・越える境界・影響を受ける相手や資源・結果を、実コード上で言えるものだけを指摘にする |
+| 深刻度 | 「Separate priority from certainty」の critical〜informational | 重要度は `references/severity.md` の判定表で決める。深刻度は指摘の根拠に1語添える |
+| 出さない指摘 | 「Anti-patterns」 | チェックリストからの逸脱、到達できる境界違反の無い多層防御の助言、差分に無いデプロイ側の挙動の推測は、指摘にしない |
+
+境界と結果のうち、リポジトリの外にある事実（プロキシの設定・認証基盤の方針など）が決め手で確かめられないものは、その事実を名指しして imo の「確かめたい」で出す。
+
 ### 5. 重要度を確定する
 
 `references/severity.md` を Read し、判定表と裏取り手順に従います。
@@ -169,3 +183,4 @@ allowed-tools: Bash(git diff:*) Bash(git log:*) Bash(git show:*) Bash(git rev-pa
 - `verify_the_check_worked.md` （検査が成立していたかを疑う）: 走査が空振りしていないかを確かめる
 - `background_heavy_work.md` （重い作業の流し方）: `--deep` でサブエージェントを待つ間の使い方
 - `solve_with_minimal_change.md` （最小の変更で解決する）: 目の前の問題に要らない改善は must にせず、imo に今回は対応する必要がないと添えて出す
+- `security-audit:security-audit` （cloudflare の監査スキル）: セキュリティの観点で判定の基準だけをガイダンスモードで借りる。コードベース全体の監査を頼まれたら、本スキルではなくあちらを単独で呼ぶ
