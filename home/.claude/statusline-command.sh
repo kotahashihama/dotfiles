@@ -3,7 +3,7 @@
 #
 # Line 1: 🐙 repo[/subpath] │ 🌿 branch [+N ~M] [│ 🌳 worktree] [│ 🎫 KEY-1 #2]
 #         (📂 full path instead, when outside a git repo)
-# Line 2: 🤖 model · effort · output style │ 🔖 vX.Y.Z
+# Line 2: 🤖 model · effort · output style │ 🔖 vX.Y.Z │ ⚡ N tok/s
 # Line 3: 🧠 progress bar used% │ 💰 5h X% (🔄 HH:mm) │ 7d X% (🔄 M/DD HH:mm)
 #         (残量のメーターを1行に並べる。使用量が無ければ 🧠 だけ)
 
@@ -178,7 +178,40 @@ mode_part=""
 version_part=""
 [ -n "$cc_version" ] && version_part=" │ 🔖 ${GRAY}v${cc_version}${RESET}"
 
-printf "%s\n" "🤖 ${WHITE}${model}${RESET}${mode_part}${version_part}"
+# 出力の速さ。入力に速さの項目は無いので、前回の描画からの出力トークンの増分を
+# API の待ち時間の増分で割る。壁時計で割ると、考えていない時間まで分母に入る
+# 増分が無い描画では前回の値を出し、桁数を固定して行の幅を変えない
+speed=$(echo "$input" | jq -r '[
+  (.session_id // "default"), (.context_window.total_output_tokens // 0),
+  (.cost.total_api_duration_ms // 0)
+] | @tsv')
+sid=$(printf '%s' "$speed" | cut -f1)
+out_tok=$(printf '%s' "$speed" | cut -f2)
+api_ms=$(printf '%s' "$speed" | cut -f3)
+speed_cache="${XDG_CACHE_HOME:-$HOME/.cache}/claude-statusline/speed-${sid}"
+tps=""
+prev_tok=0
+prev_ms=0
+if [ -f "$speed_cache" ]; then
+  read -r prev_tok prev_ms tps < "$speed_cache"
+fi
+d_tok=$(( out_tok - prev_tok ))
+d_ms=$(( api_ms - prev_ms ))
+# 1秒未満の増分では値が跳ねるので、基準を進めずに次の描画の増分へ持ち越す
+# 数が減ったら（会話を変えた等）基準を取り直す
+if [ "$d_tok" -gt 0 ] && [ "$d_ms" -ge 1000 ]; then
+  tps=$(( d_tok * 1000 / d_ms ))
+  prev_tok=$out_tok
+  prev_ms=$api_ms
+elif [ "$d_tok" -lt 0 ] || [ "$d_ms" -lt 0 ]; then
+  prev_tok=$out_tok
+  prev_ms=$api_ms
+fi
+mkdir -p "${speed_cache%/*}"
+printf '%s %s %s\n' "$prev_tok" "$prev_ms" "$tps" >| "$speed_cache"
+speed_part=" │ ⚡ ${GRAY}$(printf '%4s' "${tps:--}") tok/s${RESET}"
+
+printf "%s\n" "🤖 ${WHITE}${model}${RESET}${mode_part}${version_part}${speed_part}"
 
 context_part="🧠 ${bar_color}${bar}${RESET} ${used_int}%"
 
