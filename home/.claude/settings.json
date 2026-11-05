@@ -329,12 +329,9 @@
   },
   "enabledPlugins": {
     "figma@claude-plugins-official": true,
-    "slack@claude-plugins-official": false,
     "codex@openai-codex": true,
     "skill-creator@claude-plugins-official": true,
-    "agentkit-shopify@worldcoin-agentkit": false,
     "agy-skills@agy-skills": true,
-    "claude-code-mermaid@claude-code-mermaid": false,
     "cc-plugin-you-should-know@builtin": true,
     "image-view@claude-image-view": true,
     "plan-progress@zycck-mods": true,
@@ -363,24 +360,10 @@
       },
       "autoUpdate": true
     },
-    "worldcoin-agentkit": {
-      "source": {
-        "source": "github",
-        "repo": "worldcoin/agentkit-shopify-demo"
-      },
-      "autoUpdate": true
-    },
     "agy-skills": {
       "source": {
         "source": "github",
         "repo": "wildriver/agy-skills"
-      },
-      "autoUpdate": true
-    },
-    "claude-code-mermaid": {
-      "source": {
-        "source": "github",
-        "repo": "gecm0/render-mermaid"
       },
       "autoUpdate": true
     },
@@ -453,7 +436,6 @@
         "repo": "1Password/1password-claude-plugin"
       },
       "autoUpdate": true
-    }
     },
     "cloudflare-security-audit": {
       "source": {
@@ -474,6 +456,7 @@
         }
       },
       "autoUpdate": true
+    }
   },
   "outputStyle": "Explanatory",
   "language": "japanese",
