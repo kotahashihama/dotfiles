@@ -74,6 +74,14 @@ if command -v claude >/dev/null 2>&1 \
     || echo "⚠️  claude-recall の MCP 登録に失敗しました。claude mcp add で手で入れてください"
 fi
 
+# 家電を操作する MCP サーバー（SwitchBot）。本体は restore_languages.sh が bun のグローバルへ入れ、
+# 認証情報は ~/.claude/bin/switchbot が 1Password の Environment から渡す
+if command -v claude >/dev/null 2>&1 \
+  && ! grep -q '"switchbot"' "$HOME/.claude.json" 2>/dev/null; then
+  claude mcp add --scope user switchbot -- "$HOME/.claude/bin/switchbot" mcp serve --tools all >/dev/null 2>&1 \
+    || echo "⚠️  switchbot の MCP 登録に失敗しました。claude mcp add で手で入れてください"
+fi
+
 # 公開側への混入を検査するフックを有効にする
 if git -C "$DOTFILES_DIR" rev-parse --git-dir >/dev/null 2>&1; then
   git -C "$DOTFILES_DIR" config core.hooksPath scripts/git-hooks
