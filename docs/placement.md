@@ -97,7 +97,7 @@ switchbot() {
 
 **エイリアスではなく関数にし、値は `with-secrets` が起動した子のシェルの中で読む**のが要点。エイリアスの本体は定義時に展開されるため、`alias sblon` の出力にキーが載る。呼び出したシェルで `$SWITCHBOT_TOKEN` を展開すると、そのシェルには値が無いので空になる。
 
-変数を増やしたら、`~/.config/local-secrets/secrets.env` に `KEY=VALUE` の1行で足し、控えとして 1Password の Environment 「dotfiles」にも足す。名前の一覧は Environment が持つので、雛形は置かない。
+変数を増やしたら、`~/.config/local-secrets/secrets.env` に `KEY=VALUE` の1行で足し、控えの1Password の Personal の保管庫のドキュメント「secrets.env (dotfiles)」も差し替える。名前の一覧はこの控えが持つので、雛形は置かない。
 
 ## ~ へのリンクのされ方
 

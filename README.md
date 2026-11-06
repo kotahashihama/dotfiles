@@ -115,7 +115,7 @@ dotfiles では運ばない。**新マシンで消えるので、移行前に確
 
 リンク先に実体があった場合は削除せず `~/dotfiles-salvaged-<日時>/` へ退避する。**リストアが既存の設定を消すことはない。**
 
-アーカイブが手元に無い場合も public だけリンクして進む。API キーはアーカイブに入らないので、どちらの場合も `secrets.env` を書き写す（下記）。
+アーカイブが手元に無い場合も public だけリンクして進む。API キーはアーカイブに入らないので、どちらの場合も `secrets.env` を 1Password から取り出す（下記）。
 
 ## スクリプト
 
@@ -204,7 +204,7 @@ dotfiles では運ばない。**新マシンで消えるので、移行前に確
 ## 手動で設定する必要があるもの
 
 - gh の認証（`gh auth login`）
-- `with-secrets` が読む `~/.config/local-secrets/secrets.env` を、1Password の Environment 「dotfiles」から書き写す（権限600。リストアの最後に手順が出る）
+- `with-secrets` が読む `~/.config/local-secrets/secrets.env` を、1Password の Personal の保管庫のドキュメント「secrets.env (dotfiles)」から取り出す（リストアの最後にコマンドが出る）
 - `takumi-guard-sync` を流す（npm・bun・pip・uv・Go・Bundler が Takumi Guard を通して取るようにする）
 
 AltTab と Raycast の設定は `defaults` で運ぶので、手で入れ直す必要はない（アプリ本体は `Brewfile` から入る）。

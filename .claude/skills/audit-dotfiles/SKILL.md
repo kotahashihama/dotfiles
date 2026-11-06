@@ -61,7 +61,7 @@ allowed-tools: Bash(zsh:*) Bash(grep:*) Bash(sed:*) Bash(awk:*) Bash(sort:*) Bas
 
 ### secrets — 秘匿値
 
-`/audit-secrets` に委譲する。ここでは、設定ファイルが参照している変数名が `~/.config/local-secrets/secrets.env` と、控えの 1Password の Environment 「dotfiles」の両方に**すべてあるか**だけを見る（secrets.env はキー名だけを `grep -o '^[A-Za-z_][A-Za-z0-9_]*='` で、Environment は `mcp__plugin_1password_1password__list_variables` で引く）。足りないと、`with-secrets` 経由で起動しても値が空になる。
+`/audit-secrets` に委譲する。ここでは、設定ファイルが参照している変数名が `~/.config/local-secrets/secrets.env` に**すべてあるか**だけを見る（キー名だけを `grep -o '^[A-Za-z_][A-Za-z0-9_]*='` で引く）。あわせて、控えの1Password の Personal の保管庫のドキュメント「secrets.env (dotfiles)」と中身が一致するかを SHA-256 だけで比べる（ `op document get` の出力を `shasum -a 256` に渡す）。足りないと、`with-secrets` 経由で起動しても値が空になる。
 
 ## 役目を終えたものを見分ける
 
