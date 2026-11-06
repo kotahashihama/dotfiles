@@ -87,11 +87,13 @@ if git -C "$DOTFILES_DIR" rev-parse --git-dir >/dev/null 2>&1; then
   git -C "$DOTFILES_DIR" config core.hooksPath scripts/git-hooks
 fi
 
-# API キーは 1Password の Environment から with-secrets で渡す。トークンはマシンごとにキーチェーンへ入れる
-if ! security find-generic-password -s dotfiles-op-service-account >/dev/null 2>&1; then
-  echo "⚠️  with-secrets のトークンがキーチェーンにありません。1Password のアプリを開いてから次を流してください"
-  echo "    security add-generic-password -a \"\$USER\" -s dotfiles-op-service-account -w \"\$(op item get 'dotfiles サービスアカウント' --vault Personal --fields label=password --reveal)\""
-  echo "    入れたら takumi-guard-sync を流し、パッケージ管理に Takumi Guard のトークンを書き出してください"
+# API キーは git の外の secrets.env から with-secrets で渡す。値の控えは 1Password の Environment 「dotfiles」にある
+SECRETS_FILE="$HOME/.config/local-secrets/secrets.env"
+if [ ! -f "$SECRETS_FILE" ]; then
+  mkdir -p "$(dirname "$SECRETS_FILE")"
+  chmod 700 "$(dirname "$SECRETS_FILE")"
+  echo "⚠️  $SECRETS_FILE がありません。1Password の Environment 「dotfiles」の値を KEY=VALUE の1行ずつで書き写し、権限を 600 にしてください"
+  echo "    書いたら takumi-guard-sync を流し、パッケージ管理に Takumi Guard のトークンを書き出してください"
 fi
 
 if [ -d "$SALVAGE_DIR" ]; then

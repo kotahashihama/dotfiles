@@ -89,15 +89,15 @@ tar czf - private | gpg --symmetric --cipher-algo AES256 > private_dotfiles.tar.
 # 悪い例: 値が設定ファイルに残る
 alias sblon='curl -H "Authorization: <API キー>" ...'
 
-# 良い例: 値は 1Password の Environment、ここは参照だけ
+# 良い例: 値は secrets.env、ここは参照だけ
 switchbot() {
-  with-secrets sh -c 'curl -H "Authorization: $SWITCHBOT_API_KEY" ...'
+  with-secrets sh -c 'curl -H "Authorization: $SWITCHBOT_TOKEN" ...'
 }
 ```
 
-**エイリアスではなく関数にし、値は `with-secrets` が起動した子のシェルの中で読む**のが要点。エイリアスの本体は定義時に展開されるため、`alias sblon` の出力にキーが載る。呼び出したシェルで `$SWITCHBOT_API_KEY` を展開すると、そのシェルには値が無いので空になる。
+**エイリアスではなく関数にし、値は `with-secrets` が起動した子のシェルの中で読む**のが要点。エイリアスの本体は定義時に展開されるため、`alias sblon` の出力にキーが載る。呼び出したシェルで `$SWITCHBOT_TOKEN` を展開すると、そのシェルには値が無いので空になる。
 
-変数を増やしたら、 1Password のアプリで 1Password の Environment 「dotfiles」に足す。名前の一覧は 1Password が持つので、雛形は置かない。
+変数を増やしたら、`~/.config/local-secrets/secrets.env` に `KEY=VALUE` の1行で足し、控えとして 1Password の Environment 「dotfiles」にも足す。名前の一覧は Environment が持つので、雛形は置かない。
 
 ## ~ へのリンクのされ方
 

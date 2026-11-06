@@ -57,11 +57,11 @@ allowed-tools: Bash(zsh:*) Bash(grep:*) Bash(sed:*) Bash(awk:*) Bash(sort:*) Bas
 - 管理対象なのに `~` が**実体のまま**になっていないか
 - `home/` と `private/` で**同名が衝突**していないか
 - **管理する範囲を見直す**: 手で書いた設定はリンクにして管理し、キャッシュ・状態・ログ・認証情報は管理から外す。`~` と `~/.config` の下で、管理していない設定を拾って取り込む。逆に、管理しているもののうちアプリが書き出す状態を外す。`~/.config` は中身ごとにリンクするので、外すものは `~` 側の実体に戻す
-- **リンクにしたら、その道具を1回動かす**。設定のフォルダがリンクだと止まる道具がある（1Password の `op` は「シンボリックリンクなので安全に開けない」で止まり、`with-secrets` を使うコマンドもすべて止まる）
+- **リンクにしたら、その道具を1回動かす**。設定のフォルダがリンクだと止まる道具がある（1Password の `op` は「シンボリックリンクなので安全に開けない」で止まる）
 
 ### secrets — 秘匿値
 
-`/audit-secrets` に委譲する。ここでは、設定ファイルが参照している変数名が 1Password の Environment 「dotfiles」に**すべてあるか**だけを見る（名前は `mcp__plugin_1password_1password__list_variables` で引く）。足りないと、`with-secrets` 経由で起動しても値が空になる。
+`/audit-secrets` に委譲する。ここでは、設定ファイルが参照している変数名が `~/.config/local-secrets/secrets.env` と、控えの 1Password の Environment 「dotfiles」の両方に**すべてあるか**だけを見る（secrets.env はキー名だけを `grep -o '^[A-Za-z_][A-Za-z0-9_]*='` で、Environment は `mcp__plugin_1password_1password__list_variables` で引く）。足りないと、`with-secrets` 経由で起動しても値が空になる。
 
 ## 役目を終えたものを見分ける
 
