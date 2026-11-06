@@ -55,6 +55,34 @@
 | 塗りつぶした画面で要素を探す | 画面の文字が `■` に変わるので、名前を使った探し方（ `hasText: '<名前>'` ）は見つからない。ID を含むリンク（ `a[href*="/<ID>"]` ）など、塗りつぶさない属性で探す |
 | 名前を塗りつぶす | 名前が2つのテキストノードに分かれて表示されると、つながった語としては当たらずに残る。語は部分にも分けて渡す（姓名に加えて、姓と名を1語ずつ） |
 | コマンドに時間の上限を付ける | macOS には `timeout` コマンドが無く、付けると `command not found` で中身が実行されない。実行する側の仕組み（ツールの時間の上限）で付ける |
+| ダウンロードの保存名を撮る | ヘッドレスのブラウザはダウンロードの表示を出さない。スクリーンショットと録画はページの中しか写さないので、ヘッド付きにしても Chrome の外枠に出る表示は入らない。押した直後に `download.suggestedFilename()` （新しいタブで開くなら応答の `Content-Disposition` ）を、ページの上に固定した帯で出してから撮る（下記）。帯は確かめるために足した表示だと報告に書く |
+| 押した結果がページの外に出る（ダウンロード・メール・別タブ） | 押す様子だけを撮っても結果は写らない。結果そのもの（帯に出した保存名・受信箱の画面・開いたタブ）を撮る |
+
+帯の出し方（シナリオの中で、押して保存名を受け取った直後に呼ぶ）。
+
+```js
+async function showName(page, label, name) {
+  await page.evaluate(([label, name]) => {
+    document.getElementById('__dlname')?.remove()
+    const d = Object.assign(document.createElement('div'), { id: '__dlname', textContent: `${label}: ${name}` })
+    d.style.cssText = 'position:fixed;top:12px;left:50%;transform:translateX(-50%);z-index:2147483647;background:#fff3b0;border:3px solid #d97706;font:bold 22px sans-serif;padding:10px 18px;border-radius:8px'
+    document.body.appendChild(d)
+  }, [label, name])
+  await page.waitForTimeout(1500)   // 録画にも帯が映る長さ
+}
+// 例: const dl = await dlP; await showName(page, '保存されたファイル名（Playwright が受け取った名前）', dl.suggestedFilename()); await shot('dl')
+```
+
+## 形式
+
+静止画は webp、動画は webm にする。
+
+| 種類 | 形式 | 作り方 |
+| --- | --- | --- |
+| 静止画 | webp（可逆） | Playwright は png で撮るので、貼る前に `cwebp -quiet -lossless <撮った>.png -o <名前>.webp` で変える。可逆なので画質は落ちず、大きさは png の半分以下（実測: 1440×900の画面で106KBが47KB）。手元の ffmpeg は webp を書けない（ `libwebp` が入っていない）ので `cwebp` を使う |
+| 動画 | webm | `record.mjs` が出す形式のまま貼る |
+
+課題管理ツールには、1つの課題に付けられる添付の数に上限があることがある。小さくしても件数は減らないので、撮り直したら古いほうを外す。
 
 ## 動画
 
