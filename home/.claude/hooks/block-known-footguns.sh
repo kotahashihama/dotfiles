@@ -155,4 +155,16 @@ if printf '%s' "$stripped" | grep -qE 'docker[[:space:]-]+compose[^|;&]*[[:space
   deny '`docker compose down -v` は名前付きボリュームをすべて消し、ローカルの DB が戻りません。特定のサービスだけ初期化するなら `docker compose rm -sfv <サービス>` と、そのサービスのボリュームだけを消してください。全部消す必要が本当にあるなら、ユーザーへ確認してください'
 fi
 
+# 7) テストや検査の出力をパイプで切った直後に `&& git push` / `&& git commit` を繋ぐ形。
+#    パイプの終了コードは最後のコマンド（ `tail` など）のものなので、テストが落ちても
+#    `&&` の先が走る。実際に `go test ... | tail -1 && git push` で、落ちたテストのまま push した。
+#    `set -o pipefail` を付けているなら、落ちたら止まるので対象外
+#    `2>&1` の `&` を `&&` の区切りと読まないよう、リダイレクトの `&` を先に落とす
+CHECKS='(go[[:space:]]+(test|vet|build)|golangci-lint|(pnpm|npm|yarn|bun)[[:space:]]+(run[[:space:]]+)?(test|lint|type-check|typecheck|build)|task[[:space:]]+[a-z:]*(test|lint)|pytest|vitest|jest|tsc)'
+noredir=$(printf '%s' "$stripped" | sed -E 's/[0-9]?>&[0-9]//g; s/&>/>/g')
+if ! printf '%s' "$noredir" | grep -q 'pipefail' \
+  && printf '%s' "$noredir" | grep -qE "${CHECKS}[^;&|]*\|[^;]*&&[^;]*git[[:space:]]+(push|commit)"; then
+  deny 'テストや検査の出力をパイプで切った直後に `&& git push` / `&& git commit` を繋いでいます。パイプの終了コードは最後のコマンドのものなので、テストが落ちても push まで進みます。検査を先に単独で流して結果を見てから、push を別の呼び出しで出してください（verify_the_check_worked.md「返ってきたものを読み違えていないか」）'
+fi
+
 exit 0
