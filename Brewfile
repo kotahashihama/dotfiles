@@ -211,6 +211,8 @@ cask "codex"
 # Write, edit, and chat about your code with AI
 cask "cursor"
 cask "cursor-cli"
+# Generate a timeline of your day, automatically
+cask "dayflow"
 # Browser for SQLite databases
 cask "db-browser-for-sqlite"
 # AI-powered translator
