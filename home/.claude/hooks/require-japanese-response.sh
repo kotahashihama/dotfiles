@@ -104,18 +104,33 @@ mid_english = mid_latin >= 200
 # ファイルと GitHub への投稿には別のフックが掛かるが、会話への応答には掛かっていなかった。
 # 判定は check-japanese-spacing.py に1か所で持たせ、ここでは呼ぶだけにする
 spacing = []
+# PR・issue・課題の参照がクリックで開ける形かも見る（ report_formatting.md ）。
+# 判定は check-reference-links.py が持つ。目印を共有するので、表記と同じ回に並べて返す
+links = []
 if not (final_english or mid_english):
-    try:
-        import importlib.util
-        spec = importlib.util.spec_from_file_location(
-            "spacing", os.path.expanduser("~/.claude/hooks/check-japanese-spacing.py"))
+    import importlib.util
+
+    def load(name, path):
+        spec = importlib.util.spec_from_file_location(name, os.path.expanduser(path))
         mod = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(mod)
+        return mod
+
+    try:
+        mod = load("spacing", "~/.claude/hooks/check-japanese-spacing.py")
         for b in blocks:
             spacing += [(cat, text) for _, cat, text in mod.check_text(b)]
     except Exception:
         spacing = []
-    if not spacing:
+    try:
+        ref = load("links", "~/.claude/hooks/check-reference-links.py")
+        for b in blocks:
+            for item in ref.check_links(b):
+                if item not in links:
+                    links.append(item)
+    except Exception:
+        links = []
+    if not spacing and not links:
         raise SystemExit(0)
 
 # 同じプロンプトで二度は止めない（鍵は Stop フック共通）
@@ -124,14 +139,28 @@ if os.path.exists(mark):
     raise SystemExit(0)
 open(mark, "w").close()
 
-if spacing:
-    shown = "\n".join(f"- {cat}: {text[:60]}" for cat, text in spacing[:8])
-    more = f"\nほか {len(spacing) - 8} 件" if len(spacing) > 8 else ""
+if spacing or links:
+    parts = []
+    if spacing:
+        shown = "\n".join(f"- {cat}: {text[:60]}" for cat, text in spacing[:8])
+        more = f"\nほか {len(spacing) - 8} 件" if len(spacing) > 8 else ""
+        parts.append(
+            "**応答の表記が規約から外れています**（ `no_space_between_number_and_unit.md` ）。\n\n"
+            f"{shown}{more}\n\n"
+            "数値と単位は詰め、独立した英単語と日本語のあいだ・インラインコードの前後は空けます。"
+        )
+    if links:
+        shown = "\n".join(f"- {cat}: {text}" for cat, text in links[:8])
+        more = f"\nほか {len(links) - 8} 件" if len(links) > 8 else ""
+        parts.append(
+            "**PR・issue・課題の参照がクリックで開けない形です**（ `report_formatting.md` ）。\n\n"
+            f"{shown}{more}\n\n"
+            "見せる文字は URL・owner/repo#番号・課題キーのどれでもよく、どれもリンクにします"
+            "（PR は owner/repo#番号 か [文字](URL)、課題は [キー](URL)）。"
+        )
     sys.stderr.write(
-        "**応答の表記が規約から外れています**（ `no_space_between_number_and_unit.md` ）。\n\n"
-        f"{shown}{more}\n\n"
-        "該当する文だけを直して、直した文を出し直してください（応答全体を繰り返さなくてよい）。"
-        "数値と単位は詰め、独立した英単語と日本語のあいだ・インラインコードの前後は空けます。"
+        "\n\n".join(parts)
+        + "\n\n該当する文だけを直して、直した文を出し直してください（応答全体を繰り返さなくてよい）。"
     )
     raise SystemExit(2)
 
