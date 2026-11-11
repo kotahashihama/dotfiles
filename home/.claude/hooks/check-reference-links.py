@@ -11,13 +11,17 @@ require-japanese-response.sh から呼ぶ。規定は report_formatting.md の
 - Markdown のリンク（ [文字](URL) ）の文字と URL、裸の URL、owner/repo#番号
 - パスやブランチ名の一部（前が / か . 、後ろが -英字）
 - 2桁以下の #番号。指摘の通し番号（ #2 ）と区別が付かない
+- セッションの名前の中の課題キー（ PROJ-123 BE ・ PROJ-123 mypage FE ）。課題ではなくセッションを呼ぶ名前
 """
 import re
 
 # 課題キーの形をしているが、規格や方式の名前で課題ではないもの
 NOT_ISSUE_PREFIXES = {"UTF", "ISO", "SHA", "AES", "RFC", "TLS", "HTTP", "CVE", "GPT", "ECMA", "IEEE", "JIS", "MD", "ES"}
 
-ISSUE_KEY = re.compile(r"(?<![\w/.\-#])([A-Z][A-Z0-9]*(?:_[A-Z0-9]+)*)-(\d+)(?![\w]|-[A-Za-z])")
+# 後ろに BE・FE（間に小文字の語が1つ入ってもよい）が続くものは、セッションの名前として見ない
+ISSUE_KEY = re.compile(
+    r"(?<![\w/.\-#])([A-Z][A-Z0-9]*(?:_[A-Z0-9]+)*)-(\d+)(?![\w]|-[A-Za-z]|\s+(?:[a-z]+\s+)?(?:BE|FE)\b)"
+)
 BARE_NUMBER = re.compile(r"(?<![\w/&#])#(\d{3,})\b")
 
 
