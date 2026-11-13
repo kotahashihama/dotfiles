@@ -354,7 +354,8 @@
     "terraform@claude-plugins-official": true,
     "security-guidance@claude-plugins-official": true,
     "linejs-cli@evex-linejs": true,
-    "notion@claude-plugins-official": true
+    "notion@claude-plugins-official": true,
+    "visual-explainer@visual-explainer-marketplace": true
   },
   "extraKnownMarketplaces": {
     "openai-codex": {
@@ -481,6 +482,12 @@
         }
       },
       "autoUpdate": true
+    },
+    "visual-explainer-marketplace": {
+      "source": {
+        "source": "github",
+        "repo": "nicobailon/visual-explainer"
+      }
     }
   },
   "outputStyle": "Explanatory",
