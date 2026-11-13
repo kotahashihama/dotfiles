@@ -487,7 +487,8 @@
       "source": {
         "source": "github",
         "repo": "nicobailon/visual-explainer"
-      }
+      },
+      "autoUpdate": true
     }
   },
   "outputStyle": "Explanatory",
