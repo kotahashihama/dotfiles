@@ -79,4 +79,21 @@ MSG
   exit 1
 fi
 
+# 3) プラグインのマーケットプレイスの自動更新
+# claude plugin marketplace add は autoUpdate を書かないので、足し忘れると
+# 入れた時点の版に留まる。公式のマーケットプレイスは既定で有効なので載らない。
+SETTINGS=home/.claude/settings.json
+if echo "$staged" | grep -qx "$SETTINGS"; then
+  if command -v jq >/dev/null 2>&1; then
+    stale=$(git show ":$SETTINGS" | jq -r '(.extraKnownMarketplaces // {}) | to_entries[] | select(.value.autoUpdate != true) | .key' | tr '\n' ' ')
+    if [ -n "$stale" ]; then
+      echo "✗ autoUpdate が true でないマーケットプレイス ($stale): $SETTINGS" >&2
+      echo "  extraKnownMarketplaces の各項目に \"autoUpdate\": true を足してください" >&2
+      exit 1
+    fi
+  else
+    echo "⚠️  jq がありません。マーケットプレイスの自動更新の検査を飛ばします" >&2
+  fi
+fi
+
 exit 0

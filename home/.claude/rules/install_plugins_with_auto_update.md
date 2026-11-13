@@ -69,6 +69,8 @@ gh api repos/<owner>/<repo>/contents/.claude-plugin --jq '.[].name'
 
 **足したその場で `"autoUpdate": true` を付ける。** `claude-plugins-official` などの公式のマーケットプレイスは既定で有効なので、書かなくてよい。
 
+付け忘れたまま dotfiles の `settings.json` をコミットすると、dotfiles の `scripts/git-hooks/pre-commit` が止めます。止まるのはコミットの時点なので、足したその場で付ける決まりは変わりません。
+
 ## なぜ
 
 - プラグインなら更新が自動で届く。手元に写しを置くと、更新を取り込む仕組みを別に用意することになる（定期実行のジョブなど）
