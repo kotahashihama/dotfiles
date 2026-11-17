@@ -161,7 +161,7 @@ def spacing(body):
 # PR テンプレートが地の文として置く節。見出しから次の見出しまでを検査から外す。
 # リポジトリ側が書いた文章なので、こちらの規約を当てても直す先が無い
 # （github_writing.md の例外）。
-TEMPLATE_SECTIONS = ("レビューのルール", "AI レビュー")
+TEMPLATE_SECTIONS = ("レビューのルール", "AI レビュー", "VRT (見た目の差分)")
 
 
 def prose_lines(body):
