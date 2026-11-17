@@ -186,6 +186,8 @@ cask "appcleaner"
 cask "arc"
 # Electronics prototyping platform
 cask "arduino-ide"
+# 3D model slicing software for 3D printers
+cask "bambu-studio"
 # Menu bar icon organiser
 cask "bartender"
 # Tool to customise input devices and automate computer systems
