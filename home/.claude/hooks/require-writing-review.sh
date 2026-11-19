@@ -29,7 +29,13 @@ if not pid:
 
 HOME = os.path.expanduser("~")
 # auto memory は会話の記録で、読み物ではない
-SKIP_PREFIXES = (os.path.join(HOME, ".claude", "projects") + os.sep,)
+# メモリの実体はリンクの先（dotfiles の private/.claude-memory/）にあり、パスは解決した形で届く
+SKIP_PREFIXES = tuple({os.path.join(HOME, ".claude", "projects") + os.sep,
+                       os.path.realpath(os.path.join(HOME, ".claude", "projects")) + os.sep}
+                      | {os.path.realpath(os.path.join(HOME, ".claude", "projects", d, "memory")) + os.sep
+                         for d in (os.listdir(os.path.join(HOME, ".claude", "projects"))
+                                   if os.path.isdir(os.path.join(HOME, ".claude", "projects")) else [])
+                         if os.path.islink(os.path.join(HOME, ".claude", "projects", d, "memory"))})
 # 一時ディレクトリは使い捨ての置き場で、後から読まれない
 TEMP_PREFIXES = tuple(sorted({os.path.realpath(t) + os.sep for t in (tempfile.gettempdir(), "/tmp")}))
 
