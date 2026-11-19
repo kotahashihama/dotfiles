@@ -55,6 +55,12 @@ def turn_texts(path, prompt_id):
                 # 次のプロンプトに入ったら打ち切る
                 if e.get("type") == "user" and e.get("promptId") not in (None, prompt_id):
                     break
+                # 差し戻しを受けたら、それより前の文は見ない。直した後の応答で
+                # 同じ指摘を繰り返さないため（止める上限を3回にしてから表に出た）
+                body = (e.get("message") or {}).get("content")
+                if e.get("type") == "user" and isinstance(body, str) and body.startswith("Stop hook feedback:"):
+                    texts = []
+                    continue
                 if e.get("type") != "assistant":
                     continue
                 content = (e.get("message") or {}).get("content")
