@@ -130,7 +130,7 @@ except Exception:
 
 
 def link_hits(text):
-    """Markdown の地の文の、リンクにしていない課題キーと報告の書式（URL の直後の約物・定型の締め・pnpm run）。
+    """Markdown の地の文の、リンクにしていない課題キーと報告の書式（URL の直後の約物）。
     会話にだけ掛けていた検査をファイルにも掛ける。コードブロックの中は NG の例や原文なので見ない"""
     out, fence = [], False
     if not links:

@@ -264,7 +264,7 @@ def check(body, note_required=True):
         hits.append(("no_agent_coordination_in_pr.md",
                      "エージェント間の調整に触れている。成果物には状態だけを書く", bad))
 
-    # 課題キーのリンクと、URL の直後の約物・定型の締め・pnpm run。会話にだけ掛かっていた
+    # 課題キーのリンクと、URL の直後の約物。会話にだけ掛かっていた
     # 検査を投稿にも掛ける。判定はそれぞれのモジュールに1か所で持たせる
     import importlib.util
 
@@ -286,7 +286,7 @@ def check(body, note_required=True):
         report = load("report", "check-report-format.py")
         for n, raw, _l in lines:
             for cat, _t in report.check_report(raw):
-                hits.append(("report_formatting.md / no_ai_style_writing.md / omit_run_in_package_scripts.md",
+                hits.append(("report_formatting.md",
                              cat, [n]))
     except Exception:
         pass

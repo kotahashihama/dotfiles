@@ -122,7 +122,7 @@ else:
 # MCP と bee の投稿だけ素通りしていた。判定はそれぞれのモジュールに1か所で持たせる
 #   check-japanese-spacing.py  表記（数値と単位・英字との空白・約物・インラインコードの前後・ダッシュ）
 #   check-reference-links.py   リンクにしていない課題キー（ report_formatting.md ）
-#   check-report-format.py     URL の直後の括弧と句読点・定型の締め・pnpm run
+#   check-report-format.py     URL の直後の括弧と句読点
 import importlib.util
 
 
@@ -216,8 +216,7 @@ if found:
         *shown,
         "",
         "表記は japanese_notation.md、課題キーのリンクと URL は report_formatting.md、"
-        "定型の締めは no_ai_style_writing.md、生成者表示は github_note_generated_by_claude.md、"
-        "pnpm run は omit_run_in_package_scripts.md が定めています。",
+        "生成者表示は github_note_generated_by_claude.md が定めています。",
     ]))
     raise SystemExit(2)
 

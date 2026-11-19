@@ -115,7 +115,7 @@ spacing = []
 # PR・issue・課題の参照がクリックで開ける形かも見る（ report_formatting.md ）。
 # 判定は check-reference-links.py が持つ。目印を共有するので、表記と同じ回に並べて返す
 links = []
-# URL の直後の括弧・句読点と定型の締めも見る。判定は check-report-format.py が持つ
+# URL の直後の括弧・句読点も見る。判定は check-report-format.py が持つ
 fmt = []
 if not (final_foreign or mid_foreign):
     import importlib.util
@@ -175,10 +175,9 @@ if spacing or links or fmt:
     if fmt:
         shown = "\n".join(f"- {cat}: {text}" for cat, text in fmt[:8])
         parts.append(
-            "**報告の書式が崩れています**（ `report_formatting.md` / `no_ai_style_writing.md` ）。\n\n"
+            "**URL が開けない形です**（ `report_formatting.md` ）。\n\n"
             f"{shown}\n\n"
             "URL は行末で終えるか、補足を前に置くか、[文字](URL) のリンクにします。"
-            "定型の締め（「答えは以上です」「他にあればお知らせください」）は書きません。"
         )
     sys.stderr.write(
         "\n\n".join(parts)

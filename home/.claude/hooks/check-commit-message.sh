@@ -37,8 +37,11 @@ TYPES = r"(feat|fix|refactor|perf|docs|style|test|build|ci|chore)"
 def message():
     """コマンドからメッセージを取り出す。取れなければ None"""
     # ヒアドキュメントで -F - か -m "$(cat <<'EOF' ...)" に渡す形
-    m = re.search(r"<<-?\s*'?\"?(\w+)'?\"?\n(.*?)\n\1\b", cmd, re.S)
-    if m and re.search(r"\bcommit\b[^\n]*(?:-F\s*-|--file[= ]-|-m\s*\"\$\(cat)", cmd):
+    # 同じ呼び出しに別のヒアドキュメント（スクリプト）があることがあるので、git commit より後ろだけを見る
+    at = re.search(r"\bgit\b[^\n|;&]*\bcommit\b", cmd)
+    tail = cmd[at.start():] if at else cmd
+    m = re.search(r"<<-?\s*'?\"?(\w+)'?\"?\n(.*?)\n\1\b", tail, re.S)
+    if m and re.search(r"\bcommit\b[^\n]*(?:-F\s*-|--file[= ]-|-m\s*\"\$\(cat)", tail):
         return m.group(2)
     seg = re.search(r"\bgit\b[^\n|;&]*\bcommit\b[^\n|;&]*", cmd)
     try:
