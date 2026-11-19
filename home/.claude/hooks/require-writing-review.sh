@@ -126,15 +126,7 @@ files = scan()
 if not files:
     raise SystemExit(0)
 
-# 鍵は Stop フック共通（check-writing-in-files.sh と同じ）。上限も揃える
-mark = os.path.join(tempfile.gettempdir(), "claude-stopguard-" + pid)
-try:
-    done = int(io.open(mark, encoding="utf-8").read().strip() or 0)
-except Exception:
-    done = 0
-if done >= 3:
-    raise SystemExit(0)
-io.open(mark, "w", encoding="utf-8").write(str(done + 1))
+# 止める回数は入口の stop-checks.sh が数える（Stop フック共通）
 
 lines = ["**書いた Markdown を、文章の点検に通していません**", "", "```"]
 for p in files[:6]:

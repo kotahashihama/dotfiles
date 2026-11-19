@@ -18,7 +18,7 @@
 # 主かを判定し、日本語以外の塊の文字数を足して見る（まとめて割合を出すと、最後の長い日本語の
 # 応答に薄められる）。
 #
-# **1プロンプトにつき1回しか止めない。** 目印は他の Stop フックと共有する。
+# 止める回数の上限は入口の stop-checks.sh が持つ。
 #
 set -u
 
@@ -135,11 +135,7 @@ if not (final_foreign or mid_foreign):
     if not spacing and not links:
         raise SystemExit(0)
 
-# 同じプロンプトで二度は止めない（鍵は Stop フック共通）
-mark = os.path.join(tempfile.gettempdir(), "claude-stopguard-" + pid)
-if os.path.exists(mark):
-    raise SystemExit(0)
-open(mark, "w").close()
+# 止める回数は入口の stop-checks.sh が数える（Stop フック共通）
 
 if spacing or links:
     parts = []

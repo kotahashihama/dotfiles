@@ -163,19 +163,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash ~/.claude/hooks/require-japanese-response.sh"
-          },
-          {
-            "type": "command",
-            "command": "bash ~/.claude/hooks/block-pointless-stop.sh"
-          },
-          {
-            "type": "command",
-            "command": "bash ~/.claude/hooks/check-writing-in-files.sh"
-          },
-          {
-            "type": "command",
-            "command": "bash ~/.claude/hooks/require-writing-review.sh"
+            "command": "bash ~/.claude/hooks/stop-checks.sh"
           }
         ]
       },

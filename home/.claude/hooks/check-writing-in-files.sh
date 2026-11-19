@@ -11,7 +11,7 @@
 # （公式ドキュメント: PostToolUse cannot block; the tool already ran）ので、
 # 書いた直後の指摘を無視できてしまう。Stop なら直すまで終われない。
 #
-# 1プロンプトにつき3回まで止める（下の stopguard の鍵の説明）。
+# 止める回数の上限は入口の stop-checks.sh が持つ。
 #
 set -u
 
@@ -140,20 +140,7 @@ for path in edited_markdown()[:20]:
 if not hits:
     raise SystemExit(0)
 
-# 鍵は Stop フック共通。別々に持つと、同じターンで2本とも止めて
-# 差し戻しが2回になる。見送った側は次のターンで拾う
-#
-# 1回だけ止める形にしていたが、差し戻し後の応答の22%（59回中13回）が
-# まだ違反していた。2回目を通すと同じ内容が2回表示される。
-# 上限は3回。外すと直せない違反で往復が終わらない
-mark = os.path.join(tempfile.gettempdir(), "claude-stopguard-" + pid)
-try:
-    done = int(io.open(mark, encoding="utf-8").read().strip() or 0)
-except Exception:
-    done = 0
-if done >= 3:
-    raise SystemExit(0)
-io.open(mark, "w", encoding="utf-8").write(str(done + 1))
+# 止める回数は入口の stop-checks.sh が数える（Stop フック共通）
 
 # 指摘と例はコードブロックへ入れる。裸で置くと、受け取った側が引用した
 # だけで再び検査に当たる（実際に差し戻しが2回になった）。NG 例は

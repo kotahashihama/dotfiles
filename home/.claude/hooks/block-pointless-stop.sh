@@ -5,8 +5,7 @@
 # 「よければ着手します」で終える形は、答えが分かっているのに委ねているだけで、
 # ユーザーは「続けて」と言うために呼ばれることになる（decide_or_ask.md）。
 #
-# **1プロンプトにつき1回しか止めない。** 誤検知しても1ターン余計に進むだけで、
-# 会話が止まらなくなることはない。
+# 止める回数の上限は入口の stop-checks.sh が持つ。
 #
 set -u
 
@@ -99,13 +98,7 @@ overclaimed = bool(DONE.search(unquoted)) and bool(LEFT.search(unquoted))
 if not (declared or unasked or overclaimed or any(re.search(p, msg) for p in PATTERNS)):
     raise SystemExit(0)
 
-# 同じプロンプトで二度は止めない
-# 鍵は Stop フック共通。別々に持つと、同じターンで2本とも止めて
-# 差し戻しが2回になる。見送った側は次のターンで拾う
-mark = os.path.join(tempfile.gettempdir(), "claude-stopguard-" + pid)
-if os.path.exists(mark):
-    raise SystemExit(0)
-open(mark, "w").close()
+# 止める回数は入口の stop-checks.sh が数える（Stop フック共通）
 
 if unasked:
     sys.stderr.write(
