@@ -17,7 +17,7 @@ set -u
 payload=$(cat)
 case "$payload" in *"git"*"commit"*) ;; *) exit 0 ;; esac
 
-python3 - "$payload" <<'PY'
+python3 -I - "$payload" <<'PY'
 import json, os, re, shlex, sys
 
 try:

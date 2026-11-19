@@ -16,7 +16,7 @@
 set -u
 
 payload=$(cat)
-printf '%s' "$payload" | python3 -c '
+printf '%s' "$payload" | python3 -I -c '
 import json, os, re, subprocess, sys
 
 try:

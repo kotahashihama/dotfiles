@@ -21,7 +21,7 @@ set -u
 payload=$(cat)
 dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-pid=$(printf '%s' "$payload" | python3 -c 'import json,sys
+pid=$(printf '%s' "$payload" | python3 -I -c 'import json,sys
 try: print(json.load(sys.stdin).get("prompt_id",""))
 except Exception: print("")')
 [ -n "$pid" ] || exit 0

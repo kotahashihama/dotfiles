@@ -19,7 +19,7 @@ payload=$(cat)
 HOOK_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 export HOOK_DIR
 
-python3 - "$payload" <<'PY'
+python3 -I - "$payload" <<'PY'
 import importlib.util
 import io, json, os, re, subprocess, sys, tempfile
 

@@ -13,7 +13,7 @@ set -u
 payload=$(cat)
 HOOK_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 export HOOK_DIR
-printf '%s' "$payload" | GH_LINT_MODE=check python3 -c '
+printf '%s' "$payload" | GH_LINT_MODE=check python3 -I -c '
 import json, os, re, subprocess, sys
 
 RAW = sys.stdin.read()

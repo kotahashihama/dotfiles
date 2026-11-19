@@ -18,11 +18,11 @@
 set -u
 
 payload=$(cat)
-sid=$(printf '%s' "$payload" | python3 -c 'import sys,json;print(json.load(sys.stdin).get("session_id",""))' 2>/dev/null) || exit 0
+sid=$(printf '%s' "$payload" | python3 -I -c 'import sys,json;print(json.load(sys.stdin).get("session_id",""))' 2>/dev/null) || exit 0
 [ -n "$sid" ] || exit 0
 
 # 入力に現れた文字列すべて（Bash の command、Write/Edit の file_path と中身）
-inputs=$(printf '%s' "$payload" | python3 -c '
+inputs=$(printf '%s' "$payload" | python3 -I -c '
 import sys, json
 d = json.load(sys.stdin).get("tool_input", {})
 print(" ".join(str(v) for v in d.values()))
@@ -33,7 +33,7 @@ print(" ".join(str(v) for v in d.values()))
 # 汎用の規約はルール、そのリポジトリだけの事実はメモリ（AGENTS.md）。書く場面では当て忘れるので、
 # 書いた直後に知らせる。メモリの実体は private/ で git status に出ないため、入力のパスで拾う。
 mem_state="${TMPDIR:-/tmp}/claude-tidy-${sid}.memseen"
-mem_msg=$(INPUTS="$inputs" STATE="$mem_state" python3 - <<'PY' 2>/dev/null
+mem_msg=$(INPUTS="$inputs" STATE="$mem_state" python3 -I - <<'PY' 2>/dev/null
 import os, re
 inputs, state = os.environ["INPUTS"], os.environ["STATE"]
 seen = set(open(state).read().split("\n")) if os.path.exists(state) else set()
@@ -58,7 +58,7 @@ if hits:
 PY
 )
 if [ -n "$mem_msg" ]; then
-  MSG="$mem_msg" python3 -c 'import json,os;print(json.dumps({"hookSpecificOutput":{"hookEventName":"PostToolUse","additionalContext":os.environ["MSG"]}},ensure_ascii=False))'
+  MSG="$mem_msg" python3 -I -c 'import json,os;print(json.dumps({"hookSpecificOutput":{"hookEventName":"PostToolUse","additionalContext":os.environ["MSG"]}},ensure_ascii=False))'
   exit 0
 fi
 
@@ -88,7 +88,7 @@ while IFS= read -r f; do
 done <<< "$changed"
 [ -n "$fresh" ] || exit 0
 
-python3 - "$fresh" <<'PY'
+python3 -I - "$fresh" <<'PY'
 import json, sys
 
 files = [f for f in sys.argv[1].split("|") if f]

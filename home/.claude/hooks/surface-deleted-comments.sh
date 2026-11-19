@@ -23,7 +23,7 @@ set -u
 
 payload=$(cat)
 
-python3 - "$payload" <<'PY'
+python3 -I - "$payload" <<'PY'
 import json, re, subprocess, sys
 
 try:

@@ -26,7 +26,7 @@ case "$payload" in
     case "$payload" in *bee*) ;; *) exit 0 ;; esac ;;
 esac
 
-python3 - "$payload" <<'PY'
+python3 -I - "$payload" <<'PY'
 import io, json, os, re, shlex, sys
 
 try:

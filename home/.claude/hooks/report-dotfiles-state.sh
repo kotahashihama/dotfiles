@@ -32,7 +32,7 @@ n=$(printf '%s\n' "$changed" | wc -l | tr -d ' ')
 files=$(printf '%s\n' "$changed" | head -8 | sed 's/^/- /')
 more=$([ "$n" -gt 8 ] && echo "（ほか $((n - 8)) 件）" || echo "")
 
-python3 -c '
+python3 -I -c '
 import json, sys
 print(json.dumps({"systemMessage": sys.argv[1]}, ensure_ascii=False))
 ' "dotfiles に未コミットの変更が ${n}件あります。前のセッションが編集して伝え漏らした可能性があります。

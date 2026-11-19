@@ -16,7 +16,7 @@ fi
 
 # プロンプトの格納キーは公式ドキュメントに明記が無い。候補すべてを繋いで見る。
 # 先勝ちで1つに絞ると、別のキーに入っていたときに静かに機能しなくなる。
-text=$(printf '%s' "$payload" | python3 -c '
+text=$(printf '%s' "$payload" | python3 -I -c '
 import sys, json
 try:
     d = json.load(sys.stdin)
@@ -30,7 +30,7 @@ print("\n".join(str(d[k]) for k in keys if isinstance(d.get(k), str) and d[k]))
 
 # 拾うのは「言い直された」「毎回そうしている」「理由つきで求められた」の3系統。
 # 依頼そのもの（「〜して」）は拾わない。それは日常の指示で、繰り返しの兆候ではない。
-matched=$(printf '%s' "$text" | python3 -c '
+matched=$(printf '%s' "$text" | python3 -I -c '
 import re, sys
 t = sys.stdin.read()
 # 貼り付けた文章とコードブロックは本人の訂正ではないので除く
@@ -55,7 +55,7 @@ print(len(hits))
 
 [ "${matched:-0}" -gt 0 ] || exit 0
 
-python3 -c '
+python3 -I -c '
 import json
 print(json.dumps({"hookSpecificOutput": {
     "hookEventName": "UserPromptSubmit",
