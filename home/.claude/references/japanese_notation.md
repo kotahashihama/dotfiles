@@ -1,6 +1,6 @@
 # 日本語の表記：数値と単位・空白・約物・ダッシュ
 
-会話・ファイル・投稿のどこに書く日本語にも当てる表記の規定。常駐のルールからは外し、フックが守らせている。
+会話・ファイル・投稿のどこに書く日本語にも当てる表記の規定の詳細。要点は常駐のルール `rules/japanese_notation.md` が持ち、フックが守らせている。
 判定は `~/.claude/hooks/check-japanese-spacing.py` が持ち、`stop-checks.sh`（会話と書いたファイル）・`lint-github-body.sh`（`gh` の投稿）・`require-review-before-post.sh`（MCP と bee の投稿）が呼ぶ。差し戻しの理由を詳しく知りたいときに開く。
 
 ## 数値と単位のあいだに空白を入れない

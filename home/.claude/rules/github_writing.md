@@ -227,7 +227,7 @@ PR 説明・コミットメッセージ・コメントで、「自分の言葉�
 - `karma_commit_style.md` （コミットメッセージ）: 句点を落とす点は同じだが、あちらは commit subject の1行だけ。本ルールは GitHub 上の文章全体
 - `code_comments.md` （コードコメントに何を書くか）: 同じく句点を落とすが、あちらはコードコメント。本ルールが `.md` を対象外にしている理由（単一改行が空白になる）は、コードコメントには当てはまらない。不変の WHY の節から出た移ろう文脈の行き先が `[fyi]` で、その書式は本ルールが定める。他リポジトリの issue の書き方は逆で、コードコメントでは `owner/repo#123` ではなく URL を単独の行に書く（IDE で開けるため。あちらの「外部の資料は、URL を単独の行に書く」）
 - `/format-post` （投稿する文章の畳み方）: あちらは構造の選び方、本ルールは文の表記
-- `~/.claude/references/japanese_notation.md` （数値と単位の空白。フックが守らせる）: どちらも日本語の表記を定める。一括置換で対になる記法と NG 例が壊れるのは本ルールが扱う
+- `japanese_notation.md` （日本語の表記）: どちらも日本語の表記を定める。一括置換で対になる記法と NG 例が壊れるのは本ルールが扱う
 - `recheck_after_every_revision.md` （書き直すたびに確かめ直す）: 本ルールの検査は3周目（形）で使う。あちらが周ごとの観点を定める
 - `concise_first_then_detail.md` （簡潔に）: あちらは量を扱う。本ルールは改行と表記
 - `/review-pr` / `/create-pr` / `/update-pr-description` / `/resolve-ai-reviews` / `/resolve-human-reviews`: 本ルールが土台で、各スキルは投稿先固有の事情を上乗せする

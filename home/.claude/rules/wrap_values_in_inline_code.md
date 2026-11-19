@@ -49,7 +49,7 @@
 
 ## 関連
 
-- `~/.claude/references/japanese_notation.md` （表記。フックが守らせる）: 囲んだ後の前後の空白はあちら。本ルールは囲むかどうかを決める
+- `japanese_notation.md` （日本語の表記）: 囲んだ後の前後の空白はあちら。本ルールは囲むかどうかを決める
 - `report_formatting.md` （投稿する文章の URL と課題キー）: URL と課題キーをリンクにするのはあちらで、リンクにした課題キーは囲まない
 - `github_writing.md` （他リポジトリの PR / issue）: 囲まない側の代表。あちらが前提として置く「パス・コマンド・識別子は囲むのが正しい」の本体が本ルール
 - `report_formatting.md` （報告に貼る識別子の書式）: 会話と GitHub で扱いが逆になる。あちらは会話への報告が対象
