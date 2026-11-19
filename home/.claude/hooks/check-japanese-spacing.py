@@ -4,7 +4,7 @@
 lint が見ない。書く場所ごとに別々の実装を置くと判定がずれるので、判定は
 ここ1か所に置き、ファイル・GitHub への投稿・会話への応答から呼ぶ。
 
-規約は no_space_between_number_and_unit.md と no_em_dash_in_japanese.md。
+規約は ~/.claude/references/japanese_notation.md（常駐のルールには置かず、このフックで守らせる）。
 
 使い方:
     python3 check-japanese-spacing.py <ファイル>...
@@ -53,6 +53,10 @@ CHECKS = [
 ]
 
 
+# 最初の日本語より前に、コメントの記号がある行
+COMMENT_JA = re.compile(r'^(?:(?![\u3040-\u30ff\u3400-\u9fff]).)*?(?://|#|/\*|^\s*\*|--|<!--)[^\u3040-\u30ff\u3400-\u9fff]*?[\u3040-\u30ff\u3400-\u9fff]')
+
+
 def prose(text):
     """コードブロック・引用・NG 例を除いた行を返す
 
@@ -80,12 +84,13 @@ def prose(text):
 def check_text(text, code=False):
     """違反を (行番号, カテゴリ, 該当行) で返す
 
-    code=True はコードのファイル。コメントと文字列だけを見たいので、
-    日本語を含む行に絞る。言語ごとにコメント記号を並べるより漏れが少ない。
+    code=True はコードのファイル。コメントの日本語だけを見る。行の中で、
+    最初の日本語より前にコメントの記号（ // # /* * -- <!-- ）がある行に絞る。
+    文字列の日本語（画面の文言）は仕様側の表記なので見ない。
     """
     hits = []
     lines = ((n, l) for n, l in enumerate(text.split('\n'), 1)
-             if re.search(JA, l)) if code else prose(text)
+             if COMMENT_JA.search(l)) if code else prose(text)
     for n, line in lines:
         # インラインコードは対象外。空白で伏せると、直後の約物が
         # 「前に空白がある」と誤判定されるので1文字へ置き換える
@@ -153,6 +158,9 @@ def check_text(text, code=False):
 
 # Markdown 以外はコードとして扱う。コメントと文字列に日本語が出る
 MARKDOWN = ('.md', '.markdown')
+# 書いたファイルのうち、コメントを見るもの
+CODE = ('.ts', '.tsx', '.js', '.jsx', '.mjs', '.go', '.py', '.rb', '.sh', '.yml', '.yaml',
+        '.sql', '.tf', '.java', '.kt', '.swift', '.rs', '.css', '.scss', '.vue')
 
 
 def check(path):

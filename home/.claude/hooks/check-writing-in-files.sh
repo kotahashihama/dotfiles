@@ -109,9 +109,10 @@ def uncommitted(path):
 
 
 def edited_markdown():
-    """このターンに書いた .md のうち、まだコミットしていないもの"""
+    """このターンに書いた .md とコードのファイルのうち、まだコミットしていないもの。
+    コードはコメントだけを見る（check-japanese-spacing.py の check_text）"""
     return sorted(p for p in written_paths()
-                  if p.endswith(".md") and os.path.exists(p) and uncommitted(p))
+                  if p.endswith((".md",) + mod.CODE) and os.path.exists(p) and uncommitted(p))
 
 
 def head_hits(path):
@@ -127,7 +128,7 @@ def head_hits(path):
         return set()
     if show.returncode != 0:
         return set()
-    return {(name, src) for _n, name, src in mod.check_text(show.stdout)}
+    return {(name, src) for _n, name, src in mod.check_text(show.stdout, code=not path.endswith(mod.MARKDOWN))}
 
 
 for path in edited_markdown()[:20]:
@@ -162,7 +163,7 @@ lines += ["```",
           "  NG: `code`（説明）   OK: `code` （説明）",
           "ダッシュは使わず句点で切る",
           "```",
-          "  → no_space_between_number_and_unit.md / no_em_dash_in_japanese.md"]
+          "  → ~/.claude/references/japanese_notation.md"]
 sys.stderr.write("\n".join(lines))
 raise SystemExit(2)
 PY

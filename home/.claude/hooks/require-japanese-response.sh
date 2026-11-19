@@ -159,7 +159,7 @@ if spacing or links or fmt:
         shown = "\n".join(f"- {cat}: {text[:60]}" for cat, text in spacing[:8])
         more = f"\nほか {len(spacing) - 8} 件" if len(spacing) > 8 else ""
         parts.append(
-            "**応答の表記が規約から外れています**（ `no_space_between_number_and_unit.md` ）。\n\n"
+            "**応答の表記が規約から外れています**（ `~/.claude/references/japanese_notation.md` ）。\n\n"
             f"{shown}{more}\n\n"
             "数値と単位は詰め、独立した英単語と日本語のあいだ・インラインコードの前後は空けます。"
         )

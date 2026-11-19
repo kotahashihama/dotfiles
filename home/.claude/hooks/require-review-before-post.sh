@@ -118,12 +118,35 @@ else:
         raise SystemExit(0)
     text = "\n".join(str(inp[k]) for k in TEXT_KEYS if isinstance(inp.get(k), str) and inp[k].strip())
 
+# 表記（数値と単位・英字との空白・約物・インラインコードの前後・ダッシュ）も投稿の前に見る。
+# 会話とファイルと gh の本文には掛かっていたが、MCP と bee の投稿だけ素通りしていた。
+# 判定は check-japanese-spacing.py に1か所で持たせる
+try:
+    import importlib.util
+    _spec = importlib.util.spec_from_file_location(
+        "spacing", os.path.join(os.path.dirname(os.path.realpath(os.path.expanduser("~/.claude/hooks/check-japanese-spacing.py"))), "check-japanese-spacing.py"))
+    _sp = importlib.util.module_from_spec(_spec)
+    _spec.loader.exec_module(_sp)
+    spacing = _sp.check_text(text) if text else []
+except Exception:
+    spacing = []
+if spacing:
+    shown = ["- %s: %s" % (cat, src[:60]) for _n, cat, src in spacing[:8]]
+    sys.stderr.write("\n".join([
+        "**投稿する本文の表記が規約から外れています**（%s）" % name,
+        "",
+        *shown,
+        "",
+        "数値と単位は詰め、独立した英単語と日本語のあいだ・インラインコードの前後は空けます。ダッシュは使わず句点で切ります。",
+    ]))
+    raise SystemExit(2)
+
 # 生成者表示など投稿の直前に足す行があるので、短い行と引用の行は照合に使わない
 rows = [r.strip() for r in text.splitlines() if len(r.strip()) >= 8 and not r.strip().startswith(">")]
 if not rows and not unresolved:
     raise SystemExit(0)
 
-# 課題管理ツールの本文では、PR を `[repo#123](URL)` のリンクで書く（no_space_between_number_and_unit.md）。
+# 課題管理ツールの本文では、PR を `[repo#123](URL)` のリンクで書く（report_formatting.md）。
 # MCP と bee の投稿には gh の本文の検査（lint-github-body.sh）が走らず、裸の #123 が2度素通りした。
 # 「対応 PR: <URL>」の行とコードブロックの中は、裸で書く決まりか原文なので数えない。
 if "backlog" in name:
@@ -142,7 +165,7 @@ if "backlog" in name:
             "",
             "課題管理ツールの本文では `[repo#123](https://github.com/<owner>/<repo>/pull/123)` の形にしてください。",
             "2回目より後に出てくる番号も同じです。「対応 PR: <URL>」の行はそのままでよい。",
-            "  → no_space_between_number_and_unit.md の「URL は、Markdown ならリンクにして文に埋める」",
+            "  → report_formatting.md の「投稿する文章では、URL と課題キーをリンクにする」",
         ]))
         raise SystemExit(2)
 

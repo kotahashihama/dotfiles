@@ -225,7 +225,7 @@ def check(body, note_required=True):
     for n, name, _src in spacing(body):
         if n not in prose_numbers:
             continue
-        hits.append(("no_space_between_number_and_unit.md",
+        hits.append(("references/japanese_notation.md",
                      "表記が規約に反している（%s）" % name, [n]))
 
     # 対になる記法。1文1行なので、行内で閉じていなければ壊れている。
@@ -243,7 +243,7 @@ def check(body, note_required=True):
 
     bad = [n for n, _r, l in lines if "——" in l]
     if bad:
-        hits.append(("no_em_dash_in_japanese.md",
+        hits.append(("references/japanese_notation.md",
                      "ダッシュを使っている。句点で切って次の文にする", bad))
 
     bad = [n for n, _r, l in lines if re.search(r"\b(Closes|Fixes|Resolves)\s+#?\d", l, re.I)]
