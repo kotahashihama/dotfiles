@@ -1,20 +1,21 @@
 #!/bin/bash
 #
-# 応答の地の文が英語になったら、日本語で書き直させる Stop フック。
+# 応答の地の文が日本語以外（英語・中国語・韓国語など）になったら、日本語で書き直させる Stop フック。
 # 日本語の応答なら、表記（数値と単位・約物・インラインコードの前後・英単語の境目）も
 # check-japanese-spacing.py で見る。応答を集める手順が同じなので、1本にまとめている。
 #
-# 日本語で応答する規約は AGENTS.md と出力スタイルの両方にあるが、長い会話の途中で
-# 地の文が丸ごと英語になることがある。読めば気づける形ではなく、思い出せるのに破る形
-# なので、文章を足しても止まらない（rule_conventions.md の「フックへ寄せる」）。
+# 応答の言語は settings.json の language で日本語にしているが、長い会話の途中で
+# 地の文が丸ごと英語や中国語になることがある。指示の文を足しても止まらないので、
+# 書き直させる側をフックが持つ（rule_conventions.md の「フックへ寄せる」）。
 #
 # 識別子・コード・コマンド・URL は英語のままが正しいので、コードブロック・インライン
-# コード・URL を除いた残りで、仮名と漢字が英字に対してどれだけあるかを見る。
+# コード・URL を除いた残りで、文字のうち仮名がどれだけあるかを見る。漢字は数えない。
+# 漢字を日本語の文字に数えると、中国語の応答が日本語として通るため。
 #
 # **最後の応答だけでなく、ツール呼び出しの合間に書いた途中経過の文も見る。** 途中経過は
-# 1つずつが短く、最後の応答だけを見ると英語のまま素通りする。実際に、途中経過が英語の
+# 1つずつが短く、最後の応答だけを見ると日本語以外のまま素通りする。実際に、途中経過が英語の
 # ままツールを呼び続け、ユーザーに「日本語で話して」と2回言われた。文の塊ごとに英語が
-# 主かを判定し、英語の塊の英字を足して見る（まとめて割合を出すと、最後の長い日本語の
+# 主かを判定し、日本語以外の塊の文字数を足して見る（まとめて割合を出すと、最後の長い日本語の
 # 応答に薄められる）。
 #
 # **1プロンプトにつき1回しか止めない。** 目印は他の Stop フックと共有する。
@@ -73,15 +74,16 @@ def counts(text):
     prose = re.sub(r"\]\([^)]*\)", "]", prose)                   # Markdown のリンク先
     # パス・JSON・識別子のように記号を含む語は地の文ではない
     prose = re.sub(r"\S*[/\\_{}=<>\"\\[\]@#$|]\S*", " ", prose)
-    jp = len(re.findall(r"[぀-ヿ㐀-鿿ｦ-ﾟ]", prose))
-    latin = len(re.findall(r"[A-Za-z]", prose))
-    return jp, latin
+    kana = len(re.findall(r"[ぁ-ゟァ-ヿｦ-ﾟ]", prose))
+    letters = sum(ch.isalpha() for ch in prose)
+    return kana, letters
 
 
-def english(jp, latin):
-    # 日本語の地の文なら仮名と漢字が英字を大きく上回る。固有名詞や識別子が混ざっても
-    # 2割を切ることはまず無い
-    return jp < (jp + latin) * 0.2
+def foreign(kana, letters):
+    # 日本語の地の文なら、文字（仮名・漢字・英字ほか）のうち仮名が2割を超える。
+    # 2026-11-19 に直近60本の会話ログの日本語の応答で測ると、最小が23.4%だった。
+    # 中国語・韓国語・英語では仮名がほぼ出ないので、1割で切る
+    return kana < letters * 0.1
 
 
 blocks = turn_texts(transcript, pid) if transcript else []
@@ -89,16 +91,16 @@ if msg and (not blocks or blocks[-1].strip() != msg.strip()):
     blocks.append(msg)
 
 # 最後の応答は従来どおり単独で見る（短い応答とリンクだけの応答は見ない）
-jp, latin = counts(msg)
-final_english = latin >= 200 and english(jp, latin)
+kana, letters = counts(msg)
+final_foreign = letters >= 200 and foreign(kana, letters)
 
-# 途中経過は、英語が主の塊（英字40字以上）の英字を足して見る
-mid_latin = 0
+# 途中経過は、日本語以外が主の塊（文字40字以上）の文字数を足して見る
+mid_letters = 0
 for b in blocks:
-    bj, bl = counts(b)
-    if bl >= 40 and english(bj, bl):
-        mid_latin += bl
-mid_english = mid_latin >= 200
+    bk, bl = counts(b)
+    if bl >= 40 and foreign(bk, bl):
+        mid_letters += bl
+mid_foreign = mid_letters >= 200
 
 # 日本語の応答なら、表記も見る（数値と単位・約物・インラインコードの前後・英単語の境目）。
 # ファイルと GitHub への投稿には別のフックが掛かるが、会話への応答には掛かっていなかった。
@@ -107,7 +109,7 @@ spacing = []
 # PR・issue・課題の参照がクリックで開ける形かも見る（ report_formatting.md ）。
 # 判定は check-reference-links.py が持つ。目印を共有するので、表記と同じ回に並べて返す
 links = []
-if not (final_english or mid_english):
+if not (final_foreign or mid_foreign):
     import importlib.util
 
     def load(name, path):
@@ -164,10 +166,10 @@ if spacing or links:
     )
     raise SystemExit(2)
 
-where = "応答の地の文" if final_english else "ツール呼び出しの合間に書いた途中経過の文"
+where = "応答の地の文" if final_foreign else "ツール呼び出しの合間に書いた途中経過の文"
 sys.stderr.write(
-    f"**{where}が英語になっています。日本語で書き直してください**"
-    "（AGENTS.md の「ユーザーについて」）。\n\n"
+    f"**{where}が日本語以外の言語になっています。日本語で書き直してください**"
+    "（ `settings.json` の `language` ）。\n\n"
     "識別子・コード・コマンド・URL・固有名詞は原語のままでよく、"
     "それ以外の文を日本語にします。内容は変えず、同じ報告を日本語で出し直してください。"
     "途中経過も、この先は日本語で書きます。"
