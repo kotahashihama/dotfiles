@@ -71,7 +71,7 @@ allowed-tools: Bash(gh pr view:*) Bash(gh api:*) Bash(git diff:*) Bash(git show:
 差分が動くと、`[fyi]` の指す行が消えたり（ `line` が `null` ）、書いた中身が今のコードと合わなくなったりする。
 
 - **まだ読まれていないか**を先に見る。リアクション・返信・Resolve のどれも無ければ、元のコメントを書き換える（ `gh api -X PATCH repos/OWNER/REPO/pulls/comments/<id>` ）。指す行が消えたなら、消して今の行へ置き直す
-- **読まれた痕跡があれば**、書き換えずに Hide（ `Outdated` ）で畳み、今の行へ新しく置く。見分け方と畳み方は `keep_records_current.md` の「判断が覆ったときは、書き換えずに残す」
+- **読まれた痕跡があれば**、書き換えずに Hide（ `Outdated` ）で畳み、今の行へ新しく置く。見分け方と畳み方は `~/.claude/references/keep_records_current.md` の「判断が覆ったときは、書き換えずに残す」
 
 ### 5. コードから一時的な WHY を外す
 

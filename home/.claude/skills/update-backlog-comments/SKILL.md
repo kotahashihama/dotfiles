@@ -94,7 +94,7 @@ allowed-tools: Bash(gh pr view:*) Bash(gh pr list:*) Bash(gh api:*) Bash(git gre
 
 ### 5. 直し方を決める
 
-**判定は「読まれた痕跡があるか」**（ `keep_records_current.md` の「まだ誰も読んでいない投稿は、書き換える」）。
+**判定は「読まれた痕跡があるか」**（ `~/.claude/references/keep_records_current.md` の「まだ誰も読んでいない投稿は、書き換える」）。
 
 **スレッドが無いので、GitHub の返信関係では判定できない。** 代わりに次を見る。
 
