@@ -115,6 +115,47 @@ def edited_markdown():
                   if p.endswith((".md",) + mod.CODE) and os.path.exists(p) and uncommitted(p))
 
 
+def _load(mod_name, file_name):
+    spec = importlib.util.spec_from_file_location(mod_name, os.path.join(os.environ.get("HOOK_DIR", ""), file_name))
+    m = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(m)
+    return m
+
+
+try:
+    links = _load("links", "check-reference-links.py")
+    report = _load("report", "check-report-format.py")
+except Exception:
+    links = report = None
+
+
+def link_hits(text):
+    """Markdown の地の文の、リンクにしていない課題キーと報告の書式（URL の直後の約物・定型の締め・pnpm run）。
+    会話にだけ掛けていた検査をファイルにも掛ける。コードブロックの中は NG の例や原文なので見ない"""
+    out, fence = [], False
+    if not links:
+        return out
+    for n, line in enumerate(text.split("\n"), 1):
+        if line.lstrip().startswith("```"):
+            fence = not fence
+            continue
+        if fence:
+            continue
+        for cat, _k in links.check_links(line):
+            if cat == "リンクにしていない課題キー":
+                out.append((n, cat, line.strip()))
+        for cat, _t in report.check_report(re.sub(r"`[^`]*`", " ", line)):
+            out.append((n, cat, line.strip()))
+    return out
+
+
+def all_hits(path, text):
+    hits_ = mod.check_text(text, code=not path.endswith(mod.MARKDOWN))
+    if path.endswith(mod.MARKDOWN):
+        hits_ += link_hits(text)
+    return hits_
+
+
 def head_hits(path):
     """HEAD の時点の指摘。既存分は数えないため"""
     d2 = os.path.dirname(path)
@@ -128,13 +169,17 @@ def head_hits(path):
         return set()
     if show.returncode != 0:
         return set()
-    return {(name, src) for _n, name, src in mod.check_text(show.stdout, code=not path.endswith(mod.MARKDOWN))}
+    return {(name, src) for _n, name, src in all_hits(path, show.stdout)}
 
 
 for path in edited_markdown()[:20]:
     was = head_hits(path)
     name_only = os.path.basename(path)
-    for n, name, src in mod.check(path):
+    try:
+        text = io.open(path, encoding="utf-8").read()
+    except Exception:
+        continue
+    for n, name, src in all_hits(path, text):
         if (name, src) not in was:
             hits.append((name_only, n, name, src))
 

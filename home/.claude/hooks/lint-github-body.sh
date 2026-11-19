@@ -264,6 +264,33 @@ def check(body, note_required=True):
         hits.append(("no_agent_coordination_in_pr.md",
                      "エージェント間の調整に触れている。成果物には状態だけを書く", bad))
 
+    # 課題キーのリンクと、URL の直後の約物・定型の締め・pnpm run。会話にだけ掛かっていた
+    # 検査を投稿にも掛ける。判定はそれぞれのモジュールに1か所で持たせる
+    import importlib.util
+
+    def load(mod_name, file_name):
+        spec = importlib.util.spec_from_file_location(mod_name, os.path.expanduser("~/.claude/hooks/" + file_name))
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        return mod
+    try:
+        links = load("links", "check-reference-links.py")
+        bad = [n for n, raw, _l in lines
+               if any(cat == "リンクにしていない課題キー" for cat, _k in links.check_links(raw))]
+        if bad:
+            hits.append(("report_formatting.md",
+                         "課題キーがリンクになっていない。[PROJ-123](課題の URL) の形にする", bad))
+    except Exception:
+        pass
+    try:
+        report = load("report", "check-report-format.py")
+        for n, raw, _l in lines:
+            for cat, _t in report.check_report(raw):
+                hits.append(("report_formatting.md / no_ai_style_writing.md / omit_run_in_package_scripts.md",
+                             cat, [n]))
+    except Exception:
+        pass
+
     return hits
 
 

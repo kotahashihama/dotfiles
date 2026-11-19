@@ -118,18 +118,41 @@ else:
         raise SystemExit(0)
     text = "\n".join(str(inp[k]) for k in TEXT_KEYS if isinstance(inp.get(k), str) and inp[k].strip())
 
-# 表記（数値と単位・英字との空白・約物・インラインコードの前後・ダッシュ）も投稿の前に見る。
-# 会話とファイルと gh の本文には掛かっていたが、MCP と bee の投稿だけ素通りしていた。
-# 判定は check-japanese-spacing.py に1か所で持たせる
-try:
-    import importlib.util
-    _spec = importlib.util.spec_from_file_location(
-        "spacing", os.path.join(os.path.dirname(os.path.realpath(os.path.expanduser("~/.claude/hooks/check-japanese-spacing.py"))), "check-japanese-spacing.py"))
-    _sp = importlib.util.module_from_spec(_spec)
-    _spec.loader.exec_module(_sp)
-    spacing = _sp.check_text(text) if text else []
-except Exception:
-    spacing = []
+# 投稿する本文の書式を、投稿の前に見る。会話と書いたファイルと gh の本文には掛かっていたが、
+# MCP と bee の投稿だけ素通りしていた。判定はそれぞれのモジュールに1か所で持たせる
+#   check-japanese-spacing.py  表記（数値と単位・英字との空白・約物・インラインコードの前後・ダッシュ）
+#   check-reference-links.py   リンクにしていない課題キー（ report_formatting.md ）
+#   check-report-format.py     URL の直後の括弧と句読点・定型の締め・pnpm run
+import importlib.util
+
+
+def _load(mod_name, file_name):
+    spec = importlib.util.spec_from_file_location(mod_name, os.path.expanduser("~/.claude/hooks/" + file_name))
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
+def findings(body):
+    """(種類, 該当の文字) の組を返す。表記は行、ほかは該当の文字"""
+    out = []
+    if not body:
+        return out
+    try:
+        out += [(cat, src) for _n, cat, src in _load("spacing", "check-japanese-spacing.py").check_text(body)]
+    except Exception:
+        pass
+    if is_backlog:
+        try:
+            out += [(cat, k) for cat, k in _load("links", "check-reference-links.py").check_links(body)
+                    if cat == "リンクにしていない課題キー"]
+        except Exception:
+            pass
+    try:
+        out += _load("report", "check-report-format.py").check_report(body)
+    except Exception:
+        pass
+    return out
 
 
 def update_target():
@@ -153,36 +176,48 @@ def update_target():
     return None
 
 
-# 本文の更新では、もとからある行は数えない。足した行だけを見る。
+is_backlog = name.startswith("bee") or "backlog" in name.lower()
+cmd_text = str(inp.get("command", "")) if name.startswith("bee") else ""
+# コメントの投稿と書き換え。課題の本文は定義なので生成者表示を付けない（ github_note_generated_by_claude.md ）
+is_comment = (bool(re.search(r"\bbee\s+issue\s+comment\b|/comments\b", cmd_text))
+              or ("comment" in name.lower() and is_backlog and not name.startswith("bee")))
+found = findings(text)
+if is_backlog and is_comment and text and "Claude Code を使って作成" not in text:
+    found.append(("生成者表示が無い", "末尾に「> このコメントは Claude Code を使って作成されています。」を置く"))
+
+# 本文の更新では、もとからある違反は数えない。足した分だけを見る。
 # 依頼書から写した引用のように、書き換えない行まで止めていた（2026-11-19）。
-# 今の本文を取れなければ、更新の表記は見ない（止めすぎるより通す側に倒す）
-if spacing:
+# 今の本文を取れなければ、更新の検査は見送る（止めすぎるより通す側に倒す）
+if found:
     tgt = update_target()
     if tgt:
         try:
             import subprocess
             r = subprocess.run(["bee", "api", tgt[0]], capture_output=True, text=True, timeout=15)
-            old = json.loads(r.stdout).get(tgt[1]) or "" if r.returncode == 0 else None
+            old = (json.loads(r.stdout).get(tgt[1]) or "") if r.returncode == 0 else None
         except Exception:
             old = None
         if old is None:
-            spacing = []
+            found = []
         else:
-            # 検査は記号を外した形で行を返すので、今の本文にも同じ検査を掛けて突き合わせる
-            before = {(cat, src) for _n, cat, src in _sp.check_text(old)}
-            # 行の頭や末尾に語を足しただけの行は、もとの行を含む。同じ種類の指摘が
-            # もとの行にあれば、もとからある表記として数えない
-            spacing = [h for h in spacing
-                       if (h[1], h[2]) not in before
-                       and not any(cat == h[1] and src and src in h[2] for cat, src in before)]
-if spacing:
-    shown = ["- %s: %s" % (cat, src[:60]) for _n, cat, src in spacing[:8]]
+            # 検査は記号を外した形で返すので、今の本文にも同じ検査を掛けて突き合わせる。
+            # 行の頭や末尾に語を足しただけの行は、もとの行を含むので数えない
+            before = set(findings(old))
+            if "Claude Code を使って作成" not in old:
+                before.add(("生成者表示が無い", "末尾に「> このコメントは Claude Code を使って作成されています。」を置く"))
+            found = [h for h in found
+                     if h not in before
+                     and not any(cat == h[0] and src and src in h[1] for cat, src in before)]
+if found:
+    shown = ["- %s: %s" % (cat, src[:60]) for cat, src in found[:8]]
     sys.stderr.write("\n".join([
-        "**投稿する本文の表記が規約から外れています**（%s）" % name,
+        "**投稿する本文の書式が規約から外れています**（%s）" % name,
         "",
         *shown,
         "",
-        "数値と単位は詰め、独立した英単語と日本語のあいだ・インラインコードの前後は空けます。ダッシュは使わず句点で切ります。",
+        "表記は japanese_notation.md、課題キーのリンクと URL は report_formatting.md、"
+        "定型の締めは no_ai_style_writing.md、生成者表示は github_note_generated_by_claude.md、"
+        "pnpm run は omit_run_in_package_scripts.md が定めています。",
     ]))
     raise SystemExit(2)
 
