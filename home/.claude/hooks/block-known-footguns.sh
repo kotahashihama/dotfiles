@@ -167,4 +167,11 @@ if ! printf '%s' "$noredir" | grep -q 'pipefail' \
   deny 'テストや検査の出力をパイプで切った直後に `&& git push` / `&& git commit` を繋いでいます。パイプの終了コードは最後のコマンドのものなので、テストが落ちても push まで進みます。検査を先に単独で流して結果を見てから、push を別の呼び出しで出してください（verify_the_check_worked.md「返ってきたものを読み違えていないか」）'
 fi
 
+# 8) 1Password のアイテムを `op item edit --template` で書き戻す形。`op item get` の JSON には
+#    パスキーが出てこないので、ログインのアイテムを書き戻すとパスキーが消える。CLI からは前の版を
+#    引けず、戻せるのはアプリの「アイテムの履歴」だけ。実際に楽天証券のパスキーを消した（2026-11-19）
+if printf '%s' "$cmd" | grep -qE '(^|[;&|[:space:]])op[[:space:]]+item[[:space:]]+edit[^;&|]*--template'; then
+  deny '`op item edit --template` は、ログインのアイテムに付いたパスキーを消します（ `op item get` の JSON にパスキーが出てこないため）。欄の名前を変える・欄を足すなら `op item edit <id> "<欄>[<型>]=<値>"` の形か、アプリで行ってください。ログインでないアイテムだと確かめてあるなら、その旨を添えてユーザーへ確かめてください'
+fi
+
 exit 0

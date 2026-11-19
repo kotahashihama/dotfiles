@@ -32,7 +32,8 @@ if not cmd:
 GATE = re.compile(r"gh\s+pr\s+(ready|edit|merge|close|comment)"
                   r"|gh\s+api[^|;&]*(requested_reviewers|/replies)"
                   r"|git\s+rebase"
-                  r"|git\s+push[^|;&]*(--force|--force-with-lease|\s-f(\s|$))")
+                  r"|git\s+push[^|;&]*(--force|--force-with-lease|\s-f(\s|$))"
+                  r"|resolveReviewThread")
 if not GATE.search(cmd):
     sys.exit(0)
 
@@ -108,6 +109,25 @@ if re.search(r"git\s+rebase|git\s+push[^|;&]*(--force|--force-with-lease|\s-f(\s
                     "指摘が紐づいたコミットが消えて前回との差分も壊れます。"
                     "取り込むなら `git merge` を使ってください\n"
                     "  → no_rebase_under_human_review.md" % (num, " / ".join(others)))
+
+# 3) 人のレビューのスレッドを Resolve する。閉じるのはコメントを付けた本人の役目で、
+# 閉じるとスレッドが畳まれ、レビュアーが確かめる機会が消える（ responding_to_reviews.md ）。
+# 取り消せない操作なので、スレッドの最初のコメントが人なら止める。bot のスレッドを
+# 閉じる /resolve-ai-reviews は通す。スレッドの ID が読めない（変数で渡す）ときは通す
+if "resolveReviewThread" in cmd:
+    Q = ("query($id: ID!) { node(id: $id) { ... on PullRequestReviewThread "
+         "{ comments(first: 1) { nodes { author { __typename login } } } } } }")
+    people = []
+    for tid in sorted(set(re.findall(r"PRRT_[\w-]+", cmd))):
+        out = gh(["api", "graphql", "-f", "query=" + Q, "-F", "id=" + tid, "--jq",
+                  ".data.node.comments.nodes[0].author | \"\\(.__typename) \\(.login)\""])
+        if out and out.split()[0] == "User":
+            people.append(out.split()[1])
+    if people:
+        ask("**人のレビューのスレッドを Resolve しようとしています（%s）。** 閉じるのはコメントを"
+            "付けた本人の役目です。ユーザーが Resolve を明示したときだけ進めてください\n"
+            "  → responding_to_reviews.md の「Resolve conversation はこちらの役目ではない」"
+            % " / ".join(sorted(set(people))))
 
 # 自分の PR への ready 化・再依頼・レビュー返信は、ここでは止めない。
 #
