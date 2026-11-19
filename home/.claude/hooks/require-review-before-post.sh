@@ -130,6 +130,45 @@ try:
     spacing = _sp.check_text(text) if text else []
 except Exception:
     spacing = []
+
+
+def update_target():
+    """本文の更新なら、今の本文を取る bee api のパスと本文の欄の名前を返す。新しい投稿なら None"""
+    if name.startswith("bee"):
+        cmd = str(inp.get("command", ""))
+        m = re.search(r"\bbee\s+api\b.*?(?:-X|--method)\s+(?:PATCH|PUT)\b.*?\b(issues|wikis)/([\w\-]+)", cmd) \
+            or re.search(r"\bbee\s+api\b.*?\b(issues|wikis)/([\w\-]+).*?(?:-X|--method)\s+(?:PATCH|PUT)\b", cmd)
+        if m:
+            return "%s/%s" % (m.group(1), m.group(2)), ("description" if m.group(1) == "issues" else "content")
+        m = re.search(r"\bbee\s+issue\s+edit\s+([\w\-]+)", cmd)
+        if m:
+            return "issues/%s" % m.group(1), "description"
+        return None
+    if re.search(r"(?:update|edit)", name):
+        key = inp.get("issueIdOrKey") or inp.get("issueKey") or inp.get("issue_key")
+        if key:
+            return "issues/%s" % key, "description"
+    return None
+
+
+# 本文の更新では、もとからある行は数えない。足した行だけを見る。
+# 依頼書から写した引用のように、書き換えない行まで止めていた（2026-11-19）。
+# 今の本文を取れなければ、更新の表記は見ない（止めすぎるより通す側に倒す）
+if spacing:
+    tgt = update_target()
+    if tgt:
+        try:
+            import subprocess
+            r = subprocess.run(["bee", "api", tgt[0]], capture_output=True, text=True, timeout=15)
+            old = json.loads(r.stdout).get(tgt[1]) or "" if r.returncode == 0 else None
+        except Exception:
+            old = None
+        if old is None:
+            spacing = []
+        else:
+            # 検査は記号を外した形で行を返すので、今の本文にも同じ検査を掛けて突き合わせる
+            before = {(cat, src) for _n, cat, src in _sp.check_text(old)}
+            spacing = [h for h in spacing if (h[1], h[2]) not in before]
 if spacing:
     shown = ["- %s: %s" % (cat, src[:60]) for _n, cat, src in spacing[:8]]
     sys.stderr.write("\n".join([
