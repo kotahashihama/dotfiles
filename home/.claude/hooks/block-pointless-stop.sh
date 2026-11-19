@@ -95,8 +95,10 @@ unasked = bool(ASK.search(unquoted)) and not asked_with_tool(str(d.get("transcri
 # ユーザーに「たしかめてよ」「後始末もしようよ」と言われてから片付けた実例がある
 DONE = re.compile(r"(残作業|積み残し|やること)は(もう)?(ありません|無い|ない)|"
                   r"作業は(終わり|完了|ひと段落)|これで(終わり|完了)|終わりました")
+# 「残しました」は拾わない。「references に残しました」のように、意図して置いた場所を
+# 伝える形が多く、1日に2回誤検知した（2026-11-19）。片付け忘れは「置いたまま」で拾う
 LEFT = re.compile(r"確かめていな|確かめていません|未検証|検証していな|"
-                  r"残っています|残っている|残しました|置いたまま|未追跡")
+                  r"残っています|残っている|置いたまま|未追跡")
 overclaimed = bool(DONE.search(unquoted)) and bool(LEFT.search(unquoted))
 
 if not (declared or unasked or overclaimed or any(re.search(p, msg) for p in PATTERNS)):
