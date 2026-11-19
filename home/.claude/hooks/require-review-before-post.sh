@@ -136,10 +136,12 @@ def update_target():
     """本文の更新なら、今の本文を取る bee api のパスと本文の欄の名前を返す。新しい投稿なら None"""
     if name.startswith("bee"):
         cmd = str(inp.get("command", ""))
-        m = re.search(r"\bbee\s+api\b.*?(?:-X|--method)\s+(?:PATCH|PUT)\b.*?\b(issues|wikis)/([\w\-]+)", cmd) \
-            or re.search(r"\bbee\s+api\b.*?\b(issues|wikis)/([\w\-]+).*?(?:-X|--method)\s+(?:PATCH|PUT)\b", cmd)
-        if m:
-            return "%s/%s" % (m.group(1), m.group(2)), ("description" if m.group(1) == "issues" else "content")
+        # 課題の本文・コメント・Wiki の書き換え。メソッドとパスはどちらが先でもよい
+        if re.search(r"\bbee\s+api\b", cmd) and re.search(r"(?:-X|--method)\s+(?:PATCH|PUT)\b", cmd):
+            m = re.search(r"\b(issues/[\w\-]+/comments/\d+|issues/[\w\-]+|wikis/\d+)\b", cmd)
+            if m:
+                path = m.group(1)
+                return path, ("description" if re.fullmatch(r"issues/[\w\-]+", path) else "content")
         m = re.search(r"\bbee\s+issue\s+edit\s+([\w\-]+)", cmd)
         if m:
             return "issues/%s" % m.group(1), "description"
@@ -168,7 +170,11 @@ if spacing:
         else:
             # 検査は記号を外した形で行を返すので、今の本文にも同じ検査を掛けて突き合わせる
             before = {(cat, src) for _n, cat, src in _sp.check_text(old)}
-            spacing = [h for h in spacing if (h[1], h[2]) not in before]
+            # 行の頭や末尾に語を足しただけの行は、もとの行を含む。同じ種類の指摘が
+            # もとの行にあれば、もとからある表記として数えない
+            spacing = [h for h in spacing
+                       if (h[1], h[2]) not in before
+                       and not any(cat == h[1] and src and src in h[2] for cat, src in before)]
 if spacing:
     shown = ["- %s: %s" % (cat, src[:60]) for _n, cat, src in spacing[:8]]
     sys.stderr.write("\n".join([
