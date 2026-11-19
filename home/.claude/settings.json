@@ -102,6 +102,10 @@
           {
             "type": "command",
             "command": "bash ~/.claude/hooks/guard-pr-operations.sh"
+          },
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/check-commit-message.sh"
           }
         ]
       },
