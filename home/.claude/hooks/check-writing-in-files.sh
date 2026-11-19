@@ -116,7 +116,7 @@ def edited_markdown():
 
 
 def head_hits(path):
-    """HEAD 版の指摘。既存分は数えないため"""
+    """HEAD の時点の指摘。既存分は数えないため"""
     d2 = os.path.dirname(path)
     try:
         top = subprocess.run(["git", "-C", d2, "rev-parse", "--show-toplevel"],

@@ -101,7 +101,7 @@
 
 汎用の手順は pstack と mattpocock-skills に積極的に委ねる。手元のスキルを書く・直すときは、同じ手順を両プラグインが持っていないかを先に見て、持っていればそのスキルを呼ぶ。手元のスキルとルールに残すのは、ユーザー固有の方針（尋ね方・書き方・扱うリポジトリの事情）だけ。重なる場面は次のとおり振り分ける。
 
-**Skill ツールが拒否するスキルは、SKILL.md を Read して従う。** pstack は `setup-pstack` 以外、mattpocock-skills も一部が `disable-model-invocation: true` で、AI からは呼べない。置き場は `~/.claude/plugins/cache/<マーケットプレイス>/<プラグイン>/<版>/` の下。pstack は最初に同じ場所の `docs/harness/claude-code.md` を1回読む（Cursor の名前を Claude Code の名前へ読み替える表がある）。手元のスキルが「pstack の `how` に従う」と書いているのも、この読み方を指す。
+**Skill ツールが拒否するスキルは、SKILL.md を Read して従う。** pstack は `setup-pstack` 以外、mattpocock-skills も一部が `disable-model-invocation: true` で、AI からは呼べない。置き場は `~/.claude/plugins/cache/<マーケットプレイス>/<プラグイン>/<バージョン>/` の下。pstack は最初に同じ場所の `docs/harness/claude-code.md` を1回読む（Cursor の名前を Claude Code の名前へ読み替える表がある）。手元のスキルが「pstack の `how` に従う」と書いているのも、この読み方を指す。
 
 | 場面 | 使うもの |
 | --- | --- |
