@@ -3,7 +3,7 @@
 # Stop フックの入口。応答を見る検査を順に走らせ、見つけた違反をまとめて1回で返す。
 #
 # 検査は4本ある。
-#   require-japanese-response.sh  応答の言語・表記・参照のリンク
+#   require-japanese-response.sh  応答の言語・表記・参照のリンク・報告の書式
 #   block-pointless-stop.sh       意味のない停止（許可待ち・宣言だけ・本文での問い）
 #   check-writing-in-files.sh     このターンに書いた Markdown の表記
 #   require-writing-review.sh     このターンに書いた Markdown を点検に通したか

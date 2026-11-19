@@ -115,6 +115,8 @@ spacing = []
 # PR・issue・課題の参照がクリックで開ける形かも見る（ report_formatting.md ）。
 # 判定は check-reference-links.py が持つ。目印を共有するので、表記と同じ回に並べて返す
 links = []
+# URL の直後の括弧・句読点と定型の締めも見る。判定は check-report-format.py が持つ
+fmt = []
 if not (final_foreign or mid_foreign):
     import importlib.util
 
@@ -138,12 +140,20 @@ if not (final_foreign or mid_foreign):
                     links.append(item)
     except Exception:
         links = []
-    if not spacing and not links:
+    try:
+        rep = load("report", "~/.claude/hooks/check-report-format.py")
+        for b in blocks:
+            for item in rep.check_report(b):
+                if item not in fmt:
+                    fmt.append(item)
+    except Exception:
+        fmt = []
+    if not spacing and not links and not fmt:
         raise SystemExit(0)
 
 # 止める回数は入口の stop-checks.sh が数える（Stop フック共通）
 
-if spacing or links:
+if spacing or links or fmt:
     parts = []
     if spacing:
         shown = "\n".join(f"- {cat}: {text[:60]}" for cat, text in spacing[:8])
@@ -161,6 +171,14 @@ if spacing or links:
             f"{shown}{more}\n\n"
             "見せる文字は URL・owner/repo#番号・課題キーのどれでもよく、どれもリンクにします"
             "（PR は owner/repo#番号 か [文字](URL)、課題は [キー](URL)）。"
+        )
+    if fmt:
+        shown = "\n".join(f"- {cat}: {text}" for cat, text in fmt[:8])
+        parts.append(
+            "**報告の書式が崩れています**（ `report_formatting.md` / `no_ai_style_writing.md` ）。\n\n"
+            f"{shown}\n\n"
+            "URL は行末で終えるか、補足を前に置くか、[文字](URL) のリンクにします。"
+            "定型の締め（「答えは以上です」「他にあればお知らせください」）は書きません。"
         )
     sys.stderr.write(
         "\n\n".join(parts)
