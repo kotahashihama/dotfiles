@@ -74,7 +74,7 @@
 
 数えるだけなら `grep` で足りる。判断の根拠として原文を読む必要がある作業（規約と差分の照合、反証）は3番目に当たる。
 
-**pstack のスキルが手順として起動するサブエージェントは例外。** `how`・`why` のように、使うと決めたスキルが手順の中で起動するものは、そのスキルに任せる。並列で何本も動かすスキル（下記「プラグインのスキルとの使い分け」の最後の表）は、引き続きユーザーが指示したときだけ。`/tsuzuri:tsuzuri` が仕上げに起動する「文脈の無い読み手」1体も、同じくスキルに任せる。書き手の文脈を渡さずに読ませるのが目的なので、`surveyor` には代えない。
+**pstack のスキルが手順として起動するサブエージェントは例外。** `how`・`why` のように、使うと決めたスキルが手順の中で起動するものは、そのスキルに任せる。並列で何本も動かすスキル（下記「プラグインのスキルとの使い分け」の最後の表）は、引き続きユーザーが指示したときだけ。`/tsuzuri:tsuzuri` が仕上げに起動する「文脈の無い読み手」1体も、同じくスキルに任せる。見出しが2つ以上ある文章を点検するときに同じ読み手を1体起動するのも、自分の判断でしてよい（ `rules/no_ai_style_writing.md` の5段目）。書き手の文脈を渡さずに読ませるのが目的なので、`surveyor` には代えない。
 
 **常に効かせたいものは rules、呼ばれたときだけ効かせたいものは skills。** 書き方と整理の規約は `rules/rule_conventions.md` が両方を持つ。
 
@@ -111,7 +111,7 @@
 | コードや変更を噛み砕いて説明する | `/explain-code`・`/walk-code` （ユーザーの習熟度に合わせて開く）。仕組みや経緯を調べる段は `/pstack:how`・`/pstack:why` を単独で使ってよい |
 | コードレビュー（する・受ける） | `/review-*`・`/resolve-*`・`rules/responding_to_reviews.md`。コードの不吉な臭いの一覧は `/mattpocock-skills:code-review` から、抽象化の深さの語彙は `/mattpocock-skills:codebase-design` から、セキュリティの判定の基準は `security-audit:security-audit` から、`/review-code` が参照する。コードベース全体のセキュリティ監査は `security-audit:security-audit` を単独で呼ぶ |
 | PR を出す・仕上げる・CI・コンフリクト | `/ship-pr`・`/finalize-prs`・`/loop-ai-reviews`・`/resolve-conflicts` |
-| 文章 | 日本語は `/japanese-tech-writing` → `/yomiyasu:yomiyasu`、長い新規の読み物は `/tsuzuri:tsuzuri` （使い分けは `rules/no_ai_style_writing.md` ）。pstack の `unslop`・`technical-writing` は英語の文章にだけ使う |
+| 文章 | 日本語は `/japanese-tech-writing` → `/yomiyasu:yomiyasu` で、見出しが2つ以上なら tsuzuri の「文脈の無い読み手」にも読ませる。長い新規の読み物は `/tsuzuri:tsuzuri` （使い分けは `rules/no_ai_style_writing.md` ）。pstack の `unslop`・`technical-writing` は英語の文章にだけ使う |
 | 完了前の検証 | `rules/verify_the_check_worked.md`・`rules/verify_before_asserting.md` |
 | ルールとスキルの書き方 | `/organize-rules`・`/learn-rules`。一般的な書き方は `/mattpocock-skills:writing-for-agents` から、繰り返す誤りを構造で止める順序は `/pstack:correct` から、`/organize-rules` が参照する |
 | 依存の更新で壊れる先・性能の数字の検算 | `/resolve-renovate-pr` が `/pstack:blast-radius` を使う。速さを測って報告するときは `/pstack:benchmark-checklist` を通す（ `references/base_records_on_measurements.md` ） |
