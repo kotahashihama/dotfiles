@@ -47,6 +47,14 @@ alias dvn.='dvn .'
 # cask はコマンドを置かないので、アプリ本体の実行ファイルを CLI として呼ぶ
 alias bambu-studio='/Applications/BambuStudio.app/Contents/MacOS/BambuStudio'
 
+# tsuzuri の閲覧アプリ
+# プラグインのキャッシュはバージョンごとにフォルダが分かれるので、最新のものを起動する
+tsuzuri-app() {
+  local dirs=(~/.claude/plugins/cache/marycache-tsuzuri/tsuzuri/*(/om[1]N))
+  (( ${#dirs} )) || { echo 'tsuzuri のプラグインが入っていません' >&2; return 1; }
+  python3 -I "${dirs[1]}/app/server.py" "$@"
+}
+
 # Terraform
 alias tf='terraform'
 alias tfi='tf init'

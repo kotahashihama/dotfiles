@@ -359,7 +359,8 @@
     "security-guidance@claude-plugins-official": true,
     "linejs-cli@evex-linejs": true,
     "notion@claude-plugins-official": true,
-    "visual-explainer@visual-explainer-marketplace": true
+    "visual-explainer@visual-explainer-marketplace": true,
+    "tsuzuri@marycache-tsuzuri": true
   },
   "extraKnownMarketplaces": {
     "openai-codex": {
@@ -462,6 +463,26 @@
         ],
         "owner": {
           "name": "Cloudflare"
+        }
+      },
+      "autoUpdate": true
+    },
+    "marycache-tsuzuri": {
+      "source": {
+        "source": "settings",
+        "name": "marycache-tsuzuri",
+        "plugins": [
+          {
+            "name": "tsuzuri",
+            "source": {
+              "source": "github",
+              "repo": "MaryCache/tsuzuri"
+            },
+            "description": "Write and review Japanese prose sentence by sentence with explicit writing intent"
+          }
+        ],
+        "owner": {
+          "name": "MaryCache"
         }
       },
       "autoUpdate": true
