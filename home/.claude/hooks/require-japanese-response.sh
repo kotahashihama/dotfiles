@@ -72,24 +72,9 @@ def turn_texts(path, prompt_id):
     return texts
 
 
-def counts(text):
-    # 英語のままが正しいものを除く
-    prose = re.sub(r"```.*?```", " ", text, flags=re.S)          # コードブロック
-    prose = re.sub(r"`[^`\n]*`", " ", prose)                     # インラインコード
-    prose = re.sub(r"https?://\S+", " ", prose)                  # URL
-    prose = re.sub(r"\]\([^)]*\)", "]", prose)                   # Markdown のリンク先
-    # パス・JSON・識別子のように記号を含む語は地の文ではない
-    prose = re.sub(r"\S*[/\\_{}=<>\"\\[\]@#$|]\S*", " ", prose)
-    kana = len(re.findall(r"[ぁ-ゟァ-ヿｦ-ﾟ]", prose))
-    letters = sum(ch.isalpha() for ch in prose)
-    return kana, letters
-
-
-def foreign(kana, letters):
-    # 日本語の地の文なら、文字（仮名・漢字・英字ほか）のうち仮名が2割を超える。
-    # 2026-11-19 に直近60本の会話ログの日本語の応答で測ると、最小が23.4%だった。
-    # 中国語・韓国語・英語では仮名がほぼ出ないので、1割で切る
-    return kana < letters * 0.1
+# 日本語かの判定は japanese_prose.py が持つ。途中経過を見る PostToolUse のフックと同じ判定を使う
+sys.path.insert(0, os.path.expanduser("~/.claude/hooks"))
+from japanese_prose import counts, foreign  # noqa: E402
 
 
 blocks = turn_texts(transcript, pid) if transcript else []
