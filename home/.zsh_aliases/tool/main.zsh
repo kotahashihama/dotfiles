@@ -43,6 +43,10 @@ alias cs.='cs .'
 alias dvn='devin-desktop'
 alias dvn.='dvn .'
 
+# Bambu Studio（スライサー）
+# cask はコマンドを置かないので、アプリ本体の実行ファイルを CLI として呼ぶ
+alias bambu-studio='/Applications/BambuStudio.app/Contents/MacOS/BambuStudio'
+
 # Terraform
 alias tf='terraform'
 alias tfi='tf init'
