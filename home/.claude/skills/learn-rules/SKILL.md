@@ -1,5 +1,5 @@
 ---
-description: 会話で受けた訂正・好み・失敗を、グローバル資産（ルール / スキル / フック / メモリ）へ還元する。1回きりの指示か繰り返し効く規約かを先に判定し、置き場を見立てて AskUserQuestion で承認を受け、反映から棚卸し・コミットまでを一続きにする。ユーザーが「ルール化して」「これ覚えておいて」「/learn-rules」等を指示したとき、またはフックに促されたときに使う。
+description: 会話で受けた訂正・好み・失敗を、グローバル資産（ルール / スキル / フック / メモリ）へ還元する。1回きりの指示か繰り返し効く規約かを先に判定し、置き場を見立てて AskUserQuestion で承認を受け、反映から棚卸し・コミットまでを一続きにする。ユーザーが「ルール化して」「これ覚えておいて」「/learn-rules」等を指示したとき、フックに促されたとき、PR のレビューの指摘を取り込んだときに使う。
 argument-hint: "[資産化したい内容]（省略時は直近の会話から拾う）"
 allowed-tools: Bash(git status:*) Bash(git diff:*) Bash(git add:*) Bash(git commit:*) Bash(git push:*) Bash(git log:*) Bash(ls:*) Bash(grep:*) Bash(readlink:*) Bash(sh scripts/git-hooks/pre-commit) Read Edit Write Grep Glob AskUserQuestion
 ---
@@ -146,3 +146,4 @@ sh scripts/git-hooks/pre-commit    # 公開側の固有名を検査
 - `rule_conventions.md`: ルールとスキルの置き分けと整理。**5と6の中身はあちらが持つ**
 - `no_internal_names_in_public_assets.md` （公開側に社内固有名を書かない）: 2の軸2の根拠
 - `verify_before_asserting.md` （断定の前に裏を取る）: 「無い」を語で判定しない、フックは実物の入力で通す
+- `responding_to_reviews.md` （取り込んだ指摘は、次の実装に効かせる）: PR の指摘のうち、何をどこへ残すかの判定はあちら。資産へ残すと決まったものの書き方は本スキル。`/resolve-human-reviews` と `/resolve-ai-reviews` が手順の最後に本スキルを呼ぶ
