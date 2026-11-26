@@ -74,6 +74,14 @@ if command -v claude >/dev/null 2>&1 \
     || echo "⚠️  claude-recall の MCP 登録に失敗しました。claude mcp add で手で入れてください"
 fi
 
+# コードの知識グラフを引く MCP サーバー（GitNexus）。本体は mermaid と同じく mise の宣言が入れる。
+# 索引は ~/.gitnexus にでき、管理下に置かない（解析したリポジトリのコードを含むので運ばない）
+if command -v claude >/dev/null 2>&1 \
+  && ! grep -q '"gitnexus"' "$HOME/.claude.json" 2>/dev/null; then
+  claude mcp add --scope user gitnexus -- gitnexus mcp >/dev/null 2>&1 \
+    || echo "⚠️  gitnexus の MCP 登録に失敗しました。claude mcp add で手で入れてください"
+fi
+
 # 家電を操作する MCP サーバー（SwitchBot）。本体は restore_languages.sh が bun のグローバルへ入れ、
 # 認証情報は ~/.claude/bin/switchbot が with-secrets 経由で渡す
 if command -v claude >/dev/null 2>&1 \
