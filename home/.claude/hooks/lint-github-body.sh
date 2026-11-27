@@ -364,7 +364,45 @@ def lost_attachments(cmd, body):
     return sorted(a for a in now if a not in body and url_of(a) not in allowed)
 
 
+def screen_files_without_images(cmd, cwd, bodies_list):
+    """画面の部品を変えた PR を、画像を貼らずに作ろうとしていれば、その部品を返す
+
+    /create-pr の手順4は、画面が変わる PR なら撮って貼ることを求める。
+    スキルを通さずに gh pr create を打つと、この手順ごと抜ける。
+    画面の確認が要らない PR（型の付け替えだけなど）は、NO_SCREENSHOT=<理由> を付けて名指しする。
+    """
+    if not re.search(r"\bgh\s+pr\s+create\b", cmd):
+        return []
+    if re.search(r"\bNO_SCREENSHOT=\S", cmd):
+        return []
+    if re.search(r"--attach\b", cmd):
+        return []
+    if any(re.search(r"!\[|<img\b|<video\b|user-attachments", b) for b in bodies_list):
+        return []
+    base = re.search(r"--base[= ]\s*([^\s\x27\"]+)", cmd)
+    base = base.group(1) if base else "main"
+    try:
+        out = subprocess.run(
+            ["git", "-C", cwd, "diff", "--name-only", "origin/%s...HEAD" % base],
+            capture_output=True, text=True, timeout=20,
+        )
+    except Exception:
+        return []                      # 差分を取れないときは通す
+    if out.returncode != 0:
+        return []
+    return [
+        f for f in out.stdout.split("\n")
+        if f.endswith(".tsx") and not re.search(r"\.(test|spec|stories)\.tsx$", f)
+    ]
+
+
 problems = []
+screens = screen_files_without_images(cmd, CWD, bodies(cmd))
+if screens:
+    problems.append("- 画面の部品を変えた PR に、画像も動画も貼られていない（%s ほか %d 件）\n"
+                    "  → /verify-on-local で撮り、本文に ![alt](./x.webp) を書いて --attach で貼る\n"
+                    "  → 画面の確認が要らない PR なら、コマンドの頭に NO_SCREENSHOT=\x27<理由>\x27 を付ける"
+                    % (screens[0], len(screens) - 1))
 note_required = ours(target_owner(cmd, CWD))
 for body in bodies(cmd):
     for rule, msg, lines in check(body, note_required):
