@@ -1,6 +1,6 @@
 ---
-description: 他の人が出した PR をレビューし、総括コメントとインラインコメントをセットで GitHub へ投稿する。レビュー結果はまず会話に出し、ユーザーの GO を得てから投稿する。ユーザーが /review-pr を打ったときだけ動く（AI からは呼べない）。--deep を付けると、レビューの実施をサブエージェントの並列に差し替える。自分が出した PR の点検・仕上げは /finalize-prs の担当なので、このスキルは使わない。
-argument-hint: "[PR 番号 または URL｜--pr <PR 番号 または URL>]（省略時は現在のブランチの PR）[--deep] [--focus <重点的に見る観点>]（--focus は --deep のときだけ）"
+description: 他の人が出した PR （1本でも複数でも）をレビューし、総括コメントとインラインコメントをセットで GitHub へ投稿する。レビュー結果はまず会話に出し、ユーザーの GO を得てから投稿する。ユーザーが /review-prs を打ったときだけ動く（AI からは呼べない）。--deep を付けると、レビューの実施をサブエージェントの並列に差し替える。自分が出した PR の点検・仕上げは /finalize-prs の担当なので、このスキルは使わない。
+argument-hint: "[PR 番号 または URL｜--pr <PR 番号 または URL>]...（複数可。省略時は現在のブランチの PR）[--deep] [--focus <重点的に見る観点>]（--focus は --deep のときだけ）"
 allowed-tools: Bash(gh api:*) Bash(gh pr view:*) Bash(gh pr diff:*) Bash(gh pr list:*) Bash(gh repo view:*) Bash(git fetch:*) Bash(git show:*) Bash(git log:*) Bash(git worktree:*) Bash(git rev-parse:*) Bash(go build:*) Bash(go test:*) Bash(task:*) Bash(npx:*) Read Grep Glob Write Agent AskUserQuestion Skill
 disable-model-invocation: true
 ---
@@ -16,6 +16,19 @@ disable-model-invocation: true
 | 対象 | **自分の PR** に付いた指摘 | **他の人の PR** の差分 |
 | やること | コードを直す | **指摘を書いて投稿する** |
 | GitHub への書き込み | しない | **する（総括 + インライン）** |
+
+## PR を複数渡されたとき
+
+**PR は何本でも渡せる。** 位置で並べても `--pr` を繰り返してもよい。`--deep` と `--focus` は渡した全部の PR に効く。
+
+| 段 | 進め方 |
+| --- | --- |
+| Step 1〜7 | 1本ずつ回す。課題票・規約・差分は PR ごとに読み、ほかの PR の結論を流用しない |
+| 報告 | PR ごとに節を分ける。各節の冒頭に PR の URL を置き、各節の最後に `## approve の可否` を立てる |
+| GO | PR ごとに、書く / 書かないを1件ずつ決めた一覧を示して尋ねる。全部の PR をまとめた1つの選択肢にしない |
+| Step 8〜9 | GO を得た PR だけ、PR ごとに1つのレビューとして投稿し、結果を確かめる |
+
+同じ課題の PR （FE と BE など）を一緒に渡されたら、「どういう PR か」で両方の受け持ちと約束（API・値）を並べる（Step 7の「どういう PR かは、初見の人に向けて噛み砕く」）。
 
 ## 進め方
 
@@ -40,7 +53,7 @@ gh api "repos/OWNER/REPO/pulls/<PR>/reviews" --jq '.[] | select(.user.login=="<�
 
 **会話の記憶で判定しない。** 同じ PR を2度目に呼ばれても、**セッションが変わっていれば前回の投稿を覚えていません**。
 
-**`/review-pr <PR>` は、いつ打ってもその時点の状態から続きを始められる形にする。** 結果は毎回変わってよく（差分が動けば指摘も変わる）、**同じコマンドで再実行できることが要件**です。だから判定は記憶ではなく API で行う。
+**`/review-prs <PR>` は、いつ打ってもその時点の状態から続きを始められる形にする。** 結果は毎回変わってよく（差分が動けば指摘も変わる）、**同じコマンドで再実行できることが要件**です。だから判定は記憶ではなく API で行う。
 
 ### 課題票を読み、PR の範囲と突き合わせる
 

@@ -1,4 +1,4 @@
-# /review-pr の参照: re-review
+# /review-prs の参照: re-review
 
 本体の「再レビュー」から開く。過去のレビューがあるときだけ通る手順。
 

@@ -200,6 +200,6 @@ URL だけを1行に置く形が決まっている箇所は、Markdown の投稿
 - `concise_first_then_detail.md` （簡潔に）: Mermaid と表を使うかどうかの判断はあちら。本ルールは会話へ出すときの書式だけを定める
 - `base_records_on_measurements.md` （記録は実測に基づける）: 本ルールは会話での報告の書式、あちらは後から引かれる文書の確かさ。会話で出した推定を、そのまま記録へ写さない
 - `/explain-code` （実装を噛み砕いて説明する）: 本ルールが土台で、あちらは読む順の案内を上乗せする
-- `/review-pr` / `/update-pr-description`: どちらも「GitHub が ```mermaid をレンダリングする」を持つが、あちらは投稿先の話。本ルールは会話へ出すときの書式
+- `/review-prs` / `/update-pr-description`: どちらも「GitHub が ```mermaid をレンダリングする」を持つが、あちらは投稿先の話。本ルールは会話へ出すときの書式
 - `wrap_values_in_inline_code.md` （値と識別子は囲む）: 会話と GitHub で扱いが逆になる。会話では囲んで値として示し、GitHub では囲むと自動リンクが消える（コミット SHA も同じ）
 - `/resolve-ai-reviews` / `/resolve-human-reviews` （レビュー対応スキル）: 対応表の並び順と列構成は本ルールに従う

@@ -257,4 +257,4 @@ allowed-tools: Bash(gh pr view:*) Bash(gh pr diff:*) Bash(gh api:*) Bash(gh repo
 - `concise_first_then_detail.md` （簡潔に）: 図と表で畳む判断はあちらが持つ
 - `report_formatting.md` （報告に貼る識別子の書式）: **`file:line` で指す規定はあちらが持つ**。本スキルは、その上に**読む順の案内**を足す
 - `verify_before_asserting.md` （断定の前に裏を取る）: 逐行は断定の連続になる。**推測が混ざると気づかれない**
-- `/review-pr` （他人の PR をレビューする）: **あちらは良し悪しを判断する**。本スキルは理解を助けるだけで、指摘はしない
+- `/review-prs` （他人の PR をレビューする）: **あちらは良し悪しを判断する**。本スキルは理解を助けるだけで、指摘はしない

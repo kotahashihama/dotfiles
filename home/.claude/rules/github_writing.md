@@ -235,11 +235,11 @@ PR 説明・コミットメッセージ・コメントで、「自分の言葉�
 - `japanese_notation.md` （日本語の表記）: どちらも日本語の表記を定める。一括置換で対になる記法と NG 例が壊れるのは本ルールが扱う
 - `recheck_after_every_revision.md` （書き直すたびに確かめ直す）: 本ルールの検査は3周目（形）で使う。あちらが周ごとの観点を定める
 - `concise_first_then_detail.md` （簡潔に）: あちらは量を扱う。本ルールは改行と表記
-- `/review-pr` / `/create-pr` / `/update-pr-description` / `/resolve-ai-reviews` / `/resolve-human-reviews`: 本ルールが土台で、各スキルは投稿先固有の事情を上乗せする
+- `/review-prs` / `/create-pr` / `/update-pr-description` / `/resolve-ai-reviews` / `/resolve-human-reviews`: 本ルールが土台で、各スキルは投稿先固有の事情を上乗せする
 - `report_formatting.md` （報告に貼る識別子の書式）: `path:line` の扱いが逆になる。会話ではクリックできるので使い、GitHub では差分が動くので使わない
 - `wrap_values_in_inline_code.md` （値と識別子は囲む）: 囲むかどうかの判定はあちら。本ルールが定めるのは、囲んではいけない側の1つ
 - `plain_language_explanation.md` （噛み砕いた説明）: GitHub の `[fyi]` の読み手（その機能を知らないエンジニア）に合わせる粒度はあちら。本ルールの「読みやすさの基準も、読み手で変わる」は、課題管理ツールの `[fyi]` と `[memo]` の読み手を足す
 - `explain_from_observables.md` （観測できるものから始める）: `[memo]` から `[fyi]` を組み立てるときに置き去りになる定義と前提は、あちらの「抜き出して組み立てた文書では、定義と前提を開き直す」
-- `/create-pr` / `/update-pr-description` / `/review-pr` / `/resolve-ai-reviews` / `/resolve-human-reviews`: 本ルールが土台。他リポジトリの PR を挙げる場面はどのスキルでも出る
+- `/create-pr` / `/update-pr-description` / `/review-prs` / `/resolve-ai-reviews` / `/resolve-human-reviews`: 本ルールが土台。他リポジトリの PR を挙げる場面はどのスキルでも出る
 - `/request-ai-reviews` （ `/ai-review` の投稿）: 投稿側の手順。本文をコマンド1行に保つ責務を持つ
 - `/update-pr-description` （PR 説明と補足コメントの更新）: 読む側の手順。抽出時にコマンドコメントを除外する

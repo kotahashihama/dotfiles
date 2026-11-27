@@ -171,4 +171,4 @@ https://github.com/OWNER/REPO/blob/<commit>/path/to/file.go#L42-L48
 - `github_note_generated_by_claude.md` （生成者表示）: **`NOTE` を占有している**。他の Alert と混ざらないよう用途を分ける
 - `github_writing.md` （他リポジトリの参照）: **`#123` は参照するだけで閉じない**
 - `github_writing.md` （1文ごとに改行）: あちらは**文の表記**、本スキルは**構造の選び方**
-- `/create-pr` / `/update-pr-description` / `/review-pr` / `/resolve-ai-reviews` / `/resolve-human-reviews`: 本スキルが土台で、各スキルは投稿先固有の事情を上乗せする
+- `/create-pr` / `/update-pr-description` / `/review-prs` / `/resolve-ai-reviews` / `/resolve-human-reviews`: 本スキルが土台で、各スキルは投稿先固有の事情を上乗せする

@@ -1,5 +1,5 @@
 ---
-description: 自分が書いた差分を、そのリポジトリの規約と設計の境界に照らしてレビューし、must / imo / nits の3段階で会話へ返す。GitHub へは投稿しない。ユーザーが「レビューして」「軽く見て」「セルフレビューして」「/review-code」等を指示したときに使う。「深くレビューして」「徹底的にレビューして」「多観点で見て」「レイヤー別に見て」と言われたら --deep を付けて、サブエージェントを並列起動して多観点で見る。他人の PR は /review-pr、コメント粒度は /review-code-comments、テストの追随は /review-tests の担当。
+description: 自分が書いた差分を、そのリポジトリの規約と設計の境界に照らしてレビューし、must / imo / nits の3段階で会話へ返す。GitHub へは投稿しない。ユーザーが「レビューして」「軽く見て」「セルフレビューして」「/review-code」等を指示したときに使う。「深くレビューして」「徹底的にレビューして」「多観点で見て」「レイヤー別に見て」と言われたら --deep を付けて、サブエージェントを並列起動して多観点で見る。他人の PR は /review-prs、コメント粒度は /review-code-comments、テストの追随は /review-tests の担当。
 argument-hint: "[対象｜--target <ファイル・ディレクトリ・差分の範囲>]（省略時は origin/HEAD...HEAD）[--deep] [--focus <重点的に見る観点>]"
 allowed-tools: Bash(git diff:*) Bash(git log:*) Bash(git show:*) Bash(git rev-parse:*) Bash(gh pr view:*) Bash(ls:*) Bash(grep:*) Read Grep Glob Agent AskUserQuestion Skill
 ---
@@ -15,7 +15,7 @@ allowed-tools: Bash(git diff:*) Bash(git log:*) Bash(git show:*) Bash(git rev-pa
 | **設計の境界・複雑度・規約違反・失敗シナリオ・セキュリティ** | **本スキル** |
 | コメントの粒度 | `/review-code-comments` |
 | テストと Story の追随 | `/review-tests` |
-| 他人の PR（投稿まで） | `/review-pr` |
+| 他人の PR（投稿まで） | `/review-prs` |
 | 多観点の並列レビュー | `--deep` （ `references/deep.md` ） |
 
 ## プロジェクト側に同名があれば、そちらを使う
@@ -177,7 +177,7 @@ allowed-tools: Bash(git diff:*) Bash(git log:*) Bash(git show:*) Bash(git rev-pa
 ## 関連
 
 - `/review-code-comments` / `/review-tests`: 観点が狭い分を担当。**重ねて出さない**
-- `/review-pr` （他人の PR）: 対象と出力先が違う。あちらは投稿まで行う
+- `/review-prs` （他人の PR）: 対象と出力先が違う。あちらは投稿まで行う
 - `/finalize-prs` （PR の仕上げ）: 点検の入口だが、本スキルは呼ばない。境界や複雑度まで見たいときは、本スキルを単独で呼ぶ
 - `verify_before_asserting.md` （断定の前に裏を取る）: 規約の引用も裏取りの対象
 - `verify_the_check_worked.md` （検査が成立していたかを疑う）: 走査が空振りしていないかを確かめる

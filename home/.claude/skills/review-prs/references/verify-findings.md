@@ -1,4 +1,4 @@
-# /review-pr の参照: verify-findings
+# /review-prs の参照: verify-findings
 
 本体から切り出した詳細。本体の該当する節から開く。
 
