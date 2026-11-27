@@ -166,7 +166,8 @@ if spacing or links or fmt:
         )
     sys.stderr.write(
         "\n\n".join(parts)
-        + "\n\n該当する文だけを直して、直した文を出し直してください（応答全体を繰り返さなくてよい）。"
+        + "\n\n該当する文を直し、その文を含むまとまり（表なら表全体、一覧なら一覧全体、段落なら段落全体）を出し直してください。"
+        + "直した行だけを出すと、読み手は前の応答と突き合わせて組み立て直すことになります（concise_first_then_detail.md）。"
     )
     raise SystemExit(2)
 

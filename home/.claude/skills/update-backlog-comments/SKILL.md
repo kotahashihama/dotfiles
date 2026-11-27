@@ -108,6 +108,8 @@ allowed-tools: Bash(gh pr view:*) Bash(gh pr list:*) Bash(gh api:*) Bash(git gre
 
 **事実の記述は、読まれていても直してよい。** 古い記述に価値は無い。残すのは判断とその根拠のほう。
 
+**手順や計画のコメントは、痕跡があっても書き換える。** 時期・順番・場所が変わったら元を直し、変わる行だけを並べたコメントを足さない（ `~/.claude/references/keep_records_current.md` の「手順や計画のコメントは、元を書き換える」）。
+
 ### 6. 直す
 
 **直した本文は `.md` に書き、`/japanese-tech-writing` と `/yomiyasu:yomiyasu` を通してから投稿する**（ `no_ai_style_writing.md` ）。通していないと投稿の直前でフックに止められる。見出しが2つ以上ある本文は、続けて tsuzuri の「文脈の無い読み手」にも読ませる（同ルールの5段目）。
